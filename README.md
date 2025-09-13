@@ -1,2 +1,2 @@
 # CK_CNPM
-10 điểm CK CNPM
+Phần mềm eogibiti
