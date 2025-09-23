@@ -1,4 +1,60 @@
-# Visual Studio / .NET build files
-bin/
-obj/
+## ===============================
+## Visual Studio / .NET ignore
+## ===============================
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache / user-specific
 .vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+*.dbmdl
+*.bak
+*.Backup
+*.tmp
+*.tlog
+*.cache
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# NuGet
+*.nupkg
+*.nuget.props
+*.nuget.targets
+project.lock.json
+packages/
+
+# Rider / JetBrains
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# *.NET Core / .NET 5+ runtime files
+*.dll
+*.exe
+*.pdb
+*.apphost
+*.runtimeconfig.json
+*.deps.json
+*.cache
+
+# Files for publish / deploy
+publish/
+
+# Others
+*.log
+*.vsix
