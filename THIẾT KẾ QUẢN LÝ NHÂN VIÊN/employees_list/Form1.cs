@@ -1,11 +1,16 @@
 ﻿using Guna.UI2.WinForms;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Drawing.Imaging;
 namespace employees_list
 {
     public partial class Form1 : Form
     {
         String connectionStr = @"Server=.\SQLEXPRESS;Database=test_QL_NHANVIEN;Trusted_Connection=True;TrustServerCertificate=True;";
+
+        int originalHeaderHeight;
+
+        int originalFormHeight;
         public Form1()
         {
             InitializeComponent();
@@ -13,9 +18,15 @@ namespace employees_list
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Lưu kích thước gốc của header lúc load form
+            originalHeaderHeight = header.Height;
+
+            originalFormHeight = this.Height;
             showData.CellPainting += showData_CellPainting;
             laydsnhanvien();
             showData.CellContentClick += showData_CellContentClick;
+            showData.Paint += showData_Paint;
+            header.Resize += header_Resize;
         }
         public void laydsnhanvien()
         {
@@ -115,7 +126,7 @@ namespace employees_list
             {
                 // Lấy tọa độ click
                 var cellRect = showData.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
-                int iconSize = 50;
+                int iconSize = 30;
                 int padding = 5;
 
                 var editRect = new Rectangle(
@@ -156,13 +167,15 @@ namespace employees_list
                 }
             }
         }
+
+
         private void showData_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == showData.Columns["ThaoTac"].Index)
             {
                 e.PaintBackground(e.CellBounds, true);
 
-                int iconSize = 20;
+                int iconSize = 30;
                 int padding = 5;
 
                 var editRect = new Rectangle(
@@ -185,5 +198,54 @@ namespace employees_list
             }
         }
 
+        private void guna2Button8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void showData_Paint(object sender, PaintEventArgs e)
+        {
+            Image logo = Properties.Resources.greenlogo_2;
+
+            //Tạo độ trong suốt
+            float transparency = 0.15f;
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.Matrix33 = transparency;
+            ImageAttributes attributes = new ImageAttributes();
+            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+
+            //Tính toán watermark tỉ lệ theo DataGridView
+            int newWidth = (int)(showData.Width * 0.3);
+            int newHeight = (int)(showData.Height * 0.3);
+
+            //Giữ tỉ lệ ảnh k bị biến dạng 
+            float ratio = Math.Min((float)newWidth / logo.Width, (float)newHeight / logo.Height);
+            int scaleWidth = (int)(logo.Width * ratio);
+            int scaleHeight = (int)(logo.Height * ratio);
+
+            // Lấy vị trí trung tâm DataGridView
+            int x = (showData.Width - scaleWidth) / 2;
+            int y = (showData.Height - scaleHeight) / 2;
+
+            // Vẽ logo mờ ở nền
+            e.Graphics.DrawImage(
+               logo,
+               new Rectangle(x, y, scaleWidth, scaleHeight),
+               0, 0, logo.Width, logo.Height,
+               GraphicsUnit.Pixel,
+               attributes
+            );
+        }
+
+
+        private void header_Resize(object sender, EventArgs e)
+        {
+            header.Width = this.ClientSize.Width; // ClientSize = chiều rộng khả dụng của Form
+            float scaleY = (float)this.Height / originalFormHeight;
+            header.Height = (int)(originalHeaderHeight * scaleY);
+
+
+        }
     }
 }

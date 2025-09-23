@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\NHIỆM VỤ CUỐI KÌ\\week2\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\employees_list.csproj": {}
+    "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\CK_CNPM\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\employees_list.csproj": {}
   },
   "projects": {
-    "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\NHIỆM VỤ CUỐI KÌ\\week2\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\employees_list.csproj": {
+    "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\CK_CNPM\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\employees_list.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\NHIỆM VỤ CUỐI KÌ\\week2\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\employees_list.csproj",
+        "projectUniqueName": "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\CK_CNPM\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\employees_list.csproj",
         "projectName": "employees_list",
-        "projectPath": "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\NHIỆM VỤ CUỐI KÌ\\week2\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\employees_list.csproj",
+        "projectPath": "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\CK_CNPM\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\employees_list.csproj",
         "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
-        "outputPath": "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\NHIỆM VỤ CUỐI KÌ\\week2\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\obj\\",
+        "outputPath": "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\CK_CNPM\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
