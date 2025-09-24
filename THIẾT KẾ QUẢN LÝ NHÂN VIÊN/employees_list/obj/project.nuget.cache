@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QuwDwphZgd8=",
+  "dgSpecHash": "8IGHmwDXrNA=",
   "success": true,
-  "projectFilePath": "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\CK_CNPM\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\employees_list.csproj",
+  "projectFilePath": "E:\\TDTU\\NĂM 3\\CÔNG NGHỆ PHẦN MỀM\\NHIỆM VỤ CUỐI KÌ\\week2\\THIẾT KẾ QUẢN LÝ NHÂN VIÊN\\employees_list\\employees_list.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lenovo\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",

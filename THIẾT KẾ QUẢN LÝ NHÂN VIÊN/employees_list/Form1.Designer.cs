@@ -112,7 +112,7 @@
             // 
             // header
             // 
-            header.BackColor = Color.DarkGreen;
+            header.BackColor = Color.FromArgb(0, 152, 70);
             header.Controls.Add(guna2Panel2);
             header.Controls.Add(guna2Panel1);
             header.Controls.Add(pictureBox1);
@@ -141,7 +141,7 @@
             guna2CircleButton1.DisabledState.CustomBorderColor = Color.DarkGray;
             guna2CircleButton1.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             guna2CircleButton1.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            guna2CircleButton1.FillColor = Color.DarkGreen;
+            guna2CircleButton1.FillColor = Color.FromArgb(0, 152, 70);
             guna2CircleButton1.Font = new Font("Segoe UI", 9F);
             guna2CircleButton1.ForeColor = Color.White;
             guna2CircleButton1.Image = Properties.Resources.bellicon_3;
@@ -214,7 +214,6 @@
             // 
             // setting
             // 
-            setting.BackColor = Color.DarkGreen;
             setting.CustomizableEdges = customizableEdges8;
             setting.DisabledState.BorderColor = Color.DarkGray;
             setting.DisabledState.CustomBorderColor = Color.DarkGray;
@@ -237,7 +236,7 @@
             CircleButtonSetting.DisabledState.CustomBorderColor = Color.DarkGray;
             CircleButtonSetting.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             CircleButtonSetting.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            CircleButtonSetting.FillColor = Color.DarkGreen;
+            CircleButtonSetting.FillColor = Color.FromArgb(0, 152, 70);
             CircleButtonSetting.Font = new Font("Segoe UI", 9F);
             CircleButtonSetting.ForeColor = Color.White;
             CircleButtonSetting.Image = Properties.Resources.settingicon_2;
@@ -311,7 +310,7 @@
             showData.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             showData.BorderStyle = BorderStyle.Fixed3D;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = Color.Green;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(0, 152, 70);
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 13F);
             dataGridViewCellStyle2.ForeColor = Color.White;
             dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
@@ -547,7 +546,7 @@
             guna2Button8.DisabledState.CustomBorderColor = Color.DarkGray;
             guna2Button8.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             guna2Button8.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            guna2Button8.FillColor = Color.ForestGreen;
+            guna2Button8.FillColor = Color.MediumSeaGreen;
             guna2Button8.FocusedColor = Color.Black;
             guna2Button8.Font = new Font("Segoe UI", 10F);
             guna2Button8.ForeColor = Color.White;
