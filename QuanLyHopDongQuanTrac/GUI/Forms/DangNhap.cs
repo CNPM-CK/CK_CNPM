@@ -1,10 +1,15 @@
-﻿namespace GUI.Forms
+﻿using System;
+using System.Windows.Forms;
+
+namespace GUI.Forms
 {
     public partial class DangNhap : Form
     {
         public DangNhap()
         {
             InitializeComponent();
+
+
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -82,11 +87,6 @@
             ScaleFonts(this, newSize);
         }
 
-        /// <summary>
-        /// Recursively scales the font size of all Label controls in the given control hierarchy.
-        /// </summary>
-        /// <param name="control">The root control to start scaling from.</param>
-        /// <param name="fontSize">The new font size to apply.</param>
         private void ScaleFonts(Control control, float fontSize)
         {
             foreach (Control c in control.Controls)
@@ -180,7 +180,12 @@
 
         }
 
-        private void pictureBox1_Click_2(object sender, EventArgs e)
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void materialButton1_Click(object sender, EventArgs e)
         {
 
         }
