@@ -1,14 +1,50 @@
-﻿using System;
+﻿using BLL;
+using DTO;
+using Microsoft.VisualBasic.ApplicationServices;
+using System;
 using System.Windows.Forms;
-
 namespace GUI.Forms
 {
     public partial class DangNhap : Form
     {
+        private readonly TaiKhoanBLL taiKhoanBLL = new TaiKhoanBLL() ;
+
         public DangNhap()
         {
             InitializeComponent();
 
+
+        }
+
+
+        private void textBox1_TextChanged(object sender, EventArgs e){ } // ô nhập username 
+
+
+        private void textBox2_TextChanged(object sender, EventArgs e) { } // ô nhập mật khâủ
+
+
+        private void button1_Click(object sender, EventArgs e) // ô đăng nhập 
+        {
+            string username = textBox1.Text;
+            string password = textBox2.Text;
+
+            var result = taiKhoanBLL.DangNhap(username, password);
+
+            if(!result.success)
+            {
+                MessageBox.Show(result.message,"Đăng nhập thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Thông báo đăng nhập thành công
+            MessageBox.Show($"Chào {result.account!.tenTK}", "Đăng nhập thành công",
+                              MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        }
+
+
+        private void splitContainer1_Panel2_Paint_1(object sender, PaintEventArgs e)
+        {
 
         }
 
@@ -189,5 +225,7 @@ namespace GUI.Forms
         {
 
         }
+
+        
     }
 }

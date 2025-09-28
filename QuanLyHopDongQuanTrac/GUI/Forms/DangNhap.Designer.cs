@@ -77,6 +77,7 @@
             splitContainer1.Panel2.Controls.Add(label4);
             splitContainer1.Panel2.Controls.Add(label3);
             splitContainer1.Panel2.Controls.Add(label2);
+            splitContainer1.Panel2.Paint += splitContainer1_Panel2_Paint_1;
             splitContainer1.Size = new Size(1035, 554);
             splitContainer1.SplitterDistance = 537;
             splitContainer1.TabIndex = 0;
@@ -114,6 +115,7 @@
             textBox2.Size = new Size(312, 50);
             textBox2.TabIndex = 46;
             textBox2.TextAlign = HorizontalAlignment.Center;
+            textBox2.TextChanged += textBox2_TextChanged;
             // 
             // textBox1
             // 
@@ -125,6 +127,7 @@
             textBox1.Size = new Size(312, 50);
             textBox1.TabIndex = 45;
             textBox1.TextAlign = HorizontalAlignment.Center;
+            textBox1.TextChanged += textBox1_TextChanged;
             // 
             // button1
             // 
@@ -137,6 +140,7 @@
             button1.TabIndex = 44;
             button1.Text = "Đăng nhập";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // label7
             // 

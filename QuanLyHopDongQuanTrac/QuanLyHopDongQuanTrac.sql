@@ -35,4 +35,22 @@ create table NhanVien (
 go
 alter table PhongBan add constraint fk_PhongBan_NhanVien foreign key (truongPhong) references NhanVien (maNV);
 go
-insert into TaiKhoan values ('admin', 'Dguy5uG95Axr/lXH8WWQ1Aob0xvc+k3gP0e54Ppq77Y=', 'qZKCaFaCkxQDF1fjxCeT7Q==', 1) --23092025--
+insert into TaiKhoan values ('admin', '$2a$10$hpojnVVHwzZjeWVs643z6urqQG2HQxxUlvH2If/ZLUY72Q915fNL.', 'qZKCaFaCkxQDF1fjxCeT7Q==', 1) --23092025--
+
+
+
+--Cập nhật mật khẩu 
+update TaiKhoan
+set matKhau ='$2a$10$hpojnVVHwzZjeWVs643z6urqQG2HQxxUlvH2If/ZLUY72Q915fNL.'
+WHERE tenTK = 'admin';
+
+---proc lấy tài khoản 
+CREATE PROCEDURE layTaikhoan 
+    @tenTK NVARCHAR(30)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT tenTK, matKhau, vaiTro
+    FROM TaiKhoan
+    WHERE tenTK = @tenTK;
+END

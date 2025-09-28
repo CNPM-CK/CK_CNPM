@@ -1,2 +1,4 @@
 # CK_CNPM
-Phần mềm eogibiti
+
+Đăng nhập :
+Vào thư mục chứa BLL, tải Bcrypt.net
