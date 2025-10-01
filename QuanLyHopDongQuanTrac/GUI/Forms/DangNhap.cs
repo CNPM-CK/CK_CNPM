@@ -16,7 +16,6 @@ namespace GUI.Forms
 
         }
 
-
         private void textBox1_TextChanged(object sender, EventArgs e){ } // ô nhập username 
 
 
@@ -36,9 +35,18 @@ namespace GUI.Forms
                 return;
             }
 
-            // Thông báo đăng nhập thành công
-            MessageBox.Show($"Chào {result.account!.tenTK}", "Đăng nhập thành công",
-                              MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //Chuyển hướng nếu vai trò là admin
+            if (result.account!.vaiTro == 1) {
+
+                DanhSachNhanVien listEmployees = new DanhSachNhanVien();
+                listEmployees.Show();
+                this.Hide();
+            }
+            else
+            {
+                MessageBox.Show($"Chào {result.account.tenTK}, bạn không có quyền truy cập danh sách nhân viên.",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
         }
 

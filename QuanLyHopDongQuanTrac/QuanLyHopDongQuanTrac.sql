@@ -54,3 +54,58 @@ BEGIN
     FROM TaiKhoan
     WHERE tenTK = @tenTK;
 END
+---Chèn dữ liệu để kiểm tra 
+--Dữ liệu phòng ban
+insert into PhongBan(maPhong, tenPhong, truongPhong)
+values 
+('P001', N'Phòng kinh doanh ', null),
+('P002', N'Phòng kế hoạch ', null),
+('P003', N'Phòng hiện trường ', null),
+('P004', N'Phòng thí nghiệm  ', null),
+('P005', N'Phòng kết quả ', null),
+('P006', N'Phòng quan trắc', null);
+
+-- Tài khoản admin đã có rồi
+-- Thêm tài khoản cho nhân viên
+
+insert into TaiKhoan(tenTK, matKhau, salt, vaiTro)
+values
+('nv001@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555', 'abc123==', 0),
+('nv002@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555', 'abc123==', 0),
+('nv003@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555', 'abc123==', 0),
+('nv004@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555', 'abc123==', 0),
+('nv005@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555', 'abc123==', 0),
+('nv006@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555', 'abc123==', 0);
+
+
+-- Dữ liệu Nhân viên
+insert into NhanVien(maNV, tenTK, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email)
+values
+('NV001', 'nv001@company.com', 'P001', N'Nguyễn Văn A', '1990-05-12', 0, N'Hà Nội', '0901234567', 'nv001@company.com'),
+('NV002', 'nv002@company.com', 'P004', N'Trần Thị B', '1992-09-20', 1, N'Hà Nội', '0902345678', 'nv002@company.com'),
+('NV003', 'nv003@company.com', 'P003', N'Lê Văn C', '1988-03-15', 0, N'Hải Phòng', '0913456789', 'nv003@company.com'),
+('NV004', 'nv004@company.com', 'P002', N'Phạm Thị D', '1995-07-25', 1, N'Đà Nẵng', '0914567890', 'nv004@company.com'),
+('NV005', 'nv005@company.com', 'P005', N'Hoàng Văn E', '1993-11-02', 0, N'Hồ Chí Minh', '0925678901', 'nv005@company.com'),
+('NV006', 'nv006@company.com', 'P006', N'Vũ Thị F', '1996-01-10', 1, N'Cần Thơ', '0936789012', 'nv006@company.com');
+
+--Procedure lấy danh sách nhân viên 
+create procedure layDanhSachNhanVien
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        nv.maNV,
+		 nv.tenTK,
+		 nv.maPhong,
+        nv.hoTen,
+        nv.ngaySinh,
+        CASE nv.gioiTinh WHEN 0 THEN N'Nam' ELSE N'Nữ' END AS gioiTinh,
+        nv.diaChi,
+        nv.soDienThoai,
+		nv.email,
+        pb.tenPhong
+    FROM NhanVien nv
+    LEFT JOIN PhongBan pb ON nv.maPhong = pb.maPhong;
+END
+GO

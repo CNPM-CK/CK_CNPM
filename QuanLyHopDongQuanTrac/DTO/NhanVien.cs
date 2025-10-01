@@ -13,9 +13,12 @@ namespace DTO
         public string maPhong { get; set; }
         public string hoTen { get; set; }
         public DateTime ngaySinh { get; set; }
-        public int gioiTinh { get; set; }
+        public string gioiTinh { get; set; } //chỉnh lại thành string cho dễ hiển thị
         public string diaChi { get; set; }
         public string soDienThoai { get; set; }
         public string email { get; set; }
+
+        // Thêm thuộc tính tên phòng
+        public string tenPhong { get; set; }
     }
 }
