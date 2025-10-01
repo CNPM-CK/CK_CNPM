@@ -29,239 +29,344 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DangNhap));
-            splitContainer1 = new SplitContainer();
-            label1 = new Label();
-            pictureBox1 = new PictureBox();
-            textBox2 = new TextBox();
-            textBox1 = new TextBox();
-            button1 = new Button();
+            panel1 = new Panel();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            panel2 = new Panel();
+            tableLayoutPanel3 = new TableLayoutPanel();
+            panel4 = new Panel();
+            label8 = new Label();
             label7 = new Label();
+            checkBox1 = new CheckBox();
             label6 = new Label();
             label5 = new Label();
-            pictureBox3 = new PictureBox();
-            checkBox1 = new CheckBox();
+            button2 = new Button();
+            button1 = new Button();
+            textBox2 = new TextBox();
+            textBox1 = new TextBox();
             label4 = new Label();
             label3 = new Label();
             label2 = new Label();
-            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
-            splitContainer1.Panel1.SuspendLayout();
-            splitContainer1.Panel2.SuspendLayout();
-            splitContainer1.SuspendLayout();
+            panel3 = new Panel();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            pictureBox1 = new PictureBox();
+            label1 = new Label();
+            panel1.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
+            panel2.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
+            panel4.SuspendLayout();
+            panel3.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
             // 
-            // splitContainer1
+            // panel1
             // 
-            splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(0, 0);
-            splitContainer1.Name = "splitContainer1";
+            panel1.BackColor = Color.AntiqueWhite;
+            panel1.Controls.Add(tableLayoutPanel1);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1255, 680);
+            panel1.TabIndex = 0;
             // 
-            // splitContainer1.Panel1
+            // tableLayoutPanel1
             // 
-            splitContainer1.Panel1.BackColor = Color.FromArgb(0, 152, 70);
-            splitContainer1.Panel1.Controls.Add(label1);
-            splitContainer1.Panel1.Controls.Add(pictureBox1);
-            splitContainer1.Panel1.Paint += splitContainer1_Panel1_Paint;
+            tableLayoutPanel1.BackColor = Color.Transparent;
+            tableLayoutPanel1.ColumnCount = 5;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 18.0904522F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 81.9095459F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 15F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 515F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92F));
+            tableLayoutPanel1.Controls.Add(panel2, 3, 1);
+            tableLayoutPanel1.Controls.Add(panel3, 1, 1);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 3;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.25F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 90.75F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 54F));
+            tableLayoutPanel1.Size = new Size(1255, 680);
+            tableLayoutPanel1.TabIndex = 0;
             // 
-            // splitContainer1.Panel2
+            // panel2
             // 
-            splitContainer1.Panel2.Controls.Add(textBox2);
-            splitContainer1.Panel2.Controls.Add(textBox1);
-            splitContainer1.Panel2.Controls.Add(button1);
-            splitContainer1.Panel2.Controls.Add(label7);
-            splitContainer1.Panel2.Controls.Add(label6);
-            splitContainer1.Panel2.Controls.Add(label5);
-            splitContainer1.Panel2.Controls.Add(pictureBox3);
-            splitContainer1.Panel2.Controls.Add(checkBox1);
-            splitContainer1.Panel2.Controls.Add(label4);
-            splitContainer1.Panel2.Controls.Add(label3);
-            splitContainer1.Panel2.Controls.Add(label2);
-            splitContainer1.Panel2.Paint += splitContainer1_Panel2_Paint_1;
-            splitContainer1.Size = new Size(1035, 554);
-            splitContainer1.SplitterDistance = 537;
-            splitContainer1.TabIndex = 0;
-            splitContainer1.SplitterMoved += splitContainer1_SplitterMoved;
+            panel2.BackColor = SystemColors.Window;
+            panel2.Controls.Add(tableLayoutPanel3);
+            panel2.Dock = DockStyle.Fill;
+            panel2.ForeColor = SystemColors.Window;
+            panel2.Location = new Point(650, 60);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(509, 562);
+            panel2.TabIndex = 0;
             // 
-            // label1
+            // tableLayoutPanel3
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 163);
-            label1.ForeColor = Color.MintCream;
-            label1.Location = new Point(120, 428);
-            label1.Name = "label1";
-            label1.Size = new Size(297, 46);
-            label1.TabIndex = 1;
-            label1.Text = "Hệ thông quản lý hợp đồng sinh trắc\r\n môi trường thông minh và hiệu quả";
+            tableLayoutPanel3.ColumnCount = 1;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38.2417564F));
+            tableLayoutPanel3.Controls.Add(panel4, 0, 0);
+            tableLayoutPanel3.Dock = DockStyle.Fill;
+            tableLayoutPanel3.Location = new Point(0, 0);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 1;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel3.Size = new Size(509, 562);
+            tableLayoutPanel3.TabIndex = 0;
             // 
-            // pictureBox1
+            // panel4
             // 
-            pictureBox1.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            pictureBox1.BackColor = Color.FromArgb(0, 152, 70);
-            pictureBox1.Image = Properties.Resources.remove_background_logo;
-            pictureBox1.Location = new Point(40, 122);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(456, 277);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 0;
-            pictureBox1.TabStop = false;
+            panel4.Controls.Add(label8);
+            panel4.Controls.Add(label7);
+            panel4.Controls.Add(checkBox1);
+            panel4.Controls.Add(label6);
+            panel4.Controls.Add(label5);
+            panel4.Controls.Add(button2);
+            panel4.Controls.Add(button1);
+            panel4.Controls.Add(textBox2);
+            panel4.Controls.Add(textBox1);
+            panel4.Controls.Add(label4);
+            panel4.Controls.Add(label3);
+            panel4.Controls.Add(label2);
+            panel4.ForeColor = Color.Green;
+            panel4.Location = new Point(3, 3);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(503, 556);
+            panel4.TabIndex = 0;
             // 
-            // textBox2
+            // label8
             // 
-            textBox2.Location = new Point(71, 246);
-            textBox2.Multiline = true;
-            textBox2.Name = "textBox2";
-            textBox2.PlaceholderText = "Nhập mật khẩu";
-            textBox2.Size = new Size(312, 50);
-            textBox2.TabIndex = 46;
-            textBox2.TextAlign = HorizontalAlignment.Center;
-            textBox2.TextChanged += textBox2_TextChanged;
-            // 
-            // textBox1
-            // 
-            textBox1.BackColor = SystemColors.Window;
-            textBox1.Location = new Point(71, 148);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.PlaceholderText = "Nhập tên tài khoản của bạn";
-            textBox1.Size = new Size(312, 50);
-            textBox1.TabIndex = 45;
-            textBox1.TextAlign = HorizontalAlignment.Center;
-            textBox1.TextChanged += textBox1_TextChanged;
-            // 
-            // button1
-            // 
-            button1.BackColor = Color.FromArgb(0, 152, 70);
-            button1.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            button1.ForeColor = SystemColors.ButtonFace;
-            button1.Location = new Point(71, 362);
-            button1.Name = "button1";
-            button1.Size = new Size(255, 50);
-            button1.TabIndex = 44;
-            button1.Text = "Đăng nhập";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click;
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label8.ForeColor = Color.Green;
+            label8.Location = new Point(109, 92);
+            label8.Name = "label8";
+            label8.Size = new Size(292, 23);
+            label8.TabIndex = 11;
+            label8.Text = "Truy cập vào hệ thống quản lý ECOS";
+            label8.Click += label8_Click;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            label7.ForeColor = Color.FromArgb(0, 152, 70);
-            label7.Location = new Point(123, 78);
+            label7.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label7.ForeColor = Color.DarkGreen;
+            label7.Location = new Point(159, 108);
             label7.Name = "label7";
-            label7.Size = new Size(257, 20);
-            label7.TabIndex = 43;
-            label7.Text = "Truy cập vào hệ thống quản lý ECOS";
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Location = new Point(137, 510);
-            label6.Name = "label6";
-            label6.Size = new Size(232, 20);
-            label6.TabIndex = 42;
-            label6.Text = "© 2025 ECOS. All Rights Reserved";
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            label5.ForeColor = Color.FromArgb(0, 152, 70);
-            label5.Location = new Point(175, 426);
-            label5.Name = "label5";
-            label5.Size = new Size(151, 25);
-            label5.TabIndex = 41;
-            label5.Text = "Quên mật khẩu?";
-            // 
-            // pictureBox3
-            // 
-            pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(342, 362);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(74, 50);
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox3.TabIndex = 40;
-            pictureBox3.TabStop = false;
+            label7.Size = new Size(0, 31);
+            label7.TabIndex = 10;
             // 
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(93, 317);
+            checkBox1.ForeColor = SystemColors.WindowText;
+            checkBox1.Location = new Point(77, 367);
             checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(157, 24);
-            checkBox1.TabIndex = 5;
-            checkBox1.Text = "Ghi nhớ đăng nhập";
+            checkBox1.Size = new Size(147, 24);
+            checkBox1.TabIndex = 9;
+            checkBox1.Text = "Ghi nhớ mật khẩu";
             checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            label6.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label6.AutoSize = true;
+            label6.ForeColor = SystemColors.WindowText;
+            label6.Location = new Point(112, 552);
+            label6.Name = "label6";
+            label6.Size = new Size(277, 20);
+            label6.TabIndex = 8;
+            label6.Text = "© 2025 ECOS. Bản quyền thuộc về ECOS.";
+            label6.Click += label6_Click;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label5.ForeColor = Color.DarkGreen;
+            label5.Location = new Point(170, 482);
+            label5.Name = "label5";
+            label5.Size = new Size(188, 31);
+            label5.TabIndex = 7;
+            label5.Text = "Quên mật khẩu?";
+            // 
+            // button2
+            // 
+            button2.BackgroundImage = (Image)resources.GetObject("button2.BackgroundImage");
+            button2.BackgroundImageLayout = ImageLayout.Zoom;
+            button2.Cursor = Cursors.Cross;
+            button2.Location = new Point(364, 411);
+            button2.Name = "button2";
+            button2.Size = new Size(54, 55);
+            button2.TabIndex = 6;
+            button2.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            button1.BackColor = Color.FromArgb(125, 199, 84);
+            button1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            button1.ForeColor = Color.DarkGreen;
+            button1.Location = new Point(77, 411);
+            button1.Name = "button1";
+            button1.Size = new Size(281, 55);
+            button1.TabIndex = 5;
+            button1.Text = "Đăng nhập";
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
+            // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(77, 303);
+            textBox2.Multiline = true;
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(341, 47);
+            textBox2.TabIndex = 4;
+            textBox2.TextChanged += textBox2_TextChanged;
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(77, 181);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(341, 47);
+            textBox1.TabIndex = 3;
+            textBox1.TextChanged += textBox1_TextChanged;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            label4.Location = new Point(71, 220);
+            label4.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label4.ForeColor = Color.DarkGreen;
+            label4.Location = new Point(59, 248);
             label4.Name = "label4";
-            label4.Size = new Size(84, 23);
+            label4.Size = new Size(116, 31);
             label4.TabIndex = 2;
             label4.Text = "Mật khẩu";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            label3.Location = new Point(71, 122);
+            label3.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label3.ForeColor = Color.DarkGreen;
+            label3.Location = new Point(58, 147);
             label3.Name = "label3";
-            label3.Size = new Size(113, 23);
+            label3.Size = new Size(117, 31);
             label3.TabIndex = 1;
-            label3.Text = "Tên tài khoản";
-            label3.Click += label3_Click;
+            label3.Text = "Tài khoản";
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            label2.ForeColor = Color.FromArgb(0, 152, 70);
-            label2.Location = new Point(122, 24);
+            label2.ForeColor = Color.Green;
+            label2.Location = new Point(130, 38);
             label2.Name = "label2";
             label2.Size = new Size(268, 54);
             label2.TabIndex = 0;
             label2.Text = "ĐĂNG NHẬP";
+            label2.Click += label2_Click;
             // 
-            // DangNhap
+            // panel3
             // 
-            AutoScaleMode = AutoScaleMode.None;
-            BackColor = SystemColors.Window;
-            ClientSize = new Size(1035, 554);
-            Controls.Add(splitContainer1);
+            panel3.BackColor = Color.Green;
+            panel3.Controls.Add(tableLayoutPanel2);
+            panel3.Dock = DockStyle.Fill;
+            panel3.Location = new Point(117, 60);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(512, 562);
+            panel3.TabIndex = 1;
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.BackColor = Color.FromArgb(125, 199, 84);
+            tableLayoutPanel2.ColumnCount = 3;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 8.505747F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 91.4942551F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 30F));
+            tableLayoutPanel2.Controls.Add(pictureBox1, 1, 1);
+            tableLayoutPanel2.Controls.Add(label1, 1, 2);
+            tableLayoutPanel2.Dock = DockStyle.Fill;
+            tableLayoutPanel2.Location = new Point(0, 0);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 4;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 23.1607628F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 76.83923F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 122F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
+            tableLayoutPanel2.Size = new Size(512, 562);
+            tableLayoutPanel2.TabIndex = 1;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Dock = DockStyle.Fill;
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(43, 98);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(435, 312);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Dock = DockStyle.Fill;
+            label1.Font = new Font("Arial", 13.2000008F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 163);
+            label1.ForeColor = Color.Green;
+            label1.Location = new Point(43, 413);
+            label1.Name = "label1";
+            label1.Size = new Size(435, 122);
+            label1.TabIndex = 1;
+            label1.Text = "Hệ thống quản lý \nhợp đồng sinh trắc môi trường";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // DangNhap1
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1255, 680);
+            Controls.Add(panel1);
             MaximizeBox = false;
-            MdiChildrenMinimizedAnchorBottom = false;
-            Name = "DangNhap";
-            Text = "Đăng Nhập";
+            Name = "DangNhap1";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Form1";
             Load += Form1_Load;
-            Resize += Form1_Resize_1;
-            splitContainer1.Panel1.ResumeLayout(false);
-            splitContainer1.Panel1.PerformLayout();
-            splitContainer1.Panel2.ResumeLayout(false);
-            splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
-            splitContainer1.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            tableLayoutPanel1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            tableLayoutPanel3.ResumeLayout(false);
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
+            panel3.ResumeLayout(false);
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-        private SplitContainer splitContainer1;
+
+        private Panel panel1;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Panel panel2;
+        private Panel panel3;
+        private TableLayoutPanel tableLayoutPanel2;
         private PictureBox pictureBox1;
         private Label label1;
-        private Label label4;
-        private Label label3;
+        private TableLayoutPanel tableLayoutPanel3;
         private Label label2;
-        private CheckBox checkBox1;
-        private PictureBox pictureBox3;
-        private Label label5;
-        private Label label6;
-        private Label label7;
-        private TextBox textBox1;
+        private Panel panel4;
+        private Label label3;
+        private Button button2;
         private Button button1;
         private TextBox textBox2;
+        private TextBox textBox1;
+        private Label label4;
+        private Label label5;
+        private Label label6;
+        private CheckBox checkBox1;
+        private Label label7;
+        private Label label8;
     }
 }

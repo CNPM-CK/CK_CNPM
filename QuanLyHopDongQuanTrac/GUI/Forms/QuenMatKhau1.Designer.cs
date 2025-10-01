@@ -1,6 +1,6 @@
 ﻿namespace GUI.Forms
 {
-    partial class XacThucSMS
+    partial class QuenMatKhau1
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,25 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XacThucSMS));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QuenMatKhau1));
             panel1 = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             panel2 = new Panel();
             pictureBox1 = new PictureBox();
             label1 = new Label();
             panel3 = new Panel();
-            textBox6 = new TextBox();
-            textBox5 = new TextBox();
-            textBox4 = new TextBox();
-            textBox3 = new TextBox();
-            textBox2 = new TextBox();
-            textBox1 = new TextBox();
             label5 = new Label();
             label6 = new Label();
             button2 = new Button();
             button1 = new Button();
             label2 = new Label();
+            textBox1 = new TextBox();
             panel4 = new Panel();
             pictureBox6 = new PictureBox();
             pictureBox5 = new PictureBox();
@@ -54,9 +48,9 @@
             label4 = new Label();
             label3 = new Label();
             pictureBox4 = new PictureBox();
-            pictureBox2 = new PictureBox();
             pictureBox3 = new PictureBox();
-            contextMenuStrip1 = new ContextMenuStrip(components);
+            pictureBox2 = new PictureBox();
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -66,15 +60,15 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
             panel1.BackColor = Color.AntiqueWhite;
             panel1.Controls.Add(tableLayoutPanel1);
-            panel1.Dock = DockStyle.Fill;
+            panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(1272, 724);
@@ -92,7 +86,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 18.22289F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 81.77711F));
             tableLayoutPanel1.Size = new Size(616, 664);
-            tableLayoutPanel1.TabIndex = 1;
+            tableLayoutPanel1.TabIndex = 0;
             // 
             // panel2
             // 
@@ -107,6 +101,7 @@
             // 
             // pictureBox1
             // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
             pictureBox1.Location = new Point(3, 3);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(111, 109);
@@ -120,26 +115,19 @@
             label1.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 163);
             label1.Location = new Point(155, 27);
             label1.Name = "label1";
-            label1.Size = new Size(280, 54);
+            label1.Size = new Size(312, 54);
             label1.TabIndex = 0;
-            label1.Text = "Xác thực SMS";
-            label1.Click += label1_Click;
+            label1.Text = "Quên mật khẩu";
             // 
             // panel3
             // 
             panel3.BackColor = SystemColors.Window;
-            panel3.BorderStyle = BorderStyle.FixedSingle;
-            panel3.Controls.Add(textBox6);
-            panel3.Controls.Add(textBox5);
-            panel3.Controls.Add(textBox4);
-            panel3.Controls.Add(textBox3);
-            panel3.Controls.Add(textBox2);
-            panel3.Controls.Add(textBox1);
             panel3.Controls.Add(label5);
             panel3.Controls.Add(label6);
             panel3.Controls.Add(button2);
             panel3.Controls.Add(button1);
             panel3.Controls.Add(label2);
+            panel3.Controls.Add(textBox1);
             panel3.Controls.Add(panel4);
             panel3.Dock = DockStyle.Fill;
             panel3.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 163);
@@ -148,70 +136,15 @@
             panel3.Size = new Size(610, 537);
             panel3.TabIndex = 1;
             // 
-            // textBox6
-            // 
-            textBox6.BorderStyle = BorderStyle.FixedSingle;
-            textBox6.Location = new Point(466, 219);
-            textBox6.Multiline = true;
-            textBox6.Name = "textBox6";
-            textBox6.Size = new Size(64, 64);
-            textBox6.TabIndex = 20;
-            // 
-            // textBox5
-            // 
-            textBox5.BorderStyle = BorderStyle.FixedSingle;
-            textBox5.Location = new Point(391, 219);
-            textBox5.Multiline = true;
-            textBox5.Name = "textBox5";
-            textBox5.Size = new Size(64, 64);
-            textBox5.TabIndex = 19;
-            // 
-            // textBox4
-            // 
-            textBox4.BorderStyle = BorderStyle.FixedSingle;
-            textBox4.Location = new Point(313, 219);
-            textBox4.Multiline = true;
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(64, 64);
-            textBox4.TabIndex = 18;
-            // 
-            // textBox3
-            // 
-            textBox3.BorderStyle = BorderStyle.FixedSingle;
-            textBox3.Location = new Point(237, 219);
-            textBox3.Multiline = true;
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(64, 64);
-            textBox3.TabIndex = 17;
-            // 
-            // textBox2
-            // 
-            textBox2.BorderStyle = BorderStyle.FixedSingle;
-            textBox2.Location = new Point(159, 219);
-            textBox2.Multiline = true;
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(64, 64);
-            textBox2.TabIndex = 16;
-            // 
-            // textBox1
-            // 
-            textBox1.BorderStyle = BorderStyle.FixedSingle;
-            textBox1.Location = new Point(80, 219);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(64, 64);
-            textBox1.TabIndex = 15;
-            // 
             // label5
             // 
             label5.AutoSize = true;
             label5.ForeColor = Color.Green;
-            label5.Location = new Point(89, 180);
+            label5.Location = new Point(89, 153);
             label5.Name = "label5";
-            label5.Size = new Size(145, 31);
+            label5.Size = new Size(157, 31);
             label5.TabIndex = 14;
-            label5.Text = "Mã xác thực";
-            label5.Click += label5_Click;
+            label5.Text = "Số điện thoại";
             // 
             // label6
             // 
@@ -229,23 +162,24 @@
             // 
             button2.Font = new Font("Arial", 12F, FontStyle.Bold, GraphicsUnit.Point, 163);
             button2.ForeColor = Color.DarkGreen;
-            button2.Location = new Point(191, 388);
+            button2.Location = new Point(177, 380);
             button2.Name = "button2";
             button2.Size = new Size(257, 43);
             button2.TabIndex = 12;
-            button2.Text = "Gửi lại mã";
+            button2.Text = "Quay lại đăng nhập";
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // button1
             // 
             button1.BackColor = Color.FromArgb(125, 199, 84);
             button1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
             button1.ForeColor = Color.DarkGreen;
-            button1.Location = new Point(127, 306);
+            button1.Location = new Point(127, 300);
             button1.Name = "button1";
             button1.Size = new Size(370, 63);
             button1.TabIndex = 11;
-            button1.Text = "Xác nhận";
+            button1.Text = "Gửi mã xác nhận";
             button1.UseVisualStyleBackColor = false;
             // 
             // label2
@@ -253,12 +187,22 @@
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI Semibold", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 163);
             label2.ForeColor = Color.Green;
-            label2.Location = new Point(155, 112);
+            label2.Location = new Point(109, 110);
             label2.Name = "label2";
-            label2.Size = new Size(332, 50);
+            label2.Size = new Size(417, 25);
             label2.TabIndex = 10;
-            label2.Text = "Nhập mã xác nhận \r\ngồm 6 chữ số được gửi đến 098****321\r\n";
-            label2.TextAlign = ContentAlignment.MiddleCenter;
+            label2.Text = "Nhập số điện thoại của bạn để nhận mã xác nhận";
+            // 
+            // textBox1
+            // 
+            textBox1.Font = new Font("Segoe UI", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 163);
+            textBox1.Location = new Point(127, 205);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.PlaceholderText = "VD: 0981234567";
+            textBox1.Size = new Size(370, 59);
+            textBox1.TabIndex = 1;
+            textBox1.TextAlign = HorizontalAlignment.Center;
             // 
             // panel4
             // 
@@ -268,8 +212,8 @@
             panel4.Controls.Add(label4);
             panel4.Controls.Add(label3);
             panel4.Controls.Add(pictureBox4);
-            panel4.Controls.Add(pictureBox2);
             panel4.Controls.Add(pictureBox3);
+            panel4.Controls.Add(pictureBox2);
             panel4.Location = new Point(9, 12);
             panel4.Name = "panel4";
             panel4.Size = new Size(598, 87);
@@ -294,6 +238,7 @@
             pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox5.TabIndex = 18;
             pictureBox5.TabStop = false;
+            pictureBox5.Click += pictureBox5_Click;
             // 
             // label7
             // 
@@ -310,7 +255,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.BackColor = Color.FromArgb(125, 199, 84);
+            label4.BackColor = Color.FromArgb(217, 217, 217);
             label4.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 163);
             label4.ForeColor = SystemColors.Window;
             label4.Location = new Point(282, 18);
@@ -341,6 +286,17 @@
             pictureBox4.TabIndex = 2;
             pictureBox4.TabStop = false;
             // 
+            // pictureBox3
+            // 
+            pictureBox3.BackColor = Color.White;
+            pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
+            pictureBox3.Location = new Point(248, 0);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(103, 87);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.TabIndex = 1;
+            pictureBox3.TabStop = false;
+            // 
             // pictureBox2
             // 
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
@@ -351,29 +307,15 @@
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             // 
-            // pictureBox3
-            // 
-            pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(250, 0);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(103, 87);
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox3.TabIndex = 20;
-            pictureBox3.TabStop = false;
-            // 
-            // contextMenuStrip1
-            // 
-            contextMenuStrip1.ImageScalingSize = new Size(20, 20);
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(61, 4);
-            // 
-            // XacThucSMS1
+            // QuenMatKhau1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1272, 724);
             Controls.Add(panel1);
-            Name = "XacThucSMS1";
+            MaximizeBox = false;
+            Name = "QuenMatKhau1";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
@@ -387,8 +329,8 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
         }
 
@@ -397,29 +339,24 @@
         private Panel panel1;
         private TableLayoutPanel tableLayoutPanel1;
         private Panel panel2;
-        private PictureBox pictureBox1;
         private Label label1;
         private Panel panel3;
-        private Label label5;
-        private Label label6;
+        private PictureBox pictureBox1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private Panel panel4;
+        private TextBox textBox1;
         private Button button2;
         private Button button1;
         private Label label2;
-        private Panel panel4;
-        private PictureBox pictureBox6;
-        private PictureBox pictureBox5;
-        private Label label7;
-        private Label label4;
-        private Label label3;
-        private PictureBox pictureBox4;
+        private Label label6;
         private PictureBox pictureBox2;
         private PictureBox pictureBox3;
-        private TextBox textBox6;
-        private TextBox textBox5;
-        private TextBox textBox4;
-        private TextBox textBox3;
-        private TextBox textBox2;
-        private TextBox textBox1;
-        private ContextMenuStrip contextMenuStrip1;
+        private PictureBox pictureBox4;
+        private Label label3;
+        private Label label7;
+        private Label label4;
+        private PictureBox pictureBox5;
+        private PictureBox pictureBox6;
+        private Label label5;
     }
 }
