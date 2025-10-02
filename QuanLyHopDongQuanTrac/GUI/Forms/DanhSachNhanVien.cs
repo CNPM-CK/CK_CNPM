@@ -69,6 +69,7 @@ namespace GUI.Forms
             dgvDanhsachnhanvien.Columns["hoTen"].HeaderText = "Họ Tên";
             dgvDanhsachnhanvien.Columns["tenTK"].HeaderText = "Tên tài khoản";
             dgvDanhsachnhanvien.Columns["email"].HeaderText = "Email";
+            dgvDanhsachnhanvien.Columns["maPhong"].HeaderText = "Mã Phòng";
 
             dgvDanhsachnhanvien.Columns["ngaySinh"].HeaderText = "Ngày Sinh";
             dgvDanhsachnhanvien.Columns["gioiTinh"].HeaderText = "Giới Tính";

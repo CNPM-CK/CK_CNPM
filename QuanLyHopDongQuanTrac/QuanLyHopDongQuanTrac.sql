@@ -172,6 +172,7 @@ go
 
 insert into TaiKhoan(tenTK, matKhau, vaiTro)
 values
+
 ('nv001@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555', 0),
 ('nv002@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555',  0),
 ('nv003@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555', 0),
@@ -179,6 +180,7 @@ values
 ('nv005@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555', 0),
 ('nv006@company.com', '$2a$10$abcdefgh1234567890testhashxxxyyyzzz111222333444555', 0);
 go
+
 
 -- Dữ liệu Nhân viên
 insert into NhanVien(maNV, tenTK, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email)
@@ -211,3 +213,53 @@ BEGIN
     LEFT JOIN PhongBan pb ON nv.maPhong = pb.maPhong;
 END
 GO
+
+--2/10/2025 
+---Taoj proc thêm nhân viên 
+create procedure ThemNhanVien
+	 @tenTK nvarchar(30),
+    @maPhong varchar(15),
+    @hoTen nvarchar(60),
+    @ngaySinh date,
+    @gioiTinh bit,
+    @diaChi text,
+    @soDienThoai varchar(10),
+    @Email varchar(50)
+as 
+begin
+	 set nocount on ;
+	 declare @maNV varchar(15) ;
+	 declare @so int  ;
+
+	 select @so = cast(substring(maNV, 3, len(maNV)) as int)
+    from NhanVien
+    where maNV = (select max(maNV) from NhanVien);
+	 if @so is null 
+        set @so = 0;
+
+    set @so = @so + 1;
+
+    -- Format lại mã NV (NV + số có 3 chữ số)
+    set @maNV = 'NV' + right('000' + cast(@so as varchar(3)), 3);
+
+    -- Thêm nhân viên mới
+    insert into NhanVien (maNV, tenTK, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email)
+    values (@maNV, @tenTK, @maPhong, @hoTen, @ngaySinh, @gioiTinh, @diaChi, @soDienThoai, @Email);
+
+    -- Xuất mã NV mới tạo ra để biết
+    --select @maNV as NewMaNV;
+end
+go
+--Proc thêm nhân viên 
+---Test :
+--exec ThemNhanVien 
+  --  @tenTK = 'nv007@company.com',
+    --@maPhong = 'P001',
+    --@hoTen = N'Trần Quang Thái',
+    --@ngaySinh = '2005-09-17',
+    --@gioiTinh = 0,
+    --@diaChi = N'123 Đường ABC, Quận 1',
+    --@soDienThoai = '0912345678',
+    --@Email = 'vana@example.com';
+--select * from NhanVien
+
