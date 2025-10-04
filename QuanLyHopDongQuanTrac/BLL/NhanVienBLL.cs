@@ -17,5 +17,11 @@ namespace BLL
             return dal.LayDanhSachNhanVien();
         }
 
+        public void ThemNhanVien(NhanVien nv,bool truongPhong)
+        {
+            dal.ThemNhanVien(nv, truongPhong);
+        }
+
+        
     }
 }

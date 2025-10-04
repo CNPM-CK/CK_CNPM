@@ -250,16 +250,15 @@ begin
     --select @maNV as NewMaNV;
 end
 go
---Proc thêm nhân viên 
----Test :
---exec ThemNhanVien 
-  --  @tenTK = 'nv007@company.com',
-    --@maPhong = 'P001',
-    --@hoTen = N'Trần Quang Thái',
-    --@ngaySinh = '2005-09-17',
-    --@gioiTinh = 0,
-    --@diaChi = N'123 Đường ABC, Quận 1',
-    --@soDienThoai = '0912345678',
-    --@Email = 'vana@example.com';
---select * from NhanVien
+--Proc lấy ds phòng ban
+create proc LayDSPhongBan
+as 
+begin
+	set nocount on;
+	select maPhong, tenPhong
+	from PhongBan
+
+
+
+end
 

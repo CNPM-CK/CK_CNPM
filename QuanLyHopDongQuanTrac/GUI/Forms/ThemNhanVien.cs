@@ -1,9 +1,12 @@
-﻿using System;
+﻿using BLL;
+using DTO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,93 +20,346 @@ namespace GUI.Forms
         {
             InitializeComponent();
         }
+        private DiaChiBLL diaChiService;
 
 
-        #region Custom TextBox cho Form Nhân viên
-        private Panel CreateEmployeeTextBox(string placeholder, int width, int height)
+        #region Custom TextBox và Label cho Form Nhân viên
+        private void InitializeButtonStyles()
         {
 
-            int borderSize = 2;
-            int borderRadius = 12; // bo góc nè
-            Color borderColor = Color.FromArgb(0, 152, 70); // xanh đồng bộ
-            Color placeholderColor = Color.Silver;
-            Color textColor = Color.FromArgb(64, 64, 64);
+            BoGocButton(buttonAddnew, 18);
+            BoGocButton(btnCancel, 18);
 
-            Panel container = new Panel();
-            container.Size = new Size(width, height);
-            container.BackColor = Color.White;
-            container.Padding = new Padding(borderSize);
+        }
 
-            // Vẽ border bo tròn
-            container.Paint += (s, e) =>
-            {
-                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                using (GraphicsPath path = new GraphicsPath())
-                {
-                    int arc = borderRadius * 2;
-                    path.AddArc(0, 0, arc, arc, 180, 90); // Góc trái trên
-                    path.AddArc(container.Width - arc - 1, 0, arc, arc, 270, 90); // Góc phải trên
-                    path.AddArc(container.Width - arc - 1, container.Height - arc - 1, arc, arc, 0, 90); // Góc phải dưới
-                    path.AddArc(0, container.Height - arc - 1, arc, arc, 90, 90); // Góc trái dưới
-                    path.CloseFigure();
+        private void BoGocButton(Button btn, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            path.StartFigure();
+            path.AddArc(new Rectangle(0, 0, radius, radius), 180, 90);
+            path.AddLine(radius, 0, btn.Width - radius, 0);
+            path.AddArc(new Rectangle(btn.Width - radius, 0, radius, radius), -90, 90);
+            path.AddLine(btn.Width, radius, btn.Width, btn.Height - radius);
+            path.AddArc(new Rectangle(btn.Width - radius, btn.Height - radius, radius, radius), 0, 90);
+            path.AddLine(btn.Width - radius, btn.Height, radius, btn.Height);
+            path.AddArc(new Rectangle(0, btn.Height - radius, radius, radius), 90, 90);
+            path.CloseFigure();
+            btn.Region = new Region(path);
+        }
 
-                    using (Pen pen = new Pen(borderColor, borderSize))
-                    {
-                        e.Graphics.DrawPath(pen, path);
-                    }
-                }
-            };
 
-            // Tạo TextBox
-            TextBox txt = new TextBox();
+        private void ApplyRoundedTextbox(Panel panel, TextBox txt, int borderRadius, int borderSize, Color borderColor)
+        {
+            // Hủy đăng ký các event cũ trước (nếu có)
+            panel.Paint -= Panel_Paint;
+            panel.Resize -= Panel_Resize;
+
+            panel.BackColor = Color.White;
             txt.BorderStyle = BorderStyle.None;
-            txt.Font = new Font("Segoe UI", 10F);
-            txt.ForeColor = placeholderColor;
-            txt.Text = placeholder;
-            txt.Location = new Point(borderRadius / 2, (height - txt.Height) / 2);
-            txt.Width = width - borderRadius;
+            txt.BackColor = Color.White;
+            txt.Location = new Point(borderSize + 5, (panel.Height - txt.Height) / 2);
+            txt.Width = panel.Width - (borderSize + 5) * 2;
             txt.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
 
-            // Placeholder logic
-            txt.Enter += (s, e) =>
+            // Tạo event handler riêng để có thể hủy đăng ký
+            void Panel_Paint(object s, PaintEventArgs e)
             {
-                if (txt.Text == placeholder && txt.ForeColor == placeholderColor)
-                {
-                    txt.Text = "";
-                    txt.ForeColor = textColor;
-                }
-            };
-            txt.Leave += (s, e) =>
-            {
-                if (string.IsNullOrWhiteSpace(txt.Text))
-                {
-                    txt.Text = placeholder;
-                    txt.ForeColor = placeholderColor;
-                }
-            };
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
 
-            container.Controls.Add(txt);
-            return container;
+                using (GraphicsPath path = CreateRoundedPath(panel.ClientRectangle, borderRadius))
+                {
+                    // Vẽ nền
+                    using (SolidBrush brush = new SolidBrush(panel.BackColor))
+                    {
+                        e.Graphics.FillPath(brush, path);
+                    }
+
+                    // Vẽ viền - điều chỉnh path để viền không bị cắt
+                    if (borderSize > 0)
+                    {
+                        using (GraphicsPath borderPath = CreateRoundedPath(
+                            new Rectangle(
+                                borderSize / 2,
+                                borderSize / 2,
+                                panel.Width - borderSize,
+                                panel.Height - borderSize
+                            ),
+                            borderRadius))
+                        {
+                            using (Pen pen = new Pen(borderColor, borderSize))
+                            {
+                                pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                                e.Graphics.DrawPath(pen, borderPath);
+                            }
+                        }
+                    }
+
+                    panel.Region = new Region(path);
+                }
+            }
+
+            void Panel_Resize(object s, EventArgs e)
+            {
+                panel.Invalidate();
+            }
+
+            // Đăng ký event mới
+            panel.Paint += Panel_Paint;
+            panel.Resize += Panel_Resize;
+
+            // Vẽ lại ngay lập tức
+            panel.Invalidate();
         }
-        #endregion
 
+        //Hàm helper để tạo rounded rectangle path
+        private GraphicsPath CreateRoundedPath(Rectangle rect, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            int diameter = radius * 2;
+
+            // Đảm bảo radius không lớn hơn kích thước
+            diameter = Math.Min(diameter, Math.Min(rect.Width, rect.Height));
+
+            Rectangle arc = new Rectangle(rect.Location, new Size(diameter, diameter));
+
+            // Top left
+            path.AddArc(arc, 180, 90);
+
+            // Top right
+            arc.X = rect.Right - diameter;
+            path.AddArc(arc, 270, 90);
+
+            // Bottom right
+            arc.Y = rect.Bottom - diameter;
+            path.AddArc(arc, 0, 90);
+
+            // Bottom left
+            arc.X = rect.Left;
+            path.AddArc(arc, 90, 90);
+
+            path.CloseFigure();
+            return path;
+        }
+
+        #endregion
 
 
         private void ThemNhanVien_Load(object sender, EventArgs e)
         {
-            // TextBox Email
-            Panel txtEmail = CreateEmployeeTextBox("Nhập email", 300, 35);
-            txtEmail.Location = new Point(30, 80);
-            panel3.Controls.Add(txtEmail);
+            diaChiService = new DiaChiBLL();
+            var bllPhongBan = new PhongBanBLL();
+            var tinhList = diaChiService.LayTinhThanh();
+            var list = bllPhongBan.LayDSPhongBan();
 
-            Panel txtHoTen = CreateEmployeeTextBox("Nhập họ tên nhân viên", 300, 35);
-            txtHoTen.Location = new Point(30, 30);
-            panel3.Controls.Add(txtHoTen);
+            //Custom textbox
+            ApplyRoundedTextbox(panelHoten, textBoxhoten, 12, 2, Color.FromArgb(0, 152, 70));
+            ApplyRoundedTextbox(panelsdt, textBoxsdt, 12, 2, Color.FromArgb(0, 152, 70));
+            ApplyRoundedTextbox(paneltentk, textBoxtentk, 12, 2, Color.FromArgb(0, 152, 70));
+            ApplyRoundedTextbox(panelemail, textBoxemail, 12, 2, Color.FromArgb(0, 152, 70));
+            InitializeButtonStyles();
+
+            // Load tỉnh thành
+            cboTinhThanh.DataSource = tinhList;
+            cboTinhThanh.DisplayMember = "name";
+            cboTinhThanh.ValueMember = "code";
+            cboTinhThanh.SelectedIndex = -1;
+            cboTinhThanh.Text = "Tỉnh/Thành phố"; // Set placeholder
 
 
-            Panel txtPhone = CreateEmployeeTextBox("Nhập số điện thoại", 300, 35);
-            txtPhone.Location = new Point(30, 130);
-            panel3.Controls.Add(txtPhone);
+            cboTinhThanh.SelectedIndexChanged += (s, ev) =>
+            {
+                if (cboTinhThanh.SelectedValue != null)
+                {
+                    string maTinh = cboTinhThanh.SelectedValue.ToString();
+                    var quanList = diaChiService.LayQuanHuyen(maTinh);
+                    cbbQuan.DataSource = quanList;
+                    cbbQuan.DisplayMember = "name_with_type";
+                    cbbQuan.ValueMember = "code";
+                    cbbQuan.SelectedIndex = -1;
+                    cbbQuan.Text = "Quận/Huyện"; // Set placeholder
+
+                }
+            };
+
+            cbbQuan.SelectedIndexChanged += (s, ev) =>
+            {
+                if (cbbQuan.SelectedValue != null)
+                {
+                    string maQuan = cbbQuan.SelectedValue.ToString();
+                    var xaList = diaChiService.LayXaPhuong(maQuan);
+                    cbbXa.DataSource = xaList;
+                    cbbXa.DisplayMember = "name_with_type";
+                    cbbXa.ValueMember = "code";
+                    cbbXa.SelectedIndex = -1;
+                    cbbXa.Text = "Xã/Phường"; // Set placeholder
+                }
+            };
+
+            if (list != null && list.Count > 0)
+            {
+                cbbPhong.DataSource = list;
+                cbbPhong.DisplayMember = "tenPhong";
+                cbbPhong.ValueMember = "maPhong";
+                cbbPhong.SelectedIndex = -1;
+            }
+            else
+            {
+                MessageBox.Show("Không có phòng ban nào trong DB!");
+            }
+        }
+
+
+        private void panel5_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxhoten_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonAddnew_Click(object sender, EventArgs e)
+        {
+            //Kiểm tra trường hợp 
+            if (string.IsNullOrWhiteSpace(textBoxtentk.Text))
+            {
+                MessageBox.Show("Vui lòng nhập tên tài khoản!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                textBoxtentk.Focus();
+                return;
+            }
+
+            if (cbbPhong.SelectedIndex < 0)
+            {
+                MessageBox.Show("Vui lòng chọn phòng ban!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbbPhong.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(textBoxhoten.Text))
+            {
+                MessageBox.Show("Vui lòng nhập họ tên!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                textBoxhoten.Focus();
+                return;
+            }
+
+            if (!radioNam.Checked && !radioNu.Checked)
+            {
+                MessageBox.Show("Vui lòng chọn giới tính!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(textBoxsdt.Text))
+            {
+                MessageBox.Show("Vui lòng nhập số điện thoại!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                textBoxsdt.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(textBoxemail.Text))
+            {
+                MessageBox.Show("Vui lòng nhập email!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                textBoxemail.Focus();
+                return;
+            }
+
+
+            string diaChi = "";
+            if (cbbXa.SelectedIndex >= 0)
+                diaChi += cbbXa.Text + ", ";
+            if (cbbQuan.SelectedIndex >= 0)
+                diaChi += cbbQuan.Text + ", ";
+            if (cboTinhThanh.SelectedIndex >= 0)
+                diaChi += cboTinhThanh.Text;
+            if (!string.IsNullOrWhiteSpace(txtDiaChi.Text))
+                diaChi = txtDiaChi.Text + ", " + diaChi;
+
+            // Tạo đối tượng nhân viên
+            NhanVien nv = new NhanVien
+            {
+                tenTK = textBoxtentk.Text,
+                maPhong = cbbPhong.SelectedValue.ToString(), // combobox phòng ban
+                hoTen = textBoxhoten.Text,
+                ngaySinh = dateTimePicker1.Value,
+                gioiTinh = radioNam.Checked ? "0" : "1",  // 0 = Nam, 1 = Nữ
+                diaChi = diaChi,
+                soDienThoai = textBoxsdt.Text,
+                email = textBoxemail.Text
+            };
+
+            // Kiểm tra radio trưởng phòng
+            bool isTruongPhong = checkTruongphong.Checked;
+
+            var bll = new NhanVienBLL();
+            bll.ThemNhanVien(nv, isTruongPhong);
+
+            MessageBox.Show("Thêm nhân viên thành công!");
+
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            // Clear TextBox
+            textBoxhoten.Clear();
+            textBoxsdt.Clear();
+            textBoxtentk.Clear();
+            textBoxemail.Clear();
+            txtDiaChi.Clear();
+
+            // Reset ComboBox
+            cboTinhThanh.SelectedIndex = -1;
+            cboTinhThanh.Text = "Tỉnh/Thành phố";
+
+            cbbQuan.DataSource = null;
+            cbbQuan.SelectedIndex = -1;
+            cbbQuan.Text = "Quận/Huyện";
+
+            cbbXa.DataSource = null;
+            cbbXa.SelectedIndex = -1;
+            cbbXa.Text = "Xã/Phường";
+
+            cbbPhong.SelectedIndex = -1;
+            cbbPhong.Text = "Phòng ban";
+
+            // Reset RadioButton
+            radioNam.Checked = false;
+            radioNu.Checked = false;
+            checkTruongphong.Checked = false;
+
+            // Reset DateTimePicker
+            dateTimePicker1.Value = DateTime.Now;
 
         }
     }

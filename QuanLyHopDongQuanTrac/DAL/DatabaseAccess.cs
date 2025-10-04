@@ -16,7 +16,7 @@ namespace DAL
     {
         public static SqlConnection Connect()
         {
-            string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             SqlConnection conn = new SqlConnection(connectionStr);
             return conn;
         }
@@ -95,7 +95,60 @@ namespace DAL
             return dsNhanvien;
 
         }
-        
+
+
+        public void ThemNhanVien(NhanVien nv, bool isTruongPhong)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("ThemNhanVien", conn)) 
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@tenTK", nv.tenTK);
+                    cmd.Parameters.AddWithValue("@maPhong", nv.maPhong);    
+                    cmd.Parameters.AddWithValue("@hoTen", nv.hoTen);
+                    cmd.Parameters.AddWithValue("@ngaySinh", nv.ngaySinh);
+                    cmd.Parameters.AddWithValue("@gioiTinh", nv.gioiTinh);
+                    cmd.Parameters.AddWithValue("@diaChi", nv.diaChi);
+                    cmd.Parameters.AddWithValue("@soDienThoai", nv.soDienThoai);
+                    cmd.Parameters.AddWithValue("@email", nv.email);
+                    cmd.Parameters.AddWithValue("@isTruongPhong", isTruongPhong ? 1 : 0);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public List<PhongBan> LayDSPhongBan()
+        {
+            var list = new List<PhongBan>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("LayDSPhongBan", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new PhongBan
+                            {
+                                maPhong = reader["maPhong"].ToString(),
+                                tenPhong = reader["tenPhong"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+
+
+
 
     }
 }
