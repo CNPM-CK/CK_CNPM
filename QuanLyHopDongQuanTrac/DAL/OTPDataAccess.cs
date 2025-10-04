@@ -12,9 +12,13 @@ namespace DAL
 {
     public class OTPDataAccess
     {
-        // =============================================
+
+        public OTPDataAccess()
+        {
+
+        }
+
         // KIỂM TRA EMAIL/SĐT TỒN TẠI
-        // =============================================
         public (bool exists, string tenTK) KiemTraContactTonTai(string contactInfo)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
@@ -47,9 +51,7 @@ namespace DAL
             }
         }
 
-        // =============================================
         // LƯU OTP VÀO DATABASE
-        // =============================================
         public bool LuuOTP(string contactInfo, string otpCode, int expiryMinutes = 5)
         {
             try
@@ -75,9 +77,7 @@ namespace DAL
             }
         }
 
-        // =============================================
         // XÁC THỰC OTP
-        // =============================================
         public OTPVerificationResult XacThucOTP(string contactInfo, string otpCode)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
@@ -119,47 +119,36 @@ namespace DAL
             }
         }
 
-        // =============================================
         // CẬP NHẬT MẬT KHẨU
-        // =============================================
-        public ResetPasswordResult CapNhatMatKhau(string contactInfo, string matKhauMoi, string salt)
+        public ResetPasswordResult CapNhatMatKhau(string contactInfo, string matKhauMoi)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
+            using (SqlCommand cmd = new SqlCommand("sp_CapNhatMatKhau", conn))
             {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@ContactInfo", contactInfo);
+                cmd.Parameters.AddWithValue("@MatKhauMoi", matKhauMoi);
+
+                // Output
+                SqlParameter successParam = new SqlParameter("@Success", SqlDbType.Bit) { Direction = ParameterDirection.Output };
+                SqlParameter messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, 200) { Direction = ParameterDirection.Output };
+                cmd.Parameters.Add(successParam);
+                cmd.Parameters.Add(messageParam);
+
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("sp_CapNhatMatKhau", conn))
+                cmd.ExecuteNonQuery();
+
+                return new ResetPasswordResult
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@ContactInfo", contactInfo);
-                    cmd.Parameters.AddWithValue("@MatKhauMoi", matKhauMoi);
-                    cmd.Parameters.AddWithValue("@Salt", salt);
-
-                    SqlParameter successParam = new SqlParameter("@Success", SqlDbType.Bit)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-                    cmd.Parameters.Add(successParam);
-
-                    SqlParameter messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, 200)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-                    cmd.Parameters.Add(messageParam);
-
-                    cmd.ExecuteNonQuery();
-
-                    return new ResetPasswordResult
-                    {
-                        Success = (bool)successParam.Value,
-                        Message = messageParam.Value.ToString()
-                    };
-                }
+                    Success = (bool)successParam.Value,
+                    Message = (string)messageParam.Value
+                };
             }
         }
 
-        // =============================================
+
         // KIỂM TRA SỐ LẦN GỬI OTP HÔM NAY
-        // =============================================
         public int LaySoLanGuiOTPHomNay(string contactInfo)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())

@@ -33,7 +33,7 @@
             panel1 = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             panel2 = new Panel();
-            pictureBox1 = new PictureBox();
+            pictureBox7 = new PictureBox();
             label1 = new Label();
             panel3 = new Panel();
             textBox6 = new TextBox();
@@ -60,7 +60,7 @@
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             panel3.SuspendLayout();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
@@ -97,7 +97,7 @@
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(125, 199, 84);
-            panel2.Controls.Add(pictureBox1);
+            panel2.Controls.Add(pictureBox7);
             panel2.Controls.Add(label1);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(3, 3);
@@ -105,14 +105,15 @@
             panel2.Size = new Size(610, 115);
             panel2.TabIndex = 0;
             // 
-            // pictureBox1
+            // pictureBox7
             // 
-            pictureBox1.Location = new Point(3, 3);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(111, 109);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 1;
-            pictureBox1.TabStop = false;
+            pictureBox7.Image = (Image)resources.GetObject("pictureBox7.Image");
+            pictureBox7.Location = new Point(3, 3);
+            pictureBox7.Name = "pictureBox7";
+            pictureBox7.Size = new Size(111, 109);
+            pictureBox7.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox7.TabIndex = 2;
+            pictureBox7.TabStop = false;
             // 
             // label1
             // 
@@ -375,14 +376,16 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1272, 724);
             Controls.Add(panel1);
+            MinimizeBox = false;
             Name = "XacThucSMS";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
             Load += XacThucSMS_Load;
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             panel4.ResumeLayout(false);
@@ -400,7 +403,6 @@
         private Panel panel1;
         private TableLayoutPanel tableLayoutPanel1;
         private Panel panel2;
-        private PictureBox pictureBox1;
         private Label label1;
         private Panel panel3;
         private Label label5;
@@ -424,5 +426,6 @@
         private TextBox textBox2;
         private TextBox textBox1;
         private ContextMenuStrip contextMenuStrip1;
+        private PictureBox pictureBox7;
     }
 }

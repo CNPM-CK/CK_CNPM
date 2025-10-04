@@ -4,7 +4,7 @@ namespace GUI.Forms
 {
     public partial class QuenMatKhau1 : Form
     {
-        private readonly OTPBLL otpBLL = new OTPBLL();
+        private readonly OTPBLL otpBLL = new OTPBLL();  
         public QuenMatKhau1()
         {
             InitializeComponent();

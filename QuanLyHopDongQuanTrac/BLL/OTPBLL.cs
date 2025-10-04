@@ -13,9 +13,7 @@ namespace BLL
     {
         private readonly OTPDataAccess dal = new OTPDataAccess();
 
-        // =============================================
         // GỬI OTP
-        // =============================================
         public SendOTPResult GuiOTP(string contactInfo)
         {
             // Validate input
@@ -89,9 +87,8 @@ namespace BLL
             };
         }
 
-        // =============================================
+      
         // XÁC THỰC OTP
-        // =============================================
         public OTPVerificationResult XacThucOTP(string contactInfo, string otpCode)
         {
             // Validate input
@@ -118,9 +115,8 @@ namespace BLL
             return dal.XacThucOTP(contactInfo, otpCode);
         }
 
-        // =============================================
         // ĐẶT LẠI MẬT KHẨU
-        // =============================================
+     
         public ResetPasswordResult DatLaiMatKhau(string contactInfo, string matKhauMoi)
         {
             // Validate input
@@ -162,7 +158,7 @@ namespace BLL
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(matKhauMoi);
 
                 // Cập nhật vào database
-                return dal.CapNhatMatKhau(contactInfo, hashedPassword, salt);
+                return dal.CapNhatMatKhau(contactInfo, hashedPassword);
             }
             catch (Exception ex)
             {
@@ -174,9 +170,8 @@ namespace BLL
             }
         }
 
-        // =============================================
+
         // KIỂM TRA ĐỘ MẠNH MẬT KHẨU
-        // =============================================
         public (bool isStrong, string message) KiemTraDoManhMatKhau(string password)
         {
             bool hasUpper = Regex.IsMatch(password, @"[A-Z]");
@@ -198,9 +193,7 @@ namespace BLL
             }
         }
 
-        // =============================================
         // TẠO SALT NGẪU NHIÊN
-        // =============================================
         private string GenerateSalt()
         {
             byte[] saltBytes = new byte[16];

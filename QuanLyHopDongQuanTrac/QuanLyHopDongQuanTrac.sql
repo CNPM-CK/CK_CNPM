@@ -288,7 +288,7 @@ GO
 -- TẠO BẢNG LỊCH SỬ ĐẶT LẠI MẬT KHẨU
 CREATE TABLE PasswordResetHistory (
     ID INT PRIMARY KEY IDENTITY(1,1),
-    TenTK NVARCHAR(30),
+    TenTK VARCHAR(30),
     ContactInfo NVARCHAR(100),
     ResetMethod NVARCHAR(20), -- 'OTP' hoặc 'Email'
     ResetTime DATETIME DEFAULT GETDATE(),
@@ -413,7 +413,6 @@ GO
 CREATE PROCEDURE sp_CapNhatMatKhau
     @ContactInfo NVARCHAR(100),
     @MatKhauMoi NVARCHAR(200),
-    @Salt VARCHAR(50),
     @Success BIT OUTPUT,
     @Message NVARCHAR(200) OUTPUT
 AS
@@ -437,8 +436,7 @@ BEGIN
         
         -- Cập nhật mật khẩu
         UPDATE TaiKhoan 
-        SET matKhau = @MatKhauMoi,
-            salt = @Salt
+        SET matKhau = @MatKhauMoi
         WHERE tenTK = @TenTK;
         
         -- Lưu lịch sử
