@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachNhanVien));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             panel2 = new Panel();
             pictureBox2 = new PictureBox();
             pictureBox3 = new PictureBox();
@@ -174,24 +174,24 @@
             // 
             dgvDanhsachnhanvien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDanhsachnhanvien.BackgroundColor = Color.White;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 10F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 10F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvDanhsachnhanvien.ColumnHeadersHeight = 30;
             dgvDanhsachnhanvien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvDanhsachnhanvien.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Window;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+            dgvDanhsachnhanvien.DefaultCellStyle = dataGridViewCellStyle4;
             dgvDanhsachnhanvien.Dock = DockStyle.Fill;
             dgvDanhsachnhanvien.EnableHeadersVisualStyles = false;
             dgvDanhsachnhanvien.Location = new Point(0, 0);
@@ -200,6 +200,7 @@
             dgvDanhsachnhanvien.Size = new Size(828, 385);
             dgvDanhsachnhanvien.TabIndex = 1;
             dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
+            dgvDanhsachnhanvien.CellContentClick += dgvDanhsachnhanvien_CellContentClick;
             dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;
             dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
             // 
@@ -236,6 +237,7 @@
             containersearch.Name = "containersearch";
             containersearch.Size = new Size(250, 58);
             containersearch.TabIndex = 7;
+            containersearch.Paint += containersearch_Paint_1;
             // 
             // searchtextbox
             // 
@@ -360,6 +362,7 @@
             Controls.Add(panel1);
             Name = "DanhSachNhanVien";
             Text = "Form1";
+            WindowState = FormWindowState.Maximized;
             Load += DanhSachNhanVien_Load;
             Click += DanhSachNhanVien_Click;
             Resize += DanhSachNhanVien_Resize;

@@ -34,11 +34,11 @@
             panel2 = new Panel();
             tableLayoutPanel3 = new TableLayoutPanel();
             panel4 = new Panel();
+            button3 = new Button();
             label8 = new Label();
             label7 = new Label();
             checkBox1 = new CheckBox();
             label6 = new Label();
-            label5 = new Label();
             button2 = new Button();
             button1 = new Button();
             textBox2 = new TextBox();
@@ -117,11 +117,11 @@
             // 
             // panel4
             // 
+            panel4.Controls.Add(button3);
             panel4.Controls.Add(label8);
             panel4.Controls.Add(label7);
             panel4.Controls.Add(checkBox1);
             panel4.Controls.Add(label6);
-            panel4.Controls.Add(label5);
             panel4.Controls.Add(button2);
             panel4.Controls.Add(button1);
             panel4.Controls.Add(textBox2);
@@ -134,6 +134,17 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(503, 556);
             panel4.TabIndex = 0;
+            // 
+            // button3
+            // 
+            button3.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            button3.Location = new Point(150, 472);
+            button3.Name = "button3";
+            button3.Size = new Size(208, 35);
+            button3.TabIndex = 12;
+            button3.Text = "Quên mật khẩu?";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // label8
             // 
@@ -179,17 +190,6 @@
             label6.TabIndex = 8;
             label6.Text = "© 2025 ECOS. Bản quyền thuộc về ECOS.";
             label6.Click += label6_Click;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            label5.ForeColor = Color.DarkGreen;
-            label5.Location = new Point(170, 482);
-            label5.Name = "label5";
-            label5.Size = new Size(188, 31);
-            label5.TabIndex = 7;
-            label5.Text = "Quên mật khẩu?";
             // 
             // button2
             // 
@@ -321,14 +321,14 @@
             label1.Text = "Hệ thống quản lý \nhợp đồng sinh trắc môi trường";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // DangNhap1
+            // DangNhap
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1255, 680);
             Controls.Add(panel1);
             MaximizeBox = false;
-            Name = "DangNhap1";
+            Name = "DangNhap";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
             Load += Form1_Load;
@@ -363,10 +363,10 @@
         private TextBox textBox2;
         private TextBox textBox1;
         private Label label4;
-        private Label label5;
         private Label label6;
         private CheckBox checkBox1;
         private Label label7;
         private Label label8;
+        private Button button3;
     }
 }

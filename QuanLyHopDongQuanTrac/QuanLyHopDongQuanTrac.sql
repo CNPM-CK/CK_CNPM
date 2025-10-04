@@ -214,6 +214,7 @@ BEGIN
 END
 GO
 
+
 --2/10/2025 
 ---Taoj proc thêm nhân viên 
 create procedure ThemNhanVien
@@ -261,4 +262,207 @@ begin
 
 
 end
+
+
+
+
+-- TẠO TỪ 4/10
+
+
+-- TẠO BẢNG OTP VERIFICATION
+CREATE TABLE OTPVerification (
+    ID INT PRIMARY KEY IDENTITY(1,1),
+    ContactInfo NVARCHAR(100) NOT NULL,  -- Email hoặc SĐT
+    OTPCode NVARCHAR(6) NOT NULL,
+    ExpiryTime DATETIME NOT NULL,
+    IsUsed BIT DEFAULT 0,
+    FailedAttempts INT DEFAULT 0,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+GO
+
+-- Index để tìm kiếm nhanh
+CREATE INDEX IX_OTP_Contact ON OTPVerification(ContactInfo, ExpiryTime);
+GO
+
+-- TẠO BẢNG LỊCH SỬ ĐẶT LẠI MẬT KHẨU
+CREATE TABLE PasswordResetHistory (
+    ID INT PRIMARY KEY IDENTITY(1,1),
+    TenTK NVARCHAR(30),
+    ContactInfo NVARCHAR(100),
+    ResetMethod NVARCHAR(20), -- 'OTP' hoặc 'Email'
+    ResetTime DATETIME DEFAULT GETDATE(),
+    Success BIT,
+    CONSTRAINT FK_PasswordReset_TaiKhoan FOREIGN KEY (TenTK) REFERENCES TaiKhoan(tenTK)
+);
+GO
+
+-- STORED PROCEDURE: Kiểm tra email/SĐT tồn tại
+CREATE PROCEDURE sp_KiemTraContactTonTai
+    @ContactInfo NVARCHAR(100),
+    @TonTai BIT OUTPUT,
+    @TenTK NVARCHAR(30) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT @TenTK = nv.tenTK
+    FROM NhanVien nv
+    WHERE nv.email = @ContactInfo OR nv.soDienThoai = @ContactInfo;
+    
+    IF @TenTK IS NOT NULL
+        SET @TonTai = 1
+    ELSE
+        SET @TonTai = 0
+END
+GO
+
+-- STORED PROCEDURE: Lưu OTP
+CREATE PROCEDURE sp_LuuOTP
+    @ContactInfo NVARCHAR(100),
+    @OTPCode NVARCHAR(6),
+    @ExpiryMinutes INT = 5
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @ExpiryTime DATETIME = DATEADD(MINUTE, @ExpiryMinutes, GETDATE());
+    
+    -- Xóa OTP cũ chưa dùng
+    DELETE FROM OTPVerification 
+    WHERE ContactInfo = @ContactInfo AND IsUsed = 0;
+    
+    -- Thêm OTP mới
+    INSERT INTO OTPVerification (ContactInfo, OTPCode, ExpiryTime, IsUsed, FailedAttempts)
+    VALUES (@ContactInfo, @OTPCode, @ExpiryTime, 0, 0);
+    
+    SELECT 'Success' AS Result, @ExpiryTime AS ExpiryTime;
+END
+GO
+
+
+-- STORED PROCEDURE: Xác thực OTP
+CREATE PROCEDURE sp_XacThucOTP
+    @ContactInfo NVARCHAR(100),
+    @OTPCode NVARCHAR(6),
+    @IsValid BIT OUTPUT,
+    @Message NVARCHAR(200) OUTPUT,
+    @FailedAttempts INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @ID INT;
+    DECLARE @Status NVARCHAR(20);
+    
+    -- Kiểm tra trạng thái OTP
+    SELECT TOP 1
+        @ID = ID,
+        @FailedAttempts = FailedAttempts,
+        @Status = CASE 
+            WHEN ExpiryTime < GETDATE() THEN 'EXPIRED'
+            WHEN IsUsed = 1 THEN 'USED'
+            WHEN FailedAttempts >= 5 THEN 'LOCKED'
+            WHEN OTPCode = @OTPCode THEN 'VALID'
+            ELSE 'INVALID'
+        END
+    FROM OTPVerification 
+    WHERE ContactInfo = @ContactInfo
+    ORDER BY CreatedAt DESC;
+    
+    -- Xử lý theo trạng thái
+    IF @Status = 'VALID'
+    BEGIN
+        -- OTP đúng
+        UPDATE OTPVerification SET IsUsed = 1 WHERE ID = @ID;
+        SET @IsValid = 1;
+        SET @Message = N'Xác thực thành công';
+    END
+    ELSE IF @Status = 'INVALID'
+    BEGIN
+        -- OTP sai - Tăng số lần thất bại
+        UPDATE OTPVerification SET FailedAttempts = FailedAttempts + 1 WHERE ID = @ID;
+        SET @IsValid = 0;
+        SET @FailedAttempts = @FailedAttempts + 1;
+        SET @Message = N'Mã OTP không đúng';
+    END
+    ELSE IF @Status = 'EXPIRED'
+    BEGIN
+        SET @IsValid = 0;
+        SET @Message = N'Mã OTP đã hết hạn';
+    END
+    ELSE IF @Status = 'USED'
+    BEGIN
+        SET @IsValid = 0;
+        SET @Message = N'Mã OTP đã được sử dụng';
+    END
+    ELSE IF @Status = 'LOCKED'
+    BEGIN
+        SET @IsValid = 0;
+        SET @Message = N'Bạn đã nhập sai quá 5 lần';
+    END
+    ELSE
+    BEGIN
+        SET @IsValid = 0;
+        SET @Message = N'Không tìm thấy OTP';
+    END
+END
+GO
+
+-- STORED PROCEDURE: Cập nhật mật khẩu
+CREATE PROCEDURE sp_CapNhatMatKhau
+    @ContactInfo NVARCHAR(100),
+    @MatKhauMoi NVARCHAR(200),
+    @Salt VARCHAR(50),
+    @Success BIT OUTPUT,
+    @Message NVARCHAR(200) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @TenTK NVARCHAR(30);
+    
+    BEGIN TRY
+        -- Lấy TenTK từ email/SĐT
+        SELECT @TenTK = nv.tenTK
+        FROM NhanVien nv
+        WHERE nv.email = @ContactInfo OR nv.soDienThoai = @ContactInfo;
+        
+        IF @TenTK IS NULL
+        BEGIN
+            SET @Success = 0;
+            SET @Message = N'Không tìm thấy tài khoản';
+            RETURN;
+        END
+        
+        -- Cập nhật mật khẩu
+        UPDATE TaiKhoan 
+        SET matKhau = @MatKhauMoi,
+            salt = @Salt
+        WHERE tenTK = @TenTK;
+        
+        -- Lưu lịch sử
+        INSERT INTO PasswordResetHistory (TenTK, ContactInfo, ResetMethod, Success)
+        VALUES (@TenTK, @ContactInfo, 'OTP', 1);
+        
+        SET @Success = 1;
+        SET @Message = N'Đặt lại mật khẩu thành công';
+    END TRY
+    BEGIN CATCH
+        SET @Success = 0;
+        SET @Message = ERROR_MESSAGE();
+    END CATCH
+END
+GO
+
+-- STORED PROCEDURE: Dọn dẹp OTP cũ (tùy chọn)
+CREATE PROCEDURE sp_DonDepOTPCu
+AS
+BEGIN
+    DELETE FROM OTPVerification 
+    WHERE CreatedAt < DATEADD(HOUR, -24, GETDATE());
+    
+    SELECT @@ROWCOUNT AS RowsDeleted;
+END
+GO
 

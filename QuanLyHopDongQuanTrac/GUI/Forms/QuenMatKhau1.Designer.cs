@@ -181,6 +181,7 @@
             button1.TabIndex = 11;
             button1.Text = "Gửi mã xác nhận";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click_1;
             // 
             // label2
             // 
@@ -317,6 +318,7 @@
             Name = "QuenMatKhau1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
+            Load += QuenMatKhau1_Load;
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
