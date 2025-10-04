@@ -199,6 +199,7 @@
             button1.TabIndex = 11;
             button1.Text = "Hoàn tất";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // label2
             // 
@@ -313,14 +314,15 @@
             pictureBox4.TabIndex = 21;
             pictureBox4.TabStop = false;
             // 
-            // DatLaiMatKhau1
+            // DatLaiMatKhau
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1272, 724);
             Controls.Add(panel1);
-            Name = "DatLaiMatKhau1";
+            Name = "DatLaiMatKhau";
             Text = "Form1";
+            Load += DatLaiMatKhau_Load;
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             panel2.ResumeLayout(false);

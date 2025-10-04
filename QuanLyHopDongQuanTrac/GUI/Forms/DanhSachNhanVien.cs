@@ -141,7 +141,7 @@ namespace GUI.Forms
         {
 
             // Đảm bảo DataGridView có ảnh watermark
-            if (Properties.Resources.greenlogo== null) return;
+            if (Properties.Resources.greenlogo == null) return;
 
             // Lấy kích thước DataGridView
             int dgvWidth = dgvDanhsachnhanvien.Width;
@@ -439,5 +439,14 @@ namespace GUI.Forms
 
 
 
+        private void dgvDanhsachnhanvien_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void containersearch_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

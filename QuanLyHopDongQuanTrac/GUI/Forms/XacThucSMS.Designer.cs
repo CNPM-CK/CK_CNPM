@@ -235,6 +235,7 @@
             button2.TabIndex = 12;
             button2.Text = "Gửi lại mã";
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // button1
             // 
@@ -247,6 +248,7 @@
             button1.TabIndex = 11;
             button1.Text = "Xác nhận";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // label2
             // 
@@ -367,14 +369,15 @@
             contextMenuStrip1.Name = "contextMenuStrip1";
             contextMenuStrip1.Size = new Size(61, 4);
             // 
-            // XacThucSMS1
+            // XacThucSMS
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1272, 724);
             Controls.Add(panel1);
-            Name = "XacThucSMS1";
+            Name = "XacThucSMS";
             Text = "Form1";
+            Load += XacThucSMS_Load;
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
