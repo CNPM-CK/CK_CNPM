@@ -116,8 +116,10 @@ create table BaoCaoKetQua (
 
 --CONSTRAINT--
 --NhanVien--
-alter table NhanVien add constraint fk_NhanVien_TaiKhoan foreign key (tenTK) references TaiKhoan(tenTK);
 alter table NhanVien add constraint fk_NhanVien_PhongBan foreign key (maPhong) references PhongBan(maPhong);
+alter table TaiKhoan alter column tenTK varchar(50) not null;
+alter table NhanVien add constraint fk_NhanVien_TaiKhoan foreign key (email) references TaiKhoan(tenTK);
+go
 --PhongBan--
 alter table PhongBan add constraint fk_PhongBan_NhanVien foreign key (truongPhong) references NhanVien(maNV);
 --HopDong--
@@ -215,54 +217,81 @@ END
 GO
 
 
---2/10/2025 
----Taoj proc thêm nhân viên 
-create procedure ThemNhanVien
-	 @tenTK nvarchar(30),
+--4/10/2025 
+---Sửa proc thêm nhân viên 
+alter procedure ThemNhanVien
     @maPhong varchar(15),
     @hoTen nvarchar(60),
     @ngaySinh date,
     @gioiTinh bit,
-    @diaChi text,
+    @diaChi nvarchar(150),
     @soDienThoai varchar(10),
-    @Email varchar(50)
+    @Email varchar(50), 
+    @isTruongPhong bit   
 as 
 begin
-	 set nocount on ;
-	 declare @maNV varchar(15) ;
-	 declare @so int  ;
+    set nocount on;
+    declare @maNV varchar(15);
+    declare @so int;
 
-	 select @so = cast(substring(maNV, 3, len(maNV)) as int)
+    -- Sinh mã NV
+    select @so = cast(substring(maNV, 3, len(maNV)) as int)
     from NhanVien
     where maNV = (select max(maNV) from NhanVien);
-	 if @so is null 
-        set @so = 0;
 
+    if @so is null set @so = 0;
     set @so = @so + 1;
 
-    -- Format lại mã NV (NV + số có 3 chữ số)
     set @maNV = 'NV' + right('000' + cast(@so as varchar(3)), 3);
 
-    -- Thêm nhân viên mới
-    insert into NhanVien (maNV, tenTK, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email)
-    values (@maNV, @tenTK, @maPhong, @hoTen, @ngaySinh, @gioiTinh, @diaChi, @soDienThoai, @Email);
 
-    -- Xuất mã NV mới tạo ra để biết
-    --select @maNV as NewMaNV;
+	-- Kiểm tra email đã được dùng cho nhân viên khác chưa
+	if exists (select 1 from NhanVien where email = @Email)
+	begin
+		raiserror(N'Email này đã tồn tại cho nhân viên khác!', 16, 1);
+		rollback tran;
+		return;
+	end
+
+    -- Thêm tài khoản (nếu chưa có)
+    if not exists (select 1 from TaiKhoan where tenTK = @Email)
+    begin
+        insert into TaiKhoan(tenTK, matKhau, vaiTro)
+        values(@Email, '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0); 
+    end
+
+    -- Thêm nhân viên
+    insert into NhanVien (maNV,maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email, ngayTao)
+    values (@maNV, @maPhong, @hoTen, @ngaySinh, @gioiTinh, @diaChi, @soDienThoai, @Email, getdate());
+
+    -- Nếu đánh dấu là trưởng phòng
+    if @isTruongPhong = 1
+    begin
+        -- Kiểm tra phòng ban đã có trưởng phòng chưa
+        if exists (select 1 from PhongBan where maPhong = @maPhong and truongPhong is not null)
+        begin
+            raiserror(N'Phòng ban này đã có trưởng phòng!', 16, 1);
+            rollback tran;
+            return;
+        end
+
+        -- Kiểm tra nhân viên đã là trưởng phòng phòng khác chưa
+        if exists (select 1 from PhongBan where truongPhong = @maNV)
+        begin
+            raiserror(N'Nhân viên này đã là trưởng phòng của phòng ban khác!', 16, 1);
+            rollback tran;
+            return;
+        end
+
+        -- Cập nhật trưởng phòng cho phòng ban
+        update PhongBan
+        set truongPhong = @maNV
+        where maPhong = @maPhong;
+    end
+
+    --select @maNV as NewMaNV; -- Trả về mã nhân viên mới
 end
 go
---Proc lấy ds phòng ban
-create proc LayDSPhongBan
-as 
-begin
-	set nocount on;
-	select maPhong, tenPhong
-	from PhongBan
-
-
-
-end
-
 
 
 

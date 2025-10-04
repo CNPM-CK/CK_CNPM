@@ -9,9 +9,7 @@ namespace DTO
     public class NhanVien
     {
         public string maNV { get; set; }
-        public string tenTK { get; set; }
         public string maPhong { get; set; }
-
         public string hoTen { get; set; }
         public DateTime ngaySinh { get; set; }
         public string gioiTinh { get; set; } //chỉnh lại thành string cho dễ hiển thị

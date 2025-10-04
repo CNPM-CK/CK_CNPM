@@ -17,10 +17,10 @@ namespace DAL
         public static SqlConnection Connect()
         {
 
-            //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
 
-            string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
             //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
@@ -79,7 +79,6 @@ namespace DAL
                             var nv = new NhanVien
                             {
                                 maNV = reader["maNV"].ToString(),
-                                tenTK = reader["tenTK"].ToString(),
                                 maPhong = reader["maPhong"].ToString(),
                                 tenPhong = reader["tenPhong"].ToString(),
                                 hoTen = reader["hoTen"].ToString(),
@@ -113,7 +112,6 @@ namespace DAL
                 using (SqlCommand cmd = new SqlCommand("ThemNhanVien", conn)) 
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@tenTK", nv.tenTK);
                     cmd.Parameters.AddWithValue("@maPhong", nv.maPhong);    
                     cmd.Parameters.AddWithValue("@hoTen", nv.hoTen);
                     cmd.Parameters.AddWithValue("@ngaySinh", nv.ngaySinh);
@@ -152,10 +150,5 @@ namespace DAL
             }
             return list;
         }
-
-
-
-
-
     }
 }

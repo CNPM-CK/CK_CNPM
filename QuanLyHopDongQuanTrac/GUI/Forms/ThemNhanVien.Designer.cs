@@ -38,37 +38,33 @@
             panel18 = new Panel();
             checkTruongphong = new CheckBox();
             label11 = new Label();
-            radioNu = new RadioButton();
-            label9 = new Label();
-            radioNam = new RadioButton();
             panel16 = new Panel();
             pictureBox8 = new PictureBox();
             cbbQuan = new ComboBox();
             label10 = new Label();
             cboTinhThanh = new ComboBox();
             panel14 = new Panel();
-            pictureBox6 = new PictureBox();
-            cbbPhong = new ComboBox();
-            label7 = new Label();
+            label9 = new Label();
+            radioNam = new RadioButton();
+            radioNu = new RadioButton();
             panel12 = new Panel();
             pictureBox7 = new PictureBox();
             label8 = new Label();
             dateTimePicker1 = new DateTimePicker();
             panel10 = new Panel();
-            pictureBox4 = new PictureBox();
-            panelemail = new Panel();
-            textBoxemail = new TextBox();
-            label5 = new Label();
+            cbbPhong = new ComboBox();
+            pictureBox6 = new PictureBox();
+            label7 = new Label();
             panel8 = new Panel();
             pictureBox5 = new PictureBox();
             panelsdt = new Panel();
             textBoxsdt = new TextBox();
             label6 = new Label();
             panel6 = new Panel();
-            pictureBox2 = new PictureBox();
-            paneltentk = new Panel();
-            textBoxtentk = new TextBox();
-            label3 = new Label();
+            panelemail = new Panel();
+            textBoxemail = new TextBox();
+            pictureBox4 = new PictureBox();
+            label5 = new Label();
             panel5 = new Panel();
             pictureBox1 = new PictureBox();
             panelHoten = new Panel();
@@ -87,18 +83,16 @@
             panel16.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             panel14.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             panel12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             panel10.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
-            panelemail.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             panelsdt.SuspendLayout();
             panel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            paneltentk.SuspendLayout();
+            panelemail.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panelHoten.SuspendLayout();
@@ -179,7 +173,7 @@
             // 
             txtDiaChi.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             txtDiaChi.BorderStyle = BorderStyle.FixedSingle;
-            txtDiaChi.Location = new Point(68, 64);
+            txtDiaChi.Location = new Point(68, 63);
             txtDiaChi.Name = "txtDiaChi";
             txtDiaChi.PlaceholderText = "Số nhà,Tên đường";
             txtDiaChi.Size = new Size(250, 27);
@@ -189,9 +183,6 @@
             // 
             panel18.Controls.Add(checkTruongphong);
             panel18.Controls.Add(label11);
-            panel18.Controls.Add(radioNu);
-            panel18.Controls.Add(label9);
-            panel18.Controls.Add(radioNam);
             panel18.Dock = DockStyle.Fill;
             panel18.Location = new Point(403, 384);
             panel18.Name = "panel18";
@@ -201,7 +192,7 @@
             // checkTruongphong
             // 
             checkTruongphong.AutoSize = true;
-            checkTruongphong.Location = new Point(181, 81);
+            checkTruongphong.Location = new Point(190, 46);
             checkTruongphong.Name = "checkTruongphong";
             checkTruongphong.Size = new Size(125, 24);
             checkTruongphong.TabIndex = 4;
@@ -212,44 +203,11 @@
             // 
             label11.AutoSize = true;
             label11.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label11.Location = new Point(80, 82);
+            label11.Location = new Point(74, 45);
             label11.Name = "label11";
             label11.Size = new Size(74, 23);
             label11.TabIndex = 2;
             label11.Text = "Chức vụ";
-            // 
-            // radioNu
-            // 
-            radioNu.AutoSize = true;
-            radioNu.Location = new Point(271, 14);
-            radioNu.Name = "radioNu";
-            radioNu.Size = new Size(50, 24);
-            radioNu.TabIndex = 2;
-            radioNu.TabStop = true;
-            radioNu.Text = "Nữ";
-            radioNu.UseVisualStyleBackColor = true;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label9.Location = new Point(77, 18);
-            label9.Name = "label9";
-            label9.Size = new Size(80, 23);
-            label9.TabIndex = 0;
-            label9.Text = "Giới tính";
-            // 
-            // radioNam
-            // 
-            radioNam.AutoSize = true;
-            radioNam.Location = new Point(181, 14);
-            radioNam.Name = "radioNam";
-            radioNam.Size = new Size(62, 24);
-            radioNam.TabIndex = 1;
-            radioNam.TabStop = true;
-            radioNam.Text = "Nam";
-            radioNam.UseVisualStyleBackColor = true;
-            radioNam.CheckedChanged += radioButton2_CheckedChanged;
             // 
             // panel16
             // 
@@ -307,42 +265,46 @@
             // panel14
             // 
             panel14.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            panel14.Controls.Add(pictureBox6);
-            panel14.Controls.Add(cbbPhong);
-            panel14.Controls.Add(label7);
+            panel14.Controls.Add(label9);
+            panel14.Controls.Add(radioNam);
+            panel14.Controls.Add(radioNu);
             panel14.Location = new Point(403, 260);
             panel14.Name = "panel14";
             panel14.Size = new Size(394, 115);
             panel14.TabIndex = 5;
             // 
-            // pictureBox6
+            // label9
             // 
-            pictureBox6.Image = (Image)resources.GetObject("pictureBox6.Image");
-            pictureBox6.Location = new Point(77, 22);
-            pictureBox6.Name = "pictureBox6";
-            pictureBox6.Size = new Size(27, 20);
-            pictureBox6.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox6.TabIndex = 6;
-            pictureBox6.TabStop = false;
+            label9.AutoSize = true;
+            label9.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label9.Location = new Point(68, 51);
+            label9.Name = "label9";
+            label9.Size = new Size(80, 23);
+            label9.TabIndex = 0;
+            label9.Text = "Giới tính";
             // 
-            // cbbPhong
+            // radioNam
             // 
-            cbbPhong.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            cbbPhong.FormattingEnabled = true;
-            cbbPhong.Location = new Point(77, 51);
-            cbbPhong.Name = "cbbPhong";
-            cbbPhong.Size = new Size(244, 28);
-            cbbPhong.TabIndex = 0;
+            radioNam.AutoSize = true;
+            radioNam.Location = new Point(181, 50);
+            radioNam.Name = "radioNam";
+            radioNam.Size = new Size(62, 24);
+            radioNam.TabIndex = 1;
+            radioNam.TabStop = true;
+            radioNam.Text = "Nam";
+            radioNam.UseVisualStyleBackColor = true;
+            radioNam.CheckedChanged += radioButton2_CheckedChanged;
             // 
-            // label7
+            // radioNu
             // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.Location = new Point(110, 19);
-            label7.Name = "label7";
-            label7.Size = new Size(96, 23);
-            label7.TabIndex = 0;
-            label7.Text = "Phòng ban";
+            radioNu.AutoSize = true;
+            radioNu.Location = new Point(283, 50);
+            radioNu.Name = "radioNu";
+            radioNu.Size = new Size(50, 24);
+            radioNu.TabIndex = 2;
+            radioNu.TabStop = true;
+            radioNu.Text = "Nữ";
+            radioNu.UseVisualStyleBackColor = true;
             // 
             // panel12
             // 
@@ -385,51 +347,43 @@
             // 
             // panel10
             // 
-            panel10.Controls.Add(pictureBox4);
-            panel10.Controls.Add(panelemail);
-            panel10.Controls.Add(label5);
+            panel10.Controls.Add(cbbPhong);
+            panel10.Controls.Add(pictureBox6);
+            panel10.Controls.Add(label7);
             panel10.Dock = DockStyle.Fill;
             panel10.Location = new Point(403, 130);
             panel10.Name = "panel10";
             panel10.Size = new Size(394, 121);
             panel10.TabIndex = 3;
             // 
-            // pictureBox4
+            // cbbPhong
             // 
-            pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
-            pictureBox4.Location = new Point(77, 10);
-            pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(27, 20);
-            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox4.TabIndex = 6;
-            pictureBox4.TabStop = false;
+            cbbPhong.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            cbbPhong.FormattingEnabled = true;
+            cbbPhong.Location = new Point(71, 45);
+            cbbPhong.Name = "cbbPhong";
+            cbbPhong.Size = new Size(244, 28);
+            cbbPhong.TabIndex = 0;
             // 
-            // panelemail
+            // pictureBox6
             // 
-            panelemail.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            panelemail.Controls.Add(textBoxemail);
-            panelemail.Location = new Point(77, 39);
-            panelemail.Name = "panelemail";
-            panelemail.Size = new Size(244, 53);
-            panelemail.TabIndex = 5;
+            pictureBox6.Image = (Image)resources.GetObject("pictureBox6.Image");
+            pictureBox6.Location = new Point(71, 16);
+            pictureBox6.Name = "pictureBox6";
+            pictureBox6.Size = new Size(27, 20);
+            pictureBox6.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox6.TabIndex = 6;
+            pictureBox6.TabStop = false;
             // 
-            // textBoxemail
+            // label7
             // 
-            textBoxemail.Location = new Point(3, 3);
-            textBoxemail.Multiline = true;
-            textBoxemail.Name = "textBoxemail";
-            textBoxemail.Size = new Size(234, 41);
-            textBoxemail.TabIndex = 0;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.Location = new Point(110, 10);
-            label5.Name = "label5";
-            label5.Size = new Size(54, 23);
-            label5.TabIndex = 0;
-            label5.Text = "Email";
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label7.Location = new Point(110, 13);
+            label7.Name = "label7";
+            label7.Size = new Size(96, 23);
+            label7.TabIndex = 0;
+            label7.Text = "Phòng ban";
             // 
             // panel8
             // 
@@ -481,51 +435,51 @@
             // 
             // panel6
             // 
-            panel6.Controls.Add(pictureBox2);
-            panel6.Controls.Add(paneltentk);
-            panel6.Controls.Add(label3);
+            panel6.Controls.Add(panelemail);
+            panel6.Controls.Add(pictureBox4);
+            panel6.Controls.Add(label5);
             panel6.Dock = DockStyle.Fill;
             panel6.Location = new Point(403, 3);
             panel6.Name = "panel6";
             panel6.Size = new Size(394, 121);
             panel6.TabIndex = 1;
             // 
-            // pictureBox2
+            // panelemail
             // 
-            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(77, 11);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(27, 20);
-            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox2.TabIndex = 6;
-            pictureBox2.TabStop = false;
+            panelemail.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            panelemail.Controls.Add(textBoxemail);
+            panelemail.Location = new Point(68, 40);
+            panelemail.Name = "panelemail";
+            panelemail.Size = new Size(244, 53);
+            panelemail.TabIndex = 5;
             // 
-            // paneltentk
+            // textBoxemail
             // 
-            paneltentk.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            paneltentk.Controls.Add(textBoxtentk);
-            paneltentk.Location = new Point(77, 40);
-            paneltentk.Name = "paneltentk";
-            paneltentk.Size = new Size(244, 53);
-            paneltentk.TabIndex = 5;
+            textBoxemail.Location = new Point(3, 3);
+            textBoxemail.Multiline = true;
+            textBoxemail.Name = "textBoxemail";
+            textBoxemail.Size = new Size(234, 41);
+            textBoxemail.TabIndex = 0;
             // 
-            // textBoxtentk
+            // pictureBox4
             // 
-            textBoxtentk.Location = new Point(3, 3);
-            textBoxtentk.Multiline = true;
-            textBoxtentk.Name = "textBoxtentk";
-            textBoxtentk.Size = new Size(234, 41);
-            textBoxtentk.TabIndex = 0;
+            pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
+            pictureBox4.Location = new Point(68, 14);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(27, 20);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox4.TabIndex = 6;
+            pictureBox4.TabStop = false;
             // 
-            // label3
+            // label5
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(110, 8);
-            label3.Name = "label3";
-            label3.Size = new Size(117, 23);
-            label3.TabIndex = 0;
-            label3.Text = "Tên tài khoản";
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Location = new Point(110, 11);
+            label5.Name = "label5";
+            label5.Size = new Size(54, 23);
+            label5.TabIndex = 0;
+            label5.Text = "Email";
             // 
             // panel5
             // 
@@ -579,15 +533,15 @@
             // 
             // tableLayoutPanel2
             // 
-            tableLayoutPanel2.ColumnCount = 2;
+            tableLayoutPanel2.ColumnCount = 1;
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.Controls.Add(btnCancel, 1, 0);
+            tableLayoutPanel2.Controls.Add(btnCancel, 0, 1);
             tableLayoutPanel2.Controls.Add(buttonAddnew, 0, 0);
             tableLayoutPanel2.Dock = DockStyle.Fill;
             tableLayoutPanel2.Location = new Point(403, 511);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
-            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowCount = 2;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel2.Size = new Size(394, 121);
@@ -596,12 +550,13 @@
             // btnCancel
             // 
             btnCancel.BackColor = SystemColors.GradientActiveCaption;
+            btnCancel.Dock = DockStyle.Fill;
             btnCancel.FlatAppearance.BorderSize = 0;
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI", 10F);
-            btnCancel.Location = new Point(200, 3);
+            btnCancel.Location = new Point(3, 63);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(157, 46);
+            btnCancel.Size = new Size(388, 55);
             btnCancel.TabIndex = 2;
             btnCancel.Text = "Làm mới";
             btnCancel.UseVisualStyleBackColor = false;
@@ -611,13 +566,14 @@
             // 
             buttonAddnew.BackColor = Color.FromArgb(255, 107, 53);
             buttonAddnew.BackgroundImageLayout = ImageLayout.Zoom;
+            buttonAddnew.Dock = DockStyle.Fill;
             buttonAddnew.FlatAppearance.BorderSize = 0;
             buttonAddnew.FlatStyle = FlatStyle.Flat;
             buttonAddnew.Font = new Font("Segoe UI", 10F);
             buttonAddnew.ForeColor = Color.White;
             buttonAddnew.Location = new Point(3, 3);
             buttonAddnew.Name = "buttonAddnew";
-            buttonAddnew.Size = new Size(180, 46);
+            buttonAddnew.Size = new Size(388, 54);
             buttonAddnew.TabIndex = 0;
             buttonAddnew.Text = "Thêm nhân viên";
             buttonAddnew.UseVisualStyleBackColor = false;
@@ -667,15 +623,12 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             panel14.ResumeLayout(false);
             panel14.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
             panel12.ResumeLayout(false);
             panel12.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             panel10.ResumeLayout(false);
             panel10.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
-            panelemail.ResumeLayout(false);
-            panelemail.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
@@ -683,9 +636,9 @@
             panelsdt.PerformLayout();
             panel6.ResumeLayout(false);
             panel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            paneltentk.ResumeLayout(false);
-            paneltentk.PerformLayout();
+            panelemail.ResumeLayout(false);
+            panelemail.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -720,7 +673,6 @@
         private Label label5;
         private Panel panel8;
         private Panel panel6;
-        private Label label3;
         private DateTimePicker dateTimePicker1;
         private Button btnCancel;
         private Button buttonAddnew;
@@ -729,14 +681,11 @@
         private TextBox textBoxsdt;
         private Panel panelemail;
         private TextBox textBoxemail;
-        private Panel paneltentk;
-        private TextBox textBoxtentk;
         private RadioButton radioNu;
         private RadioButton radioNam;
         private ComboBox cbbPhong;
         private Label label11;
         private PictureBox pictureBox1;
-        private PictureBox pictureBox2;
         private PictureBox pictureBox6;
         private PictureBox pictureBox5;
         private PictureBox pictureBox4;

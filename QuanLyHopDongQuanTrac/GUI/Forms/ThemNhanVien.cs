@@ -1,5 +1,6 @@
 ﻿using BLL;
 using DTO;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -156,7 +157,6 @@ namespace GUI.Forms
             //Custom textbox
             ApplyRoundedTextbox(panelHoten, textBoxhoten, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedTextbox(panelsdt, textBoxsdt, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedTextbox(paneltentk, textBoxtentk, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedTextbox(panelemail, textBoxemail, 12, 2, Color.FromArgb(0, 152, 70));
             InitializeButtonStyles();
 
@@ -254,12 +254,7 @@ namespace GUI.Forms
         private void buttonAddnew_Click(object sender, EventArgs e)
         {
             //Kiểm tra trường hợp 
-            if (string.IsNullOrWhiteSpace(textBoxtentk.Text))
-            {
-                MessageBox.Show("Vui lòng nhập tên tài khoản!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBoxtentk.Focus();
-                return;
-            }
+         
 
             if (cbbPhong.SelectedIndex < 0)
             {
@@ -309,7 +304,7 @@ namespace GUI.Forms
             // Tạo đối tượng nhân viên
             NhanVien nv = new NhanVien
             {
-                tenTK = textBoxtentk.Text,
+                //tenTK = textBoxtentk.Text,
                 maPhong = cbbPhong.SelectedValue.ToString(), // combobox phòng ban
                 hoTen = textBoxhoten.Text,
                 ngaySinh = dateTimePicker1.Value,
@@ -322,10 +317,21 @@ namespace GUI.Forms
             // Kiểm tra radio trưởng phòng
             bool isTruongPhong = checkTruongphong.Checked;
 
-            var bll = new NhanVienBLL();
-            bll.ThemNhanVien(nv, isTruongPhong);
+            try
+            {
+                var bll = new NhanVienBLL();
+                bll.ThemNhanVien(nv, isTruongPhong);
 
-            MessageBox.Show("Thêm nhân viên thành công!");
+                MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
 
@@ -334,7 +340,6 @@ namespace GUI.Forms
             // Clear TextBox
             textBoxhoten.Clear();
             textBoxsdt.Clear();
-            textBoxtentk.Clear();
             textBoxemail.Clear();
             txtDiaChi.Clear();
 
