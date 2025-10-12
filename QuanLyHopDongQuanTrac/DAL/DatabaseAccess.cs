@@ -125,6 +125,65 @@ namespace DAL
             }
         }
 
+
+        public void SuaNhanVien(NhanVien nv, bool isTruongPhong)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_SuaNhanVien", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@maNV", nv.maNV);
+                    cmd.Parameters.AddWithValue("@maPhong", nv.maPhong);
+                    cmd.Parameters.AddWithValue("@hoTen", nv.hoTen);
+                    cmd.Parameters.AddWithValue("@ngaySinh", nv.ngaySinh);
+
+                    bool gioiTinhBit = nv.gioiTinh == "1" || nv.gioiTinh.ToLower() == "nữ";
+                    cmd.Parameters.AddWithValue("@gioiTinh", gioiTinhBit ? 1 : 0);
+
+                    cmd.Parameters.AddWithValue("@diaChi", nv.diaChi);
+                    cmd.Parameters.AddWithValue("@soDienThoai", nv.soDienThoai);
+                    cmd.Parameters.AddWithValue("@Email", nv.email);
+                    cmd.Parameters.AddWithValue("@isTruongPhong", isTruongPhong ? 1 : 0);
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        // Hiển thị thông báo lỗi từ SQL (ví dụ: tuổi không hợp lệ, email trùng,...)
+                        throw new Exception("Lỗi khi sửa nhân viên: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+
+        public void XoaNhanVien(string maNV)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_XoaNhanVien", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@maNV", maNV);
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Lỗi khi xóa nhân viên: " + ex.Message);
+                    }
+                }
+            }
+        }
+
         public List<PhongBan> LayDSPhongBan()
         {
             var list = new List<PhongBan>();

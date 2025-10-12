@@ -61,33 +61,95 @@ namespace GUI.Forms
 
             NhanVienBLL nvBLL = new NhanVienBLL();
             List<NhanVien> ds = nvBLL.LayDanhSachNhanVien();
-            dgvDanhsachnhanvien.AutoGenerateColumns = true;
+
+            dgvDanhsachnhanvien.AutoGenerateColumns = false;
+            dgvDanhsachnhanvien.Columns.Clear();
+
+            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "maNV",
+                HeaderText = "Mã nhân viên",
+                Name = "maNV"
+            });
+
+            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "hoTen",
+                HeaderText = "Họ Tên",
+                Name = "hoTen"
+            });
+
+            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "email",
+                HeaderText = "Email",
+                Name = "email"
+            });
+
+            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "maPhong",
+                HeaderText = "Mã Phòng",
+                Name = "maPhong"
+            });
+
+            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "ngaySinh",
+                HeaderText = "Ngày Sinh",
+                Name = "ngaySinh"
+            });
+
+            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "gioiTinh",
+                HeaderText = "Giới Tính",
+                Name = "gioiTinh"
+            });
+
+            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "diaChi",
+                HeaderText = "Địa Chỉ",
+                Name = "diaChi"
+            });
+
+            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "soDienThoai",
+                HeaderText = "Số Điện Thoại",
+                Name = "soDienThoai"
+            });
+
+            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "tenPhong",
+                HeaderText = "Phòng Ban",
+                Name = "tenPhong"
+            });
+
+            // Thêm cột Thao tác (luôn cuối)
+            DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn();
+            thaoTacCol.Name = "ThaoTac";
+            thaoTacCol.HeaderText = "Thao tác";
+            thaoTacCol.ImageLayout = DataGridViewImageCellLayout.Zoom;
+            dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
+
+            dgvDanhsachnhanvien.DataSource = ds;
+        }
+
+
+        private void LoadDanhSachNhanVien()
+        {
+            NhanVienBLL nvBLL = new NhanVienBLL();
+            List<NhanVien> ds = nvBLL.LayDanhSachNhanVien();
+            dgvDanhsachnhanvien.DataSource = null;
             dgvDanhsachnhanvien.DataSource = ds;
 
-            //Custom header style
-            dgvDanhsachnhanvien.Columns["maNV"].HeaderText = "Mã nhân viên ";
-            dgvDanhsachnhanvien.Columns["hoTen"].HeaderText = "Họ Tên";
-            dgvDanhsachnhanvien.Columns["tenTK"].HeaderText = "Tên tài khoản";
-            dgvDanhsachnhanvien.Columns["email"].HeaderText = "Email";
-            dgvDanhsachnhanvien.Columns["maPhong"].HeaderText = "Mã Phòng";
-
-            dgvDanhsachnhanvien.Columns["ngaySinh"].HeaderText = "Ngày Sinh";
-            dgvDanhsachnhanvien.Columns["gioiTinh"].HeaderText = "Giới Tính";
-            dgvDanhsachnhanvien.Columns["diaChi"].HeaderText = "Địa Chỉ";
-            dgvDanhsachnhanvien.Columns["soDienThoai"].HeaderText = "Số Điện Thoại ";
-            dgvDanhsachnhanvien.Columns["tenPhong"].HeaderText = "Phòng Ban";
-
-            //Thêm cột thao tác
-            if (!dgvDanhsachnhanvien.Columns.Contains("ThaoTac"))
-            {
-                DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn();
-                thaoTacCol.Name = "ThaoTac";
-                thaoTacCol.HeaderText = "Thao tác";
-                thaoTacCol.ImageLayout = DataGridViewImageCellLayout.Zoom;
-                dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
-            }
-
+            // Giữ nguyên thứ tự cột
+            dgvDanhsachnhanvien.Columns["ThaoTac"].DisplayIndex = dgvDanhsachnhanvien.Columns.Count - 1;
         }
+
         private Rectangle editRect;
         private Rectangle deleteRect;
 
@@ -126,13 +188,61 @@ namespace GUI.Forms
             {
                 var clickPoint = dgvDanhsachnhanvien.PointToClient(Cursor.Position);
 
-                if (editRect.Contains(clickPoint)) // vùng icon edit
+                if (editRect.Contains(clickPoint)) 
                 {
-                    MessageBox.Show("Sửa nhân viên: " + dgvDanhsachnhanvien.Rows[e.RowIndex].Cells["maNV"].Value);
+                    DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
+
+                    NhanVien nv = new NhanVien
+                    {
+                        maNV = row.Cells["maNV"].Value.ToString(),
+                        maPhong = row.Cells["maPhong"].Value.ToString(),
+                        hoTen = row.Cells["hoTen"].Value.ToString(),
+                        ngaySinh = Convert.ToDateTime(row.Cells["ngaySinh"].Value),
+                        gioiTinh = row.Cells["gioiTinh"].Value.ToString(),
+                        diaChi = row.Cells["diaChi"].Value.ToString(),
+                        soDienThoai = row.Cells["soDienThoai"].Value.ToString(),
+                        email = row.Cells["email"].Value.ToString()
+                    };
+
+                    // Gọi form sửa nhân viên, truyền dữ liệu sang
+                    SuaNhanVien frmSua = new SuaNhanVien(nv);
+                    frmSua.StartPosition = FormStartPosition.CenterParent;
+
+                    if (frmSua.ShowDialog() == DialogResult.OK)
+                    {
+                        LoadDanhSachNhanVien();
+                    }
                 }
-                else if (deleteRect.Contains(clickPoint)) // bấm trong vùng icon xóa
+                else if (deleteRect.Contains(clickPoint)) 
                 {
-                    MessageBox.Show("Xóa nhân viên: " + dgvDanhsachnhanvien.Rows[e.RowIndex].Cells["maNV"].Value);
+                    string maNV = dgvDanhsachnhanvien.Rows[e.RowIndex].Cells["maNV"].Value.ToString();
+                    string hoTen = dgvDanhsachnhanvien.Rows[e.RowIndex].Cells["hoTen"].Value.ToString();
+
+                    DialogResult result = MessageBox.Show(
+                        $"Bạn có chắc chắn muốn xóa nhân viên '{hoTen}' (Mã: {maNV}) không?",
+                        "Xác nhận xóa",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (result == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            NhanVienBLL nvBLL = new NhanVienBLL();
+                            nvBLL.XoaNhanVien(maNV);
+
+                            MessageBox.Show("Đã xóa nhân viên thành công!", "Thông báo",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            LoadDanhSachNhanVien(); 
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Có lỗi xảy ra khi xóa nhân viên: " + ex.Message,
+                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
                 }
             }
         }
@@ -438,16 +548,20 @@ namespace GUI.Forms
         #endregion
 
 
+        private void dgvDanhsachnhanvien_CellContentClick(object sender, DataGridViewCellEventArgs e){}
 
+        private void containersearch_Paint_1(object sender, PaintEventArgs e){}
 
-        private void dgvDanhsachnhanvien_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void btnThemuser_Click(object sender, EventArgs e)
         {
+            ThemNhanVien fThem = new ThemNhanVien();
 
-        }
-
-        private void containersearch_Paint_1(object sender, PaintEventArgs e)
-        {
-
+            // Hiển thị form dưới dạng cửa sổ pop-up (modal)
+            fThem.StartPosition = FormStartPosition.CenterParent; // Canh giữa form cha
+            if (fThem.ShowDialog() == DialogResult.OK)
+            {
+                LoadDanhSachNhanVien(); // LOAD LẠI DANH SÁCH
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace GUI.Forms
 {
-    partial class ThemNhanVien
+    partial class SuaNhanVien
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ThemNhanVien));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SuaNhanVien));
             panel1 = new Panel();
             panel3 = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -623,7 +623,7 @@
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(388, 55);
             btnCancel.TabIndex = 2;
-            btnCancel.Text = "Làm mới";
+            btnCancel.Text = "Hủy";
             btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
@@ -640,7 +640,7 @@
             buttonAddnew.Name = "buttonAddnew";
             buttonAddnew.Size = new Size(388, 54);
             buttonAddnew.TabIndex = 0;
-            buttonAddnew.Text = "Thêm nhân viên";
+            buttonAddnew.Text = "Xác nhận ";
             buttonAddnew.UseVisualStyleBackColor = false;
             buttonAddnew.Click += buttonAddnew_Click;
             // 
@@ -663,19 +663,19 @@
             label1.Name = "label1";
             label1.Size = new Size(800, 81);
             label1.TabIndex = 0;
-            label1.Text = "THÊM NHÂN VIÊN MỚI ";
+            label1.Text = "SỬA NHÂN VIÊN";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             label1.Click += label1_Click;
             // 
-            // ThemNhanVien
+            // SuaNhanVien
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 716);
             Controls.Add(panel1);
-            Name = "ThemNhanVien";
+            Name = "SuaNhanVien";
             Text = "Form1";
-            Load += ThemNhanVien_Load;
+            Load += SuaNhanVien_Load;
             panel1.ResumeLayout(false);
             panel3.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
