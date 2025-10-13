@@ -160,7 +160,7 @@ END
 go
 
 --suarư 12/10/2025
-alter procedure layDanhSachNhanVien
+CREATE procedure layDanhSachNhanVien
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -182,7 +182,7 @@ END
 GO
 
 --12/10/2025-10:30
-ALTER PROCEDURE ThemNhanVien
+CREATE PROCEDURE ThemNhanVien
     @maPhong VARCHAR(15),
     @hoTen NVARCHAR(60),
     @ngaySinh DATE,
@@ -353,7 +353,7 @@ GO
 
 
 --12/10/2025 - proc sửa nhân viên 
-ALTER PROCEDURE sp_SuaNhanVien
+CREATE PROCEDURE sp_SuaNhanVien
     @maNV VARCHAR(15),
     @maPhong VARCHAR(15),
     @hoTen NVARCHAR(60),
