@@ -19,6 +19,7 @@ namespace GUI.Forms
     {
         private NhanVien nhanVienHienTai;
         private NhanVien nhanVienBanDau;
+        public event EventHandler SuccesfullyUpdated;
 
         public SuaNhanVien(NhanVien nv)
         {
@@ -418,17 +419,6 @@ namespace GUI.Forms
                 return;
             }
 
-
-            //string diaChi = "";
-            //if (cbbXa.SelectedIndex >= 0)
-            //    diaChi += cbbXa.Text + ", ";
-            //if (cbbQuan.SelectedIndex >= 0)
-            //    diaChi += cbbQuan.Text + ", ";
-            //if (cboTinhThanh.SelectedIndex >= 0)
-            //    diaChi += cboTinhThanh.Text;
-            //if (!string.IsNullOrWhiteSpace(txtDiaChi.Text))
-            //    diaChi = txtDiaChi.Text + ", " + diaChi;
-
             List<string> diaChiParts = new List<string>();
 
             if (!string.IsNullOrWhiteSpace(txtDiaChi.Text))
@@ -485,6 +475,8 @@ namespace GUI.Forms
                 MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi hệ thống",
                                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
+            this.Close();
 
         }
 

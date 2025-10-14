@@ -172,6 +172,7 @@
             // 
             // dgvDanhsachnhanvien
             // 
+            dgvDanhsachnhanvien.AllowUserToAddRows = false;
             dgvDanhsachnhanvien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDanhsachnhanvien.BackgroundColor = Color.White;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;

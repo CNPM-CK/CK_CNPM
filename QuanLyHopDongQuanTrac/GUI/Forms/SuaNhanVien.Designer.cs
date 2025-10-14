@@ -673,6 +673,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 716);
             Controls.Add(panel1);
+            MaximizeBox = false;
             Name = "SuaNhanVien";
             Text = "Form1";
             Load += SuaNhanVien_Load;

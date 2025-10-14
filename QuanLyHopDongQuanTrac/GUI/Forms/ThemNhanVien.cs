@@ -17,6 +17,8 @@ namespace GUI.Forms
 {
     public partial class ThemNhanVien : Form
     {
+        public event EventHandler SuccesfullyUpdated;
+
         public ThemNhanVien()
         {
             InitializeComponent();
@@ -377,16 +379,20 @@ namespace GUI.Forms
                 bll.ThemNhanVien(nv, isTruongPhong);
 
                 MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                SuccesfullyUpdated?.Invoke(this, EventArgs.Empty); // chỉ khi thành công
                 this.DialogResult = DialogResult.OK;
-                this.Close();
+                this.Close(); // chỉ khi thành công
             }
             catch (SqlException ex)
             {
                 MessageBox.Show(ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Không đóng form
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Không đóng form
             }
 
         }

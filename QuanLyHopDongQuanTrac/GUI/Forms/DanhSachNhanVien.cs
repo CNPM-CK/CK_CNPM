@@ -31,6 +31,8 @@ namespace GUI.Forms
         private const int MIN_SEARCH_WIDTH = 200;
         private const int MAX_SEARCH_WIDTH = 500;
         private const int SEARCH_HEIGHT = 50;
+        private BindingList<NhanVien> dsNhanVien;
+
 
 
         public DanhSachNhanVien()
@@ -60,7 +62,7 @@ namespace GUI.Forms
             CalculateLayout();
 
             NhanVienBLL nvBLL = new NhanVienBLL();
-            List<NhanVien> ds = nvBLL.LayDanhSachNhanVien();
+            dsNhanVien = new BindingList<NhanVien>(nvBLL.LayDanhSachNhanVien());
 
             dgvDanhsachnhanvien.AutoGenerateColumns = false;
             dgvDanhsachnhanvien.Columns.Clear();
@@ -136,21 +138,29 @@ namespace GUI.Forms
 
             dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
 
-            LoadDanhSachNhanVien();
+            dgvDanhsachnhanvien.DataSource = dsNhanVien;
+
             dgvDanhsachnhanvien.ReadOnly = true; 
-            dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false; 
-            dgvDanhsachnhanvien.DataSource = ds;
+            dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
         }
 
-
-        private void LoadDanhSachNhanVien()
+        private void RefreshDanhSachNhanVien()
         {
             NhanVienBLL nvBLL = new NhanVienBLL();
-            List<NhanVien> ds = nvBLL.LayDanhSachNhanVien();
-            dgvDanhsachnhanvien.DataSource = null;
-            dgvDanhsachnhanvien.DataSource = ds;
-            dgvDanhsachnhanvien.Columns["ThaoTac"].DisplayIndex = dgvDanhsachnhanvien.Columns.Count - 1;
+            dsNhanVien.Clear();
+            foreach (var nv in nvBLL.LayDanhSachNhanVien())
+                dsNhanVien.Add(nv);
         }
+
+
+        //private void LoadDanhSachNhanVien()
+        //{
+        //    NhanVienBLL nvBLL = new NhanVienBLL();
+        //    List<NhanVien> ds = nvBLL.LayDanhSachNhanVien();
+        //    dgvDanhsachnhanvien.DataSource = null;
+        //    dgvDanhsachnhanvien.DataSource = ds;
+        //    dgvDanhsachnhanvien.Columns["ThaoTac"].DisplayIndex = dgvDanhsachnhanvien.Columns.Count - 1;
+        //}
 
         private Rectangle editRect;
         private Rectangle deleteRect;
@@ -179,7 +189,7 @@ namespace GUI.Forms
 
         private void dgvDanhsachnhanvien_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
+            if (e.ColumnIndex == dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
             {
                 var clickPoint = dgvDanhsachnhanvien.PointToClient(Cursor.Position);
 
@@ -187,31 +197,36 @@ namespace GUI.Forms
                 {
                     DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
 
+                    if (row.Cells["maNV"].Value == null) return;
+
                     NhanVien nv = new NhanVien
                     {
                         maNV = row.Cells["maNV"].Value.ToString(),
-                        maPhong = row.Cells["maPhong"].Value.ToString(),
-                        hoTen = row.Cells["hoTen"].Value.ToString(),
-                        ngaySinh = Convert.ToDateTime(row.Cells["ngaySinh"].Value),
-                        gioiTinh = row.Cells["gioiTinh"].Value.ToString(),
-                        diaChi = row.Cells["diaChi"].Value.ToString(),
-                        soDienThoai = row.Cells["soDienThoai"].Value.ToString(),
-                        email = row.Cells["email"].Value.ToString()
+                        maPhong = row.Cells["maPhong"].Value?.ToString(),
+                        hoTen = row.Cells["hoTen"].Value?.ToString(),
+                        ngaySinh = row.Cells["ngaySinh"].Value != null ? Convert.ToDateTime(row.Cells["ngaySinh"].Value) : DateTime.MinValue,
+                        gioiTinh = row.Cells["gioiTinh"].Value?.ToString(),
+                        diaChi = row.Cells["diaChi"].Value?.ToString(),
+                        soDienThoai = row.Cells["soDienThoai"].Value?.ToString(),
+                        email = row.Cells["email"].Value?.ToString()
                     };
 
-                    // Gọi form sửa nhân viên, truyền dữ liệu sang
                     SuaNhanVien frmSua = new SuaNhanVien(nv);
-                    frmSua.StartPosition = FormStartPosition.CenterParent;
-
-                    if (frmSua.ShowDialog() == DialogResult.OK)
-                    {
-                        LoadDanhSachNhanVien();
-                    }
+                    frmSua.StartPosition = FormStartPosition.Manual;
+                    frmSua.Location = new Point(
+                        this.Location.X + (this.Width - frmSua.Width) / 2,
+                        this.Location.Y + (this.Height - frmSua.Height) / 2
+                    );
+                    frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
+                    frmSua.Show(this);
                 }
                 else if (deleteRect.Contains(clickPoint))
                 {
-                    string maNV = dgvDanhsachnhanvien.Rows[e.RowIndex].Cells["maNV"].Value.ToString();
-                    string hoTen = dgvDanhsachnhanvien.Rows[e.RowIndex].Cells["hoTen"].Value.ToString();
+                    DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
+                    if (row.Cells["maNV"].Value == null) return;
+
+                    string maNV = row.Cells["maNV"].Value.ToString();
+                    string hoTen = row.Cells["hoTen"].Value?.ToString();
 
                     DialogResult result = MessageBox.Show(
                         $"Bạn có chắc chắn muốn xóa nhân viên '{hoTen}' (Mã: {maNV}) không?",
@@ -230,7 +245,7 @@ namespace GUI.Forms
                             MessageBox.Show("Đã xóa nhân viên thành công!", "Thông báo",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                            LoadDanhSachNhanVien();
+                            RefreshDanhSachNhanVien();
                         }
                         catch (Exception ex)
                         {
@@ -241,6 +256,7 @@ namespace GUI.Forms
                 }
             }
         }
+
 
 
         private void dgvDanhsachnhanvien_Paint(object sender, PaintEventArgs e)
@@ -274,10 +290,7 @@ namespace GUI.Forms
                 attributes);
         }
 
-        private void DanhSachNhanVien_Click(object sender, EventArgs e)
-        {
-
-        }
+        private void DanhSachNhanVien_Click(object sender, EventArgs e){}
 
 
         private void InitializeCustomSearchBox()
@@ -414,8 +427,8 @@ namespace GUI.Forms
             containersearch.Height = SEARCH_HEIGHT;
 
             // Cập nhật width và vị trí của textbox bên trong
-            searchtextbox.Width = searchWidth - (borderSize * 2 + 10); // Đồng bộ với InitializeCustomSearchBox
-            searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2); // Căn chỉnh trong container
+            searchtextbox.Width = searchWidth - (borderSize * 2 + 10); 
+            searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2); 
 
             // Đặt icon micro ngay sau search box
             picturemicro.Left = containersearch.Right + SPACING;
@@ -549,14 +562,15 @@ namespace GUI.Forms
 
         private void btnThemuser_Click(object sender, EventArgs e)
         {
-            ThemNhanVien fThem = new ThemNhanVien();
+            ThemNhanVien frmThem = new ThemNhanVien();
 
-            // Hiển thị form dưới dạng cửa sổ pop-up (modal)
-            fThem.StartPosition = FormStartPosition.CenterParent; // Canh giữa form cha
-            if (fThem.ShowDialog() == DialogResult.OK)
-            {
-                LoadDanhSachNhanVien(); // LOAD LẠI DANH SÁCH
-            }
+            frmThem.StartPosition = FormStartPosition.Manual;
+            frmThem.Location = new Point(
+               this.Location.X + (this.Width - frmThem.Width) / 2,
+               this.Location.Y + (this.Height - frmThem.Height) / 2
+            );
+            frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
+            frmThem.Show(this);
         }
 
         private void dgvDanhsachnhanvien_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -565,7 +579,6 @@ namespace GUI.Forms
             {
                 string gioiTinh = e.Value.ToString().Trim();
 
-                // Chỉ thay đổi cách hiển thị, KHÔNG thay đổi giá trị gốc
                 if (gioiTinh == "0" || gioiTinh.ToLower() == "false")
                     e.Value = "Nam";
                 else if (gioiTinh == "1" || gioiTinh.ToLower() == "true")
