@@ -147,6 +147,14 @@ alter table BaoCaoKetQua add constraint fk_BaoCaoKetQua_NhanVien foreign key (ng
 go
 
 --PROCEDURES--
+--proc lấy ds phòng ban 
+create proc [dbo].[LayDSPhongBan]
+as 
+begin
+	set nocount on;
+	select maPhong, tenPhong
+	from PhongBan;
+end
 --proc lấy tài khoản--
 CREATE PROCEDURE layTaikhoan 
     @tenTK NVARCHAR(30)
