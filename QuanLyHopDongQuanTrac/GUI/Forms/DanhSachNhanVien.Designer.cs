@@ -201,6 +201,7 @@
             dgvDanhsachnhanvien.TabIndex = 1;
             dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
             dgvDanhsachnhanvien.CellContentClick += dgvDanhsachnhanvien_CellContentClick;
+            dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
             dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;
             dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
             // 

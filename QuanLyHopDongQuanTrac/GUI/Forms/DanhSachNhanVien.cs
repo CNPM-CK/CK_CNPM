@@ -128,13 +128,17 @@ namespace GUI.Forms
                 Name = "tenPhong"
             });
 
-            // Thêm cột Thao tác (luôn cuối)
             DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn();
             thaoTacCol.Name = "ThaoTac";
             thaoTacCol.HeaderText = "Thao tác";
             thaoTacCol.ImageLayout = DataGridViewImageCellLayout.Zoom;
             dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
 
+            dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
+
+            LoadDanhSachNhanVien();
+            dgvDanhsachnhanvien.ReadOnly = true; 
+            dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false; 
             dgvDanhsachnhanvien.DataSource = ds;
         }
 
@@ -145,8 +149,6 @@ namespace GUI.Forms
             List<NhanVien> ds = nvBLL.LayDanhSachNhanVien();
             dgvDanhsachnhanvien.DataSource = null;
             dgvDanhsachnhanvien.DataSource = ds;
-
-            // Giữ nguyên thứ tự cột
             dgvDanhsachnhanvien.Columns["ThaoTac"].DisplayIndex = dgvDanhsachnhanvien.Columns.Count - 1;
         }
 
@@ -162,21 +164,14 @@ namespace GUI.Forms
                 int iconWidth = 24;
                 int iconHeight = 24;
                 int spacing = 10;
-
                 int totalWidth = (iconWidth * 2) + spacing;
 
-                // Tính điểm bắt đầu để căn giữa
                 int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
                 int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
-
-                // Vẽ icon sửa
                 editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
                 e.Graphics.DrawImage(Properties.Resources.edit, editRect);
-
-                // Vẽ icon xóa
                 deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
                 e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
-
                 e.Handled = true;
             }
         }
@@ -188,7 +183,7 @@ namespace GUI.Forms
             {
                 var clickPoint = dgvDanhsachnhanvien.PointToClient(Cursor.Position);
 
-                if (editRect.Contains(clickPoint)) 
+                if (editRect.Contains(clickPoint))
                 {
                     DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
 
@@ -213,7 +208,7 @@ namespace GUI.Forms
                         LoadDanhSachNhanVien();
                     }
                 }
-                else if (deleteRect.Contains(clickPoint)) 
+                else if (deleteRect.Contains(clickPoint))
                 {
                     string maNV = dgvDanhsachnhanvien.Rows[e.RowIndex].Cells["maNV"].Value.ToString();
                     string hoTen = dgvDanhsachnhanvien.Rows[e.RowIndex].Cells["hoTen"].Value.ToString();
@@ -235,7 +230,7 @@ namespace GUI.Forms
                             MessageBox.Show("Đã xóa nhân viên thành công!", "Thông báo",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                            LoadDanhSachNhanVien(); 
+                            LoadDanhSachNhanVien();
                         }
                         catch (Exception ex)
                         {
@@ -548,9 +543,9 @@ namespace GUI.Forms
         #endregion
 
 
-        private void dgvDanhsachnhanvien_CellContentClick(object sender, DataGridViewCellEventArgs e){}
+        private void dgvDanhsachnhanvien_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 
-        private void containersearch_Paint_1(object sender, PaintEventArgs e){}
+        private void containersearch_Paint_1(object sender, PaintEventArgs e) { }
 
         private void btnThemuser_Click(object sender, EventArgs e)
         {
@@ -561,6 +556,22 @@ namespace GUI.Forms
             if (fThem.ShowDialog() == DialogResult.OK)
             {
                 LoadDanhSachNhanVien(); // LOAD LẠI DANH SÁCH
+            }
+        }
+
+        private void dgvDanhsachnhanvien_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvDanhsachnhanvien.Columns[e.ColumnIndex].Name == "gioiTinh" && e.Value != null)
+            {
+                string gioiTinh = e.Value.ToString().Trim();
+
+                // Chỉ thay đổi cách hiển thị, KHÔNG thay đổi giá trị gốc
+                if (gioiTinh == "0" || gioiTinh.ToLower() == "false")
+                    e.Value = "Nam";
+                else if (gioiTinh == "1" || gioiTinh.ToLower() == "true")
+                    e.Value = "Nữ";
+
+                e.FormattingApplied = true;
             }
         }
     }

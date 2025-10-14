@@ -75,7 +75,30 @@ namespace DAL
                     using (SqlDataReader reader = cmd.ExecuteReader()) {
                         
                         while (reader.Read()) 
+
+
                         {
+                            string gioiTinh = "0";
+                            if (reader["gioiTinh"] != DBNull.Value)
+                            {
+                                var gioiTinhValue = reader["gioiTinh"];
+
+                                // Nếu là bool/bit
+                                if (gioiTinhValue is bool boolValue)
+                                {
+                                    gioiTinh = boolValue ? "1" : "0";
+                                }
+                                // Nếu là string
+                                else
+                                {
+                                    string strValue = gioiTinhValue.ToString().Trim().ToLower();
+                                    if (strValue == "1" || strValue == "true" || strValue == "nữ" || strValue == "nu")
+                                        gioiTinh = "1";
+                                    else
+                                        gioiTinh = "0";
+                                }
+                            }
+
                             var nv = new NhanVien
                             {
                                 maNV = reader["maNV"].ToString(),
@@ -83,7 +106,7 @@ namespace DAL
                                 tenPhong = reader["tenPhong"].ToString(),
                                 hoTen = reader["hoTen"].ToString(),
                                 ngaySinh = Convert.ToDateTime( reader["ngaySinh"]),
-                                gioiTinh = reader["gioiTinh"].ToString(),
+                                gioiTinh = gioiTinh,
                                 diaChi = reader["diaChi"].ToString(),
                                 email = reader["email"].ToString(),
                                 soDienThoai = reader["soDienThoai"].ToString()
@@ -209,5 +232,43 @@ namespace DAL
             }
             return list;
         }
+
+        public PhongBan? LayPhongBanTheoMa(string maPhong)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("LayPhongBanTheoMa", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@maPhong", maPhong);
+
+                    try
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new PhongBan
+                                {
+                                    maPhong = reader["maPhong"].ToString(),
+                                    tenPhong = reader["tenPhong"].ToString(),
+                                    truongPhong = reader["truongPhong"]?.ToString()
+                                };
+                            }
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Lỗi khi lấy thông tin phòng ban: " + ex.Message);
+                    }
+                }
+            }
+            return null;
+
+
+        }
+
+
     }
 }

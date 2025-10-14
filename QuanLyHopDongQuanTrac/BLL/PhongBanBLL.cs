@@ -16,6 +16,9 @@ namespace BLL
         {
             return dal.LayDSPhongBan();
         }
-
+        public PhongBan LayPhongBanTheoMa(string maPhong)
+        {
+            return dal.LayPhongBanTheoMa(maPhong);
+        }
     }
 }

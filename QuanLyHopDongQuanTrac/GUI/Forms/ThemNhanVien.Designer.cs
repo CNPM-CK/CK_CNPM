@@ -525,6 +525,7 @@
             textBoxemail.Name = "textBoxemail";
             textBoxemail.Size = new Size(234, 41);
             textBoxemail.TabIndex = 0;
+            textBoxemail.TextChanged += textBoxemail_TextChanged;
             // 
             // pictureBox4
             // 

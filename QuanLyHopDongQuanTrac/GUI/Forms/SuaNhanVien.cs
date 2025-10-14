@@ -136,8 +136,12 @@ namespace GUI.Forms
         private GraphicsPath CreateRoundedPath(Rectangle rect, int radius)
         {
             GraphicsPath path = new GraphicsPath();
-            int diameter = radius * 2;
 
+            if (rect.Width <= 0 || rect.Height <= 0)
+                return path;
+
+            //int diameter = radius * 2;
+            int diameter = Math.Min(radius * 2, Math.Min(rect.Width, rect.Height));
             // Đảm bảo radius không lớn hơn kích thước
             diameter = Math.Min(diameter, Math.Min(rect.Width, rect.Height));
 
@@ -224,15 +228,28 @@ namespace GUI.Forms
 
             if (nhanVienHienTai != null)
             {
+                // Sao chép dữ liệu gốc (clone)
+                nhanVienBanDau = new NhanVien
+                {
+                    maNV = nhanVienHienTai.maNV,
+                    hoTen = nhanVienHienTai.hoTen,
+                    email = nhanVienHienTai.email,
+                    soDienThoai = nhanVienHienTai.soDienThoai,
+                    gioiTinh = nhanVienHienTai.gioiTinh,
+                    ngaySinh = nhanVienHienTai.ngaySinh,
+                    maPhong = nhanVienHienTai.maPhong,
+                    diaChi = nhanVienHienTai.diaChi,
+                };
+
                 // Gán dữ liệu lên các control
                 textBoxhoten.Text = nhanVienHienTai.hoTen;
                 textBoxemail.Text = nhanVienHienTai.email;
                 textBoxsdt.Text = nhanVienHienTai.soDienThoai;
 
                 // Giới tính
-                if (nhanVienHienTai.gioiTinh == "Nam" || nhanVienHienTai.gioiTinh == "0")
+                if (nhanVienHienTai.gioiTinh == "0")
                     radioNam.Checked = true;
-                else
+                else if (nhanVienHienTai.gioiTinh == "1")
                     radioNu.Checked = true;
 
                 // Ngày sinh
@@ -257,8 +274,18 @@ namespace GUI.Forms
 
                 }
 
-            }
 
+
+                // Kiểm tra xem nhân viên này có phải trưởng phòng không
+                if (!string.IsNullOrEmpty(nhanVienHienTai.maPhong))
+                {
+                    var phongBan = bllPhongBan.LayPhongBanTheoMa(nhanVienHienTai.maPhong);
+                    if (phongBan != null && phongBan.truongPhong == nhanVienHienTai.maNV)
+                    {
+                        checkTruongphong.Checked = true;
+                    }
+                }
+            }
             //Custom textbox
             ApplyRoundedInput(panelHoten, textBoxhoten, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelsdt, textBoxsdt, 12, 2, Color.FromArgb(0, 152, 70));
@@ -272,24 +299,7 @@ namespace GUI.Forms
             ApplyRoundedInput(panelSonha, txtDiaChi, 12, 2, Color.FromArgb(0, 152, 70));
             InitializeButtonStyles();
 
-            if (nhanVienHienTai != null)
-            {
-                // Sao chép dữ liệu gốc (clone)
-                nhanVienBanDau = new NhanVien
-                {
-                    maNV = nhanVienHienTai.maNV,
-                    hoTen = nhanVienHienTai.hoTen,
-                    email = nhanVienHienTai.email,
-                    soDienThoai = nhanVienHienTai.soDienThoai,
-                    gioiTinh = nhanVienHienTai.gioiTinh,
-                    ngaySinh = nhanVienHienTai.ngaySinh,
-                    maPhong = nhanVienHienTai.maPhong,
-                    diaChi = nhanVienHienTai.diaChi,
-                    // thêm các trường khác nếu có
-                };
-
-                HienThiThongTinNhanVien(nhanVienBanDau);
-            }
+       
         }
 
         
@@ -299,9 +309,9 @@ namespace GUI.Forms
             textBoxemail.Text = nv.email;
             textBoxsdt.Text = nv.soDienThoai;
 
-            if (nv.gioiTinh == "Nam" || nv.gioiTinh == "0")
+            if (nv.gioiTinh == "0")
                 radioNam.Checked = true;
-            else
+            else if (nv.gioiTinh == "1")
                 radioNu.Checked = true;
 
             dateTimengaysinh.Value = nv.ngaySinh;
@@ -409,15 +419,28 @@ namespace GUI.Forms
             }
 
 
-            string diaChi = "";
-            if (cbbXa.SelectedIndex >= 0)
-                diaChi += cbbXa.Text + ", ";
-            if (cbbQuan.SelectedIndex >= 0)
-                diaChi += cbbQuan.Text + ", ";
-            if (cboTinhThanh.SelectedIndex >= 0)
-                diaChi += cboTinhThanh.Text;
+            //string diaChi = "";
+            //if (cbbXa.SelectedIndex >= 0)
+            //    diaChi += cbbXa.Text + ", ";
+            //if (cbbQuan.SelectedIndex >= 0)
+            //    diaChi += cbbQuan.Text + ", ";
+            //if (cboTinhThanh.SelectedIndex >= 0)
+            //    diaChi += cboTinhThanh.Text;
+            //if (!string.IsNullOrWhiteSpace(txtDiaChi.Text))
+            //    diaChi = txtDiaChi.Text + ", " + diaChi;
+
+            List<string> diaChiParts = new List<string>();
+
             if (!string.IsNullOrWhiteSpace(txtDiaChi.Text))
-                diaChi = txtDiaChi.Text + ", " + diaChi;
+                diaChiParts.Add(txtDiaChi.Text.Trim());
+            if (cbbXa.SelectedIndex >= 0 && !string.IsNullOrWhiteSpace(cbbXa.Text))
+                diaChiParts.Add(cbbXa.Text.Trim());
+            if (cbbQuan.SelectedIndex >= 0 && !string.IsNullOrWhiteSpace(cbbQuan.Text))
+                diaChiParts.Add(cbbQuan.Text.Trim());
+            if (cboTinhThanh.SelectedIndex >= 0 && !string.IsNullOrWhiteSpace(cboTinhThanh.Text))
+                diaChiParts.Add(cboTinhThanh.Text.Trim());
+
+            string diaChi = string.Join(", ", diaChiParts);
 
             NhanVien nv = new NhanVien
             {
@@ -437,11 +460,21 @@ namespace GUI.Forms
             try
             {
                 var bll = new NhanVienBLL();
-                bll.SuaNhanVien(nv, isTruongPhong);
 
-                MessageBox.Show("Sửa nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK; 
-                this.Close();                         
+                var (daThayDoi, logThayDoi) = bll.KiemTraThayDoi(nv, nhanVienBanDau, isTruongPhong);
+
+                if (!daThayDoi)
+                {
+                    MessageBox.Show("Không có thông tin nào thay đổi!", "Thông báo",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                // Thực hiện cập nhật
+                bll.SuaNhanVien(nv, isTruongPhong);
+                MessageBox.Show("Sửa nhân viên thành công!", "Thông báo",
+                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (SqlException ex)
             {
@@ -449,7 +482,8 @@ namespace GUI.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi hệ thống",
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }

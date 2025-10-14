@@ -8,8 +8,6 @@ namespace DTO
 {
     public class DiaChi
     {
-
-     
         public string code { get; set; }
         public string name { get; set; }
         public string name_with_type { get; set; }

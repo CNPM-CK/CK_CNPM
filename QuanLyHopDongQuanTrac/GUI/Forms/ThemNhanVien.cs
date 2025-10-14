@@ -86,11 +86,6 @@ namespace GUI.Forms
                     using (SolidBrush brush = new SolidBrush(panel.BackColor))
                         e.Graphics.FillPath(brush, path);
 
-                    //if (borderSize > 0)
-                    //{
-                    //    using (Pen pen = new Pen(borderColor, borderSize))
-                    //        e.Graphics.DrawPath(pen, path);
-                    //}
                     if (borderSize > 0)
                     {
                         using (GraphicsPath borderPath = CreateRoundedPath(
@@ -134,12 +129,16 @@ namespace GUI.Forms
         }
 
 
-        //Hàm helper để tạo rounded rectangle path
+
         private GraphicsPath CreateRoundedPath(Rectangle rect, int radius)
         {
             GraphicsPath path = new GraphicsPath();
-            int diameter = radius * 2;
 
+            if (rect.Width <= 0 || rect.Height <= 0)
+                return path;
+
+            //int diameter = radius * 2;
+            int diameter = Math.Min(radius * 2, Math.Min(rect.Width, rect.Height));
             // Đảm bảo radius không lớn hơn kích thước
             diameter = Math.Min(diameter, Math.Min(rect.Width, rect.Height));
 
@@ -163,7 +162,6 @@ namespace GUI.Forms
             path.CloseFigure();
             return path;
         }
-
         #endregion
 
 
@@ -196,8 +194,8 @@ namespace GUI.Forms
             ApplyRoundedInput(panelHoten, textBoxhoten, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelsdt, textBoxsdt, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelemail, textBoxemail, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelNgaysinh,dateTimengaysinh, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelPhongban, cbbPhong, 12, 2, Color.FromArgb(0, 152, 70) );
+            ApplyRoundedInput(panelNgaysinh, dateTimengaysinh, 12, 2, Color.FromArgb(0, 152, 70));
+            ApplyRoundedInput(panelPhongban, cbbPhong, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelTinh, cboTinhThanh, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelHuyen, cbbQuan, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelPhongban, cbbPhong, 12, 2, Color.FromArgb(0, 152, 70));
@@ -220,7 +218,7 @@ namespace GUI.Forms
                     cbbQuan.DisplayMember = "name_with_type";
                     cbbQuan.ValueMember = "code";
                     cbbQuan.SelectedIndex = -1;
-                    cbbQuan.Text = "Quận/Huyện"; 
+                    cbbQuan.Text = "Quận/Huyện";
 
                 }
             };
@@ -235,11 +233,11 @@ namespace GUI.Forms
                     cbbXa.DisplayMember = "name_with_type";
                     cbbXa.ValueMember = "code";
                     cbbXa.SelectedIndex = -1;
-                    cbbXa.Text = "Xã/Phường"; 
+                    cbbXa.Text = "Xã/Phường";
                 }
             };
 
-            
+
         }
 
 
@@ -304,7 +302,7 @@ namespace GUI.Forms
             if (string.IsNullOrWhiteSpace(textBoxsdt.Text))
             {
                 MessageBox.Show("Vui lòng nhập số điện thoại !", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBoxemail.Focus();
+                textBoxsdt.Focus();
                 return;
             }
 
@@ -327,6 +325,27 @@ namespace GUI.Forms
                 return;
             }
 
+            if (cboTinhThanh.SelectedIndex < 0 || cboTinhThanh.Text == "Tỉnh/Thành phố")
+            {
+                MessageBox.Show("Vui lòng chọn Tỉnh/Thành phố!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboTinhThanh.Focus();
+                return;
+            }
+
+            if (cbbQuan.SelectedIndex < 0 || cbbQuan.Text == "Quận/Huyện")
+            {
+                MessageBox.Show("Vui lòng chọn Quận/Huyện!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbbQuan.Focus();
+                return;
+            }
+
+            if (cbbXa.SelectedIndex < 0 || cbbXa.Text == "Xã/Phường")
+            {
+                MessageBox.Show("Vui lòng chọn Xã/Phường!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbbXa.Focus();
+                return;
+            }
+
 
             string diaChi = "";
             if (cbbXa.SelectedIndex >= 0)
@@ -340,7 +359,7 @@ namespace GUI.Forms
 
             NhanVien nv = new NhanVien
             {
-                maPhong = cbbPhong.SelectedValue.ToString(), 
+                maPhong = cbbPhong.SelectedValue.ToString(),
                 hoTen = textBoxhoten.Text,
                 ngaySinh = dateTimengaysinh.Value,
                 gioiTinh = radioNam.Checked ? "0" : "1",
@@ -358,6 +377,8 @@ namespace GUI.Forms
                 bll.ThemNhanVien(nv, isTruongPhong);
 
                 MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (SqlException ex)
             {
@@ -400,6 +421,11 @@ namespace GUI.Forms
 
             // Reset DateTimePicker
             dateTimengaysinh.Value = DateTime.Now;
+
+        }
+
+        private void textBoxemail_TextChanged(object sender, EventArgs e)
+        {
 
         }
     }
