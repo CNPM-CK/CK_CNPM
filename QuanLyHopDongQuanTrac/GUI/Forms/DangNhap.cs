@@ -12,6 +12,8 @@ namespace GUI.Forms
         public DangNhap()
         {
             InitializeComponent();
+            this.AcceptButton = button1;
+            textBoxmatkhau.KeyDown += textBoxMatKhau_KeyDown;
         }
 
 
@@ -25,11 +27,10 @@ namespace GUI.Forms
 
         private void button1_Click(object sender, EventArgs e) // nút đăng nhập
         {
-            string username = textBox1.Text;
-            string password = textBox2.Text;
+            string username = textBox1.Text.Trim();
+            string password = textBoxmatkhau.Text.Trim();
 
             var result = taiKhoanBLL.DangNhap(username, password);
-
             if (!result.success)
             {
                 MessageBox.Show(result.message, "Đăng nhập thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -51,6 +52,15 @@ namespace GUI.Forms
             }
 
         }
+        private void textBoxMatKhau_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                button1.PerformClick(); 
+            }
+        }
+
         private void label2_Click(object sender, EventArgs e)
         {
 

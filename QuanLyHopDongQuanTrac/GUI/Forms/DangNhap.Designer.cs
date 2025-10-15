@@ -41,7 +41,7 @@
             label6 = new Label();
             button2 = new Button();
             button1 = new Button();
-            textBox2 = new TextBox();
+            textBoxmatkhau = new TextBox();
             textBox1 = new TextBox();
             label4 = new Label();
             label3 = new Label();
@@ -124,7 +124,7 @@
             panel4.Controls.Add(label6);
             panel4.Controls.Add(button2);
             panel4.Controls.Add(button1);
-            panel4.Controls.Add(textBox2);
+            panel4.Controls.Add(textBoxmatkhau);
             panel4.Controls.Add(textBox1);
             panel4.Controls.Add(label4);
             panel4.Controls.Add(label3);
@@ -210,19 +210,19 @@
             button1.Location = new Point(77, 411);
             button1.Name = "button1";
             button1.Size = new Size(281, 55);
-            button1.TabIndex = 5;
+            button1.TabIndex = 2;
             button1.Text = "Đăng nhập";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
-            // textBox2
+            // textBoxmatkhau
             // 
-            textBox2.Location = new Point(77, 303);
-            textBox2.Multiline = true;
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(341, 47);
-            textBox2.TabIndex = 4;
-            textBox2.TextChanged += textBox2_TextChanged;
+            textBoxmatkhau.Location = new Point(77, 303);
+            textBoxmatkhau.Multiline = true;
+            textBoxmatkhau.Name = "textBoxmatkhau";
+            textBoxmatkhau.Size = new Size(341, 47);
+            textBoxmatkhau.TabIndex = 1;
+            textBoxmatkhau.TextChanged += textBox2_TextChanged;
             // 
             // textBox1
             // 
@@ -230,7 +230,7 @@
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(341, 47);
-            textBox1.TabIndex = 3;
+            textBox1.TabIndex = 0;
             textBox1.TextChanged += textBox1_TextChanged;
             // 
             // label4
@@ -360,7 +360,7 @@
         private Label label3;
         private Button button2;
         private Button button1;
-        private TextBox textBox2;
+        private TextBox textBoxmatkhau;
         private TextBox textBox1;
         private Label label4;
         private Label label6;

@@ -86,8 +86,6 @@ namespace BLL
             return (daThayDoi, log.ToString());
         }
 
-
-
         private bool KiemTraTruongPhong(string maNV, string maPhong)
         {
             if (string.IsNullOrEmpty(maPhong)) return false;

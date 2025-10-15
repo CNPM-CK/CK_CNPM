@@ -63,18 +63,18 @@ namespace DAL
 
         public List<NhanVien> LayDanhSachNhanVien() {
 
-            List<NhanVien> dsNhanvien = new List<NhanVien>() ;
-            using (SqlConnection conn = SqlConnectionData.Connect()) 
+            List<NhanVien> dsNhanvien = new List<NhanVien>();
+            using (SqlConnection conn = SqlConnectionData.Connect())
             {
 
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("layDanhSachNhanVien", conn)) 
+                using (SqlCommand cmd = new SqlCommand("layDanhSachNhanVien", conn))
                 {
-                   cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandType = CommandType.StoredProcedure;
 
                     using (SqlDataReader reader = cmd.ExecuteReader()) {
-                        
-                        while (reader.Read()) 
+
+                        while (reader.Read())
 
 
                         {
@@ -105,13 +105,13 @@ namespace DAL
                                 maPhong = reader["maPhong"].ToString(),
                                 tenPhong = reader["tenPhong"].ToString(),
                                 hoTen = reader["hoTen"].ToString(),
-                                ngaySinh = Convert.ToDateTime( reader["ngaySinh"]),
+                                ngaySinh = Convert.ToDateTime(reader["ngaySinh"]),
                                 gioiTinh = gioiTinh,
                                 diaChi = reader["diaChi"].ToString(),
                                 email = reader["email"].ToString(),
                                 soDienThoai = reader["soDienThoai"].ToString()
 
-                            };                           
+                            };
                             dsNhanvien.Add(nv);
 
                         }
@@ -119,10 +119,40 @@ namespace DAL
                     }
 
                 }
-            
+
             }
             return dsNhanvien;
 
+        }
+        public List<KhachHang> LayDanhSachKH()
+        {
+
+            List<KhachHang> dsKhachhang = new List<KhachHang>();
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("LayDSKH", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            KhachHang kh = new KhachHang();
+                            kh.maKH = reader["maKH"].ToString();
+                            kh.tenDoanhNghiep = reader["tenDoanhNghiep"].ToString();
+                            kh.kyHieuDN = reader["kyHieuDN"] == DBNull.Value ? null : reader["kyHieuDN"].ToString();
+                            kh.diaChi = reader["diaChi"].ToString();
+                            kh.nguoiDaiDien = reader["nguoiDaiDien"].ToString();
+                            kh.soDienThoaiKH = reader["soDienThoaiKH"].ToString();
+                            dsKhachhang.Add(kh);
+                        }
+                    }
+                }
+            }
+            return dsKhachhang;
         }
 
 
@@ -148,6 +178,27 @@ namespace DAL
             }
         }
 
+
+        public void ThemKhachHang(KhachHang kh)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("dbo.ThemKhachHang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Truyền tham số cho procedure
+                    cmd.Parameters.AddWithValue("@tenDoanhNghiep", kh.tenDoanhNghiep);
+                    cmd.Parameters.AddWithValue("@kyHieuDN", string.IsNullOrEmpty(kh.kyHieuDN) ? (object)DBNull.Value : kh.kyHieuDN);
+                    cmd.Parameters.AddWithValue("@diaChi", kh.diaChi);
+                    cmd.Parameters.AddWithValue("@nguoiDaiDien", kh.nguoiDaiDien);
+                    cmd.Parameters.AddWithValue("@soDienThoaiKH", kh.soDienThoaiKH);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
         public void SuaNhanVien(NhanVien nv, bool isTruongPhong)
         {
@@ -185,7 +236,59 @@ namespace DAL
         }
 
 
-        public void XoaNhanVien(string maNV)
+        public void SuaKhachHang(KhachHang kh)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("dbo.SuaKhachHang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@maKH", kh.maKH);
+                    cmd.Parameters.AddWithValue("@tenDoanhNghiep", kh.tenDoanhNghiep);
+                    cmd.Parameters.AddWithValue("@kyHieuDN", kh.kyHieuDN);
+                    cmd.Parameters.AddWithValue("@diaChi", kh.diaChi);
+                    cmd.Parameters.AddWithValue("@nguoiDaiDien", kh.nguoiDaiDien);
+                    cmd.Parameters.AddWithValue("@soDienThoaiKH", kh.soDienThoaiKH);
+          
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Lỗi khi sửa khách hàng : " + ex.Message);
+                    }
+                }
+            }
+        }
+
+
+
+        public void XoaNhanVien(string maKH)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("dbo.XoaKhachHang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@maKH", maKH);
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Lỗi khi xóa khách hàng : " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        public void XoaKhachHang(string maNV)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {

@@ -1,6 +1,6 @@
 ﻿namespace GUI.Forms
 {
-    partial class DanhSachNhanVien
+    partial class DanhSachKhachHang
     {
         /// <summary>
         /// Required designer variable.
@@ -28,14 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachNhanVien));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachKhachHang));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel2 = new Panel();
-            pictureBox2 = new PictureBox();
+            pictureBox4 = new PictureBox();
             pictureBox3 = new PictureBox();
             pictureBox1 = new PictureBox();
-            picturemicro = new PictureBox();
             panel1 = new Panel();
             panel4 = new Panel();
             panel5 = new Panel();
@@ -43,6 +42,7 @@
             dgvDanhsachnhanvien = new DataGridView();
             dataGridView1 = new DataGridView();
             panel6 = new Panel();
+            picturemicro = new PictureBox();
             containersearch = new Panel();
             searchtextbox = new TextBox();
             btnXuatfile = new Button();
@@ -54,10 +54,9 @@
             panel3 = new Panel();
             labelFooter = new Label();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)picturemicro).BeginInit();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             panel5.SuspendLayout();
@@ -65,6 +64,7 @@
             ((System.ComponentModel.ISupportInitialize)dgvDanhsachnhanvien).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picturemicro).BeginInit();
             containersearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureFilter).BeginInit();
             sidebar.SuspendLayout();
@@ -74,7 +74,7 @@
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(0, 152, 70);
-            panel2.Controls.Add(pictureBox2);
+            panel2.Controls.Add(pictureBox4);
             panel2.Controls.Add(pictureBox3);
             panel2.Controls.Add(pictureBox1);
             panel2.Dock = DockStyle.Top;
@@ -83,17 +83,17 @@
             panel2.Size = new Size(1021, 64);
             panel2.TabIndex = 0;
             // 
-            // pictureBox2
+            // pictureBox4
             // 
-            pictureBox2.Anchor = AnchorStyles.Right;
-            pictureBox2.Cursor = Cursors.Hand;
-            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(880, 12);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(41, 38);
-            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox2.TabIndex = 3;
-            pictureBox2.TabStop = false;
+            pictureBox4.Anchor = AnchorStyles.Right;
+            pictureBox4.Cursor = Cursors.Hand;
+            pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
+            pictureBox4.Location = new Point(876, 12);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(41, 38);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox4.TabIndex = 4;
+            pictureBox4.TabStop = false;
             // 
             // pictureBox3
             // 
@@ -112,21 +112,10 @@
             pictureBox1.Image = Properties.Resources.remove_background_logo;
             pictureBox1.Location = new Point(0, 0);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(193, 64);
+            pictureBox1.Size = new Size(211, 64);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
-            // 
-            // picturemicro
-            // 
-            picturemicro.Cursor = Cursors.Hand;
-            picturemicro.Image = (Image)resources.GetObject("picturemicro.Image");
-            picturemicro.Location = new Point(325, 11);
-            picturemicro.Name = "picturemicro";
-            picturemicro.Size = new Size(39, 34);
-            picturemicro.SizeMode = PictureBoxSizeMode.Zoom;
-            picturemicro.TabIndex = 6;
-            picturemicro.TabStop = false;
             // 
             // panel1
             // 
@@ -155,9 +144,9 @@
             panel5.Controls.Add(panel7);
             panel5.Controls.Add(panel6);
             panel5.Dock = DockStyle.Fill;
-            panel5.Location = new Point(193, 0);
+            panel5.Location = new Point(211, 0);
             panel5.Name = "panel5";
-            panel5.Size = new Size(828, 472);
+            panel5.Size = new Size(810, 472);
             panel5.TabIndex = 1;
             // 
             // panel7
@@ -167,7 +156,7 @@
             panel7.Dock = DockStyle.Fill;
             panel7.Location = new Point(0, 61);
             panel7.Name = "panel7";
-            panel7.Size = new Size(828, 411);
+            panel7.Size = new Size(810, 411);
             panel7.TabIndex = 1;
             // 
             // dgvDanhsachnhanvien
@@ -198,7 +187,7 @@
             dgvDanhsachnhanvien.Location = new Point(0, 0);
             dgvDanhsachnhanvien.Name = "dgvDanhsachnhanvien";
             dgvDanhsachnhanvien.RowHeadersWidth = 51;
-            dgvDanhsachnhanvien.Size = new Size(828, 385);
+            dgvDanhsachnhanvien.Size = new Size(810, 385);
             dgvDanhsachnhanvien.TabIndex = 1;
             dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
             dgvDanhsachnhanvien.CellContentClick += dgvDanhsachnhanvien_CellContentClick;
@@ -214,14 +203,14 @@
             dataGridView1.Location = new Point(0, 385);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(828, 26);
+            dataGridView1.Size = new Size(810, 26);
             dataGridView1.TabIndex = 0;
             // 
             // panel6
             // 
             panel6.BackColor = Color.White;
-            panel6.Controls.Add(containersearch);
             panel6.Controls.Add(picturemicro);
+            panel6.Controls.Add(containersearch);
             panel6.Controls.Add(btnXuatfile);
             panel6.Controls.Add(btnThemuser);
             panel6.Controls.Add(pictureFilter);
@@ -229,8 +218,19 @@
             panel6.Font = new Font("Segoe UI", 10F);
             panel6.Location = new Point(0, 0);
             panel6.Name = "panel6";
-            panel6.Size = new Size(828, 61);
+            panel6.Size = new Size(810, 61);
             panel6.TabIndex = 0;
+            // 
+            // picturemicro
+            // 
+            picturemicro.Cursor = Cursors.Hand;
+            picturemicro.Image = (Image)resources.GetObject("picturemicro.Image");
+            picturemicro.Location = new Point(308, 12);
+            picturemicro.Name = "picturemicro";
+            picturemicro.Size = new Size(39, 34);
+            picturemicro.SizeMode = PictureBoxSizeMode.Zoom;
+            picturemicro.TabIndex = 8;
+            picturemicro.TabStop = false;
             // 
             // containersearch
             // 
@@ -243,9 +243,10 @@
             // 
             // searchtextbox
             // 
-            searchtextbox.Location = new Point(74, 22);
+            searchtextbox.Location = new Point(45, 13);
             searchtextbox.Name = "searchtextbox";
-            searchtextbox.Size = new Size(125, 30);
+            searchtextbox.PlaceholderText = "Tìm kiếm khách hàng";
+            searchtextbox.Size = new Size(177, 30);
             searchtextbox.TabIndex = 0;
             // 
             // btnXuatfile
@@ -257,7 +258,7 @@
             btnXuatfile.FlatAppearance.BorderColor = Color.White;
             btnXuatfile.FlatStyle = FlatStyle.Flat;
             btnXuatfile.Image = (Image)resources.GetObject("btnXuatfile.Image");
-            btnXuatfile.Location = new Point(750, 10);
+            btnXuatfile.Location = new Point(732, 10);
             btnXuatfile.Name = "btnXuatfile";
             btnXuatfile.Size = new Size(66, 40);
             btnXuatfile.TabIndex = 5;
@@ -267,12 +268,12 @@
             // 
             btnThemuser.Anchor = AnchorStyles.None;
             btnThemuser.BackColor = Color.FromArgb(255, 107, 53);
-            btnThemuser.BackgroundImageLayout = ImageLayout.None;
+            btnThemuser.BackgroundImageLayout = ImageLayout.Zoom;
             btnThemuser.Cursor = Cursors.Hand;
             btnThemuser.FlatAppearance.BorderColor = Color.White;
             btnThemuser.FlatStyle = FlatStyle.Flat;
             btnThemuser.Image = (Image)resources.GetObject("btnThemuser.Image");
-            btnThemuser.Location = new Point(568, 10);
+            btnThemuser.Location = new Point(559, 10);
             btnThemuser.Name = "btnThemuser";
             btnThemuser.Size = new Size(66, 40);
             btnThemuser.TabIndex = 4;
@@ -282,7 +283,7 @@
             // pictureFilter
             // 
             pictureFilter.Cursor = Cursors.Hand;
-            pictureFilter.Image = (Image)resources.GetObject("pictureFilter.Image");
+            pictureFilter.Image = Properties.Resources.filter__1_;
             pictureFilter.Location = new Point(3, 12);
             pictureFilter.Name = "pictureFilter";
             pictureFilter.Size = new Size(33, 33);
@@ -299,7 +300,7 @@
             sidebar.Dock = DockStyle.Left;
             sidebar.Location = new Point(0, 0);
             sidebar.Name = "sidebar";
-            sidebar.Size = new Size(193, 472);
+            sidebar.Size = new Size(211, 472);
             sidebar.TabIndex = 0;
             // 
             // button1
@@ -312,7 +313,7 @@
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(0, 61);
             button1.Name = "button1";
-            button1.Size = new Size(193, 61);
+            button1.Size = new Size(211, 61);
             button1.TabIndex = 1;
             button1.Text = "Danh sách nhân viên ";
             button1.TextAlign = ContentAlignment.MiddleRight;
@@ -321,6 +322,7 @@
             // btnDanhsachnv
             // 
             btnDanhsachnv.BackColor = Color.FromArgb(10, 113, 78);
+            btnDanhsachnv.BackgroundImageLayout = ImageLayout.Zoom;
             btnDanhsachnv.Cursor = Cursors.Hand;
             btnDanhsachnv.FlatStyle = FlatStyle.Flat;
             btnDanhsachnv.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -329,11 +331,12 @@
             btnDanhsachnv.ImageAlign = ContentAlignment.MiddleLeft;
             btnDanhsachnv.Location = new Point(0, 0);
             btnDanhsachnv.Name = "btnDanhsachnv";
-            btnDanhsachnv.Size = new Size(193, 61);
+            btnDanhsachnv.Size = new Size(211, 61);
             btnDanhsachnv.TabIndex = 0;
-            btnDanhsachnv.Text = "Danh sách nhân viên ";
+            btnDanhsachnv.Text = "Danh sách khách hàng  ";
             btnDanhsachnv.TextAlign = ContentAlignment.MiddleRight;
             btnDanhsachnv.UseVisualStyleBackColor = false;
+            btnDanhsachnv.Click += btnDanhsachnv_Click;
             // 
             // panel3
             // 
@@ -356,23 +359,22 @@
             labelFooter.Text = "© 2025 ECOS. Bản quyền thuộc về ECOS.";
             labelFooter.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // DanhSachNhanVien
+            // DanhSachKhachHang
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1021, 565);
             Controls.Add(panel1);
-            Name = "DanhSachNhanVien";
+            Name = "DanhSachKhachHang";
             Text = "Form1";
             WindowState = FormWindowState.Maximized;
             Load += DanhSachNhanVien_Load;
             Click += DanhSachNhanVien_Click;
             Resize += DanhSachNhanVien_Resize;
             panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)picturemicro).EndInit();
             panel1.ResumeLayout(false);
             panel4.ResumeLayout(false);
             panel5.ResumeLayout(false);
@@ -380,6 +382,7 @@
             ((System.ComponentModel.ISupportInitialize)dgvDanhsachnhanvien).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)picturemicro).EndInit();
             containersearch.ResumeLayout(false);
             containersearch.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureFilter).EndInit();
@@ -408,10 +411,10 @@
         private Button btnThemuser;
         private Button btnXuatfile;
         private Label labelFooter;
-        private PictureBox pictureBox2;
-        private PictureBox picturemicro;
         private Button button1;
         private Panel containersearch;
         private TextBox searchtextbox;
+        private PictureBox picturemicro;
+        private PictureBox pictureBox4;
     }
 }
