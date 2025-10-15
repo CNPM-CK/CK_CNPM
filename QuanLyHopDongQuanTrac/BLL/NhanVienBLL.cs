@@ -95,5 +95,11 @@ namespace BLL
 
             return phongBan != null && phongBan.truongPhong == maNV;
         }
+
+
+        public string LayPhongBanTheoTaiKhoan(string tenTK)
+        {
+            return dal.LayPhongBanTheoTaiKhoan(tenTK);
+        }
     }
 }

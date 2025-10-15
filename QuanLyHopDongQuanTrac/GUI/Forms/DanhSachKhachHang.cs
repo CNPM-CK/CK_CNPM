@@ -59,6 +59,7 @@ namespace GUI.Forms
             InitializeButtonIcons();
             InitializeButtonStyles();
             InitializeCustomSearchBox();
+            InitializeSettingMenu();
             CalculateLayout();
 
             KhachHangBLL khBLL = new KhachHangBLL();
@@ -304,6 +305,46 @@ namespace GUI.Forms
             btnXuatfile.Click += (s, ev) =>
             {
                 menu.Show(btnXuatfile, new Point(0, btnXuatfile.Height));
+            };
+        }
+
+        private void InitializeSettingMenu()
+        {
+            // Tạo menu ngữ cảnh mới
+            ContextMenuStrip settingMenu = new ContextMenuStrip();
+
+            // Mục 1: Cài đặt cá nhân
+            ToolStripMenuItem personalItem = new ToolStripMenuItem("Cài đặt cá nhân");
+            personalItem.Click += (s, ev) =>
+            {
+                MessageBox.Show("Mở trang cài đặt cá nhân...", "Thông báo");
+                // TODO: Mở form cài đặt cá nhân ở đây, ví dụ:
+                // CaiDatCaNhan form = new CaiDatCaNhan();
+                // form.ShowDialog();
+            };
+
+            ToolStripMenuItem logoutItem = new ToolStripMenuItem("Đăng xuất");
+            logoutItem.Click += (s, ev) =>
+            {
+                DialogResult result = MessageBox.Show("Bạn có chắc muốn đăng xuất không?", "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    this.Hide();
+
+                    DangNhap loginForm = new DangNhap();
+                    loginForm.Show();
+                }
+            };
+
+            settingMenu.Items.Add(personalItem);
+            settingMenu.Items.Add(new ToolStripSeparator());
+            settingMenu.Items.Add(logoutItem);
+
+            pictureBoxSetting.Click += (s, ev) =>
+            {
+                settingMenu.Show(pictureBoxSetting, new Point(0, pictureBoxSetting.Height));
             };
         }
 

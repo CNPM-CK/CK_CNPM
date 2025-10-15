@@ -47,9 +47,51 @@ namespace GUI.Forms
             }
             else
             {
-                MessageBox.Show($"Chào {result.account.tenTK}, bạn không có quyền truy cập danh sách nhân viên.",
-                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                var nvBLL = new NhanVienBLL();
+                string maPhong = nvBLL.LayPhongBanTheoTaiKhoan(result.account.tenTK);
+
+                if (string.IsNullOrEmpty(maPhong))
+                {
+                    MessageBox.Show("Không tìm thấy phòng ban cho nhân viên này!",
+                                    "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                Form formPhong = null;
+
+                switch (maPhong)
+                {
+                    case "P001":
+                        formPhong = new DanhSachKhachHang();
+                        break;
+                    //case "P002":
+                    //    formPhong = new PhongKeHoachForm();
+                    //    break;
+                    //case "P003":
+                    //    formPhong = new PhongHienTruongForm();
+                    //    break;
+                    //case "P004":
+                    //    formPhong = new PhongThiNghiemForm();
+                    //    break;
+                    //case "P005":
+                    //    formPhong = new PhongKetQuaForm();
+                    //    break;
+                    //case "P006":
+                    //    formPhong = new PhongQuanTracForm();
+                    //    break;
+                    default:
+                        MessageBox.Show("Phòng ban chưa được hỗ trợ!",
+                                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                }
+
+                if (formPhong != null)
+                {
+                    formPhong.Show();
+                    this.Hide();
+                }
             }
+
 
         }
         private void textBoxMatKhau_KeyDown(object sender, KeyEventArgs e)

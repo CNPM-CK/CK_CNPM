@@ -369,9 +369,23 @@ namespace DAL
             }
             return null;
 
-
         }
 
+        public string LayPhongBanTheoTaiKhoan(string tenTK)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("LayPhongBanTheoTaiKhoan", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@tenTK", tenTK);
+
+                    var result = cmd.ExecuteScalar();
+                    return result?.ToString();
+                }
+            }
+        }
 
     }
 }

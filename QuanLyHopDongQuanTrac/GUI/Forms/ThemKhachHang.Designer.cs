@@ -41,8 +41,6 @@
             cbbQuan = new ComboBox();
             panelTinh = new Panel();
             cboTinhThanh = new ComboBox();
-            pictureBox8 = new PictureBox();
-            label10 = new Label();
             panel10 = new Panel();
             panelTenDD = new Panel();
             textBoxTenDD = new TextBox();
@@ -53,6 +51,8 @@
             panelsdt = new Panel();
             textBoxsdt = new TextBox();
             label6 = new Label();
+            label10 = new Label();
+            pictureBox8 = new PictureBox();
             panel6 = new Panel();
             panelKHDN = new Panel();
             textBoxKHDN = new TextBox();
@@ -76,13 +76,13 @@
             panelXa.SuspendLayout();
             panelHuyen.SuspendLayout();
             panelTinh.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             panel10.SuspendLayout();
             panelTenDD.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             panelsdt.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             panel6.SuspendLayout();
             panelKHDN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
@@ -144,8 +144,6 @@
             panel16.Controls.Add(panelXa);
             panel16.Controls.Add(panelHuyen);
             panel16.Controls.Add(panelTinh);
-            panel16.Controls.Add(pictureBox8);
-            panel16.Controls.Add(label10);
             panel16.Dock = DockStyle.Fill;
             panel16.Location = new Point(3, 425);
             panel16.Name = "panel16";
@@ -156,9 +154,9 @@
             // 
             panelSonha.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelSonha.Controls.Add(txtDiaChi);
-            panelSonha.Location = new Point(68, 168);
+            panelSonha.Location = new Point(68, 156);
             panelSonha.Name = "panelSonha";
-            panelSonha.Size = new Size(244, 36);
+            panelSonha.Size = new Size(244, 45);
             panelSonha.TabIndex = 11;
             // 
             // txtDiaChi
@@ -175,9 +173,9 @@
             // 
             panelXa.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelXa.Controls.Add(cbbXa);
-            panelXa.Location = new Point(68, 122);
+            panelXa.Location = new Point(68, 105);
             panelXa.Name = "panelXa";
-            panelXa.Size = new Size(244, 40);
+            panelXa.Size = new Size(244, 45);
             panelXa.TabIndex = 10;
             // 
             // cbbXa
@@ -194,9 +192,9 @@
             // 
             panelHuyen.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelHuyen.Controls.Add(cbbQuan);
-            panelHuyen.Location = new Point(68, 78);
+            panelHuyen.Location = new Point(68, 54);
             panelHuyen.Name = "panelHuyen";
-            panelHuyen.Size = new Size(244, 38);
+            panelHuyen.Size = new Size(244, 45);
             panelHuyen.TabIndex = 9;
             // 
             // cbbQuan
@@ -212,9 +210,9 @@
             // 
             panelTinh.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelTinh.Controls.Add(cboTinhThanh);
-            panelTinh.Location = new Point(68, 32);
+            panelTinh.Location = new Point(68, 3);
             panelTinh.Name = "panelTinh";
-            panelTinh.Size = new Size(244, 40);
+            panelTinh.Size = new Size(244, 45);
             panelTinh.TabIndex = 8;
             // 
             // cboTinhThanh
@@ -225,26 +223,6 @@
             cboTinhThanh.Name = "cboTinhThanh";
             cboTinhThanh.Size = new Size(244, 28);
             cboTinhThanh.TabIndex = 0;
-            // 
-            // pictureBox8
-            // 
-            pictureBox8.Image = (Image)resources.GetObject("pictureBox8.Image");
-            pictureBox8.Location = new Point(68, 6);
-            pictureBox8.Name = "pictureBox8";
-            pictureBox8.Size = new Size(27, 20);
-            pictureBox8.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox8.TabIndex = 6;
-            pictureBox8.TabStop = false;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label10.Location = new Point(101, 3);
-            label10.Name = "label10";
-            label10.Size = new Size(70, 23);
-            label10.TabIndex = 0;
-            label10.Text = "Địa chỉ ";
             // 
             // panel10
             // 
@@ -261,7 +239,7 @@
             // 
             panelTenDD.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelTenDD.Controls.Add(textBoxTenDD);
-            panelTenDD.Location = new Point(61, 84);
+            panelTenDD.Location = new Point(54, 67);
             panelTenDD.Name = "panelTenDD";
             panelTenDD.Size = new Size(244, 61);
             panelTenDD.TabIndex = 7;
@@ -277,7 +255,7 @@
             // pictureBox6
             // 
             pictureBox6.Image = (Image)resources.GetObject("pictureBox6.Image");
-            pictureBox6.Location = new Point(61, 43);
+            pictureBox6.Location = new Point(61, 30);
             pictureBox6.Name = "pictureBox6";
             pictureBox6.Size = new Size(27, 20);
             pictureBox6.SizeMode = PictureBoxSizeMode.Zoom;
@@ -288,7 +266,7 @@
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.Location = new Point(94, 40);
+            label7.Location = new Point(94, 27);
             label7.Name = "label7";
             label7.Size = new Size(160, 23);
             label7.TabIndex = 0;
@@ -299,6 +277,8 @@
             panel8.Controls.Add(pictureBox5);
             panel8.Controls.Add(panelsdt);
             panel8.Controls.Add(label6);
+            panel8.Controls.Add(label10);
+            panel8.Controls.Add(pictureBox8);
             panel8.Dock = DockStyle.Fill;
             panel8.Location = new Point(3, 214);
             panel8.Name = "panel8";
@@ -308,7 +288,7 @@
             // pictureBox5
             // 
             pictureBox5.Image = (Image)resources.GetObject("pictureBox5.Image");
-            pictureBox5.Location = new Point(68, 43);
+            pictureBox5.Location = new Point(68, 30);
             pictureBox5.Name = "pictureBox5";
             pictureBox5.Size = new Size(27, 20);
             pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
@@ -319,7 +299,7 @@
             // 
             panelsdt.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelsdt.Controls.Add(textBoxsdt);
-            panelsdt.Location = new Point(68, 84);
+            panelsdt.Location = new Point(68, 67);
             panelsdt.Name = "panelsdt";
             panelsdt.Size = new Size(244, 61);
             panelsdt.TabIndex = 5;
@@ -336,11 +316,31 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label6.Location = new Point(101, 43);
+            label6.Location = new Point(101, 30);
             label6.Name = "label6";
             label6.Size = new Size(116, 23);
             label6.TabIndex = 0;
             label6.Text = "Số điện thoại";
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label10.Location = new Point(101, 167);
+            label10.Name = "label10";
+            label10.Size = new Size(70, 23);
+            label10.TabIndex = 0;
+            label10.Text = "Địa chỉ ";
+            // 
+            // pictureBox8
+            // 
+            pictureBox8.Image = (Image)resources.GetObject("pictureBox8.Image");
+            pictureBox8.Location = new Point(68, 170);
+            pictureBox8.Name = "pictureBox8";
+            pictureBox8.Size = new Size(27, 20);
+            pictureBox8.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox8.TabIndex = 6;
+            pictureBox8.TabStop = false;
             // 
             // panel6
             // 
@@ -526,13 +526,11 @@
             panel3.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             panel16.ResumeLayout(false);
-            panel16.PerformLayout();
             panelSonha.ResumeLayout(false);
             panelSonha.PerformLayout();
             panelXa.ResumeLayout(false);
             panelHuyen.ResumeLayout(false);
             panelTinh.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             panel10.ResumeLayout(false);
             panel10.PerformLayout();
             panelTenDD.ResumeLayout(false);
@@ -543,6 +541,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             panelsdt.ResumeLayout(false);
             panelsdt.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             panel6.ResumeLayout(false);
             panel6.PerformLayout();
             panelKHDN.ResumeLayout(false);

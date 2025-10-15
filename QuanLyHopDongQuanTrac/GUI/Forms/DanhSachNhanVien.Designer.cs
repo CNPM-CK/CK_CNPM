@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachNhanVien));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             panel2 = new Panel();
             pictureBox2 = new PictureBox();
-            pictureBox3 = new PictureBox();
+            pictureBoxSetting = new PictureBox();
             pictureBox1 = new PictureBox();
             picturemicro = new PictureBox();
             panel1 = new Panel();
@@ -55,7 +55,7 @@
             labelFooter = new Label();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxSetting).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picturemicro).BeginInit();
             panel1.SuspendLayout();
@@ -75,7 +75,7 @@
             // 
             panel2.BackColor = Color.FromArgb(0, 152, 70);
             panel2.Controls.Add(pictureBox2);
-            panel2.Controls.Add(pictureBox3);
+            panel2.Controls.Add(pictureBoxSetting);
             panel2.Controls.Add(pictureBox1);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
@@ -95,17 +95,17 @@
             pictureBox2.TabIndex = 3;
             pictureBox2.TabStop = false;
             // 
-            // pictureBox3
+            // pictureBoxSetting
             // 
-            pictureBox3.Anchor = AnchorStyles.Right;
-            pictureBox3.Cursor = Cursors.Hand;
-            pictureBox3.Image = Properties.Resources.settingicon_2;
-            pictureBox3.Location = new Point(943, 12);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(44, 38);
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox3.TabIndex = 2;
-            pictureBox3.TabStop = false;
+            pictureBoxSetting.Anchor = AnchorStyles.Right;
+            pictureBoxSetting.Cursor = Cursors.Hand;
+            pictureBoxSetting.Image = Properties.Resources.settingicon_2;
+            pictureBoxSetting.Location = new Point(943, 12);
+            pictureBoxSetting.Name = "pictureBoxSetting";
+            pictureBoxSetting.Size = new Size(44, 38);
+            pictureBoxSetting.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxSetting.TabIndex = 2;
+            pictureBoxSetting.TabStop = false;
             // 
             // pictureBox1
             // 
@@ -175,24 +175,24 @@
             dgvDanhsachnhanvien.AllowUserToAddRows = false;
             dgvDanhsachnhanvien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDanhsachnhanvien.BackgroundColor = Color.White;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 10F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 10F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvDanhsachnhanvien.ColumnHeadersHeight = 30;
             dgvDanhsachnhanvien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvDanhsachnhanvien.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Window;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+            dgvDanhsachnhanvien.DefaultCellStyle = dataGridViewCellStyle4;
             dgvDanhsachnhanvien.Dock = DockStyle.Fill;
             dgvDanhsachnhanvien.EnableHeadersVisualStyles = false;
             dgvDanhsachnhanvien.Location = new Point(0, 0);
@@ -370,7 +370,7 @@
             Resize += DanhSachNhanVien_Resize;
             panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxSetting).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)picturemicro).EndInit();
             panel1.ResumeLayout(false);
@@ -392,7 +392,7 @@
         #endregion
 
         private Panel panel2;
-        private PictureBox pictureBox3;
+        private PictureBox pictureBoxSetting;
         private PictureBox pictureBox1;
         private Panel panel1;
         private Panel panel3;
