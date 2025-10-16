@@ -27,7 +27,7 @@ namespace BLL
         {
             try
             {
-                dal.XoaNhanVien(maKH);
+                dal.XoaKhachHang(maKH);
             }
             catch (Exception ex)
             {

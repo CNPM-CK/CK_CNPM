@@ -390,8 +390,8 @@ namespace GUI.Forms
             {
                 MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
-            this.Close();
+            //SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
+            //this.Close();
         }
     }
 }

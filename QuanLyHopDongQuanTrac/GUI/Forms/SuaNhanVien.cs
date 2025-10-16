@@ -463,6 +463,8 @@ namespace GUI.Forms
                 bll.SuaNhanVien(nv, isTruongPhong);
                 MessageBox.Show("Sửa nhân viên thành công!", "Thông báo",
                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -475,9 +477,6 @@ namespace GUI.Forms
                 MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi hệ thống",
                                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
-            this.Close();
-
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

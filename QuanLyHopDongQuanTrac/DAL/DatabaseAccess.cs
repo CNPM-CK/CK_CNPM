@@ -266,7 +266,7 @@ namespace DAL
 
 
 
-        public void XoaNhanVien(string maKH)
+        public void XoaKhachHang(string maKH)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -288,7 +288,7 @@ namespace DAL
             }
         }
 
-        public void XoaKhachHang(string maNV)
+        public void XoaNhanVien(string maNV)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
