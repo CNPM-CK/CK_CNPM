@@ -34,6 +34,8 @@ namespace GUI.Forms
         private BindingList<NhanVien> dsNhanVien;
         private bool isPlaceholder = true; 
         private string lastSearchKeyword = "";
+        private Form currentOpenForm = null;
+
 
 
         public DanhSachNhanVien()
@@ -161,6 +163,15 @@ namespace GUI.Forms
 
         private void HandleEdit(DataGridViewRow row)
         {
+            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
+            {
+                currentOpenForm.BringToFront();
+                currentOpenForm.Focus();
+                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             NhanVien nv = new NhanVien
             {
                 maNV = row.Cells["maNV"].Value.ToString(),
@@ -174,7 +185,14 @@ namespace GUI.Forms
             };
 
             SuaNhanVien frmSua = new SuaNhanVien(nv);
+            currentOpenForm = frmSua;
             CenterFormOnParent(frmSua);
+
+            frmSua.FormClosed += (s, ev) =>
+            {
+                currentOpenForm = null; // Xóa reference khi form đóng
+            };
+
             frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
             frmSua.Show(this);
         }
@@ -560,8 +578,24 @@ namespace GUI.Forms
         #region Button Events
         private void btnThemuser_Click(object sender, EventArgs e)
         {
+            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
+            {
+                currentOpenForm.BringToFront();
+                currentOpenForm.Focus();
+                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+
             ThemNhanVien frmThem = new ThemNhanVien();
+            currentOpenForm = frmThem;
             CenterFormOnParent(frmThem);
+            frmThem.FormClosed += (s, ev) =>
+            {
+                currentOpenForm = null; // Xóa reference khi form đóng
+            };
+
             frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
             frmThem.Show(this);
         }

@@ -18,6 +18,7 @@ namespace GUI.Forms
     public partial class DanhSachKhachHang : Form
     {
         #region Fields
+        //private System.Windows.Forms.Timer searchTimer;
 
         private Color borderColor = Color.Black;
         private int borderRadius = 12;
@@ -34,6 +35,7 @@ namespace GUI.Forms
         private BindingList<KhachHang> dsKhachhang;
         private bool isPlaceholder = true;
         private string lastSearchKeyword = "";
+        private Form currentOpenForm = null;
 
         public DanhSachKhachHang()
         {
@@ -154,6 +156,16 @@ namespace GUI.Forms
 
         private void HandleEdit(DataGridViewRow row)
         {
+            // KIỂM TRA: Nếu đang có BẤT KỲ form nào đang mở
+            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
+            {
+                currentOpenForm.BringToFront();
+                currentOpenForm.Focus();
+                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             KhachHang kh = new KhachHang
             {
                 maKH = row.Cells["maKH"].Value.ToString(),
@@ -165,13 +177,42 @@ namespace GUI.Forms
             };
 
             SuaKhachHang frmSua = new SuaKhachHang(kh);
+            currentOpenForm = frmSua; // Lưu reference
+
             CenterFormOnParent(frmSua);
+
+            // Xử lý khi form đóng
+            frmSua.FormClosed += (s, ev) =>
+            {
+                currentOpenForm = null;
+            };
+
             frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachKhachHang();
             frmSua.Show(this);
         }
 
         private void HandleDelete(DataGridViewRow row)
         {
+            // KIỂM TRA: Nếu đang có BẤT KỲ form nào đang mở
+            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
+            {
+                currentOpenForm.BringToFront();
+                currentOpenForm.Focus();
+                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+
+            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
+            {
+                currentOpenForm.BringToFront();
+                currentOpenForm.Focus();
+                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             string maKH = row.Cells["maKH"].Value.ToString();
             string tenDN = row.Cells["tenDoanhNghiep"].Value?.ToString();
 
@@ -256,6 +297,7 @@ namespace GUI.Forms
             searchtextbox.TextChanged += searchtextbox_TextChanged_1;
             searchtextbox.KeyDown += searchtextbox_KeyDown;
             containersearch.Paint += containersearch_Paint;
+
         }
 
         private void InitializeContextMenu()
@@ -517,6 +559,9 @@ namespace GUI.Forms
             lastSearchKeyword = currentKeyword;
 
             PerformSearch();
+
+            //searchTimer.Stop();
+            //searchTimer.Start();
         }
 
         private void PerformSearch()
@@ -545,8 +590,27 @@ namespace GUI.Forms
         #region Button Events
         private void btnThemuser_Click(object sender, EventArgs e)
         {
+            // KIỂM TRA: Nếu đang có BẤT KỲ form nào đang mở
+            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
+            {
+                currentOpenForm.BringToFront();
+                currentOpenForm.Focus();
+                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             ThemKhachHang frmThem = new ThemKhachHang();
+            currentOpenForm = frmThem; // Lưu reference
+
             CenterFormOnParent(frmThem);
+
+            // Xử lý khi form đóng
+            frmThem.FormClosed += (s, ev) =>
+            {
+                currentOpenForm = null; // Xóa reference khi form đóng
+            };
+
             frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachKhachHang();
             frmThem.Show(this);
         }
