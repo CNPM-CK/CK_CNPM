@@ -29,8 +29,11 @@ namespace GUI.Forms
         private const int MIN_SEARCH_WIDTH = 200;
         private const int MAX_SEARCH_WIDTH = 500;
         private const int SEARCH_HEIGHT = 50;
-        private BindingList<NhanVien> dsNhanVien;
+        private const string PLACEHOLDER_TEXT = "Tìm kiếm nhân viên...";
 
+        private BindingList<NhanVien> dsNhanVien;
+        private bool isPlaceholder = true; 
+        private string lastSearchKeyword = "";
 
 
         public DanhSachNhanVien()
@@ -53,93 +56,51 @@ namespace GUI.Forms
         #region Form Load
         private void DanhSachNhanVien_Load(object sender, EventArgs e)
         {
+            NhanVienBLL nvBLL = new NhanVienBLL();
+            dsNhanVien = new BindingList<NhanVien>(nvBLL.LayDanhSachNhanVien());
+
             InitializeContextMenu();
             InitializeButtonIcons();
             InitializeButtonStyles();
             InitializeCustomSearchBox();
             InitializeSettingMenu();
+            InitializeDataGridView();
             CalculateLayout();
+        }
 
-            NhanVienBLL nvBLL = new NhanVienBLL();
-            dsNhanVien = new BindingList<NhanVien>(nvBLL.LayDanhSachNhanVien());
-
+        private void InitializeDataGridView()
+        {
             dgvDanhsachnhanvien.AutoGenerateColumns = false;
             dgvDanhsachnhanvien.Columns.Clear();
 
-            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            // Thêm các cột
+            dgvDanhsachnhanvien.Columns.AddRange(new DataGridViewColumn[]
             {
-                DataPropertyName = "maNV",
-                HeaderText = "Mã nhân viên",
-                Name = "maNV"
+                new DataGridViewTextBoxColumn { DataPropertyName = "maNV", HeaderText = "Mã nhân viên", Name = "maNV" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "hoTen", HeaderText = "Họ Tên", Name = "hoTen" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "email", HeaderText = "Email", Name = "email" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "maPhong", HeaderText = "Mã Phòng", Name = "maPhong" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "ngaySinh", HeaderText = "Ngày Sinh", Name = "ngaySinh" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "gioiTinh", HeaderText = "Giới Tính", Name = "gioiTinh" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "diaChi", HeaderText = "Địa Chỉ", Name = "diaChi" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "soDienThoai", HeaderText = "Số Điện Thoại", Name = "soDienThoai" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "tenPhong", HeaderText = "Phòng Ban", Name = "tenPhong" }
             });
 
-            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
+            // Thêm cột thao tác
+            DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
             {
-                DataPropertyName = "hoTen",
-                HeaderText = "Họ Tên",
-                Name = "hoTen"
-            });
-
-            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "email",
-                HeaderText = "Email",
-                Name = "email"
-            });
-
-            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "maPhong",
-                HeaderText = "Mã Phòng",
-                Name = "maPhong"
-            });
-
-            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "ngaySinh",
-                HeaderText = "Ngày Sinh",
-                Name = "ngaySinh"
-            });
-
-            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "gioiTinh",
-                HeaderText = "Giới Tính",
-                Name = "gioiTinh"
-            });
-
-            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "diaChi",
-                HeaderText = "Địa Chỉ",
-                Name = "diaChi"
-            });
-
-            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "soDienThoai",
-                HeaderText = "Số Điện Thoại",
-                Name = "soDienThoai"
-            });
-
-            dgvDanhsachnhanvien.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "tenPhong",
-                HeaderText = "Phòng Ban",
-                Name = "tenPhong"
-            });
-
-            DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn();
-            thaoTacCol.Name = "ThaoTac";
-            thaoTacCol.HeaderText = "Thao tác";
-            thaoTacCol.ImageLayout = DataGridViewImageCellLayout.Zoom;
+                Name = "ThaoTac",
+                HeaderText = "Thao tác",
+                ImageLayout = DataGridViewImageCellLayout.Zoom
+            };
             dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
 
+            // Đăng ký events
             dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
 
             dgvDanhsachnhanvien.DataSource = dsNhanVien;
-
-            dgvDanhsachnhanvien.ReadOnly = true; 
+            dgvDanhsachnhanvien.ReadOnly = true;
             dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
         }
 
@@ -150,7 +111,6 @@ namespace GUI.Forms
             foreach (var nv in nvBLL.LayDanhSachNhanVien())
                 dsNhanVien.Add(nv);
         }
-
 
         private Rectangle editRect;
         private Rectangle deleteRect;
@@ -168,111 +128,114 @@ namespace GUI.Forms
 
                 int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
                 int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
+
                 editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
                 e.Graphics.DrawImage(Properties.Resources.edit, editRect);
+
                 deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
                 e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
+
                 e.Handled = true;
             }
         }
 
-
         private void dgvDanhsachnhanvien_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
+            if (e.RowIndex < 0 || e.ColumnIndex != dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
+                return;
+
+            var clickPoint = dgvDanhsachnhanvien.PointToClient(Cursor.Position);
+            DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
+
+            if (row.Cells["maNV"].Value == null) return;
+
+            if (editRect.Contains(clickPoint))
             {
-                var clickPoint = dgvDanhsachnhanvien.PointToClient(Cursor.Position);
+                HandleEdit(row);
+            }
+            else if (deleteRect.Contains(clickPoint))
+            {
+                HandleDelete(row);
+            }
+        }
 
-                if (editRect.Contains(clickPoint))
+        private void HandleEdit(DataGridViewRow row)
+        {
+            NhanVien nv = new NhanVien
+            {
+                maNV = row.Cells["maNV"].Value.ToString(),
+                maPhong = row.Cells["maPhong"].Value?.ToString(),
+                hoTen = row.Cells["hoTen"].Value?.ToString(),
+                ngaySinh = row.Cells["ngaySinh"].Value != null ? Convert.ToDateTime(row.Cells["ngaySinh"].Value) : DateTime.MinValue,
+                gioiTinh = row.Cells["gioiTinh"].Value?.ToString(),
+                diaChi = row.Cells["diaChi"].Value?.ToString(),
+                soDienThoai = row.Cells["soDienThoai"].Value?.ToString(),
+                email = row.Cells["email"].Value?.ToString()
+            };
+
+            SuaNhanVien frmSua = new SuaNhanVien(nv);
+            CenterFormOnParent(frmSua);
+            frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
+            frmSua.Show(this);
+        }
+
+        private void HandleDelete(DataGridViewRow row)
+        {
+            string maNV = row.Cells["maNV"].Value.ToString();
+            string hoTen = row.Cells["hoTen"].Value?.ToString();
+
+            DialogResult result = MessageBox.Show(
+                $"Bạn có chắc chắn muốn xóa nhân viên '{hoTen}' (Mã: {maNV}) không?",
+                "Xác nhận xóa",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                try
                 {
-                    DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
+                    NhanVienBLL nvBLL = new NhanVienBLL();
+                    nvBLL.XoaNhanVien(maNV);
 
-                    if (row.Cells["maNV"].Value == null) return;
+                    MessageBox.Show("Đã xóa nhân viên thành công!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    NhanVien nv = new NhanVien
-                    {
-                        maNV = row.Cells["maNV"].Value.ToString(),
-                        maPhong = row.Cells["maPhong"].Value?.ToString(),
-                        hoTen = row.Cells["hoTen"].Value?.ToString(),
-                        ngaySinh = row.Cells["ngaySinh"].Value != null ? Convert.ToDateTime(row.Cells["ngaySinh"].Value) : DateTime.MinValue,
-                        gioiTinh = row.Cells["gioiTinh"].Value?.ToString(),
-                        diaChi = row.Cells["diaChi"].Value?.ToString(),
-                        soDienThoai = row.Cells["soDienThoai"].Value?.ToString(),
-                        email = row.Cells["email"].Value?.ToString()
-                    };
-
-                    SuaNhanVien frmSua = new SuaNhanVien(nv);
-                    frmSua.StartPosition = FormStartPosition.Manual;
-                    frmSua.Location = new Point(
-                        this.Location.X + (this.Width - frmSua.Width) / 2,
-                        this.Location.Y + (this.Height - frmSua.Height) / 2
-                    );
-                    frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
-                    frmSua.Show(this);
+                    RefreshDanhSachNhanVien();
                 }
-                else if (deleteRect.Contains(clickPoint))
+                catch (Exception ex)
                 {
-                    DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
-                    if (row.Cells["maNV"].Value == null) return;
-
-                    string maNV = row.Cells["maNV"].Value.ToString();
-                    string hoTen = row.Cells["hoTen"].Value?.ToString();
-
-                    DialogResult result = MessageBox.Show(
-                        $"Bạn có chắc chắn muốn xóa nhân viên '{hoTen}' (Mã: {maNV}) không?",
-                        "Xác nhận xóa",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question
-                    );
-
-                    if (result == DialogResult.Yes)
-                    {
-                        try
-                        {
-                            NhanVienBLL nvBLL = new NhanVienBLL();
-                            nvBLL.XoaNhanVien(maNV);
-
-                            MessageBox.Show("Đã xóa nhân viên thành công!", "Thông báo",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                            RefreshDanhSachNhanVien();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Có lỗi xảy ra khi xóa nhân viên: " + ex.Message,
-                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
+                    MessageBox.Show("Có lỗi xảy ra khi xóa nhân viên: " + ex.Message,
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-
+        private void CenterFormOnParent(Form childForm)
+        {
+            childForm.StartPosition = FormStartPosition.Manual;
+            childForm.Location = new Point(
+                this.Location.X + (this.Width - childForm.Width) / 2,
+                this.Location.Y + (this.Height - childForm.Height) / 2
+            );
+        }
 
         private void dgvDanhsachnhanvien_Paint(object sender, PaintEventArgs e)
         {
-
-            // Đảm bảo DataGridView có ảnh watermark
             if (Properties.Resources.greenlogo == null) return;
 
-            // Lấy kích thước DataGridView
             int dgvWidth = dgvDanhsachnhanvien.Width;
             int dgvHeight = dgvDanhsachnhanvien.Height;
-
-            // Lấy ảnh watermark
             Image watermark = Properties.Resources.greenlogo;
 
-            // Tính vị trí căn giữa
             int x = (dgvWidth - watermark.Width) / 2;
             int y = (dgvHeight - watermark.Height) / 2;
 
-            // Tạo brush mờ
             ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f; // độ mờ 0.0 - 1.0
+            matrix.Matrix33 = 0.3f;
             ImageAttributes attributes = new ImageAttributes();
             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
-            // Vẽ watermark trên DataGridView
             e.Graphics.DrawImage(watermark,
                 new Rectangle(x, y, watermark.Width, watermark.Height),
                 0, 0, watermark.Width, watermark.Height,
@@ -280,32 +243,28 @@ namespace GUI.Forms
                 attributes);
         }
 
-        private void DanhSachNhanVien_Click(object sender, EventArgs e){}
-
-
         private void InitializeCustomSearchBox()
         {
-            // Tạo container panel
             containersearch.BackColor = Color.Transparent;
             containersearch.Size = new Size(400, SEARCH_HEIGHT);
             containersearch.BringToFront();
 
-            // Tạo TextBox
             searchtextbox.BorderStyle = BorderStyle.None;
             searchtextbox.BackColor = Color.White;
             searchtextbox.Font = new Font("Segoe UI", 10F);
-            searchtextbox.ForeColor = Color.FromArgb(64, 64, 64);
+            searchtextbox.ForeColor = Color.Silver;
+            searchtextbox.Text = PLACEHOLDER_TEXT;
             searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
             searchtextbox.Size = new Size(containersearch.Width - (borderSize * 2 + 10), 28);
             searchtextbox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+
             containersearch.Controls.Add(searchtextbox);
 
-            SetPlaceholder();
-
-            //Gọi sự kiện 
+            // Đăng ký events
             searchtextbox.Enter += searchtextbox_Enter;
             searchtextbox.Leave += searchtextbox_Leave;
-            searchtextbox.TextChanged += searchtextbox_TextChanged;
+            searchtextbox.TextChanged += searchtextbox_TextChanged_1;
+            searchtextbox.KeyDown += searchtextbox_KeyDown;
             containersearch.Paint += containersearch_Paint;
         }
 
@@ -328,21 +287,14 @@ namespace GUI.Forms
             };
         }
 
-
-        //Nút setting
         private void InitializeSettingMenu()
         {
-            // Tạo menu ngữ cảnh mới
             ContextMenuStrip settingMenu = new ContextMenuStrip();
 
-            // Mục 1: Cài đặt cá nhân
             ToolStripMenuItem personalItem = new ToolStripMenuItem("Cài đặt cá nhân");
             personalItem.Click += (s, ev) =>
             {
                 MessageBox.Show("Mở trang cài đặt cá nhân...", "Thông báo");
-                // TODO: Mở form cài đặt cá nhân ở đây, ví dụ:
-                // CaiDatCaNhan form = new CaiDatCaNhan();
-                // form.ShowDialog();
             };
 
             ToolStripMenuItem logoutItem = new ToolStripMenuItem("Đăng xuất");
@@ -354,14 +306,13 @@ namespace GUI.Forms
                 if (result == DialogResult.Yes)
                 {
                     this.Hide();
-
                     DangNhap loginForm = new DangNhap();
                     loginForm.Show();
                 }
             };
 
             settingMenu.Items.Add(personalItem);
-            settingMenu.Items.Add(new ToolStripSeparator()); 
+            settingMenu.Items.Add(new ToolStripSeparator());
             settingMenu.Items.Add(logoutItem);
 
             pictureBoxSetting.Click += (s, ev) =>
@@ -370,10 +321,8 @@ namespace GUI.Forms
             };
         }
 
-
         private void InitializeButtonIcons()
         {
-            // Icon danh sách nhân viên
             if (btnDanhsachnv.Image != null)
             {
                 btnDanhsachnv.Image = new Bitmap(btnDanhsachnv.Image, new Size(30, 30));
@@ -382,13 +331,11 @@ namespace GUI.Forms
                 btnDanhsachnv.Padding = new Padding(0, 0, 5, 0);
             }
 
-            // Icon thêm user
             if (btnThemuser.Image != null)
             {
                 btnThemuser.Image = new Bitmap(btnThemuser.Image, new Size(24, 24));
             }
 
-            // Icon xuất file
             if (btnXuatfile.Image != null)
             {
                 btnXuatfile.Image = new Bitmap(btnXuatfile.Image, new Size(24, 24));
@@ -402,15 +349,6 @@ namespace GUI.Forms
 
             BoGocButton(btnThemuser, 20);
             BoGocButton(btnXuatfile, 20);
-        }
-
-        private void SetPlaceholder()
-        {
-            if (string.IsNullOrWhiteSpace(searchtextbox.Text))
-            {
-                searchtextbox.Text = "Tìm kiếm nhân viên...";
-                searchtextbox.ForeColor = Color.Silver;
-            }
         }
         #endregion
 
@@ -429,44 +367,35 @@ namespace GUI.Forms
             int btnHeight = isMaximized ? 50 : 40;
             int btnRadius = isMaximized ? 25 : 20;
 
-            // Resize buttons
             btnXuatfile.Size = new Size(btnWidth, btnHeight);
             btnThemuser.Size = new Size(btnWidth, btnHeight);
             BoGocButton(btnXuatfile, btnRadius);
             BoGocButton(btnThemuser, btnRadius);
 
-            // Đặt buttons ở bên phải
             btnXuatfile.Left = formWidth - btnWidth - MARGIN;
             btnThemuser.Left = btnXuatfile.Left - btnWidth - SPACING;
 
-            // Đặt vị trí icon filter bên trái
             pictureFilter.Left = MARGIN;
 
-            // Tính toán available space cho search box
             int leftBoundary = pictureFilter.Right + SPACING;
             int rightBoundary = btnThemuser.Left - SPACING - picturemicro.Width - SPACING;
             int availableWidth = rightBoundary - leftBoundary;
 
-            // Tính width cho search box
             int searchWidth = Math.Max(MIN_SEARCH_WIDTH, Math.Min(availableWidth, MAX_SEARCH_WIDTH));
             if (searchWidth < MIN_SEARCH_WIDTH)
             {
                 searchWidth = Math.Max(150, availableWidth);
             }
 
-            // Đặt vị trí search container
             containersearch.Left = leftBoundary;
             containersearch.Width = searchWidth;
             containersearch.Height = SEARCH_HEIGHT;
 
-            // Cập nhật width và vị trí của textbox bên trong
-            searchtextbox.Width = searchWidth - (borderSize * 2 + 10); 
-            searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2); 
+            searchtextbox.Width = searchWidth - (borderSize * 2 + 10);
+            searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
 
-            // Đặt icon micro ngay sau search box
             picturemicro.Left = containersearch.Right + SPACING;
 
-            // Cập nhật padding cho buttons
             if (isMaximized)
             {
                 btnThemuser.Padding = new Padding(10, 5, 10, 5);
@@ -478,10 +407,6 @@ namespace GUI.Forms
                 btnXuatfile.Padding = new Padding(5, 3, 5, 3);
             }
 
-            // DEBUG: Kiểm tra kích thước
-            System.Diagnostics.Debug.WriteLine($"containersearch.Width: {containersearch.Width}, searchtextbox.Width: {searchtextbox.Width}, searchtextbox.Location: {searchtextbox.Location}");
-
-            // Vẽ lại search container
             containersearch.Invalidate();
         }
         #endregion
@@ -509,7 +434,6 @@ namespace GUI.Forms
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-            // Tạo rectangle với offset để viền không bị cắt
             float offset = borderSize / 2f;
             RectangleF rect = new RectangleF(
                 offset,
@@ -520,13 +444,11 @@ namespace GUI.Forms
 
             using (GraphicsPath path = CreateRoundedRectPath(rect, borderRadius))
             {
-                // Fill nền trắng
                 using (SolidBrush brush = new SolidBrush(Color.White))
                 {
                     e.Graphics.FillPath(brush, path);
                 }
 
-                // Vẽ viền đen
                 using (Pen pen = new Pen(borderColor, borderSize))
                 {
                     e.Graphics.DrawPath(pen, path);
@@ -550,20 +472,11 @@ namespace GUI.Forms
         }
         #endregion
 
-        #region TextBox Events
-        private void searchtextbox_TextChanged(object sender, EventArgs e)
-        {
-            // Logic tìm kiếm ở đây
-            if (searchtextbox.ForeColor != Color.Silver)
-            {
-                // Xử lý tìm kiếm thực tế
-            }
-        }
-
+        #region TextBox Events - FIX CHÍNH Ở ĐÂY
         private void searchtextbox_Enter(object sender, EventArgs e)
         {
-            if (searchtextbox.Text == "Tìm kiếm nhân viên..." && searchtextbox.ForeColor == Color.Silver)
-            {
+            if (isPlaceholder)
+            {   isPlaceholder = false;
                 searchtextbox.Text = "";
                 searchtextbox.ForeColor = Color.FromArgb(64, 64, 64);
             }
@@ -573,35 +486,82 @@ namespace GUI.Forms
         {
             if (string.IsNullOrWhiteSpace(searchtextbox.Text))
             {
-                SetPlaceholder();
+                isPlaceholder = true;
+                searchtextbox.Text = PLACEHOLDER_TEXT;
+                searchtextbox.ForeColor = Color.Silver;
+                dgvDanhsachnhanvien.DataSource = dsNhanVien;
+                lastSearchKeyword = "";
+
             }
         }
-        #endregion
 
-        #region Unused Events
-        private void pictureBox5_Click(object sender, EventArgs e)
+
+        private void searchtextbox_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+
+                if (dgvDanhsachnhanvien.Rows.Count > 0)
+                {
+                    dgvDanhsachnhanvien.ClearSelection();
+                    dgvDanhsachnhanvien.Rows[0].Selected = true;
+                    dgvDanhsachnhanvien.FirstDisplayedScrollingRowIndex = 0;
+                }
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                searchtextbox.Clear();
+                dgvDanhsachnhanvien.DataSource = dsNhanVien;
+                lastSearchKeyword = "";
+            }
         }
 
-        private void pictureBox4_Click(object sender, EventArgs e)
+
+        private void searchtextbox_TextChanged_1(object sender, EventArgs e)
         {
+            if (isPlaceholder)
+                return;
+            string currentKeyword = searchtextbox.Text.Trim().ToLower();
+            if (currentKeyword == lastSearchKeyword)
+                return;
+            lastSearchKeyword = currentKeyword;
+            PerformSearch();
         }
+
+        private void PerformSearch()
+        {
+            string keyword = searchtextbox.Text.Trim().ToLower();
+
+            // Nếu không có từ khóa → hiển thị toàn bộ danh sách
+            if (string.IsNullOrEmpty(keyword))
+            {
+                dgvDanhsachnhanvien.DataSource = dsNhanVien;
+                return;
+            }
+
+            // Lọc danh sách theo từ khóa (hỗ trợ tìm kiếm theo từng ký tự)
+            var filtered = dsNhanVien
+                .Where(nv =>
+                    (nv.hoTen ?? "").ToLower().Contains(keyword) ||
+                    (nv.email ?? "").ToLower().Contains(keyword) ||
+                    (nv.tenPhong ?? "").ToLower().Contains(keyword) ||
+                    (nv.soDienThoai ?? "").Contains(keyword) ||
+                    (nv.diaChi ?? "").ToLower().Contains(keyword) ||
+                    nv.maNV.ToString().ToLower().Contains(keyword)
+                )
+                .ToList();
+
+            dgvDanhsachnhanvien.DataSource = new BindingList<NhanVien>(filtered);
+        }
+
         #endregion
 
-
-        private void dgvDanhsachnhanvien_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
-
-        private void containersearch_Paint_1(object sender, PaintEventArgs e) { }
-
+        #region Button Events
         private void btnThemuser_Click(object sender, EventArgs e)
         {
             ThemNhanVien frmThem = new ThemNhanVien();
-
-            frmThem.StartPosition = FormStartPosition.Manual;
-            frmThem.Location = new Point(
-               this.Location.X + (this.Width - frmThem.Width) / 2,
-               this.Location.Y + (this.Height - frmThem.Height) / 2
-            );
+            CenterFormOnParent(frmThem);
             frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
             frmThem.Show(this);
         }
@@ -620,5 +580,15 @@ namespace GUI.Forms
                 e.FormattingApplied = true;
             }
         }
+        #endregion
+
+        #region Unused Events
+        private void DanhSachNhanVien_Click(object sender, EventArgs e) { }
+        private void pictureBox5_Click(object sender, EventArgs e) { }
+        private void pictureBox4_Click(object sender, EventArgs e) { }
+        private void dgvDanhsachnhanvien_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
+        private void containersearch_Paint_1(object sender, PaintEventArgs e) { }
+        private void searchtextbox_TextChanged(object sender, EventArgs e) { }
+        #endregion
     }
 }
