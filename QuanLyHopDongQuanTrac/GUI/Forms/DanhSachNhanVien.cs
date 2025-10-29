@@ -74,6 +74,29 @@ namespace GUI.Forms
         {
             dgvDanhsachnhanvien.AutoGenerateColumns = false;
             dgvDanhsachnhanvien.Columns.Clear();
+            dgvDanhsachnhanvien.AllowUserToAddRows = false;
+            dgvDanhsachnhanvien.ReadOnly = true;
+            dgvDanhsachnhanvien.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvDanhsachnhanvien.MultiSelect = false;
+            dgvDanhsachnhanvien.RowTemplate.Height = 50;
+
+            // Font settings
+            dgvDanhsachnhanvien.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular);
+            dgvDanhsachnhanvien.DefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
+            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgvDanhsachnhanvien.RowHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
+
+            // Header styling
+            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 152, 70);
+            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvDanhsachnhanvien.EnableHeadersVisualStyles = false;
+
+            // Cell styling
+            dgvDanhsachnhanvien.DefaultCellStyle.BackColor = Color.White;
+            dgvDanhsachnhanvien.DefaultCellStyle.ForeColor = Color.Black;
+            dgvDanhsachnhanvien.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dgvDanhsachnhanvien.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             // Thêm các cột
             dgvDanhsachnhanvien.Columns.AddRange(new DataGridViewColumn[]

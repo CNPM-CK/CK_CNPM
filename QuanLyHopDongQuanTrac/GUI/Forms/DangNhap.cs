@@ -38,7 +38,7 @@ namespace GUI.Forms
             }
 
             //Chuyển hướng nếu vai trò là admin
-            if (result.account!.vaiTro == 1)
+            if (result.account!.vaiTro == 1 || result.account!.vaiTro == 2)
             {
 
                 DanhSachNhanVien listEmployees = new DanhSachNhanVien();
@@ -64,9 +64,9 @@ namespace GUI.Forms
                     case "P001":
                         formPhong = new DanhSachKhachHang();
                         break;
-                    //case "P002":
-                    //    formPhong = new PhongKeHoachForm();
-                    //    break;
+                    case "P002":
+                        formPhong = new DanhSachKeHoach();
+                        break;
                     //case "P003":
                     //    formPhong = new PhongHienTruongForm();
                     //    break;

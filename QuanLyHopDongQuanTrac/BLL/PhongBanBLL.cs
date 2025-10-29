@@ -16,6 +16,12 @@ namespace BLL
         {
             return dal.LayDSPhongBan();
         }
+
+
+        public List<PhongBan> LayPTNvaPHT()
+        {
+            return dal.layPTNvaPHT();
+        }
         public PhongBan LayPhongBanTheoMa(string maPhong)
         {
             return dal.LayPhongBanTheoMa(maPhong);

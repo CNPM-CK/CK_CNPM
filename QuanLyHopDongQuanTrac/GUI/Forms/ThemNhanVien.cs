@@ -238,8 +238,6 @@ namespace GUI.Forms
                     cbbXa.Text = "Xã/Phường";
                 }
             };
-
-
         }
 
 
