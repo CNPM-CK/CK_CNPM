@@ -33,15 +33,31 @@
             panel1 = new Panel();
             panel3 = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
-            panel16 = new Panel();
-            panelSonha = new Panel();
-            txtDiaChi = new TextBox();
-            panelXa = new Panel();
-            cbbXa = new ComboBox();
-            panelHuyen = new Panel();
-            cbbQuan = new ComboBox();
-            panelTinh = new Panel();
-            cboTinhThanh = new ComboBox();
+            panel7 = new Panel();
+            panelDiachi = new Panel();
+            txtDiachi = new TextBox();
+            pictureBox10 = new PictureBox();
+            label9 = new Label();
+            panel14 = new Panel();
+            panelTrangthai = new Panel();
+            cboTrangthai = new ComboBox();
+            pictureBox9 = new PictureBox();
+            label8 = new Label();
+            panel12 = new Panel();
+            panelMaildn = new Panel();
+            txtEmaildn = new TextBox();
+            pictureBox8 = new PictureBox();
+            label4 = new Label();
+            panel9 = new Panel();
+            panelMaildd = new Panel();
+            txtMaildd = new TextBox();
+            pictureBox7 = new PictureBox();
+            label3 = new Label();
+            panel4 = new Panel();
+            panelMsthue = new Panel();
+            txtMsthue = new TextBox();
+            pictureBox3 = new PictureBox();
+            masoThue = new Label();
             panel10 = new Panel();
             panelTenDD = new Panel();
             textBoxTenDD = new TextBox();
@@ -52,47 +68,58 @@
             panelsdt = new Panel();
             textBoxsdt = new TextBox();
             label6 = new Label();
-            label10 = new Label();
-            pictureBox8 = new PictureBox();
             panel6 = new Panel();
             panelKHDN = new Panel();
             textBoxKHDN = new TextBox();
             pictureBox4 = new PictureBox();
             label5 = new Label();
             panel5 = new Panel();
-            pictureBox1 = new PictureBox();
+            pictureBox2 = new PictureBox();
             panelTenDN = new Panel();
             textBoxTenDN = new TextBox();
             label2 = new Label();
-            tableLayoutPanel2 = new TableLayoutPanel();
+            panel11 = new Panel();
             btnCancel = new Button();
             buttonAddnew = new Button();
             panel2 = new Panel();
+            pictureBox1 = new PictureBox();
             label1 = new Label();
             contextMenuStrip1 = new ContextMenuStrip(components);
+            errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
             panel3.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
-            panel16.SuspendLayout();
-            panelSonha.SuspendLayout();
-            panelXa.SuspendLayout();
-            panelHuyen.SuspendLayout();
-            panelTinh.SuspendLayout();
+            panel7.SuspendLayout();
+            panelDiachi.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox10).BeginInit();
+            panel14.SuspendLayout();
+            panelTrangthai.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox9).BeginInit();
+            panel12.SuspendLayout();
+            panelMaildn.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
+            panel9.SuspendLayout();
+            panelMaildd.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
+            panel4.SuspendLayout();
+            panelMsthue.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             panel10.SuspendLayout();
             panelTenDD.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             panelsdt.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             panel6.SuspendLayout();
             panelKHDN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             panelTenDN.SuspendLayout();
-            tableLayoutPanel2.SuspendLayout();
+            panel11.SuspendLayout();
             panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -121,16 +148,20 @@
             tableLayoutPanel1.ColumnCount = 2;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.Controls.Add(panel16, 0, 2);
+            tableLayoutPanel1.Controls.Add(panel7, 0, 4);
+            tableLayoutPanel1.Controls.Add(panel14, 1, 3);
+            tableLayoutPanel1.Controls.Add(panel12, 0, 2);
+            tableLayoutPanel1.Controls.Add(panel9, 0, 3);
+            tableLayoutPanel1.Controls.Add(panel4, 1, 2);
             tableLayoutPanel1.Controls.Add(panel10, 1, 1);
             tableLayoutPanel1.Controls.Add(panel8, 0, 1);
             tableLayoutPanel1.Controls.Add(panel6, 1, 0);
             tableLayoutPanel1.Controls.Add(panel5, 0, 0);
-            tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 1, 2);
+            tableLayoutPanel1.Controls.Add(panel11, 1, 4);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 3;
+            tableLayoutPanel1.RowCount = 5;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
@@ -140,110 +171,263 @@
             tableLayoutPanel1.TabIndex = 2;
             tableLayoutPanel1.Paint += tableLayoutPanel1_Paint;
             // 
-            // panel16
+            // panel7
             // 
-            panel16.Controls.Add(panelSonha);
-            panel16.Controls.Add(panelXa);
-            panel16.Controls.Add(panelHuyen);
-            panel16.Controls.Add(panelTinh);
-            panel16.Dock = DockStyle.Fill;
-            panel16.Location = new Point(3, 425);
-            panel16.Name = "panel16";
-            panel16.Size = new Size(394, 207);
-            panel16.TabIndex = 8;
+            panel7.Controls.Add(panelDiachi);
+            panel7.Controls.Add(pictureBox10);
+            panel7.Controls.Add(label9);
+            panel7.Location = new Point(3, 511);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(394, 121);
+            panel7.TabIndex = 18;
             // 
-            // panelSonha
+            // panelDiachi
             // 
-            panelSonha.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            panelSonha.Controls.Add(txtDiaChi);
-            panelSonha.Location = new Point(68, 151);
-            panelSonha.Name = "panelSonha";
-            panelSonha.Size = new Size(244, 45);
-            panelSonha.TabIndex = 11;
+            panelDiachi.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            panelDiachi.Controls.Add(txtDiachi);
+            panelDiachi.Location = new Point(41, 35);
+            panelDiachi.Name = "panelDiachi";
+            panelDiachi.Size = new Size(320, 45);
+            panelDiachi.TabIndex = 7;
             // 
-            // txtDiaChi
+            // txtDiachi
             // 
-            txtDiaChi.BorderStyle = BorderStyle.FixedSingle;
-            txtDiaChi.Dock = DockStyle.Fill;
-            txtDiaChi.Location = new Point(0, 0);
-            txtDiaChi.Name = "txtDiaChi";
-            txtDiaChi.PlaceholderText = "Số nhà,Tên đường";
-            txtDiaChi.Size = new Size(244, 27);
-            txtDiaChi.TabIndex = 3;
+            txtDiachi.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtDiachi.Location = new Point(2, 2);
+            txtDiachi.Multiline = true;
+            txtDiachi.Name = "txtDiachi";
+            txtDiachi.Size = new Size(310, 40);
+            txtDiachi.TabIndex = 0;
             // 
-            // panelXa
+            // pictureBox10
             // 
-            panelXa.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            panelXa.Controls.Add(cbbXa);
-            panelXa.Location = new Point(68, 100);
-            panelXa.Name = "panelXa";
-            panelXa.Size = new Size(244, 45);
-            panelXa.TabIndex = 10;
+            pictureBox10.Image = (Image)resources.GetObject("pictureBox10.Image");
+            pictureBox10.Location = new Point(41, 6);
+            pictureBox10.Name = "pictureBox10";
+            pictureBox10.Size = new Size(27, 20);
+            pictureBox10.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox10.TabIndex = 6;
+            pictureBox10.TabStop = false;
             // 
-            // cbbXa
+            // label9
             // 
-            cbbXa.Dock = DockStyle.Fill;
-            cbbXa.FormattingEnabled = true;
-            cbbXa.Location = new Point(0, 0);
-            cbbXa.Name = "cbbXa";
-            cbbXa.Size = new Size(244, 28);
-            cbbXa.TabIndex = 1;
-            cbbXa.Text = "Xã/Phường";
+            label9.AutoSize = true;
+            label9.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label9.Location = new Point(74, 3);
+            label9.Name = "label9";
+            label9.Size = new Size(65, 23);
+            label9.TabIndex = 0;
+            label9.Text = "Địa chỉ";
             // 
-            // panelHuyen
+            // panel14
             // 
-            panelHuyen.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            panelHuyen.Controls.Add(cbbQuan);
-            panelHuyen.Location = new Point(68, 49);
-            panelHuyen.Name = "panelHuyen";
-            panelHuyen.Size = new Size(244, 45);
-            panelHuyen.TabIndex = 9;
+            panel14.Controls.Add(panelTrangthai);
+            panel14.Controls.Add(pictureBox9);
+            panel14.Controls.Add(label8);
+            panel14.Location = new Point(403, 384);
+            panel14.Name = "panel14";
+            panel14.Size = new Size(394, 121);
+            panel14.TabIndex = 16;
             // 
-            // cbbQuan
+            // panelTrangthai
             // 
-            cbbQuan.Dock = DockStyle.Fill;
-            cbbQuan.FormattingEnabled = true;
-            cbbQuan.Location = new Point(0, 0);
-            cbbQuan.Name = "cbbQuan";
-            cbbQuan.Size = new Size(244, 28);
-            cbbQuan.TabIndex = 7;
+            panelTrangthai.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            panelTrangthai.Controls.Add(cboTrangthai);
+            panelTrangthai.Location = new Point(41, 56);
+            panelTrangthai.Name = "panelTrangthai";
+            panelTrangthai.Size = new Size(323, 45);
+            panelTrangthai.TabIndex = 7;
             // 
-            // panelTinh
+            // cboTrangthai
             // 
-            panelTinh.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            panelTinh.Controls.Add(cboTinhThanh);
-            panelTinh.Location = new Point(68, -2);
-            panelTinh.Name = "panelTinh";
-            panelTinh.Size = new Size(244, 45);
-            panelTinh.TabIndex = 8;
+            cboTrangthai.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboTrangthai.FormattingEnabled = true;
+            cboTrangthai.Location = new Point(3, 4);
+            cboTrangthai.Name = "cboTrangthai";
+            cboTrangthai.Size = new Size(310, 28);
+            cboTrangthai.TabIndex = 0;
             // 
-            // cboTinhThanh
+            // pictureBox9
             // 
-            cboTinhThanh.Dock = DockStyle.Fill;
-            cboTinhThanh.FormattingEnabled = true;
-            cboTinhThanh.Location = new Point(0, 0);
-            cboTinhThanh.Name = "cboTinhThanh";
-            cboTinhThanh.Size = new Size(244, 28);
-            cboTinhThanh.TabIndex = 0;
+            pictureBox9.Image = (Image)resources.GetObject("pictureBox9.Image");
+            pictureBox9.Location = new Point(41, 20);
+            pictureBox9.Name = "pictureBox9";
+            pictureBox9.Size = new Size(25, 25);
+            pictureBox9.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox9.TabIndex = 6;
+            pictureBox9.TabStop = false;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label8.Location = new Point(74, 19);
+            label8.Name = "label8";
+            label8.Size = new Size(92, 23);
+            label8.TabIndex = 0;
+            label8.Text = "Trạng thái";
+            // 
+            // panel12
+            // 
+            panel12.Controls.Add(panelMaildn);
+            panel12.Controls.Add(pictureBox8);
+            panel12.Controls.Add(label4);
+            panel12.Location = new Point(3, 257);
+            panel12.Name = "panel12";
+            panel12.Size = new Size(394, 121);
+            panel12.TabIndex = 15;
+            // 
+            // panelMaildn
+            // 
+            panelMaildn.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            panelMaildn.Controls.Add(txtEmaildn);
+            panelMaildn.Location = new Point(41, 56);
+            panelMaildn.Name = "panelMaildn";
+            panelMaildn.Size = new Size(317, 45);
+            panelMaildn.TabIndex = 7;
+            // 
+            // txtEmaildn
+            // 
+            txtEmaildn.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtEmaildn.Location = new Point(3, 3);
+            txtEmaildn.Multiline = true;
+            txtEmaildn.Name = "txtEmaildn";
+            txtEmaildn.Size = new Size(310, 35);
+            txtEmaildn.TabIndex = 0;
+            // 
+            // pictureBox8
+            // 
+            pictureBox8.Image = (Image)resources.GetObject("pictureBox8.Image");
+            pictureBox8.Location = new Point(41, 27);
+            pictureBox8.Name = "pictureBox8";
+            pictureBox8.Size = new Size(27, 20);
+            pictureBox8.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox8.TabIndex = 6;
+            pictureBox8.TabStop = false;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label4.Location = new Point(74, 27);
+            label4.Name = "label4";
+            label4.Size = new Size(170, 23);
+            label4.TabIndex = 0;
+            label4.Text = "Email doanh nghiệp";
+            // 
+            // panel9
+            // 
+            panel9.Controls.Add(panelMaildd);
+            panel9.Controls.Add(pictureBox7);
+            panel9.Controls.Add(label3);
+            panel9.Location = new Point(3, 384);
+            panel9.Name = "panel9";
+            panel9.Size = new Size(394, 121);
+            panel9.TabIndex = 12;
+            // 
+            // panelMaildd
+            // 
+            panelMaildd.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            panelMaildd.Controls.Add(txtMaildd);
+            panelMaildd.Location = new Point(41, 56);
+            panelMaildd.Name = "panelMaildd";
+            panelMaildd.Size = new Size(320, 45);
+            panelMaildd.TabIndex = 7;
+            // 
+            // txtMaildd
+            // 
+            txtMaildd.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtMaildd.Location = new Point(3, 3);
+            txtMaildd.Multiline = true;
+            txtMaildd.Name = "txtMaildd";
+            txtMaildd.Size = new Size(310, 35);
+            txtMaildd.TabIndex = 0;
+            // 
+            // pictureBox7
+            // 
+            pictureBox7.Image = (Image)resources.GetObject("pictureBox7.Image");
+            pictureBox7.Location = new Point(41, 22);
+            pictureBox7.Name = "pictureBox7";
+            pictureBox7.Size = new Size(27, 20);
+            pictureBox7.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox7.TabIndex = 6;
+            pictureBox7.TabStop = false;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.Location = new Point(74, 20);
+            label3.Name = "label3";
+            label3.Size = new Size(124, 23);
+            label3.TabIndex = 0;
+            label3.Text = "Email đại diện";
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(panelMsthue);
+            panel4.Controls.Add(pictureBox3);
+            panel4.Controls.Add(masoThue);
+            panel4.Location = new Point(403, 257);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(394, 121);
+            panel4.TabIndex = 11;
+            // 
+            // panelMsthue
+            // 
+            panelMsthue.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            panelMsthue.Controls.Add(txtMsthue);
+            panelMsthue.Location = new Point(44, 56);
+            panelMsthue.Name = "panelMsthue";
+            panelMsthue.Size = new Size(320, 45);
+            panelMsthue.TabIndex = 7;
+            // 
+            // txtMsthue
+            // 
+            txtMsthue.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtMsthue.Location = new Point(3, 3);
+            txtMsthue.Multiline = true;
+            txtMsthue.Name = "txtMsthue";
+            txtMsthue.Size = new Size(310, 35);
+            txtMsthue.TabIndex = 0;
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
+            pictureBox3.Location = new Point(44, 25);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(25, 25);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.TabIndex = 6;
+            pictureBox3.TabStop = false;
+            // 
+            // masoThue
+            // 
+            masoThue.AutoSize = true;
+            masoThue.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            masoThue.Location = new Point(74, 27);
+            masoThue.Name = "masoThue";
+            masoThue.Size = new Size(103, 23);
+            masoThue.TabIndex = 0;
+            masoThue.Text = "Mã số thuế ";
             // 
             // panel10
             // 
             panel10.Controls.Add(panelTenDD);
             panel10.Controls.Add(pictureBox6);
             panel10.Controls.Add(label7);
-            panel10.Dock = DockStyle.Fill;
-            panel10.Location = new Point(403, 214);
+            panel10.Location = new Point(403, 130);
             panel10.Name = "panel10";
-            panel10.Size = new Size(394, 205);
-            panel10.TabIndex = 3;
+            panel10.Size = new Size(394, 121);
+            panel10.TabIndex = 9;
             // 
             // panelTenDD
             // 
             panelTenDD.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelTenDD.Controls.Add(textBoxTenDD);
-            panelTenDD.Location = new Point(54, 67);
+            panelTenDD.Location = new Point(41, 60);
             panelTenDD.Name = "panelTenDD";
-            panelTenDD.Size = new Size(244, 61);
+            panelTenDD.Size = new Size(320, 45);
             panelTenDD.TabIndex = 7;
             // 
             // textBoxTenDD
@@ -251,13 +435,13 @@
             textBoxTenDD.Location = new Point(3, 3);
             textBoxTenDD.Multiline = true;
             textBoxTenDD.Name = "textBoxTenDD";
-            textBoxTenDD.Size = new Size(234, 50);
+            textBoxTenDD.Size = new Size(310, 35);
             textBoxTenDD.TabIndex = 0;
             // 
             // pictureBox6
             // 
             pictureBox6.Image = (Image)resources.GetObject("pictureBox6.Image");
-            pictureBox6.Location = new Point(61, 30);
+            pictureBox6.Location = new Point(41, 30);
             pictureBox6.Name = "pictureBox6";
             pictureBox6.Size = new Size(27, 20);
             pictureBox6.SizeMode = PictureBoxSizeMode.Zoom;
@@ -268,7 +452,7 @@
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.Location = new Point(94, 27);
+            label7.Location = new Point(74, 27);
             label7.Name = "label7";
             label7.Size = new Size(160, 23);
             label7.TabIndex = 0;
@@ -279,18 +463,15 @@
             panel8.Controls.Add(pictureBox5);
             panel8.Controls.Add(panelsdt);
             panel8.Controls.Add(label6);
-            panel8.Controls.Add(label10);
-            panel8.Controls.Add(pictureBox8);
-            panel8.Dock = DockStyle.Fill;
-            panel8.Location = new Point(3, 214);
+            panel8.Location = new Point(3, 130);
             panel8.Name = "panel8";
-            panel8.Size = new Size(394, 205);
-            panel8.TabIndex = 2;
+            panel8.Size = new Size(394, 121);
+            panel8.TabIndex = 8;
             // 
             // pictureBox5
             // 
             pictureBox5.Image = (Image)resources.GetObject("pictureBox5.Image");
-            pictureBox5.Location = new Point(68, 30);
+            pictureBox5.Location = new Point(38, 33);
             pictureBox5.Name = "pictureBox5";
             pictureBox5.Size = new Size(27, 20);
             pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
@@ -301,67 +482,47 @@
             // 
             panelsdt.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelsdt.Controls.Add(textBoxsdt);
-            panelsdt.Location = new Point(68, 67);
+            panelsdt.Location = new Point(38, 60);
             panelsdt.Name = "panelsdt";
-            panelsdt.Size = new Size(244, 61);
+            panelsdt.Size = new Size(315, 45);
             panelsdt.TabIndex = 5;
             // 
             // textBoxsdt
             // 
+            textBoxsdt.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             textBoxsdt.Location = new Point(3, 3);
             textBoxsdt.Multiline = true;
             textBoxsdt.Name = "textBoxsdt";
-            textBoxsdt.Size = new Size(234, 50);
+            textBoxsdt.Size = new Size(310, 35);
             textBoxsdt.TabIndex = 0;
             // 
             // label6
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label6.Location = new Point(101, 30);
+            label6.Location = new Point(71, 30);
             label6.Name = "label6";
             label6.Size = new Size(116, 23);
             label6.TabIndex = 0;
             label6.Text = "Số điện thoại";
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label10.Location = new Point(101, 167);
-            label10.Name = "label10";
-            label10.Size = new Size(70, 23);
-            label10.TabIndex = 0;
-            label10.Text = "Địa chỉ ";
-            // 
-            // pictureBox8
-            // 
-            pictureBox8.Image = (Image)resources.GetObject("pictureBox8.Image");
-            pictureBox8.Location = new Point(68, 170);
-            pictureBox8.Name = "pictureBox8";
-            pictureBox8.Size = new Size(27, 20);
-            pictureBox8.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox8.TabIndex = 6;
-            pictureBox8.TabStop = false;
             // 
             // panel6
             // 
             panel6.Controls.Add(panelKHDN);
             panel6.Controls.Add(pictureBox4);
             panel6.Controls.Add(label5);
-            panel6.Dock = DockStyle.Fill;
             panel6.Location = new Point(403, 3);
             panel6.Name = "panel6";
-            panel6.Size = new Size(394, 205);
-            panel6.TabIndex = 1;
+            panel6.Size = new Size(394, 121);
+            panel6.TabIndex = 7;
             // 
             // panelKHDN
             // 
             panelKHDN.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelKHDN.Controls.Add(textBoxKHDN);
-            panelKHDN.Location = new Point(61, 79);
+            panelKHDN.Location = new Point(41, 53);
             panelKHDN.Name = "panelKHDN";
-            panelKHDN.Size = new Size(244, 61);
+            panelKHDN.Size = new Size(320, 45);
             panelKHDN.TabIndex = 5;
             // 
             // textBoxKHDN
@@ -369,14 +530,13 @@
             textBoxKHDN.Location = new Point(3, 3);
             textBoxKHDN.Multiline = true;
             textBoxKHDN.Name = "textBoxKHDN";
-            textBoxKHDN.Size = new Size(234, 50);
+            textBoxKHDN.Size = new Size(310, 35);
             textBoxKHDN.TabIndex = 0;
-            textBoxKHDN.TextChanged += textBoxemail_TextChanged;
             // 
             // pictureBox4
             // 
             pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
-            pictureBox4.Location = new Point(61, 37);
+            pictureBox4.Location = new Point(41, 27);
             pictureBox4.Name = "pictureBox4";
             pictureBox4.Size = new Size(27, 20);
             pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
@@ -387,7 +547,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.Location = new Point(94, 37);
+            label5.Location = new Point(74, 27);
             label5.Name = "label5";
             label5.Size = new Size(181, 23);
             label5.TabIndex = 0;
@@ -395,69 +555,61 @@
             // 
             // panel5
             // 
-            panel5.Controls.Add(pictureBox1);
+            panel5.Controls.Add(pictureBox2);
             panel5.Controls.Add(panelTenDN);
             panel5.Controls.Add(label2);
-            panel5.Dock = DockStyle.Fill;
             panel5.Location = new Point(3, 3);
             panel5.Name = "panel5";
-            panel5.Size = new Size(394, 205);
-            panel5.TabIndex = 0;
-            panel5.Paint += panel5_Paint;
+            panel5.Size = new Size(394, 121);
+            panel5.TabIndex = 6;
             // 
-            // pictureBox1
+            // pictureBox2
             // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(68, 44);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(27, 20);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 4;
-            pictureBox1.TabStop = false;
+            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
+            pictureBox2.Location = new Point(38, 27);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(27, 20);
+            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox2.TabIndex = 4;
+            pictureBox2.TabStop = false;
             // 
             // panelTenDN
             // 
             panelTenDN.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelTenDN.Controls.Add(textBoxTenDN);
-            panelTenDN.Location = new Point(68, 79);
+            panelTenDN.Location = new Point(38, 53);
             panelTenDN.Name = "panelTenDN";
-            panelTenDN.Size = new Size(244, 61);
+            panelTenDN.Size = new Size(320, 45);
             panelTenDN.TabIndex = 3;
             // 
             // textBoxTenDN
             // 
+            textBoxTenDN.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             textBoxTenDN.Location = new Point(3, 3);
             textBoxTenDN.Multiline = true;
             textBoxTenDN.Name = "textBoxTenDN";
-            textBoxTenDN.Size = new Size(234, 50);
+            textBoxTenDN.Size = new Size(310, 35);
             textBoxTenDN.TabIndex = 0;
-            textBoxTenDN.TextChanged += textBoxhoten_TextChanged;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(101, 41);
+            label2.Location = new Point(71, 24);
             label2.Name = "label2";
             label2.Size = new Size(153, 23);
             label2.TabIndex = 0;
             label2.Text = "Tên doanh nghiệp";
             // 
-            // tableLayoutPanel2
+            // panel11
             // 
-            tableLayoutPanel2.ColumnCount = 1;
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.Controls.Add(btnCancel, 0, 1);
-            tableLayoutPanel2.Controls.Add(buttonAddnew, 0, 0);
-            tableLayoutPanel2.Dock = DockStyle.Fill;
-            tableLayoutPanel2.Location = new Point(403, 425);
-            tableLayoutPanel2.Name = "tableLayoutPanel2";
-            tableLayoutPanel2.RowCount = 2;
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.Size = new Size(394, 207);
-            tableLayoutPanel2.TabIndex = 4;
+            panel11.Controls.Add(btnCancel);
+            panel11.Controls.Add(buttonAddnew);
+            panel11.Dock = DockStyle.Fill;
+            panel11.Location = new Point(403, 511);
+            panel11.Name = "panel11";
+            panel11.Size = new Size(394, 121);
+            panel11.TabIndex = 19;
             // 
             // btnCancel
             // 
@@ -465,35 +617,36 @@
             btnCancel.BackColor = SystemColors.GradientActiveCaption;
             btnCancel.FlatAppearance.BorderSize = 0;
             btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Segoe UI", 10F);
-            btnCancel.Location = new Point(3, 125);
+            btnCancel.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancel.Location = new Point(215, 35);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(388, 60);
+            btnCancel.Size = new Size(165, 55);
             btnCancel.TabIndex = 2;
             btnCancel.Text = "Làm mới";
             btnCancel.UseVisualStyleBackColor = false;
-            btnCancel.Click += btnCancel_Click;
+            btnCancel.Click += btnCancel_Click_1;
             // 
             // buttonAddnew
             // 
             buttonAddnew.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            buttonAddnew.BackColor = Color.FromArgb(255, 107, 53);
+            buttonAddnew.BackColor = Color.FromArgb(0, 152, 70);
             buttonAddnew.BackgroundImageLayout = ImageLayout.Zoom;
             buttonAddnew.FlatAppearance.BorderSize = 0;
             buttonAddnew.FlatStyle = FlatStyle.Flat;
-            buttonAddnew.Font = new Font("Segoe UI", 10F);
+            buttonAddnew.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             buttonAddnew.ForeColor = Color.White;
-            buttonAddnew.Location = new Point(3, 21);
+            buttonAddnew.Location = new Point(44, 35);
             buttonAddnew.Name = "buttonAddnew";
-            buttonAddnew.Size = new Size(388, 60);
+            buttonAddnew.Size = new Size(165, 54);
             buttonAddnew.TabIndex = 3;
             buttonAddnew.Text = "Thêm khách hàng";
             buttonAddnew.UseVisualStyleBackColor = false;
-            buttonAddnew.Click += buttonAddnew_Click_1;
+            buttonAddnew.Click += buttonAddnew_Click;
             // 
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(0, 152, 70);
+            panel2.Controls.Add(pictureBox1);
             panel2.Controls.Add(label1);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
@@ -501,14 +654,23 @@
             panel2.Size = new Size(800, 81);
             panel2.TabIndex = 0;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.remove_background_logo;
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(155, 81);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 1;
+            pictureBox1.TabStop = false;
+            // 
             // label1
             // 
-            label1.Dock = DockStyle.Fill;
             label1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(0, 0);
+            label1.Location = new Point(204, 9);
             label1.Name = "label1";
-            label1.Size = new Size(800, 81);
+            label1.Size = new Size(433, 47);
             label1.TabIndex = 0;
             label1.Text = "THÊM KHÁCH HÀNG ";
             label1.TextAlign = ContentAlignment.MiddleCenter;
@@ -519,6 +681,10 @@
             contextMenuStrip1.ImageScalingSize = new Size(20, 20);
             contextMenuStrip1.Name = "contextMenuStrip1";
             contextMenuStrip1.Size = new Size(61, 4);
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
             // 
             // ThemKhachHang
             // 
@@ -533,12 +699,30 @@
             panel1.ResumeLayout(false);
             panel3.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
-            panel16.ResumeLayout(false);
-            panelSonha.ResumeLayout(false);
-            panelSonha.PerformLayout();
-            panelXa.ResumeLayout(false);
-            panelHuyen.ResumeLayout(false);
-            panelTinh.ResumeLayout(false);
+            panel7.ResumeLayout(false);
+            panel7.PerformLayout();
+            panelDiachi.ResumeLayout(false);
+            panelDiachi.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox10).EndInit();
+            panel14.ResumeLayout(false);
+            panel14.PerformLayout();
+            panelTrangthai.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox9).EndInit();
+            panel12.ResumeLayout(false);
+            panel12.PerformLayout();
+            panelMaildn.ResumeLayout(false);
+            panelMaildn.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
+            panel9.ResumeLayout(false);
+            panel9.PerformLayout();
+            panelMaildd.ResumeLayout(false);
+            panelMaildd.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
+            panelMsthue.ResumeLayout(false);
+            panelMsthue.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             panel10.ResumeLayout(false);
             panel10.PerformLayout();
             panelTenDD.ResumeLayout(false);
@@ -549,7 +733,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             panelsdt.ResumeLayout(false);
             panelsdt.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             panel6.ResumeLayout(false);
             panel6.PerformLayout();
             panelKHDN.ResumeLayout(false);
@@ -557,11 +740,13 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             panelTenDN.ResumeLayout(false);
             panelTenDN.PerformLayout();
-            tableLayoutPanel2.ResumeLayout(false);
+            panel11.ResumeLayout(false);
             panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
         }
 
@@ -572,42 +757,58 @@
         private Label label1;
         private Panel panel3;
         private TableLayoutPanel tableLayoutPanel1;
+        private TextBox textBoxhoten;
+        private ComboBox cbbPhong;
+        private ContextMenuStrip contextMenuStrip1;
+        private Button btnCancel;
+        private Button buttonAddnew;
+        private ErrorProvider errorProvider1;
+        private PictureBox pictureBox1;
         private Panel panel5;
-        private Label label2;
+        private PictureBox pictureBox2;
         private Panel panelTenDN;
         private TextBox textBoxTenDN;
-        private TextBox textBoxhoten;
-        private Label label7;
-        private Label label6;
-        private Panel panel10;
-        private Label label5;
-        private Panel panel8;
+        private Label label2;
         private Panel panel6;
-        private Button btnCancel;
-        private Panel panelsdt;
-        private TextBox textBoxsdt;
         private Panel panelKHDN;
         private TextBox textBoxKHDN;
-        private ComboBox cbbPhong;
-        private PictureBox pictureBox1;
-        private PictureBox pictureBox6;
-        private PictureBox pictureBox5;
         private PictureBox pictureBox4;
+        private Label label5;
+        private Panel panel8;
+        private PictureBox pictureBox5;
+        private Panel panelsdt;
+        private TextBox textBoxsdt;
+        private Label label6;
+        private Panel panel10;
         private Panel panelTenDD;
-        private TableLayoutPanel tableLayoutPanel2;
-        private Button buttonAddnew;
-        private Panel panel16;
-        private Panel panelHuyen;
-        private ComboBox cbbQuan;
-        private Panel panelTinh;
-        private ComboBox cboTinhThanh;
-        private PictureBox pictureBox8;
-        private Label label10;
-        private Panel panelXa;
-        private ComboBox cbbXa;
-        private Panel panelSonha;
-        private TextBox txtDiaChi;
         private TextBox textBoxTenDD;
-        private ContextMenuStrip contextMenuStrip1;
+        private PictureBox pictureBox6;
+        private Label label7;
+        private Panel panel4;
+        private Panel panelMsthue;
+        private TextBox txtMsthue;
+        private PictureBox pictureBox3;
+        private Label masoThue;
+        private Panel panel9;
+        private Panel panelMaildd;
+        private TextBox txtMaildd;
+        private PictureBox pictureBox7;
+        private Label label3;
+        private Panel panel12;
+        private Panel panelMaildn;
+        private TextBox txtEmaildn;
+        private PictureBox pictureBox8;
+        private Label label4;
+        private Panel panel14;
+        private Panel panelTrangthai;
+        private ComboBox cboTrangthai;
+        private PictureBox pictureBox9;
+        private Label label8;
+        private Panel panel7;
+        private Panel panelDiachi;
+        private TextBox txtDiachi;
+        private PictureBox pictureBox10;
+        private Label label9;
+        private Panel panel11;
     }
 }

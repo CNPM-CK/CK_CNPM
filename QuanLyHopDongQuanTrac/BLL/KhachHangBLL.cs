@@ -35,6 +35,11 @@ namespace BLL
             }
         }
 
+        public List<TrangThaiKhachHang> LayTrangThaiKhachHang()
+        {
+            return dal.LayTrangThaiKhachHang();
+        }
+
         public void SuaKhachHang(KhachHang kh) 
         {
             dal.SuaKhachHang(kh);

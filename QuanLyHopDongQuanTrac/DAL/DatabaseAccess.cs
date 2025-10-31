@@ -17,9 +17,9 @@ namespace DAL
     {
         public static SqlConnection Connect()
         {
-            //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=testdbsck;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-            string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
             SqlConnection conn = new SqlConnection(connectionStr);
             return conn;
@@ -187,14 +187,21 @@ namespace DAL
 
                     cmd.Parameters.AddWithValue("@tenDoanhNghiep", kh.tenDoanhNghiep);
                     cmd.Parameters.AddWithValue("@kyHieuDN", string.IsNullOrEmpty(kh.kyHieuDN) ? (object)DBNull.Value : kh.kyHieuDN);
-                    cmd.Parameters.AddWithValue("@diaChi", kh.diaChi);
-                    cmd.Parameters.AddWithValue("@nguoiDaiDien", kh.nguoiDaiDien);
-                    cmd.Parameters.AddWithValue("@soDienThoaiKH", kh.soDienThoaiKH);
+                    cmd.Parameters.AddWithValue("@diaChi", string.IsNullOrEmpty(kh.diaChi) ? (object)DBNull.Value : kh.diaChi);
+                    cmd.Parameters.AddWithValue("@nguoiDaiDien", string.IsNullOrEmpty(kh.nguoiDaiDien) ? (object)DBNull.Value : kh.nguoiDaiDien);
+                    cmd.Parameters.AddWithValue("@soDienThoaiKH", string.IsNullOrEmpty(kh.soDienThoaiKH) ? (object)DBNull.Value : kh.soDienThoaiKH);
+                    cmd.Parameters.AddWithValue("@maSoThue", string.IsNullOrEmpty(kh.maSoThue) ? (object)DBNull.Value : kh.maSoThue);
+                    cmd.Parameters.AddWithValue("@emailNguoiDaiDien", string.IsNullOrEmpty(kh.emailNguoiDaiDien) ? (object)DBNull.Value : kh.emailNguoiDaiDien);
+                    cmd.Parameters.AddWithValue("@emailDoanhNghiep", string.IsNullOrEmpty(kh.emailDoanhNghiep) ? (object)DBNull.Value : kh.emailDoanhNghiep);
+
+                    // Cột trạng thái là INT (FK đến TrangThai_KhachHang)
+                    cmd.Parameters.AddWithValue("@trangThai", kh.trangThai > 0 ? kh.trangThai : (object)DBNull.Value);
 
                     cmd.ExecuteNonQuery();
                 }
             }
         }
+
 
         public void SuaNhanVien(NhanVien nv, bool isTruongPhong)
         {
@@ -1131,7 +1138,33 @@ namespace DAL
             //}
         }
 
-       
+        public List<TrangThaiKhachHang> LayTrangThaiKhachHang()
+        {
+            List<TrangThaiKhachHang> list = new List<TrangThaiKhachHang>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("dbo.sp_LayTrangThaiKhachHang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new TrangThaiKhachHang
+                            {
+                                maTrangThai = reader.GetInt32(0),
+                                tenTrangThai = reader.GetString(1)
+                            });
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
     }
 }
 

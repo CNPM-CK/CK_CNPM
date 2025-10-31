@@ -18,6 +18,12 @@ namespace DTO
 
         public string soDienThoaiKH { get; set; }
 
-
+        public string maSoThue { get; set; }
+        
+        public string emailNguoiDaiDien { get; set; }
+        
+        public string emailDoanhNghiep { get; set; }
+        
+        public int trangThai { get; set; }
     }
 }
