@@ -347,7 +347,10 @@ namespace GUI.Forms
         private void btnThemnenmau_Click_2(object sender, EventArgs e)
         {
             ThemNenMau1 add = new ThemNenMau1();
-            add.ShowDialog();
+            if (add.ShowDialog() == DialogResult.OK)
+            {
+                LoadDanhSachNenMau();
+            }
         }
 
         private void btnLuu_Click(object sender, EventArgs e)
@@ -521,7 +524,7 @@ namespace GUI.Forms
                     {
                         var uc = new NenMauConTrol();
 
-                        // ✅ SỬA LẠI - TRUYỀN ĐÚNG THỨ TỰ VÀ ĐẦY ĐỦ THAM SỐ
+                       
                         uc.LoadNenMau(
                             maDN: dn.MaDN,                      // ✅ Tham số thứ 1: mã Dot_Nen
                             maNen: dn.MaNen,                    // ✅ Tham số thứ 2: mã nền mẫu
@@ -556,6 +559,11 @@ namespace GUI.Forms
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void cboHopdong_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

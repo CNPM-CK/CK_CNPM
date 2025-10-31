@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            pictureBox1 = new PictureBox();
             label = new Label();
             panel2 = new Panel();
             groupBox1 = new GroupBox();
@@ -70,6 +71,7 @@
             btnHuy = new Button();
             btnLuu = new Button();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel2.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvThongso).BeginInit();
@@ -98,6 +100,7 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(0, 152, 70);
+            panel1.Controls.Add(pictureBox1);
             panel1.Controls.Add(label);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
@@ -105,15 +108,25 @@
             panel1.Size = new Size(1137, 65);
             panel1.TabIndex = 0;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.remove_background_logo;
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(155, 65);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 1;
+            pictureBox1.TabStop = false;
+            // 
             // label
             // 
             label.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             label.AutoSize = true;
-            label.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label.ForeColor = Color.White;
             label.Location = new Point(469, 9);
             label.Name = "label";
-            label.Size = new Size(219, 31);
+            label.Size = new Size(270, 38);
             label.TabIndex = 0;
             label.Text = "CHI TIẾT NỀN MẪU";
             label.TextAlign = ContentAlignment.MiddleCenter;
@@ -134,6 +147,7 @@
             groupBox1.Controls.Add(dgvThongso);
             groupBox1.Controls.Add(panel3);
             groupBox1.Dock = DockStyle.Fill;
+            groupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.Location = new Point(0, 142);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(1137, 268);
@@ -227,13 +241,13 @@
             // 
             // cboPhongpt
             // 
+            cboPhongpt.DropDownStyle = ComboBoxStyle.DropDownList;
             cboPhongpt.FormattingEnabled = true;
             cboPhongpt.Items.AddRange(new object[] { "Phòng thí nghiệm", "Phòng hiện trường" });
             cboPhongpt.Location = new Point(3, 10);
             cboPhongpt.Name = "cboPhongpt";
             cboPhongpt.Size = new Size(206, 28);
             cboPhongpt.TabIndex = 0;
-            cboPhongpt.Text = "Chọn phòng";
             cboPhongpt.SelectedIndexChanged += cboPhongpt_SelectedIndexChanged;
             cboPhongpt.Click += cboPhongpt_Click;
             // 
@@ -258,12 +272,12 @@
             // 
             // cboThongso
             // 
+            cboThongso.DropDownStyle = ComboBoxStyle.DropDownList;
             cboThongso.FormattingEnabled = true;
             cboThongso.Location = new Point(3, 9);
             cboThongso.Name = "cboThongso";
             cboThongso.Size = new Size(206, 28);
             cboThongso.TabIndex = 0;
-            cboThongso.Text = "Thông số";
             cboThongso.SelectedIndexChanged += cboThongso_SelectedIndexChanged;
             // 
             // label3
@@ -558,6 +572,7 @@
             Load += Form1_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel2.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvThongso).EndInit();
@@ -637,5 +652,6 @@
         private TableLayoutPanel tableLayoutPanel3;
         private Panel panel6;
         private Button btnThemthongso;
+        private PictureBox pictureBox1;
     }
 }

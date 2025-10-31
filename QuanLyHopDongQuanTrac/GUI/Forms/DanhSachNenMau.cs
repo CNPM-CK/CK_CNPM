@@ -463,30 +463,38 @@ namespace GUI.Forms
                 return;
             }
 
-            string maTS = row.Cells["maNen"].Value?.ToString();
-            string tenTS = row.Cells["tenNenMau"].Value?.ToString();
+            // Lấy dữ liệu từ dòng được chọn
+            string maNen = row.Cells["maNen"].Value?.ToString();
+            string tenNenmau = row.Cells["tenNenMau"].Value?.ToString();
+            string moTa = row.Cells["moTa"].Value?.ToString();
 
-            MessageBox.Show($"Chức năng sửa thông số '{tenTS}' (Mã: {maTS}) đang được phát triển.",
-                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            /* Khi có form SuaThongSo:
-            ThongSo ts = new ThongSo
+            // Tạo đối tượng NenMau với đầy đủ thông tin
+            NenMau nm = new NenMau
             {
-                MaTS = maTS,
-                TenTS = tenTS,
-                DonVi = row.Cells["DonVi"].Value?.ToString(),
-                phuongPhap = row.Cells["phuongPhap"].Value?.ToString(),
-                GiaTriToiThieu = row.Cells["GiaTriToiThieu"].Value as double?,
-                GiaTriToiDa = row.Cells["GiaTriToiDa"].Value as double?
+                maNen = maNen,
+                tenNenMau = tenNenmau,
+                moTa = moTa
             };
 
-            SuaThongSo frmSua = new SuaThongSo(ts);
+            // Khởi tạo form sửa
+            ThemNenMau1 frmSua = new ThemNenMau1();
+            frmSua.isEditMode = true;
+            frmSua.NenMauHienTai = nm;  // Truyền dữ liệu vào form
+
             currentOpenForm = frmSua;
+
+            // Căn giữa form trên parent
             CenterFormOnParent(frmSua);
+
+            // Khi form đóng thì reset
             frmSua.FormClosed += (s, ev) => { currentOpenForm = null; };
-            frmSua.SuccesfullyUpdated += (s, ev) => RefreshData();
+
+            // Khi form sửa thành công, load lại danh sách
+            frmSua.SuccessfullyUpdated += (s, ev) => RefreshDanhSachNenMau();
+
+            // Hiển thị form
             frmSua.Show(this.FindForm());
-            */
+
         }
 
         private void HandleDelete(DataGridViewRow row)

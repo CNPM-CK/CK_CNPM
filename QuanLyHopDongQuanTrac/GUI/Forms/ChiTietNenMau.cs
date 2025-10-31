@@ -313,6 +313,13 @@ namespace GUI.Forms
 
             dgvThongso.Columns.Add(new DataGridViewTextBoxColumn
             {
+                Name = "MaDNTS",          
+                DataPropertyName = "MaDNTS",
+                Visible = false
+            });
+
+            dgvThongso.Columns.Add(new DataGridViewTextBoxColumn
+            {
                 Name = "MaTS",
                 DataPropertyName = "MaTS",
                 Visible = false
@@ -376,7 +383,19 @@ namespace GUI.Forms
                 danhSachChiTiet.Clear();
                 foreach (var item in danhSach)
                 {
-                    danhSachChiTiet.Add(item);
+                    danhSachChiTiet.Add(new ChiTietQuanTracView
+                    {
+                        MaDNTS = item.MaDNTS,  // BẮT BUỘC KHI SỬA
+                        MaTS = item.MaTS,
+                        TenTS = item.TenTS,
+                        DonVi = item.DonVi,
+                        GiaTriToiThieu = item.GiaTriToiThieu,
+                        GiaTriToiDa = item.GiaTriToiDa,
+                        PhuongPhap = item.PhuongPhap,
+                        MaPhong = item.MaPhong,
+                        TenPhong = item.TenPhong
+                    });
+                    //danhSachChiTiet.Add(item);
                 }
             }
         }
@@ -418,7 +437,7 @@ namespace GUI.Forms
         {
             try
             {
-                // ✅ Validation form
+                // VALIDATION FORM
                 if (string.IsNullOrWhiteSpace(txtTennenmau.Text))
                 {
                     MessageBox.Show("Vui lòng nhập tên nền mẫu!", "Thông báo",
@@ -435,7 +454,6 @@ namespace GUI.Forms
                     return;
                 }
 
-                // ✅ Kiểm tra phải có ít nhất 1 thông số
                 if (danhSachChiTiet.Count == 0)
                 {
                     MessageBox.Show("Vui lòng thêm ít nhất một thông số!", "Thông báo",
@@ -443,7 +461,6 @@ namespace GUI.Forms
                     return;
                 }
 
-                // ✅ Kiểm tra MaDN có tồn tại không
                 if (string.IsNullOrWhiteSpace(MaDN))
                 {
                     MessageBox.Show("Không tìm thấy mã đợt nền (MaDN)!\nVui lòng tạo lại nền mẫu.", "Lỗi",
@@ -451,21 +468,43 @@ namespace GUI.Forms
                     return;
                 }
 
-                // ✅ Gọi BLL để lưu
-                BLL_DotQuanTrac bll = new BLL_DotQuanTrac();
 
-                bool ketQua = bll.LuuChiTietNenMau(
-                    maDN: MaDN,
-                    tenViTri: txtTenvitri.Text.Trim(),
-                    toaDo: txtToado.Text.Trim(),
-                    ghiChu: txtGhichu.Text.Trim(),
-                    danhSachThongSo: danhSachChiTiet.ToList()
-                );
+                BLL_DotQuanTrac bll = new BLL_DotQuanTrac();
+                bool ketQua;
+                string thongBao;
+
+                if (IsEditMode)
+                {
+                    // CHẾ ĐỘ SỬA - Proc sẽ tự động:
+                    //   • Giữ mã cũ cho thông số có maDNTS
+                    //   • Tạo mã mới cho thông số không có maDNTS
+                    //   • Xóa thông số không còn trong danh sách
+                    ketQua = bll.SuaChiTietNenMau(
+                        maDN: MaDN,
+                        tenViTri: txtTenvitri.Text.Trim(),
+                        toaDo: txtToado.Text.Trim(),
+                        ghiChu: txtGhichu.Text.Trim(),
+                        danhSachThongSo: danhSachChiTiet.ToList()
+                    );
+                    thongBao = "Cập nhật chi tiết nền mẫu thành công!";
+                }
+                else
+                {
+                    // CHẾ ĐỘ TẠO MỚI
+                    ketQua = bll.LuuChiTietNenMau(
+                        maDN: MaDN,
+                        tenViTri: txtTenvitri.Text.Trim(),
+                        toaDo: txtToado.Text.Trim(),
+                        ghiChu: txtGhichu.Text.Trim(),
+                        danhSachThongSo: danhSachChiTiet.ToList()
+                    );
+                    thongBao = "Lưu chi tiết nền mẫu thành công!";
+                }
 
                 if (ketQua)
                 {
                     MessageBox.Show(
-                        $"Lưu chi tiết nền mẫu thành công!\n\n" +
+                        $"{thongBao}\n\n" +
                         $"Nền mẫu: {txtTennenmau.Text}\n" +
                         $"Vị trí: {txtTenvitri.Text}\n" +
                         $"Số thông số: {danhSachChiTiet.Count}",
@@ -479,7 +518,6 @@ namespace GUI.Forms
                     this.TenNenMauDaChon = txtTennenmau.Text.Trim();
                     this.MoTaNen = txtGhichu.Text.Trim();
 
-                    // ✅ Đóng form với DialogResult.OK
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
@@ -494,6 +532,84 @@ namespace GUI.Forms
                 MessageBox.Show($"Lỗi khi lưu chi tiết nền mẫu:\n{ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            //try
+            //{
+            //    // ✅ Validation form
+            //    if (string.IsNullOrWhiteSpace(txtTennenmau.Text))
+            //    {
+            //        MessageBox.Show("Vui lòng nhập tên nền mẫu!", "Thông báo",
+            //            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //        txtTennenmau.Focus();
+            //        return;
+            //    }
+
+            //    if (string.IsNullOrWhiteSpace(txtTenvitri.Text))
+            //    {
+            //        MessageBox.Show("Vui lòng nhập tên vị trí!", "Thông báo",
+            //            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //        txtTenvitri.Focus();
+            //        return;
+            //    }
+
+            //    // ✅ Kiểm tra phải có ít nhất 1 thông số
+            //    if (danhSachChiTiet.Count == 0)
+            //    {
+            //        MessageBox.Show("Vui lòng thêm ít nhất một thông số!", "Thông báo",
+            //            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //        return;
+            //    }
+
+            //    // ✅ Kiểm tra MaDN có tồn tại không
+            //    if (string.IsNullOrWhiteSpace(MaDN))
+            //    {
+            //        MessageBox.Show("Không tìm thấy mã đợt nền (MaDN)!\nVui lòng tạo lại nền mẫu.", "Lỗi",
+            //            MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+
+            //    // ✅ Gọi BLL để lưu
+            //    BLL_DotQuanTrac bll = new BLL_DotQuanTrac();
+
+            //    bool ketQua = bll.LuuChiTietNenMau(
+            //        maDN: MaDN,
+            //        tenViTri: txtTenvitri.Text.Trim(),
+            //        toaDo: txtToado.Text.Trim(),
+            //        ghiChu: txtGhichu.Text.Trim(),
+            //        danhSachThongSo: danhSachChiTiet.ToList()
+            //    );
+
+            //    if (ketQua)
+            //    {
+            //        MessageBox.Show(
+            //            $"Lưu chi tiết nền mẫu thành công!\n\n" +
+            //            $"Nền mẫu: {txtTennenmau.Text}\n" +
+            //            $"Vị trí: {txtTenvitri.Text}\n" +
+            //            $"Số thông số: {danhSachChiTiet.Count}",
+            //            "Thành công",
+            //            MessageBoxButtons.OK,
+            //            MessageBoxIcon.Information
+            //        );
+
+            //        // ✅ Lưu thông tin để trả về form cha
+            //        this.ChiTietDaChon = danhSachChiTiet.ToList();
+            //        this.TenNenMauDaChon = txtTennenmau.Text.Trim();
+            //        this.MoTaNen = txtGhichu.Text.Trim();
+
+            //        // ✅ Đóng form với DialogResult.OK
+            //        this.DialogResult = DialogResult.OK;
+            //        this.Close();
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Lưu thất bại! Vui lòng kiểm tra lại dữ liệu.", "Lỗi",
+            //            MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"Lỗi khi lưu chi tiết nền mẫu:\n{ex.Message}", "Lỗi",
+            //        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
         }
        
 

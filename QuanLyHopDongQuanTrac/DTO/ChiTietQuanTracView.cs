@@ -9,7 +9,8 @@ namespace DTO
 {
         public class ChiTietQuanTracView
         {
-            public string MaNen { get; set; }      
+            public string MaDNTS { get; set; }
+            //public string MaNen { get; set; }      
             public string MaTS { get; set; }       
             public string TenTS { get; set; }      
             public string DonVi { get; set; }    

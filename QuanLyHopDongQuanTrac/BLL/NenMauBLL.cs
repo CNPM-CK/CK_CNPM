@@ -31,6 +31,11 @@ namespace BLL
             return dal.GetDanhSachNenMau();
         }
 
+        public bool SuaNenMau(string maNen, string moTa)
+        {
+            return dal.SuaNenMau(maNen, moTa);
+        }
+
         public void XoaNenMau(string maNen)
         {
             try

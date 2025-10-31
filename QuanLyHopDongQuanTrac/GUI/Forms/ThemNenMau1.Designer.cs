@@ -31,12 +31,11 @@
             panel1 = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             panel2 = new Panel();
-            label1 = new Label();
+            label = new Label();
             tableLayoutPanel2 = new TableLayoutPanel();
             panel4 = new Panel();
-            btnThemm = new Button();
             btnHuy = new Button();
-            btnThem = new Button();
+            btnThemm = new Button();
             panel3 = new Panel();
             panelMota = new Panel();
             txtMota = new TextBox();
@@ -44,7 +43,6 @@
             txtTennenmau = new TextBox();
             label3 = new Label();
             label2 = new Label();
-            button1 = new Button();
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -82,7 +80,7 @@
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(0, 152, 70);
-            panel2.Controls.Add(label1);
+            panel2.Controls.Add(label);
             panel2.Dock = DockStyle.Fill;
             panel2.ForeColor = Color.White;
             panel2.Location = new Point(3, 3);
@@ -90,17 +88,17 @@
             panel2.Size = new Size(505, 39);
             panel2.TabIndex = 0;
             // 
-            // label1
+            // label
             // 
-            label1.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(158, 6);
-            label1.Name = "label1";
-            label1.Size = new Size(173, 31);
-            label1.TabIndex = 0;
-            label1.Text = "Thêm nền mẫu";
-            label1.TextAlign = ContentAlignment.MiddleCenter;
+            label.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            label.AutoSize = true;
+            label.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label.Location = new Point(158, 6);
+            label.Name = "label";
+            label.Size = new Size(173, 31);
+            label.TabIndex = 0;
+            label.Text = "Thêm nền mẫu";
+            label.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel2
             // 
@@ -119,15 +117,26 @@
             // 
             // panel4
             // 
-            panel4.Controls.Add(button1);
-            panel4.Controls.Add(btnThemm);
             panel4.Controls.Add(btnHuy);
-            panel4.Controls.Add(btnThem);
+            panel4.Controls.Add(btnThemm);
             panel4.Dock = DockStyle.Fill;
             panel4.Location = new Point(3, 203);
             panel4.Name = "panel4";
             panel4.Size = new Size(499, 44);
             panel4.TabIndex = 2;
+            // 
+            // btnHuy
+            // 
+            btnHuy.BackColor = Color.Red;
+            btnHuy.FlatStyle = FlatStyle.Flat;
+            btnHuy.ForeColor = Color.White;
+            btnHuy.Location = new Point(283, 5);
+            btnHuy.Name = "btnHuy";
+            btnHuy.Size = new Size(99, 33);
+            btnHuy.TabIndex = 6;
+            btnHuy.Text = "Hủy";
+            btnHuy.UseVisualStyleBackColor = false;
+            btnHuy.Click += button1_Click_1;
             // 
             // btnThemm
             // 
@@ -141,30 +150,6 @@
             btnThemm.Text = "Thêm";
             btnThemm.UseVisualStyleBackColor = false;
             btnThemm.Click += button1_Click;
-            // 
-            // btnHuy
-            // 
-            btnHuy.BackColor = Color.FromArgb(255, 107, 53);
-            btnHuy.FlatStyle = FlatStyle.Flat;
-            btnHuy.ForeColor = Color.White;
-            btnHuy.Location = new Point(283, 182);
-            btnHuy.Name = "btnHuy";
-            btnHuy.Size = new Size(99, 33);
-            btnHuy.TabIndex = 4;
-            btnHuy.Text = "Hủy";
-            btnHuy.UseVisualStyleBackColor = false;
-            // 
-            // btnThem
-            // 
-            btnThem.BackColor = Color.FromArgb(255, 107, 53);
-            btnThem.FlatStyle = FlatStyle.Flat;
-            btnThem.ForeColor = Color.White;
-            btnThem.Location = new Point(107, 182);
-            btnThem.Name = "btnThem";
-            btnThem.Size = new Size(99, 33);
-            btnThem.TabIndex = 3;
-            btnThem.Text = "Thêm";
-            btnThem.UseVisualStyleBackColor = false;
             // 
             // panel3
             // 
@@ -230,19 +215,6 @@
             label2.TabIndex = 0;
             label2.Text = "Tên nền mẫu";
             // 
-            // button1
-            // 
-            button1.BackColor = Color.Red;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.ForeColor = Color.White;
-            button1.Location = new Point(283, 5);
-            button1.Name = "button1";
-            button1.Size = new Size(99, 33);
-            button1.TabIndex = 6;
-            button1.Text = "Hủy";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click_1;
-            // 
             // ThemNenMau1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -272,7 +244,7 @@
         private Panel panel1;
         private TableLayoutPanel tableLayoutPanel1;
         private Panel panel2;
-        private Label label1;
+        private Label label;
         private TableLayoutPanel tableLayoutPanel2;
         private Panel panel3;
         private Label label2;
@@ -282,9 +254,7 @@
         private TextBox txtMota;
         private Panel panelNenmau;
         private Panel panel4;
-        private Button btnHuy;
-        private Button btnThem;
         private Button btnThemm;
-        private Button button1;
+        private Button btnHuy;
     }
 }
