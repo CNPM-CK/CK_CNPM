@@ -18,7 +18,7 @@ namespace BLL
         }
 
 
-        public List<HopDong> LayDanhSachHopDong()
+        public List<HopDongVaTenDN> LayDanhSachHopDong()
         {
             try
             {
@@ -41,8 +41,8 @@ namespace BLL
         {
             try
             {
-                var dsHopDong = dal.LayDanhSachHopDong();
-                return dsHopDong.Exists(hd => hd.MaHD == maHD);
+                var dsHopDong = dal.LayDanhSachHD();
+                return dsHopDong.Exists(hd => hd.maHD == maHD);
             }
             catch
             {

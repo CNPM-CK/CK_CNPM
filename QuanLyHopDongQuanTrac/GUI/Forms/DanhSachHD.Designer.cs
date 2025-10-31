@@ -1,6 +1,6 @@
 ﻿namespace GUI.Forms
 {
-    partial class DanhSachKhachHang
+    partial class DanhSachHD
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachKhachHang));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachHD));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel2 = new Panel();
@@ -39,7 +39,7 @@
             panel4 = new Panel();
             panel5 = new Panel();
             panel7 = new Panel();
-            dgvDanhsachnhanvien = new DataGridView();
+            dgvdanhsachHopDong = new DataGridView();
             dataGridView1 = new DataGridView();
             panel6 = new Panel();
             picturemicro = new PictureBox();
@@ -61,7 +61,7 @@
             panel4.SuspendLayout();
             panel5.SuspendLayout();
             panel7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvDanhsachnhanvien).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvdanhsachHopDong).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picturemicro).BeginInit();
@@ -151,7 +151,7 @@
             // 
             // panel7
             // 
-            panel7.Controls.Add(dgvDanhsachnhanvien);
+            panel7.Controls.Add(dgvdanhsachHopDong);
             panel7.Controls.Add(dataGridView1);
             panel7.Dock = DockStyle.Fill;
             panel7.Location = new Point(0, 61);
@@ -159,11 +159,11 @@
             panel7.Size = new Size(810, 411);
             panel7.TabIndex = 1;
             // 
-            // dgvDanhsachnhanvien
+            // dgvdanhsachHopDong
             // 
-            dgvDanhsachnhanvien.AllowUserToAddRows = false;
-            dgvDanhsachnhanvien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvDanhsachnhanvien.BackgroundColor = Color.White;
+            dgvdanhsachHopDong.AllowUserToAddRows = false;
+            dgvdanhsachHopDong.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvdanhsachHopDong.BackgroundColor = Color.White;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 10F);
@@ -171,9 +171,9 @@
             dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dgvDanhsachnhanvien.ColumnHeadersHeight = 30;
-            dgvDanhsachnhanvien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvdanhsachHopDong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvdanhsachHopDong.ColumnHeadersHeight = 30;
+            dgvdanhsachHopDong.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
@@ -181,19 +181,19 @@
             dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(111, 207, 151);
             dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvDanhsachnhanvien.DefaultCellStyle = dataGridViewCellStyle2;
-            dgvDanhsachnhanvien.Dock = DockStyle.Fill;
-            dgvDanhsachnhanvien.EnableHeadersVisualStyles = false;
-            dgvDanhsachnhanvien.Location = new Point(0, 0);
-            dgvDanhsachnhanvien.Name = "dgvDanhsachnhanvien";
-            dgvDanhsachnhanvien.RowHeadersWidth = 51;
-            dgvDanhsachnhanvien.Size = new Size(810, 385);
-            dgvDanhsachnhanvien.TabIndex = 1;
-            dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
-            dgvDanhsachnhanvien.CellContentClick += dgvDanhsachnhanvien_CellContentClick;
-            dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
-            dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;
-            dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
+            dgvdanhsachHopDong.DefaultCellStyle = dataGridViewCellStyle2;
+            dgvdanhsachHopDong.Dock = DockStyle.Fill;
+            dgvdanhsachHopDong.EnableHeadersVisualStyles = false;
+            dgvdanhsachHopDong.Location = new Point(0, 0);
+            dgvdanhsachHopDong.Name = "dgvdanhsachHopDong";
+            dgvdanhsachHopDong.RowHeadersWidth = 51;
+            dgvdanhsachHopDong.Size = new Size(810, 385);
+            dgvdanhsachHopDong.TabIndex = 1;
+            dgvdanhsachHopDong.CellClick += dgvdanhsachHopDong_CellClick;
+            dgvdanhsachHopDong.CellContentClick += dgvdanhsachHopDong_CellContentClick;
+            dgvdanhsachHopDong.CellFormatting += dgvdanhsachHopDong_CellFormatting;
+            dgvdanhsachHopDong.CellPainting += dgvdanhsachHopDong_CellPainting;
+            dgvdanhsachHopDong.Paint += dgvdanhsachHopDong_Paint;
             // 
             // dataGridView1
             // 
@@ -314,9 +314,10 @@
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(0, 61);
             button1.Name = "button1";
+            button1.Padding = new Padding(0, 0, 3, 0);
             button1.Size = new Size(211, 61);
             button1.TabIndex = 1;
-            button1.Text = "Danh sách khách hàng";
+            button1.Text = "Danh sách hợp đồng";
             button1.TextAlign = ContentAlignment.MiddleRight;
             button1.UseVisualStyleBackColor = false;
             // 
@@ -332,9 +333,10 @@
             btnDanhsachnv.ImageAlign = ContentAlignment.MiddleLeft;
             btnDanhsachnv.Location = new Point(0, 0);
             btnDanhsachnv.Name = "btnDanhsachnv";
+            btnDanhsachnv.Padding = new Padding(0, 0, 3, 0);
             btnDanhsachnv.Size = new Size(211, 61);
             btnDanhsachnv.TabIndex = 0;
-            btnDanhsachnv.Text = "Danh sách khách hàng  ";
+            btnDanhsachnv.Text = "Danh sách hợp đồng";
             btnDanhsachnv.TextAlign = ContentAlignment.MiddleRight;
             btnDanhsachnv.UseVisualStyleBackColor = false;
             btnDanhsachnv.Click += btnDanhsachnv_Click;
@@ -360,16 +362,16 @@
             labelFooter.Text = "© 2025 ECOS. Bản quyền thuộc về ECOS.";
             labelFooter.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // DanhSachKhachHang
+            // DanhSachHD
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1021, 565);
             Controls.Add(panel1);
-            Name = "DanhSachKhachHang";
-            Text = "Form1";
+            Name = "DanhSachHD";
+            Text = "Quản lý hợp đồng";
             WindowState = FormWindowState.Maximized;
-            Load += DanhSachNhanVien_Load;
+            Load += DanhSachHopDong_Load;
             Click += DanhSachNhanVien_Click;
             Resize += DanhSachNhanVien_Resize;
             panel2.ResumeLayout(false);
@@ -380,7 +382,7 @@
             panel4.ResumeLayout(false);
             panel5.ResumeLayout(false);
             panel7.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvDanhsachnhanvien).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvdanhsachHopDong).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picturemicro).EndInit();
@@ -405,7 +407,7 @@
         private Button btnDanhsachnv;
         private Panel panel5;
         private Panel panel7;
-        private DataGridView dgvDanhsachnhanvien;
+        private DataGridView dgvdanhsachHopDong;
         private DataGridView dataGridView1;
         private Panel panel6;
         private PictureBox pictureFilter;

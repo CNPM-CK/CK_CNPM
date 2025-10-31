@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ThemKhachHang));
             panel1 = new Panel();
             panel3 = new Panel();
@@ -68,6 +69,7 @@
             buttonAddnew = new Button();
             panel2 = new Panel();
             label1 = new Label();
+            contextMenuStrip1 = new ContextMenuStrip(components);
             panel1.SuspendLayout();
             panel3.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
@@ -154,7 +156,7 @@
             // 
             panelSonha.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelSonha.Controls.Add(txtDiaChi);
-            panelSonha.Location = new Point(68, 156);
+            panelSonha.Location = new Point(68, 151);
             panelSonha.Name = "panelSonha";
             panelSonha.Size = new Size(244, 45);
             panelSonha.TabIndex = 11;
@@ -173,7 +175,7 @@
             // 
             panelXa.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelXa.Controls.Add(cbbXa);
-            panelXa.Location = new Point(68, 105);
+            panelXa.Location = new Point(68, 100);
             panelXa.Name = "panelXa";
             panelXa.Size = new Size(244, 45);
             panelXa.TabIndex = 10;
@@ -192,7 +194,7 @@
             // 
             panelHuyen.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelHuyen.Controls.Add(cbbQuan);
-            panelHuyen.Location = new Point(68, 54);
+            panelHuyen.Location = new Point(68, 49);
             panelHuyen.Name = "panelHuyen";
             panelHuyen.Size = new Size(244, 45);
             panelHuyen.TabIndex = 9;
@@ -210,7 +212,7 @@
             // 
             panelTinh.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             panelTinh.Controls.Add(cboTinhThanh);
-            panelTinh.Location = new Point(68, 3);
+            panelTinh.Location = new Point(68, -2);
             panelTinh.Name = "panelTinh";
             panelTinh.Size = new Size(244, 45);
             panelTinh.TabIndex = 8;
@@ -512,6 +514,12 @@
             label1.TextAlign = ContentAlignment.MiddleCenter;
             label1.Click += label1_Click;
             // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.ImageScalingSize = new Size(20, 20);
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
+            // 
             // ThemKhachHang
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -600,5 +608,6 @@
         private Panel panelSonha;
         private TextBox txtDiaChi;
         private TextBox textBoxTenDD;
+        private ContextMenuStrip contextMenuStrip1;
     }
 }

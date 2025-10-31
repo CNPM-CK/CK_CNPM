@@ -1,15 +1,16 @@
 ﻿using BLL;
+using DTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DTO;
 
 namespace GUI.Forms
 {
@@ -188,7 +189,7 @@ namespace GUI.Forms
         {
             try
             {
-                List<HopDong> dsHopDong = bllDotQuanTrac.LayDanhSachHopDong();
+                List<HopDongVaTenDN> dsHopDong = bllDotQuanTrac.LayDanhSachHopDong();
 
                 if (dsHopDong == null || dsHopDong.Count == 0)
                 {
@@ -203,8 +204,8 @@ namespace GUI.Forms
                 }
 
                 cboHopdong.DataSource = dsHopDong;
-                cboHopdong.DisplayMember = "DisplayText";
-                cboHopdong.ValueMember = "MaHD";
+                cboHopdong.DisplayMember = "maHDVaKH";
+                cboHopdong.ValueMember = "maHD";
                 cboHopdong.SelectedIndex = -1;
             }
             catch (Exception ex)
@@ -410,6 +411,7 @@ namespace GUI.Forms
                         //}
                     }
                 }
+                
 
                 DTO_DotQuanTrac dto = new DTO_DotQuanTrac
                 {

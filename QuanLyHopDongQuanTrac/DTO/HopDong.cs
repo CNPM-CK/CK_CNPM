@@ -8,13 +8,15 @@ namespace DTO
 {
     public class HopDong
     {
-        public string MaHD { get; set; }
-        public string MaKH { get; set; }
-        public string TenDoanhNghiep { get; set; }
-        public string NguoiDaiDien { get; set; }
-        public DateTime NgayKy { get; set; }
-        public DateTime NgayDuKien { get; set; }
-        public bool TrangThai { get; set; }
-        public string DisplayText { get; set; }  // Để hiển thị trong ComboBox
+        public string maHD { get; set; }
+        public string maKH { get; set; }
+
+        public DateTime ngayKy { get; set; }
+        public DateTime ngayKetThucHD { get; set; }
+
+        public string trangThai { get; set; }
+        public string tanSuatQuanTrac { get; set; }
+        public string soHD { get; set; }
+
     }
 }

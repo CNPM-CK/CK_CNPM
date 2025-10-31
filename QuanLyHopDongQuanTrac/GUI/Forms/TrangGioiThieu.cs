@@ -34,7 +34,6 @@ namespace GUI.Forms
             DangNhap frmDangNhap = new DangNhap();
             this.Hide();
             frmDangNhap.ShowDialog();
-            //this.Show();
         }
     }
 }
