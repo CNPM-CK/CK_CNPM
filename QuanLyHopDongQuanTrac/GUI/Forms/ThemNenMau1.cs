@@ -16,12 +16,30 @@ namespace GUI.Forms
 {
     public partial class ThemNenMau1 : Form
     {
+        // Property để nhận nền mẫu cần sửa
+        public NenMau NenMauHienTai { get; set; }
+
+        // Biến lưu mã nền đang chọn
+        private string maNenDangChon = "";
+
+        public bool isEditMode = false;
+
+        // Event thông báo cập nhật thành công
+        public event EventHandler SuccessfullyUpdated;
+
         public ThemNenMau1()
         {
             InitializeComponent();
         }
-        #region Custom TextBox và Label cho Form Nhân viên
 
+        public ThemNenMau1(NenMau nm)
+        {
+            InitializeComponent();
+            isEditMode = true;
+            NenMauHienTai = nm;
+        }
+
+        #region Custom TextBox và Label cho Form Nhân viên
 
         private void BoGocButton(Button btn, int radius)
         {
@@ -106,7 +124,6 @@ namespace GUI.Forms
                     panel.Region = new Region(path);
                 }
                 panel.Invalidate();
-
             }
 
             panel.Paint += Panel_Paint;
@@ -118,7 +135,6 @@ namespace GUI.Forms
             panel.Invalidate();
         }
 
-
         private GraphicsPath CreateRoundedPath(Rectangle rect, int radius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -126,10 +142,7 @@ namespace GUI.Forms
             if (rect.Width <= 0 || rect.Height <= 0)
                 return path;
 
-            //int diameter = radius * 2;
             int diameter = Math.Min(radius * 2, Math.Min(rect.Width, rect.Height));
-            // Đảm bảo radius không lớn hơn kích thước
-            diameter = Math.Min(diameter, Math.Min(rect.Width, rect.Height));
 
             Rectangle arc = new Rectangle(rect.Location, new Size(diameter, diameter));
 
@@ -152,18 +165,42 @@ namespace GUI.Forms
             return path;
         }
 
-
         private void InitializeButtonStyles()
         {
             BoGocButton(btnThemm, 25);
         }
         #endregion
+
         private void ThemNenMau1_Load(object sender, EventArgs e)
         {
-
             ApplyRoundedInput(panelMota, txtMota, 20, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelNenmau, txtTennenmau, 20, 2, Color.FromArgb(0, 152, 70));
             InitializeButtonStyles();
+
+            if (isEditMode && NenMauHienTai != null)
+            {
+                // Chế độ sửa: hiển thị dữ liệu hiện tại
+                this.Text = "Chỉnh sửa nền mẫu";
+                btnThemm.Text = "Lưu";
+                label.Text = "Chỉnh sửa nền mẫu";
+
+                // Load dữ liệu lên form
+                maNenDangChon = NenMauHienTai.maNen;
+                txtTennenmau.Text = NenMauHienTai.tenNenMau;
+                txtMota.Text = NenMauHienTai.moTa;
+
+                // Disable textbox tên nền mẫu khi sửa (nếu không cho phép sửa tên)
+                txtTennenmau.Enabled = false;
+                txtTennenmau.BackColor = Color.LightGray;
+            }
+            else
+            {
+                // Chế độ thêm mới
+                this.Text = "Thêm nền mẫu";
+                btnThemm.Text = "Thêm";
+                label.Text = "Thêm nền mẫu";
+                txtTennenmau.Enabled = true;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -172,48 +209,77 @@ namespace GUI.Forms
             {
                 if (string.IsNullOrWhiteSpace(txtTennenmau.Text))
                 {
-                    MessageBox.Show("Vui lòng nhập tên nền mẫu!", "Thông báo");
+                    MessageBox.Show("Vui lòng nhập tên nền mẫu!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtTennenmau.Focus();
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtMota.Text))
                 {
-                    MessageBox.Show("Vui lòng nhập mô tả!", "Thông báo");
+                    MessageBox.Show("Vui lòng nhập mô tả!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtMota.Focus();
                     return;
                 }
 
                 var bll = new NenMauBLL();
-                string maNenMoi = bll.ThemNenMau(txtTennenmau.Text.Trim(), txtMota.Text.Trim());
 
-                if (!string.IsNullOrEmpty(maNenMoi))
+                if (isEditMode)
                 {
-                    MessageBox.Show("Thêm nền mẫu thành công!", "Thành công",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Chế độ sửa
+                    bool result = bll.SuaNenMau(maNenDangChon, txtMota.Text.Trim());
 
-                    // Có thể dùng maNenMoi để load UC
-                    this.Tag = maNenMoi;
+                    if (result)
+                    {
+                        MessageBox.Show("Cập nhật mô tả nền mẫu thành công!", "Thành công",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
+                        // Kích hoạt event thông báo cập nhật thành công
+                        SuccessfullyUpdated?.Invoke(this, EventArgs.Empty);
+
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Cập nhật thất bại!", "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Thêm thất bại! Kiểm tra lại dữ liệu.", "Lỗi",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // Chế độ thêm mới
+                    string maNenMoi = bll.ThemNenMau(txtTennenmau.Text.Trim(), txtMota.Text.Trim());
+
+                    if (!string.IsNullOrEmpty(maNenMoi))
+                    {
+                        MessageBox.Show("Thêm nền mẫu thành công!", "Thành công",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        this.Tag = maNenMoi;
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Thêm thất bại! Kiểm tra lại dữ liệu.", "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi thêm nền mẫu:\n{ex.Message}", "Lỗi",
+                MessageBox.Show($"Lỗi khi thêm/sửa nền mẫu:\n{ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-
+            // Có thể dùng cho nút hủy/đóng form
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
     }
 }

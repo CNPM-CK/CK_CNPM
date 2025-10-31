@@ -34,6 +34,10 @@
             panel2 = new Panel();
             tableLayoutPanel3 = new TableLayoutPanel();
             panel4 = new Panel();
+            panelMatkhau = new Panel();
+            textBoxmatkhau = new TextBox();
+            panelTentk = new Panel();
+            txtTentk = new TextBox();
             button3 = new Button();
             label8 = new Label();
             label7 = new Label();
@@ -41,8 +45,6 @@
             label6 = new Label();
             button2 = new Button();
             button1 = new Button();
-            textBoxmatkhau = new TextBox();
-            textBox1 = new TextBox();
             label4 = new Label();
             label3 = new Label();
             label2 = new Label();
@@ -55,6 +57,8 @@
             panel2.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
             panel4.SuspendLayout();
+            panelMatkhau.SuspendLayout();
+            panelTentk.SuspendLayout();
             panel3.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -117,6 +121,8 @@
             // 
             // panel4
             // 
+            panel4.Controls.Add(panelMatkhau);
+            panel4.Controls.Add(panelTentk);
             panel4.Controls.Add(button3);
             panel4.Controls.Add(label8);
             panel4.Controls.Add(label7);
@@ -124,8 +130,6 @@
             panel4.Controls.Add(label6);
             panel4.Controls.Add(button2);
             panel4.Controls.Add(button1);
-            panel4.Controls.Add(textBoxmatkhau);
-            panel4.Controls.Add(textBox1);
             panel4.Controls.Add(label4);
             panel4.Controls.Add(label3);
             panel4.Controls.Add(label2);
@@ -134,6 +138,42 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(503, 556);
             panel4.TabIndex = 0;
+            // 
+            // panelMatkhau
+            // 
+            panelMatkhau.Controls.Add(textBoxmatkhau);
+            panelMatkhau.Location = new Point(77, 282);
+            panelMatkhau.Name = "panelMatkhau";
+            panelMatkhau.Size = new Size(353, 64);
+            panelMatkhau.TabIndex = 14;
+            // 
+            // textBoxmatkhau
+            // 
+            textBoxmatkhau.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            textBoxmatkhau.Location = new Point(3, 3);
+            textBoxmatkhau.Multiline = true;
+            textBoxmatkhau.Name = "textBoxmatkhau";
+            textBoxmatkhau.Size = new Size(341, 45);
+            textBoxmatkhau.TabIndex = 1;
+            textBoxmatkhau.TextChanged += textBox2_TextChanged;
+            // 
+            // panelTentk
+            // 
+            panelTentk.Controls.Add(txtTentk);
+            panelTentk.Location = new Point(77, 181);
+            panelTentk.Name = "panelTentk";
+            panelTentk.Size = new Size(353, 64);
+            panelTentk.TabIndex = 13;
+            // 
+            // txtTentk
+            // 
+            txtTentk.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtTentk.Location = new Point(3, 3);
+            txtTentk.Multiline = true;
+            txtTentk.Name = "txtTentk";
+            txtTentk.Size = new Size(341, 45);
+            txtTentk.TabIndex = 0;
+            txtTentk.TextChanged += textBox1_TextChanged;
             // 
             // button3
             // 
@@ -196,7 +236,7 @@
             button2.BackgroundImage = (Image)resources.GetObject("button2.BackgroundImage");
             button2.BackgroundImageLayout = ImageLayout.Zoom;
             button2.Cursor = Cursors.Cross;
-            button2.Location = new Point(364, 411);
+            button2.Location = new Point(376, 410);
             button2.Name = "button2";
             button2.Size = new Size(54, 55);
             button2.TabIndex = 6;
@@ -205,6 +245,9 @@
             // button1
             // 
             button1.BackColor = Color.FromArgb(125, 199, 84);
+            button1.Cursor = Cursors.Hand;
+            button1.FlatAppearance.BorderColor = Color.White;
+            button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
             button1.ForeColor = Color.DarkGreen;
             button1.Location = new Point(77, 411);
@@ -214,24 +257,6 @@
             button1.Text = "Đăng nhập";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
-            // 
-            // textBoxmatkhau
-            // 
-            textBoxmatkhau.Location = new Point(77, 303);
-            textBoxmatkhau.Multiline = true;
-            textBoxmatkhau.Name = "textBoxmatkhau";
-            textBoxmatkhau.Size = new Size(341, 47);
-            textBoxmatkhau.TabIndex = 1;
-            textBoxmatkhau.TextChanged += textBox2_TextChanged;
-            // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(77, 181);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(341, 47);
-            textBox1.TabIndex = 0;
-            textBox1.TextChanged += textBox1_TextChanged;
             // 
             // label4
             // 
@@ -338,6 +363,10 @@
             tableLayoutPanel3.ResumeLayout(false);
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
+            panelMatkhau.ResumeLayout(false);
+            panelMatkhau.PerformLayout();
+            panelTentk.ResumeLayout(false);
+            panelTentk.PerformLayout();
             panel3.ResumeLayout(false);
             tableLayoutPanel2.ResumeLayout(false);
             tableLayoutPanel2.PerformLayout();
@@ -361,12 +390,14 @@
         private Button button2;
         private Button button1;
         private TextBox textBoxmatkhau;
-        private TextBox textBox1;
+        private TextBox txtTentk;
         private Label label4;
         private Label label6;
         private CheckBox checkBox1;
         private Label label7;
         private Label label8;
         private Button button3;
+        private Panel panelMatkhau;
+        private Panel panelTentk;
     }
 }

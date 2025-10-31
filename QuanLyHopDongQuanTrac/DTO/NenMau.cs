@@ -11,6 +11,5 @@ namespace DTO
         public string maNen { get; set; }
         public string moTa{ get; set; }
         public string tenNenMau { get; set; }
-        //public List<ChiTietQuanTracView> ChiTietThongSo { get; set; } = new();
     }
 }

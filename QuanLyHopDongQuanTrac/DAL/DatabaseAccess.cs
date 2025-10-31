@@ -468,37 +468,37 @@ namespace DAL
         }
 
 
-        public List<ChiTietQuanTracView> LayChiTietTheoNen(string maNen)
-        {
-            var list = new List<ChiTietQuanTracView>();
-            using (SqlConnection conn = SqlConnectionData.Connect())
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("sp_LayChiTietQuanTracTheoNen", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@maNen", maNen);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            list.Add(new ChiTietQuanTracView
-                            {
-                                MaNen = reader["maNen"].ToString(),
-                                MaTS = reader["maTS"].ToString(),
-                                TenTS = reader["tenTS"].ToString(),
-                                DonVi = reader["donVi"].ToString(),
-                                GiaTriToiThieu = reader["giaTriToiThieu"] as double?,
-                                GiaTriToiDa = reader["giaTriToiDa"] as double?,
-                                MaPhong = reader["maPhong"].ToString(),
-                                TenPhong = reader["tenPhong"].ToString()
-                            });
-                        }
-                    }
-                }
-            }
-            return list;
-        }
+        //public List<ChiTietQuanTracView> LayChiTietTheoNen(string maNen)
+        //{
+        //    var list = new List<ChiTietQuanTracView>();
+        //    using (SqlConnection conn = SqlConnectionData.Connect())
+        //    {
+        //        conn.Open();
+        //        using (SqlCommand cmd = new SqlCommand("sp_LayChiTietQuanTracTheoNen", conn))
+        //        {
+        //            cmd.CommandType = CommandType.StoredProcedure;
+        //            cmd.Parameters.AddWithValue("@maNen", maNen);
+        //            using (SqlDataReader reader = cmd.ExecuteReader())
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    list.Add(new ChiTietQuanTracView
+        //                    {
+        //                        MaNen = reader["maNen"].ToString(),
+        //                        MaTS = reader["maTS"].ToString(),
+        //                        TenTS = reader["tenTS"].ToString(),
+        //                        DonVi = reader["donVi"].ToString(),
+        //                        GiaTriToiThieu = reader["giaTriToiThieu"] as double?,
+        //                        GiaTriToiDa = reader["giaTriToiDa"] as double?,
+        //                        MaPhong = reader["maPhong"].ToString(),
+        //                        TenPhong = reader["tenPhong"].ToString()
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return list;
+        //}
 
         public List<HopDong> LayDanhSachHD()
         {
@@ -633,6 +633,34 @@ namespace DAL
                         throw new Exception("Lỗi khi xóa nền mẫu : " + ex.Message);
                     }
                 }
+            }
+        }
+
+
+        public bool SuaNenMau(string maNen, string moTa)
+        {
+            try
+            {
+                using (SqlConnection conn = SqlConnectionData.Connect())
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_SuaMoTaNenMau", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@maNen", maNen);
+                        cmd.Parameters.AddWithValue("@moTa", moTa ?? (object)DBNull.Value);
+                        //cmd.Parameters.AddWithValue("@tenNenMau", tenNenMau ?? (object)DBNull.Value);
+
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi DAL.SuaNenMau: " + ex.Message);
+                return false;
             }
         }
 
@@ -775,7 +803,6 @@ namespace DAL
                     cmd.Parameters.AddWithValue("@toaDo", string.IsNullOrWhiteSpace(toaDo) ? (object)DBNull.Value : toaDo);
                     cmd.Parameters.AddWithValue("@ghiChu", string.IsNullOrWhiteSpace(ghiChu) ? (object)DBNull.Value : ghiChu);
 
-                    // Chuyển danh sách thông số thành JSON
                     string jsonThongSo = ConvertToJsonArray(danhSachThongSo);
                     cmd.Parameters.AddWithValue("@danhSachThongSo", jsonThongSo);
 
@@ -792,6 +819,38 @@ namespace DAL
             }
         }
 
+        public bool SuaChiTietNenMau(string maDN, string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSachThongSo)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_SuaChiTietNenMau", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Parameters
+                    cmd.Parameters.AddWithValue("@maDN", maDN);
+                    cmd.Parameters.AddWithValue("@tenViTri", tenViTri);
+                    cmd.Parameters.AddWithValue("@toaDo", string.IsNullOrWhiteSpace(toaDo) ? (object)DBNull.Value : toaDo);
+                    cmd.Parameters.AddWithValue("@ghiChu", string.IsNullOrWhiteSpace(ghiChu) ? (object)DBNull.Value : ghiChu);
+
+                    // Chuyển danh sách thông số thành JSON
+                    string jsonThongSo = ConvertToJsonArray(danhSachThongSo);
+                    cmd.Parameters.AddWithValue("@danhSachThongSo", jsonThongSo);
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception($"Lỗi sửa chi tiết nền mẫu: {ex.Message}");
+                    }
+                }
+            }
+        }
+
 
         private string ConvertToJsonArray(List<ChiTietQuanTracView> danhSach)
         {
@@ -802,33 +861,46 @@ namespace DAL
 
             foreach (var item in danhSach)
             {
-                string giaTriMin = item.GiaTriToiThieu.HasValue
-                    ? item.GiaTriToiThieu.Value.ToString("0.##").Replace(",", ".")
-                    : "null";
+                var properties = new List<string>();
 
-                string giaTriMax = item.GiaTriToiDa.HasValue
-                    ? item.GiaTriToiDa.Value.ToString("0.##").Replace(",", ".")
-                    : "null";
-                string tenTS = EscapeJson(item.TenTS ?? "");
-                string donVi = EscapeJson(item.DonVi ?? "");
-                string phuongPhap = EscapeJson(item.PhuongPhap ?? "");
-                string maPhong = item.MaPhong ?? "";
+                // ⭐ maDNTS - Thêm nếu CÓ (Proc sẽ tự xử lý)
+                if (!string.IsNullOrWhiteSpace(item.MaDNTS))
+                    properties.Add($"\"maDNTS\":\"{EscapeJson(item.MaDNTS)}\"");
 
-                string jsonObject = $@"{{
-                    ""maTS"": ""{item.MaTS}"",
-                    ""tenTS"": ""{tenTS}"",
-                    ""donVi"": ""{donVi}"",
-                    ""giaTriToiThieu"": {giaTriMin},
-                    ""giaTriToiDa"": {giaTriMax},
-                    ""phuongPhap"": ""{phuongPhap}"",
-                    ""maPhong"": ""{maPhong}""
-                }}";
+                // maTS - BẮT BUỘC
+                if (!string.IsNullOrWhiteSpace(item.MaTS))
+                    properties.Add($"\"maTS\":\"{EscapeJson(item.MaTS)}\"");
 
-                jsonItems.Add(jsonObject);
+                // tenTS - TÙY CHỌN
+                if (!string.IsNullOrWhiteSpace(item.TenTS))
+                    properties.Add($"\"tenTS\":\"{EscapeJson(item.TenTS)}\"");
+
+                // donVi - TÙY CHỌN
+                if (!string.IsNullOrWhiteSpace(item.DonVi))
+                    properties.Add($"\"donVi\":\"{EscapeJson(item.DonVi)}\"");
+
+                // giaTriToiThieu - TÙY CHỌN
+                if (item.GiaTriToiThieu.HasValue)
+                    properties.Add($"\"giaTriToiThieu\":{item.GiaTriToiThieu.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+
+                // giaTriToiDa - TÙY CHỌN
+                if (item.GiaTriToiDa.HasValue)
+                    properties.Add($"\"giaTriToiDa\":{item.GiaTriToiDa.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+
+                // phuongPhap - TÙY CHỌN
+                if (!string.IsNullOrWhiteSpace(item.PhuongPhap))
+                    properties.Add($"\"phuongPhap\":\"{EscapeJson(item.PhuongPhap)}\"");
+
+                // maPhong - TÙY CHỌN
+                if (!string.IsNullOrWhiteSpace(item.MaPhong))
+                    properties.Add($"\"maPhong\":\"{EscapeJson(item.MaPhong)}\"");
+
+                jsonItems.Add("{" + string.Join(",", properties) + "}");
             }
 
             return "[" + string.Join(",", jsonItems) + "]";
         }
+
 
         private string EscapeJson(string input)
         {

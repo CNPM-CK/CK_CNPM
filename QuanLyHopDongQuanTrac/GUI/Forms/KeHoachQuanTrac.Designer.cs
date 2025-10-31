@@ -80,8 +80,8 @@
             cboTrangthai = new ComboBox();
             label7 = new Label();
             panel2 = new Panel();
-            label1 = new Label();
             pictureBox1 = new PictureBox();
+            label1 = new Label();
             panel1.SuspendLayout();
             panel11.SuspendLayout();
             tableLayoutPanel12.SuspendLayout();
@@ -325,6 +325,7 @@
             // 
             // dtmBegin
             // 
+            dtmBegin.CustomFormat = "dd/MM/yyyy";
             dtmBegin.Format = DateTimePickerFormat.Short;
             dtmBegin.Location = new Point(6, 5);
             dtmBegin.Name = "dtmBegin";
@@ -388,11 +389,14 @@
             // 
             // cboHopdong
             // 
+            cboHopdong.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboHopdong.DropDownWidth = 500;
             cboHopdong.FormattingEnabled = true;
             cboHopdong.Location = new Point(3, 3);
             cboHopdong.Name = "cboHopdong";
             cboHopdong.Size = new Size(375, 28);
             cboHopdong.TabIndex = 0;
+            cboHopdong.SelectedIndexChanged += cboHopdong_SelectedIndexChanged;
             // 
             // panel7
             // 
@@ -429,7 +433,8 @@
             // 
             // dtmDukien
             // 
-            dtmDukien.Format = DateTimePickerFormat.Short;
+            dtmDukien.CustomFormat = "dd/MM/yyyy";
+            dtmDukien.Format = DateTimePickerFormat.Custom;
             dtmDukien.Location = new Point(6, 6);
             dtmDukien.Name = "dtmDukien";
             dtmDukien.Size = new Size(369, 27);
@@ -481,11 +486,14 @@
             // dtmEnd
             // 
             dtmEnd.Checked = false;
+            dtmEnd.CustomFormat = "dd/MM/yyyy";
+            dtmEnd.Enabled = false;
             dtmEnd.Format = DateTimePickerFormat.Short;
             dtmEnd.Location = new Point(3, 5);
             dtmEnd.Name = "dtmEnd";
             dtmEnd.Size = new Size(372, 27);
             dtmEnd.TabIndex = 2;
+            dtmEnd.Visible = false;
             // 
             // label8
             // 
@@ -540,6 +548,7 @@
             // 
             // cboNenmau
             // 
+            cboNenmau.DropDownStyle = ComboBoxStyle.DropDownList;
             cboNenmau.FormattingEnabled = true;
             cboNenmau.Location = new Point(3, 4);
             cboNenmau.Name = "cboNenmau";
@@ -675,6 +684,7 @@
             // 
             // cboTrangthai
             // 
+            cboTrangthai.DropDownStyle = ComboBoxStyle.DropDownList;
             cboTrangthai.FormattingEnabled = true;
             cboTrangthai.Location = new Point(3, 4);
             cboTrangthai.Name = "cboTrangthai";
@@ -704,6 +714,16 @@
             panel2.TabIndex = 0;
             panel2.Paint += panel2_Paint;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.remove_background_logo;
+            pictureBox1.Location = new Point(3, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(155, 65);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 1;
+            pictureBox1.TabStop = false;
+            // 
             // label1
             // 
             label1.Anchor = AnchorStyles.Top;
@@ -717,22 +737,13 @@
             label1.Text = "KẾ HOẠCH QUAN TRẮC";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = Properties.Resources.remove_background_logo;
-            pictureBox1.Location = new Point(3, 0);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(156, 62);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 1;
-            pictureBox1.TabStop = false;
-            // 
             // KeHoachQuanTrac
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1062, 588);
             Controls.Add(panel1);
+            MaximizeBox = false;
             Name = "KeHoachQuanTrac";
             Text = "keHoachquantraccs";
             Load += KeHoachQuanTrac_Load;

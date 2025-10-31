@@ -96,7 +96,6 @@
             dgvDSTS.RowHeadersWidth = 51;
             dgvDSTS.Size = new Size(820, 411);
             dgvDSTS.TabIndex = 1;
-            //dgvDSTS.CellClick += dgvDSTS_CellClick_1;
             dgvDSTS.CellContentClick += dgvDSKH_CellContentClick;
             // 
             // panel6
@@ -122,6 +121,7 @@
             btnXuatfile.Cursor = Cursors.Hand;
             btnXuatfile.FlatAppearance.BorderColor = Color.White;
             btnXuatfile.FlatStyle = FlatStyle.Flat;
+            btnXuatfile.Image = (Image)resources.GetObject("btnXuatfile.Image");
             btnXuatfile.Location = new Point(742, 12);
             btnXuatfile.Name = "btnXuatfile";
             btnXuatfile.Size = new Size(66, 40);
@@ -163,6 +163,7 @@
             btnThemNenMau.Cursor = Cursors.Hand;
             btnThemNenMau.FlatAppearance.BorderColor = Color.White;
             btnThemNenMau.FlatStyle = FlatStyle.Flat;
+            btnThemNenMau.Image = (Image)resources.GetObject("btnThemNenMau.Image");
             btnThemNenMau.Location = new Point(670, 12);
             btnThemNenMau.Name = "btnThemNenMau";
             btnThemNenMau.Size = new Size(66, 40);

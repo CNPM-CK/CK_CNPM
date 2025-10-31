@@ -12,6 +12,7 @@ namespace BLL
     {
         private DatabaseAccess dal;
 
+
         public BLL_DotQuanTrac()
         {
             dal = new DatabaseAccess();
@@ -107,6 +108,46 @@ namespace BLL
             }
 
             return dal.LuuChiTietNenMau(maDN, tenViTri, toaDo, ghiChu, danhSachThongSo);
+        }
+
+        public bool SuaChiTietNenMau(string maDN, string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSachThongSo)
+        {
+            // VALIDATION
+            if (string.IsNullOrWhiteSpace(maDN))
+                throw new ArgumentException("Mã đợt nền không được để trống!");
+
+            if (string.IsNullOrWhiteSpace(tenViTri))
+                throw new ArgumentException("Tên vị trí không được để trống!");
+
+            if (danhSachThongSo == null || danhSachThongSo.Count == 0)
+                throw new ArgumentException("Phải có ít nhất một thông số!");
+
+            // Kiểm tra từng thông số
+            for (int i = 0; i < danhSachThongSo.Count; i++)
+            {
+                var ts = danhSachThongSo[i];
+
+                if (string.IsNullOrWhiteSpace(ts.MaTS))
+                    throw new ArgumentException($"Thông số thứ {i + 1}: Thiếu mã thông số (maTS)!");
+
+                if (ts.GiaTriToiThieu.HasValue && ts.GiaTriToiDa.HasValue)
+                {
+                    if (ts.GiaTriToiThieu.Value > ts.GiaTriToiDa.Value)
+                        throw new ArgumentException($"Thông số thứ {i + 1}: Giá trị tối thiểu không được lớn hơn giá trị tối đa!");
+                }
+            }
+
+            // Kiểm tra trùng maTS
+            var duplicateTS = danhSachThongSo
+                .GroupBy(x => x.MaTS)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .FirstOrDefault();
+
+            if (!string.IsNullOrEmpty(duplicateTS))
+                throw new ArgumentException($"Thông số '{duplicateTS}' bị trùng lặp trong danh sách!");
+
+            return dal.SuaChiTietNenMau(maDN, tenViTri, toaDo, ghiChu, danhSachThongSo);
         }
 
 
