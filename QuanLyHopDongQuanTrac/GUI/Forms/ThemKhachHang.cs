@@ -18,6 +18,9 @@ namespace GUI.Forms
     public partial class ThemKhachHang : Form
     {
         public event EventHandler SuccesfullyUpdated;
+        public KhachHang KhachHangHienTai { get; set; }
+        public bool isEditMode = false;
+
 
         public ThemKhachHang()
         {
@@ -165,17 +168,6 @@ namespace GUI.Forms
 
         private void ThemNhanVien_Load(object sender, EventArgs e)
         {
-            //diaChiService = new DiaChiBLL();
-            //var bllPhongBan = new PhongBanBLL();
-            //var tinhList = diaChiService.LayTinhThanh();
-            //var list = bllPhongBan.LayDSPhongBan();
-
-            //cboTinhThanh.DataSource = tinhList;
-            //cboTinhThanh.DisplayMember = "name";
-            //cboTinhThanh.ValueMember = "code";
-            //cboTinhThanh.SelectedIndex = -1;
-            //cboTinhThanh.Text = "Tỉnh/Thành phố";
-
             ApplyRoundedInput(panelTenDN, textBoxTenDN, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelsdt, textBoxsdt, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelKHDN, textBoxKHDN, 12, 2, Color.FromArgb(0, 152, 70));
@@ -186,46 +178,35 @@ namespace GUI.Forms
             ApplyRoundedInput(panelTrangthai, cboTrangthai, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelDiachi, txtDiachi, 12, 2, Color.FromArgb(0, 152, 70));
 
-
-            //cboTinhThanh.Text = "Tỉnh/Thành phố";
-            //cbbQuan.Text = "Quận/Huyện";
-            //cbbXa.Text = "Xã/Phường";
-
             InitializeButtonStyles();
-
-            //cboTinhThanh.SelectedIndexChanged += (s, ev) =>
-            //{
-            //    if (cboTinhThanh.SelectedValue != null)
-            //    {
-            //        string maTinh = cboTinhThanh.SelectedValue.ToString();
-            //        var quanList = diaChiService.LayQuanHuyen(maTinh);
-            //        cbbQuan.DataSource = quanList;
-            //        cbbQuan.DisplayMember = "name_with_type";
-            //        cbbQuan.ValueMember = "code";
-            //        cbbQuan.SelectedIndex = -1;
-            //        cbbQuan.Text = "Quận/Huyện";
-
-            //    }
-            //};
-
-            //cbbQuan.SelectedIndexChanged += (s, ev) =>
-            //{
-            //    if (cbbQuan.SelectedValue != null)
-            //    {
-            //        string maQuan = cbbQuan.SelectedValue.ToString();
-            //        var xaList = diaChiService.LayXaPhuong(maQuan);
-            //        cbbXa.DataSource = xaList;
-            //        cbbXa.DisplayMember = "name_with_type";
-            //        cbbXa.ValueMember = "code";
-            //        cbbXa.SelectedIndex = -1;
-            //        cbbXa.Text = "Xã/Phường";
-            //    }
-            //};
-
             LoadComboBoxTrangThai();
+            if (isEditMode)
+            {
+                this.Text = "Chỉnh Sửa Khách Hàng";
+                buttonAddnew.Text = "Lưu Thay Đổi";
+                label.Text = " CHỈNH SỬA THÔNG TIN ";
+            }
+            if (isEditMode && KhachHangHienTai != null)
+            {
+                // Load dữ liệu vào các control
+                textBoxTenDN.Text = KhachHangHienTai.tenDoanhNghiep;
+                textBoxKHDN.Text = KhachHangHienTai.kyHieuDN;
+                textBoxTenDD.Text = KhachHangHienTai.nguoiDaiDien;
+                textBoxsdt.Text = KhachHangHienTai.soDienThoaiKH;
+                txtMsthue.Text = KhachHangHienTai.maSoThue;
+                txtMaildd.Text = KhachHangHienTai.emailNguoiDaiDien;
+                txtEmaildn.Text = KhachHangHienTai.emailDoanhNghiep;
+                txtDiachi.Text = KhachHangHienTai.diaChi;
+                cboTrangthai.SelectedValue = KhachHangHienTai.trangThai;
+            }
+            else
+            {
+                this.Text = "Thêm Khách Hàng Mới";
+                buttonAddnew.Text = "Thêm khách hàng";
+                label.Text = " THÊM KHÁCH HÀNG ";
 
+            }
         }
-
 
         private void LoadComboBoxTrangThai()
         {
@@ -235,32 +216,6 @@ namespace GUI.Forms
             cboTrangthai.DataSource = listTrangThai;
             cboTrangthai.DisplayMember = "tenTrangThai";
             cboTrangthai.ValueMember = "maTrangThai";
-        }
-
-
-        private void panel5_Paint(object sender, PaintEventArgs e) { }
-
-        private void label4_Click(object sender, EventArgs e) { }
-
-        private void textBoxhoten_TextChanged(object sender, EventArgs e) { }
-
-        private void radioButton2_CheckedChanged(object sender, EventArgs e) { }
-
-        private void label10_Click(object sender, EventArgs e) { }
-
-        private void panel3_Paint(object sender, PaintEventArgs e) { }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) { }
-
-        private void label1_Click(object sender, EventArgs e) { }
-
-        private void textBoxemail_TextChanged(object sender, EventArgs e) { }
-
-        private void label2_Click(object sender, EventArgs e) { }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-           
         }
 
         private void buttonAddnew_Click(object sender, EventArgs e)
@@ -321,37 +276,6 @@ namespace GUI.Forms
                 return;
             }
 
-            //if (cboTinhThanh.SelectedIndex < 0 || cboTinhThanh.Text == "Tỉnh/Thành phố")
-            //{
-            //    MessageBox.Show("Vui lòng chọn Tỉnh/Thành phố!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    cboTinhThanh.Focus();
-            //    return;
-            //}
-
-            //if (cbbQuan.SelectedIndex < 0 || cbbQuan.Text == "Quận/Huyện")
-            //{
-            //    MessageBox.Show("Vui lòng chọn Quận/Huyện!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    cbbQuan.Focus();
-            //    return;
-            //}
-
-            //if (cbbXa.SelectedIndex < 0 || cbbXa.Text == "Xã/Phường")
-            //{
-            //    MessageBox.Show("Vui lòng chọn Xã/Phường!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    cbbXa.Focus();
-            //    return;
-            //}
-
-            //string diaChi = "";
-            //if (cbbXa.SelectedIndex >= 0)
-            //    diaChi += cbbXa.Text + ", ";
-            //if (cbbQuan.SelectedIndex >= 0)
-            //    diaChi += cbbQuan.Text + ", ";
-            //if (cboTinhThanh.SelectedIndex >= 0)
-            //    diaChi += cboTinhThanh.Text;
-            //if (!string.IsNullOrWhiteSpace(txtDiaChi.Text))
-            //    diaChi = txtDiaChi.Text + ", " + diaChi;
-
             KhachHang kh = new KhachHang
             {
                 tenDoanhNghiep = textBoxTenDN.Text.Trim(),
@@ -369,13 +293,21 @@ namespace GUI.Forms
             try
             {
                 var bll = new KhachHangBLL();
-                bll.ThemKhachHang(kh);
 
-                MessageBox.Show("Thêm khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                if (isEditMode)
+                {
+                    kh.maKH = KhachHangHienTai.maKH; // Giữ lại mã KH
+                    bll.SuaKhachHang(kh); // Method này cần có trong KhachHangBLL
+                    MessageBox.Show("Cập nhật khách hàng thành công!", "Thông báo");
+                    SuccesfullyUpdated?.Invoke(this, EventArgs.Empty); // ✅ Quan trọng
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+                else
+                {
+                    bll.ThemKhachHang(kh);
+                    MessageBox.Show("Thêm khách hàng thành công!", "Thông báo");
+                }
             }
             catch (SqlException ex)
             {
@@ -399,5 +331,25 @@ namespace GUI.Forms
             txtMaildd.Clear();
             txtMsthue.Clear();
         }
+
+        private void panel5_Paint(object sender, PaintEventArgs e) { }
+
+        private void label4_Click(object sender, EventArgs e) { }
+
+        private void textBoxhoten_TextChanged(object sender, EventArgs e) { }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e) { }
+
+        private void label10_Click(object sender, EventArgs e) { }
+
+        private void panel3_Paint(object sender, PaintEventArgs e) { }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) { }
+
+        private void label1_Click(object sender, EventArgs e) { }
+
+        private void textBoxemail_TextChanged(object sender, EventArgs e) { }
+
+        private void label2_Click(object sender, EventArgs e) { }
     }
 }

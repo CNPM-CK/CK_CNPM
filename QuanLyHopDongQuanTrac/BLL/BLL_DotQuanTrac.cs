@@ -184,5 +184,16 @@ namespace BLL
 
             return dal.HoanTatKeHoachQuanTrac(dto);
         }
+
+
+        public List<DTO_DotQuanTrac> LayDanhSachDotQuanTrac_PhanTrang(int pageNumber, int pageSize)
+        {
+            return dal.LayDanhSachDotQuanTrac_PhanTrang(pageNumber, pageSize);
+        }
+
+        public int DemTongKHQT()
+        {
+            return dal.DemTongKHQT();
+        }
     }
 }

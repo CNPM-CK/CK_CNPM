@@ -25,5 +25,15 @@ namespace DTO
         public string emailDoanhNghiep { get; set; }
         
         public int trangThai { get; set; }
+        public string tenTrangThai
+        {
+            get
+            {
+                return trangThai == 1 ? "Đang hợp tác"
+                     : trangThai == 2 ? "Ngừng hợp tác"
+                     : "Không xác định";
+            }
+        }
+
     }
 }

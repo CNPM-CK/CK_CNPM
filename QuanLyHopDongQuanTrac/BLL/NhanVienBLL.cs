@@ -101,5 +101,20 @@ namespace BLL
         {
             return dal.LayPhongBanTheoTaiKhoan(tenTK);
         }
+
+        public List<TrangThaiNhanVien> LayDanhSachTrangThai()
+        {
+            return dal.LayTrangThaiNhanVien();
+        }
+
+        public List<NhanVien> LayDanhSachNhanVien_PhanTrang(int pageNumber, int pageSize)
+        {
+            return dal.LayDanhSachNhanVien_PhanTrang(pageNumber, pageSize);
+        }
+
+        public int DemSoLuongNhanVien()
+        {
+            return dal.DemTongDSNV();
+        }
     }
 }

@@ -80,5 +80,17 @@ namespace BLL
             return (daThayDoi, log.ToString());
         }
 
+
+        public List<KhachHang> LayDanhSachKH_PhanTrang(int pageNumber, int pageSize)
+        {
+            return dal.LayDanhSachKH_PhanTrang(pageNumber, pageSize);
+        }
+
+        public int DemTongSoKhachHang()
+        {
+            return dal.DemTongSoKhachHang();
+        }
+
+
     }
 }

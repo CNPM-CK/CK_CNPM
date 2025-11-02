@@ -15,9 +15,10 @@ using System.Windows.Forms;
 
 namespace GUI.Forms
 {
-    public partial class DanhSachKhachHanguc : UserControl
+    public partial class DSNV_Uc : UserControl
     {
         #region Fields
+
         private Color borderColor = Color.Black;
         private int borderRadius = 12;
         private int borderSize = 2;
@@ -28,15 +29,20 @@ namespace GUI.Forms
         private const int MIN_SEARCH_WIDTH = 200;
         private const int MAX_SEARCH_WIDTH = 500;
         private const int SEARCH_HEIGHT = 50;
-        private const string PLACEHOLDER_TEXT = "Tìm kiếm khách hàng...";
+        private const string PLACEHOLDER_TEXT = "Tìm kiếm nhân viên...";
 
-        private BindingList<KhachHang> dsKhachhang;
+        private BindingList<NhanVien> dsNhanVien;
         private bool isPlaceholder = true;
         private string lastSearchKeyword = "";
         private Form currentOpenForm = null;
 
-        private Rectangle editRect;
-        private Rectangle deleteRect;
+
+
+        public DSNV_Uc()
+        {
+            InitializeComponent();
+            this.DoubleBuffered = true;
+        }
 
         [DllImport("gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern IntPtr CreateRoundRectRgn(
@@ -49,26 +55,7 @@ namespace GUI.Forms
         );
         #endregion
 
-        #region Constructor
-        public DanhSachKhachHanguc()
-        {
-            InitializeComponent();
-            this.DoubleBuffered = true;
-
-            // Load dữ liệu khi UserControl được khởi tạo
-            this.Load += DanhSachKhachHanguc_Load;
-        }
-        #endregion
-
-        #region UserControl Load
-        private void DanhSachKhachHanguc_Load(object sender, EventArgs e)
-        {
-            InitializeButtonIcons();
-            InitializeButtonStyles();
-            InitializeCustomSearchBox();
-            InitializeDataGridView();
-            CalculateLayout();
-        }
+        #region Form Load
 
         private void InitializeDataGridView()
         {
@@ -98,52 +85,53 @@ namespace GUI.Forms
             dgvDanhsachnhanvien.DefaultCellStyle.SelectionForeColor = Color.Black;
             dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            // Thêm các cột
             dgvDanhsachnhanvien.Columns.AddRange(new DataGridViewColumn[]
             {
-                new DataGridViewTextBoxColumn { DataPropertyName = "maKH", HeaderText = "Mã khách hàng", Name = "maKH" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "tenDoanhNghiep", HeaderText = "Tên doanh nghiệp", Name = "tenDoanhNghiep" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "kyHieuDN", HeaderText = "Ký hiệu DN", Name = "kyHieuDN" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "nguoiDaiDien", HeaderText = "Người đại diện", Name = "nguoiDaiDien" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "soDienThoaiKH", HeaderText = "Số điện thoại", Name = "soDienThoaiKH" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "maSoThue", HeaderText = "Mã số thuế", Name = "maSoThue" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "emailNguoiDaiDien", HeaderText = "Email người đại diện", Name = "emailNguoiDaiDien" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "emailDoanhNghiep", HeaderText = "Email doanh nghiệp", Name = "emailDoanhNghiep" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "tenTrangThai", HeaderText = "Trạng thái", Name = "tenTrangThai" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "diaChi", HeaderText = "Địa chỉ", Name = "diaChi" }
+                new DataGridViewTextBoxColumn { DataPropertyName = "maNV", HeaderText = "Mã nhân viên", Name = "maNV" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "hoTen", HeaderText = "Họ Tên", Name = "hoTen" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "email", HeaderText = "Email", Name = "email" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "maPhong", HeaderText = "Mã Phòng", Name = "maPhong" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "ngaySinh", HeaderText = "Ngày Sinh", Name = "ngaySinh" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "gioiTinh", HeaderText = "Giới Tính", Name = "gioiTinh" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "diaChi", HeaderText = "Địa Chỉ", Name = "diaChi" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "soDienThoai", HeaderText = "Số Điện Thoại", Name = "soDienThoai" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "tenPhong", HeaderText = "Phòng Ban", Name = "tenPhong" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "tenTrangThai", HeaderText = "Trạng Thái", Name = "tenTrangThai" }
+
             });
 
+            // Thêm cột thao tác
             DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
             {
                 Name = "ThaoTac",
                 HeaderText = "Thao tác",
                 ImageLayout = DataGridViewImageCellLayout.Zoom
             };
-            dgvDanhsachnhanvien.Columns["maKH"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDanhsachnhanvien.Columns["kyHieuDN"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDanhsachnhanvien.Columns["soDienThoaiKH"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDanhsachnhanvien.Columns["maSoThue"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDanhsachnhanvien.Columns["tenTrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
 
+            // Đăng ký events
             dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
-            dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;
-            dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
-            dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
 
-            dgvDanhsachnhanvien.DataSource = dsKhachhang;
+            dgvDanhsachnhanvien.DataSource = dsNhanVien;
             dgvDanhsachnhanvien.ReadOnly = true;
             dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
-            LoadKhachHangPage();
+            // Đăng ký events
+            dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
+            dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;   // ✅ VẼ ICON
+            dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;         // ✅ XỬ LÝ CLICK
+            dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;                 // ✅ WATERMARK
         }
 
-        private void RefreshDanhSachKhachHang()
+        private void RefreshDanhSachNhanVien()
         {
             totalRecords = 0;
             LoadKhachHangPage();
         }
-        #endregion
 
-        #region DataGridView Events
+        private Rectangle editRect;
+        private Rectangle deleteRect;
+
         private void dgvDanhsachnhanvien_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
@@ -170,13 +158,17 @@ namespace GUI.Forms
 
         private void dgvDanhsachnhanvien_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.ColumnIndex != dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
+            if (e.RowIndex < 0 || e.RowIndex >= dgvDanhsachnhanvien.Rows.Count)
+                return;
+
+            if (e.ColumnIndex != dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
                 return;
 
             var clickPoint = dgvDanhsachnhanvien.PointToClient(Cursor.Position);
             DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
 
-            if (row.Cells["maKH"].Value == null) return;
+            if (row.Cells["maNV"].Value == null)
+                return;
 
             if (editRect.Contains(clickPoint))
             {
@@ -187,6 +179,8 @@ namespace GUI.Forms
                 HandleDelete(row);
             }
         }
+
+        
 
         private void HandleEdit(DataGridViewRow row)
         {
@@ -199,24 +193,19 @@ namespace GUI.Forms
                 return;
             }
 
-            KhachHang kh = new KhachHang
-            {
-                maKH = row.Cells["maKH"].Value.ToString(),
-                soDienThoaiKH = row.Cells["soDienThoaiKH"].Value?.ToString(),
-                tenDoanhNghiep = row.Cells["tenDoanhNghiep"].Value?.ToString(),
-                nguoiDaiDien = row.Cells["nguoiDaiDien"].Value?.ToString(),
-                diaChi = row.Cells["diaChi"].Value?.ToString(),
-                kyHieuDN = row.Cells["kyHieuDN"].Value?.ToString(),
-                maSoThue = row.Cells["maSoThue"].Value?.ToString(),
-                emailDoanhNghiep = row.Cells["emailDoanhNghiep"].Value?.ToString(),
-                emailNguoiDaiDien = row.Cells["emailNguoiDaiDien"].Value?.ToString(),
-                trangThai = row.Cells["tenTrangThai"].Value?.ToString() == "Đang hợp tác" ? 1 :
-            row.Cells["tenTrangThai"].Value?.ToString() == "Ngừng hợp tác" ? 2 : 1
-            };
+            // ✅ Lấy trực tiếp từ DataBoundItem
+            NhanVien nvSource = row.DataBoundItem as NhanVien;
 
-            ThemKhachHang frmSua = new ThemKhachHang();
+            if (nvSource == null)
+            {
+                MessageBox.Show("Không thể lấy thông tin nhân viên!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // ✅ Sử dụng trực tiếp nvSource, KHÔNG TẠO MỚI
+            ThemNhanVien frmSua = new ThemNhanVien();
             frmSua.isEditMode = true;
-            frmSua.KhachHangHienTai = kh;
+            frmSua.NhanVienHienTai = nvSource;  // ✅ Truyền trực tiếp nvSource
 
             currentOpenForm = frmSua;
             CenterFormOnParent(frmSua);
@@ -226,29 +215,41 @@ namespace GUI.Forms
                 currentOpenForm = null;
             };
 
-            frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachKhachHang();
-            if (frmSua.ShowDialog() == DialogResult.OK)
-            {
-                RefreshDanhSachKhachHang();
-            }
+            frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
+            frmSua.Show(this);
         }
 
         private void HandleDelete(DataGridViewRow row)
         {
-            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
+            string maNV = row.Cells["maNV"].Value?.ToString();
+            string hoTen = row.Cells["hoTen"].Value?.ToString();
+            string tenTrangThai = row.Cells["tenTrangThai"].Value?.ToString();
+
+            if (string.IsNullOrEmpty(maNV))
+                return;
+
+            // ✅ Lấy trạng thái nhân viên
+            NhanVien nvSource = row.DataBoundItem as NhanVien;
+            int trangThai = nvSource?.trangThai ?? 0;
+
+            // ✅ Kiểm tra: Chỉ cho xóa nếu trạng thái = 6
+            if (trangThai != 6)
             {
-                currentOpenForm.BringToFront();
-                currentOpenForm.Focus();
-                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
-                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    $"Không thể xóa nhân viên '{hoTen}'!\n\n" +
+                    $"Trạng thái hiện tại: {tenTrangThai}\n" +
+                    $"Chỉ được xóa nhân viên có trạng thái 'Ngưng hoạt động'.",
+                    "Không thể xóa",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
                 return;
             }
 
-            string maKH = row.Cells["maKH"].Value.ToString();
-            string tenDN = row.Cells["tenDoanhNghiep"].Value?.ToString();
-
+            // ✅ Nếu trạng thái = 6 → Cho phép xóa mềm
             DialogResult result = MessageBox.Show(
-                $"Bạn có chắc chắn muốn xóa khách hàng '{tenDN}' (Mã: {maKH}) không?",
+                $"Bạn có chắc chắn muốn xóa nhân viên '{hoTen}' (Mã: {maNV}) không?\n\n" +
+                $"Nhân viên này sẽ bị ẩn khỏi danh sách.",
                 "Xác nhận xóa",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question
@@ -258,17 +259,21 @@ namespace GUI.Forms
             {
                 try
                 {
-                    KhachHangBLL khBLL = new KhachHangBLL();
-                    khBLL.XoaKhachHang(maKH);
+                    NhanVienBLL nvBLL = new NhanVienBLL();
+                    nvBLL.XoaNhanVien(maNV);
 
-                    MessageBox.Show("Đã xóa khách hàng thành công!", "Thông báo",
+                    MessageBox.Show("Đã xóa nhân viên thành công!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    RefreshDanhSachKhachHang();
+                    // ✅ Delay refresh để tránh conflict
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        RefreshDanhSachNhanVien();
+                    }));
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Có lỗi xảy ra khi xóa khách hàng: " + ex.Message,
+                    MessageBox.Show("Có lỗi xảy ra khi xóa nhân viên: " + ex.Message,
                         "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -276,20 +281,11 @@ namespace GUI.Forms
 
         private void CenterFormOnParent(Form childForm)
         {
-            // Lấy parent form của UserControl
-            Form parentForm = this.FindForm();
-            if (parentForm != null)
-            {
-                childForm.StartPosition = FormStartPosition.Manual;
-                childForm.Location = new Point(
-                    parentForm.Location.X + (parentForm.Width - childForm.Width) / 2,
-                    parentForm.Location.Y + (parentForm.Height - childForm.Height) / 2
-                );
-            }
-            else
-            {
-                childForm.StartPosition = FormStartPosition.CenterScreen;
-            }
+            childForm.StartPosition = FormStartPosition.Manual;
+            childForm.Location = new Point(
+                this.Location.X + (this.Width - childForm.Width) / 2,
+                this.Location.Y + (this.Height - childForm.Height) / 2
+            );
         }
 
         private void dgvDanhsachnhanvien_Paint(object sender, PaintEventArgs e)
@@ -315,12 +311,6 @@ namespace GUI.Forms
                 attributes);
         }
 
-        private void dgvDanhsachnhanvien_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-        }
-        #endregion
-
-        #region Search Box Initialization
         private void InitializeCustomSearchBox()
         {
             containersearch.BackColor = Color.Transparent;
@@ -338,15 +328,35 @@ namespace GUI.Forms
 
             containersearch.Controls.Add(searchtextbox);
 
+            // Đăng ký events
             searchtextbox.Enter += searchtextbox_Enter;
             searchtextbox.Leave += searchtextbox_Leave;
             searchtextbox.TextChanged += searchtextbox_TextChanged_1;
             searchtextbox.KeyDown += searchtextbox_KeyDown;
             containersearch.Paint += containersearch_Paint;
         }
-        #endregion
 
-        #region Button Initialization
+        private void InitializeContextMenu()
+        {
+            ContextMenuStrip menu = new ContextMenuStrip();
+
+            ToolStripMenuItem pdfItem = new ToolStripMenuItem("Xuất PDF");
+            pdfItem.Click += (s, ev) => { MessageBox.Show("Xuất PDF..."); };
+
+            ToolStripMenuItem excelItem = new ToolStripMenuItem("Xuất Excel");
+            excelItem.Click += (s, ev) => { MessageBox.Show("Xuất Excel..."); };
+
+            menu.Items.Add(pdfItem);
+            menu.Items.Add(excelItem);
+
+            btnXuatfile.Click += (s, ev) =>
+            {
+                menu.Show(btnXuatfile, new Point(0, btnXuatfile.Height));
+            };
+        }
+
+
+
         private void InitializeButtonIcons()
         {
 
@@ -370,15 +380,14 @@ namespace GUI.Forms
             BoGocButton(btnXuatfile, 20);
             BoGocButton(btnTruoc, 20);
             BoGocButton(btnSau, 20);
-            btnThemuser.Click += btnThemuser_Click;
+
         }
         #endregion
 
         #region Layout & Resize
-        protected override void OnResize(EventArgs e)
+        private void DanhSachNhanVien_Resize(object sender, EventArgs e)
         {
-            base.OnResize(e);
-            if (this.Width < 100) return;
+            if (this.ClientSize.Width < 100) return;
             CalculateLayout();
         }
 
@@ -413,7 +422,6 @@ namespace GUI.Forms
                 btnThemuser.Left = btnXuatfile.Left - btnWidth - SPACING;
             }
 
-            // Đặt vị trí dọc của button trong panel6
             int topPosition = 10;
             btnXuatfile.Top = topPosition;
             btnThemuser.Top = topPosition;
@@ -520,7 +528,7 @@ namespace GUI.Forms
         }
         #endregion
 
-        #region TextBox Events - Search Functionality
+        #region TextBox Events - FIX CHÍNH Ở ĐÂY
         private void searchtextbox_Enter(object sender, EventArgs e)
         {
             if (isPlaceholder)
@@ -538,8 +546,9 @@ namespace GUI.Forms
                 isPlaceholder = true;
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
-                dgvDanhsachnhanvien.DataSource = dsKhachhang;
+                dgvDanhsachnhanvien.DataSource = dsNhanVien;
                 lastSearchKeyword = "";
+
             }
         }
 
@@ -559,49 +568,105 @@ namespace GUI.Forms
             else if (e.KeyCode == Keys.Escape)
             {
                 searchtextbox.Clear();
-                dgvDanhsachnhanvien.DataSource = dsKhachhang;
+                dgvDanhsachnhanvien.DataSource = dsNhanVien;
                 lastSearchKeyword = "";
             }
         }
+
 
         private void searchtextbox_TextChanged_1(object sender, EventArgs e)
         {
             if (isPlaceholder)
                 return;
-
             string currentKeyword = searchtextbox.Text.Trim().ToLower();
             if (currentKeyword == lastSearchKeyword)
                 return;
-
             lastSearchKeyword = currentKeyword;
             PerformSearch();
         }
 
         private void PerformSearch()
         {
-            string keyword = searchtextbox.Text?.Trim().ToLower() ?? "";
-            if (string.IsNullOrEmpty(keyword))
+            // ✅ Kiểm tra null
+            if (dsNhanVien == null || dsNhanVien.Count == 0)
             {
-                dgvDanhsachnhanvien.DataSource = dsKhachhang;
                 return;
             }
 
-            var filtered = dsKhachhang
-                .Where(kh =>
-                    (kh.tenDoanhNghiep ?? "").ToLower().Contains(keyword) ||
-                    (kh.nguoiDaiDien ?? "").ToLower().Contains(keyword) ||
-                    (kh.kyHieuDN ?? "").ToLower().Contains(keyword) ||
-                    (kh.soDienThoaiKH ?? "").Contains(keyword) ||
-                    (kh.diaChi ?? "").ToLower().Contains(keyword) ||
-                    kh.maKH.ToString().ToLower().Contains(keyword)
+            string keyword = searchtextbox.Text.Trim().ToLower();
+
+            if (string.IsNullOrEmpty(keyword))
+            {
+                dgvDanhsachnhanvien.DataSource = dsNhanVien;
+                return;
+            }
+
+            var filtered = dsNhanVien
+                .Where(nv =>
+                    (nv.hoTen ?? "").ToLower().Contains(keyword) ||
+                    (nv.email ?? "").ToLower().Contains(keyword) ||
+                    (nv.tenPhong ?? "").ToLower().Contains(keyword) ||
+                    (nv.soDienThoai ?? "").Contains(keyword) ||
+                    (nv.diaChi ?? "").ToLower().Contains(keyword) ||
+                    nv.maNV.ToString().ToLower().Contains(keyword)
                 )
                 .ToList();
 
-            dgvDanhsachnhanvien.DataSource = new BindingList<KhachHang>(filtered);
+            dgvDanhsachnhanvien.DataSource = new BindingList<NhanVien>(filtered);
         }
+
         #endregion
 
         #region Button Events
+
+        private void dgvDanhsachnhanvien_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvDanhsachnhanvien.Columns[e.ColumnIndex].Name == "gioiTinh" && e.Value != null)
+            {
+                string gioiTinh = e.Value.ToString().Trim();
+
+                if (gioiTinh == "0" || gioiTinh.ToLower() == "false")
+                    e.Value = "Nam";
+                else if (gioiTinh == "1" || gioiTinh.ToLower() == "true")
+                    e.Value = "Nữ";
+
+                e.FormattingApplied = true;
+            }
+        }
+        #endregion
+
+        #region Unused Events
+        private void DanhSachNhanVien_Click(object sender, EventArgs e) { }
+        private void pictureBox5_Click(object sender, EventArgs e) { }
+        private void pictureBox4_Click(object sender, EventArgs e) { }
+        private void dgvDanhsachnhanvien_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
+        private void containersearch_Paint_1(object sender, PaintEventArgs e) { }
+        private void searchtextbox_TextChanged(object sender, EventArgs e) { }
+        #endregion
+
+        private void DSNV_Uc_Load(object sender, EventArgs e)
+        {
+            NhanVienBLL nvBLL = new NhanVienBLL();
+            dsNhanVien = new BindingList<NhanVien>(nvBLL.LayDanhSachNhanVien_PhanTrang(currentPage,pageSize));
+            InitializeContextMenu();
+            InitializeButtonIcons();
+            InitializeButtonStyles();
+            InitializeCustomSearchBox();
+            InitializeDataGridView();
+            CalculateLayout();
+            // Đăng ký events
+            dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
+            dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;
+            dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
+            dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
+
+            dgvDanhsachnhanvien.DataSource = dsNhanVien;
+            dgvDanhsachnhanvien.ReadOnly = true;
+            dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
+            LoadKhachHangPage();
+
+        }
+
         private void btnThemuser_Click(object sender, EventArgs e)
         {
             if (currentOpenForm != null && !currentOpenForm.IsDisposed)
@@ -613,24 +678,19 @@ namespace GUI.Forms
                 return;
             }
 
-            ThemKhachHang frmThem = new ThemKhachHang();
+
+            ThemNhanVien frmThem = new ThemNhanVien();
             currentOpenForm = frmThem;
-
             CenterFormOnParent(frmThem);
-
             frmThem.FormClosed += (s, ev) =>
             {
-                currentOpenForm = null;
+                currentOpenForm = null; // Xóa reference khi form đóng
             };
 
-            frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachKhachHang();
-            frmThem.Show();
+            frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
+            frmThem.Show(this);
         }
-        #endregion
 
-        private void panel6_Paint(object sender, PaintEventArgs e) { }
-
-        private void dgvDanhsachnhanvien_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 
         int currentPage = 1;
         int pageSize = 15;
@@ -638,16 +698,16 @@ namespace GUI.Forms
         int totalPages = 0;
         private void LoadKhachHangPage()
         {
-            var bll = new KhachHangBLL();
+            var bll = new NhanVienBLL();
 
             // 🔹 Tính tổng số trang (chỉ cần 1 lần khi load form)
             if (totalRecords == 0)
             {
-                totalRecords = bll.DemTongSoKhachHang();
+                totalRecords = bll.DemSoLuongNhanVien();
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
             }
 
-            var data = bll.LayDanhSachKH_PhanTrang(currentPage, pageSize);
+            var data = bll.LayDanhSachNhanVien_PhanTrang(currentPage, pageSize);
             dgvDanhsachnhanvien.DataSource = data;
 
             // 🔹 Cập nhật label trang
@@ -671,11 +731,6 @@ namespace GUI.Forms
         {
             currentPage++;
             LoadKhachHangPage();
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

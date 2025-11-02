@@ -32,7 +32,7 @@ namespace GUI.Forms
         private const string PLACEHOLDER_TEXT = "Tìm kiếm nhân viên...";
 
         private BindingList<NhanVien> dsNhanVien;
-        private bool isPlaceholder = true; 
+        private bool isPlaceholder = true;
         private string lastSearchKeyword = "";
         private Form currentOpenForm = null;
 
@@ -58,75 +58,75 @@ namespace GUI.Forms
         #region Form Load
         private void DanhSachNhanVien_Load(object sender, EventArgs e)
         {
-            NhanVienBLL nvBLL = new NhanVienBLL();
-            dsNhanVien = new BindingList<NhanVien>(nvBLL.LayDanhSachNhanVien());
+            //NhanVienBLL nvBLL = new NhanVienBLL();
+            //dsNhanVien = new BindingList<NhanVien>(nvBLL.LayDanhSachNhanVien());
 
-            InitializeContextMenu();
+            //InitializeContextMenu();
             InitializeButtonIcons();
-            InitializeButtonStyles();
-            InitializeCustomSearchBox();
+            //InitializeButtonStyles();
+            //InitializeCustomSearchBox();
             InitializeSettingMenu();
-            InitializeDataGridView();
-            CalculateLayout();
+            //InitializeDataGridView();
+            //CalculateLayout();
         }
 
         private void InitializeDataGridView()
         {
-            dgvDanhsachnhanvien.AutoGenerateColumns = false;
-            dgvDanhsachnhanvien.Columns.Clear();
-            dgvDanhsachnhanvien.AllowUserToAddRows = false;
-            dgvDanhsachnhanvien.ReadOnly = true;
-            dgvDanhsachnhanvien.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDanhsachnhanvien.MultiSelect = false;
-            dgvDanhsachnhanvien.RowTemplate.Height = 50;
+            //dgvDanhsachnhanvien.AutoGenerateColumns = false;
+            //dgvDanhsachnhanvien.Columns.Clear();
+            //dgvDanhsachnhanvien.AllowUserToAddRows = false;
+            //dgvDanhsachnhanvien.ReadOnly = true;
+            //dgvDanhsachnhanvien.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            //dgvDanhsachnhanvien.MultiSelect = false;
+            //dgvDanhsachnhanvien.RowTemplate.Height = 50;
 
-            // Font settings
-            dgvDanhsachnhanvien.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular);
-            dgvDanhsachnhanvien.DefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvDanhsachnhanvien.RowHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
+            //// Font settings
+            //dgvDanhsachnhanvien.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular);
+            //dgvDanhsachnhanvien.DefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
+            //dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            //dgvDanhsachnhanvien.RowHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
 
-            // Header styling
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 152, 70);
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvDanhsachnhanvien.EnableHeadersVisualStyles = false;
+            //// Header styling
+            //dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 152, 70);
+            //dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            //dgvDanhsachnhanvien.EnableHeadersVisualStyles = false;
 
-            // Cell styling
-            dgvDanhsachnhanvien.DefaultCellStyle.BackColor = Color.White;
-            dgvDanhsachnhanvien.DefaultCellStyle.ForeColor = Color.Black;
-            dgvDanhsachnhanvien.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dgvDanhsachnhanvien.DefaultCellStyle.SelectionForeColor = Color.Black;
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            //// Cell styling
+            //dgvDanhsachnhanvien.DefaultCellStyle.BackColor = Color.White;
+            //dgvDanhsachnhanvien.DefaultCellStyle.ForeColor = Color.Black;
+            //dgvDanhsachnhanvien.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            //dgvDanhsachnhanvien.DefaultCellStyle.SelectionForeColor = Color.Black;
+            //dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            // Thêm các cột
-            dgvDanhsachnhanvien.Columns.AddRange(new DataGridViewColumn[]
-            {
-                new DataGridViewTextBoxColumn { DataPropertyName = "maNV", HeaderText = "Mã nhân viên", Name = "maNV" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "hoTen", HeaderText = "Họ Tên", Name = "hoTen" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "email", HeaderText = "Email", Name = "email" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "maPhong", HeaderText = "Mã Phòng", Name = "maPhong" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "ngaySinh", HeaderText = "Ngày Sinh", Name = "ngaySinh" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "gioiTinh", HeaderText = "Giới Tính", Name = "gioiTinh" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "diaChi", HeaderText = "Địa Chỉ", Name = "diaChi" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "soDienThoai", HeaderText = "Số Điện Thoại", Name = "soDienThoai" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "tenPhong", HeaderText = "Phòng Ban", Name = "tenPhong" }
-            });
+            //// Thêm các cột
+            //dgvDanhsachnhanvien.Columns.AddRange(new DataGridViewColumn[]
+            //{
+            //    new DataGridViewTextBoxColumn { DataPropertyName = "maNV", HeaderText = "Mã nhân viên", Name = "maNV" },
+            //    new DataGridViewTextBoxColumn { DataPropertyName = "hoTen", HeaderText = "Họ Tên", Name = "hoTen" },
+            //    new DataGridViewTextBoxColumn { DataPropertyName = "email", HeaderText = "Email", Name = "email" },
+            //    new DataGridViewTextBoxColumn { DataPropertyName = "maPhong", HeaderText = "Mã Phòng", Name = "maPhong" },
+            //    new DataGridViewTextBoxColumn { DataPropertyName = "ngaySinh", HeaderText = "Ngày Sinh", Name = "ngaySinh" },
+            //    new DataGridViewTextBoxColumn { DataPropertyName = "gioiTinh", HeaderText = "Giới Tính", Name = "gioiTinh" },
+            //    new DataGridViewTextBoxColumn { DataPropertyName = "diaChi", HeaderText = "Địa Chỉ", Name = "diaChi" },
+            //    new DataGridViewTextBoxColumn { DataPropertyName = "soDienThoai", HeaderText = "Số Điện Thoại", Name = "soDienThoai" },
+            //    new DataGridViewTextBoxColumn { DataPropertyName = "tenPhong", HeaderText = "Phòng Ban", Name = "tenPhong" }
+            //});
 
-            // Thêm cột thao tác
-            DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
-            {
-                Name = "ThaoTac",
-                HeaderText = "Thao tác",
-                ImageLayout = DataGridViewImageCellLayout.Zoom
-            };
-            dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
+            //// Thêm cột thao tác
+            //DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+            //{
+            //    Name = "ThaoTac",
+            //    HeaderText = "Thao tác",
+            //    ImageLayout = DataGridViewImageCellLayout.Zoom
+            //};
+            //dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
 
-            // Đăng ký events
-            dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
+            //// Đăng ký events
+            //dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
 
-            dgvDanhsachnhanvien.DataSource = dsNhanVien;
-            dgvDanhsachnhanvien.ReadOnly = true;
-            dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
+            //dgvDanhsachnhanvien.DataSource = dsNhanVien;
+            //dgvDanhsachnhanvien.ReadOnly = true;
+            //dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
         }
 
         private void RefreshDanhSachNhanVien()
@@ -142,46 +142,46 @@ namespace GUI.Forms
 
         private void dgvDanhsachnhanvien_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
-            {
-                e.PaintBackground(e.ClipBounds, true);
+            //if (e.RowIndex >= 0 && e.ColumnIndex == dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
+            //{
+            //    e.PaintBackground(e.ClipBounds, true);
 
-                int iconWidth = 24;
-                int iconHeight = 24;
-                int spacing = 10;
-                int totalWidth = (iconWidth * 2) + spacing;
+            //    int iconWidth = 24;
+            //    int iconHeight = 24;
+            //    int spacing = 10;
+            //    int totalWidth = (iconWidth * 2) + spacing;
 
-                int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
-                int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
+            //    int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
+            //    int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
 
-                editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
-                e.Graphics.DrawImage(Properties.Resources.edit, editRect);
+            //    editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
+            //    e.Graphics.DrawImage(Properties.Resources.edit, editRect);
 
-                deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
-                e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
+            //    deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
+            //    e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
 
-                e.Handled = true;
-            }
+            //    e.Handled = true;
+            //}
         }
 
         private void dgvDanhsachnhanvien_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.ColumnIndex != dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
-                return;
+            //if (e.RowIndex < 0 || e.ColumnIndex != dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
+            //    return;
 
-            var clickPoint = dgvDanhsachnhanvien.PointToClient(Cursor.Position);
-            DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
+            //var clickPoint = dgvDanhsachnhanvien.PointToClient(Cursor.Position);
+            //DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
 
-            if (row.Cells["maNV"].Value == null) return;
+            //if (row.Cells["maNV"].Value == null) return;
 
-            if (editRect.Contains(clickPoint))
-            {
-                HandleEdit(row);
-            }
-            else if (deleteRect.Contains(clickPoint))
-            {
-                HandleDelete(row);
-            }
+            //if (editRect.Contains(clickPoint))
+            //{
+            //    HandleEdit(row);
+            //}
+            //else if (deleteRect.Contains(clickPoint))
+            //{
+            //    HandleDelete(row);
+            //}
         }
 
         private void HandleEdit(DataGridViewRow row)
@@ -261,72 +261,72 @@ namespace GUI.Forms
             );
         }
 
-        private void dgvDanhsachnhanvien_Paint(object sender, PaintEventArgs e)
-        {
-            if (Properties.Resources.greenlogo == null) return;
+        //private void dgvDanhsachnhanvien_Paint(object sender, PaintEventArgs e)
+        //{
+        //    if (Properties.Resources.greenlogo == null) return;
 
-            int dgvWidth = dgvDanhsachnhanvien.Width;
-            int dgvHeight = dgvDanhsachnhanvien.Height;
-            Image watermark = Properties.Resources.greenlogo;
+        //    int dgvWidth = dgvDanhsachnhanvien.Width;
+        //    int dgvHeight = dgvDanhsachnhanvien.Height;
+        //    Image watermark = Properties.Resources.greenlogo;
 
-            int x = (dgvWidth - watermark.Width) / 2;
-            int y = (dgvHeight - watermark.Height) / 2;
+        //    int x = (dgvWidth - watermark.Width) / 2;
+        //    int y = (dgvHeight - watermark.Height) / 2;
 
-            ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f;
-            ImageAttributes attributes = new ImageAttributes();
-            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+        //    ColorMatrix matrix = new ColorMatrix();
+        //    matrix.Matrix33 = 0.3f;
+        //    ImageAttributes attributes = new ImageAttributes();
+        //    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
-            e.Graphics.DrawImage(watermark,
-                new Rectangle(x, y, watermark.Width, watermark.Height),
-                0, 0, watermark.Width, watermark.Height,
-                GraphicsUnit.Pixel,
-                attributes);
-        }
+        //    e.Graphics.DrawImage(watermark,
+        //        new Rectangle(x, y, watermark.Width, watermark.Height),
+        //        0, 0, watermark.Width, watermark.Height,
+        //        GraphicsUnit.Pixel,
+        //        attributes);
+        //}
 
         private void InitializeCustomSearchBox()
         {
-            containersearch.BackColor = Color.Transparent;
-            containersearch.Size = new Size(400, SEARCH_HEIGHT);
-            containersearch.BringToFront();
+            //containersearch.BackColor = Color.Transparent;
+            //containersearch.Size = new Size(400, SEARCH_HEIGHT);
+            //containersearch.BringToFront();
 
-            searchtextbox.BorderStyle = BorderStyle.None;
-            searchtextbox.BackColor = Color.White;
-            searchtextbox.Font = new Font("Segoe UI", 10F);
-            searchtextbox.ForeColor = Color.Silver;
-            searchtextbox.Text = PLACEHOLDER_TEXT;
-            searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
-            searchtextbox.Size = new Size(containersearch.Width - (borderSize * 2 + 10), 28);
-            searchtextbox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            //searchtextbox.BorderStyle = BorderStyle.None;
+            //searchtextbox.BackColor = Color.White;
+            //searchtextbox.Font = new Font("Segoe UI", 10F);
+            //searchtextbox.ForeColor = Color.Silver;
+            //searchtextbox.Text = PLACEHOLDER_TEXT;
+            //searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
+            //searchtextbox.Size = new Size(containersearch.Width - (borderSize * 2 + 10), 28);
+            //searchtextbox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
 
-            containersearch.Controls.Add(searchtextbox);
+            //containersearch.Controls.Add(searchtextbox);
 
-            // Đăng ký events
-            searchtextbox.Enter += searchtextbox_Enter;
-            searchtextbox.Leave += searchtextbox_Leave;
-            searchtextbox.TextChanged += searchtextbox_TextChanged_1;
-            searchtextbox.KeyDown += searchtextbox_KeyDown;
-            containersearch.Paint += containersearch_Paint;
+            //// Đăng ký events
+            //searchtextbox.Enter += searchtextbox_Enter;
+            //searchtextbox.Leave += searchtextbox_Leave;
+            //searchtextbox.TextChanged += searchtextbox_TextChanged_1;
+            //searchtextbox.KeyDown += searchtextbox_KeyDown;
+            //containersearch.Paint += containersearch_Paint;
         }
 
-        private void InitializeContextMenu()
-        {
-            ContextMenuStrip menu = new ContextMenuStrip();
+        //private void InitializeContextMenu()
+        //{
+        //    ContextMenuStrip menu = new ContextMenuStrip();
 
-            ToolStripMenuItem pdfItem = new ToolStripMenuItem("Xuất PDF");
-            pdfItem.Click += (s, ev) => { MessageBox.Show("Xuất PDF..."); };
+        //    ToolStripMenuItem pdfItem = new ToolStripMenuItem("Xuất PDF");
+        //    pdfItem.Click += (s, ev) => { MessageBox.Show("Xuất PDF..."); };
 
-            ToolStripMenuItem excelItem = new ToolStripMenuItem("Xuất Excel");
-            excelItem.Click += (s, ev) => { MessageBox.Show("Xuất Excel..."); };
+        //    ToolStripMenuItem excelItem = new ToolStripMenuItem("Xuất Excel");
+        //    excelItem.Click += (s, ev) => { MessageBox.Show("Xuất Excel..."); };
 
-            menu.Items.Add(pdfItem);
-            menu.Items.Add(excelItem);
+        //    menu.Items.Add(pdfItem);
+        //    menu.Items.Add(excelItem);
 
-            btnXuatfile.Click += (s, ev) =>
-            {
-                menu.Show(btnXuatfile, new Point(0, btnXuatfile.Height));
-            };
-        }
+        //    btnXuatfile.Click += (s, ev) =>
+        //    {
+        //        menu.Show(btnXuatfile, new Point(0, btnXuatfile.Height));
+        //    };
+        //}
 
         private void InitializeSettingMenu()
         {
@@ -369,87 +369,84 @@ namespace GUI.Forms
                 btnDanhsachnv.Image = new Bitmap(btnDanhsachnv.Image, new Size(30, 30));
                 btnDanhsachnv.ImageAlign = ContentAlignment.MiddleLeft;
                 btnDanhsachnv.TextAlign = ContentAlignment.MiddleRight;
-                btnDanhsachnv.Padding = new Padding(0, 0, 5, 0);
+                btnDanhsachnv.Padding = new Padding(0, 0, 2, 0);
             }
-
-            if (btnThemuser.Image != null)
+            if (btnHopdong.Image != null)
             {
-                btnThemuser.Image = new Bitmap(btnThemuser.Image, new Size(24, 24));
-            }
-
-            if (btnXuatfile.Image != null)
-            {
-                btnXuatfile.Image = new Bitmap(btnXuatfile.Image, new Size(24, 24));
+                btnHopdong.Image = new Bitmap(btnHopdong.Image, new Size(30, 30));
+                btnHopdong.ImageAlign = ContentAlignment.MiddleLeft;
+                btnHopdong.TextAlign = ContentAlignment.MiddleRight;
+                btnHopdong.Padding = new Padding(0, 0, 2, 0);
             }
         }
 
-        private void InitializeButtonStyles()
-        {
-            btnThemuser.Size = new Size(66, 40);
-            btnXuatfile.Size = new Size(66, 40);
+        //private void InitializeButtonStyles()
+        //{
+        //    btnThemuser.Size = new Size(66, 40);
+        //    btnXuatfile.Size = new Size(66, 40);
 
-            BoGocButton(btnThemuser, 20);
-            BoGocButton(btnXuatfile, 20);
-        }
-        #endregion
+        //    BoGocButton(btnThemuser, 20);
+        //    BoGocButton(btnXuatfile, 20);
+        //}
+        //#endregion
 
-        #region Layout & Resize
-        private void DanhSachNhanVien_Resize(object sender, EventArgs e)
-        {
-            if (this.ClientSize.Width < 100) return;
-            CalculateLayout();
-        }
+        //#region Layout & Resize
+        //private void DanhSachNhanVien_Resize(object sender, EventArgs e)
+        //{
+        //    if (this.ClientSize.Width < 100) return;
+        //    CalculateLayout();
+        //}
 
-        private void CalculateLayout()
-        {
-            int formWidth = this.ClientSize.Width;
-            bool isMaximized = this.WindowState == FormWindowState.Maximized;
-            int btnWidth = isMaximized ? 80 : 66;
-            int btnHeight = isMaximized ? 50 : 40;
-            int btnRadius = isMaximized ? 25 : 20;
+        //private void CalculateLayout()
+        //{
+        //    int formWidth = this.ClientSize.Width;
+        //    bool isMaximized = this.WindowState == FormWindowState.Maximized;
+        //    int btnWidth = isMaximized ? 80 : 66;
+        //    int btnHeight = isMaximized ? 50 : 40;
+        //    int btnRadius = isMaximized ? 25 : 20;
 
-            btnXuatfile.Size = new Size(btnWidth, btnHeight);
-            btnThemuser.Size = new Size(btnWidth, btnHeight);
-            BoGocButton(btnXuatfile, btnRadius);
-            BoGocButton(btnThemuser, btnRadius);
+        //    btnXuatfile.Size = new Size(btnWidth, btnHeight);
+        //    btnThemuser.Size = new Size(btnWidth, btnHeight);
+        //    BoGocButton(btnXuatfile, btnRadius);
+        //    BoGocButton(btnThemuser, btnRadius);
 
-            btnXuatfile.Left = formWidth - btnWidth - MARGIN;
-            btnThemuser.Left = btnXuatfile.Left - btnWidth - SPACING;
+        //    btnXuatfile.Left = formWidth - btnWidth - MARGIN;
+        //    btnThemuser.Left = btnXuatfile.Left - btnWidth - SPACING;
 
-            pictureFilter.Left = MARGIN;
+        //    pictureFilter.Left = MARGIN;
 
-            int leftBoundary = pictureFilter.Right + SPACING;
-            int rightBoundary = btnThemuser.Left - SPACING - picturemicro.Width - SPACING;
-            int availableWidth = rightBoundary - leftBoundary;
+        //    int leftBoundary = pictureFilter.Right + SPACING;
+        //    int rightBoundary = btnThemuser.Left - SPACING - picturemicro.Width - SPACING;
+        //    int availableWidth = rightBoundary - leftBoundary;
 
-            int searchWidth = Math.Max(MIN_SEARCH_WIDTH, Math.Min(availableWidth, MAX_SEARCH_WIDTH));
-            if (searchWidth < MIN_SEARCH_WIDTH)
-            {
-                searchWidth = Math.Max(150, availableWidth);
-            }
+        //    int searchWidth = Math.Max(MIN_SEARCH_WIDTH, Math.Min(availableWidth, MAX_SEARCH_WIDTH));
+        //    if (searchWidth < MIN_SEARCH_WIDTH)
+        //    {
+        //        searchWidth = Math.Max(150, availableWidth);
+        //    }
 
-            containersearch.Left = leftBoundary;
-            containersearch.Width = searchWidth;
-            containersearch.Height = SEARCH_HEIGHT;
+        //    containersearch.Left = leftBoundary;
+        //    containersearch.Width = searchWidth;
+        //    containersearch.Height = SEARCH_HEIGHT;
 
-            searchtextbox.Width = searchWidth - (borderSize * 2 + 10);
-            searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
+        //    searchtextbox.Width = searchWidth - (borderSize * 2 + 10);
+        //    searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
 
-            picturemicro.Left = containersearch.Right + SPACING;
+        //    picturemicro.Left = containersearch.Right + SPACING;
 
-            if (isMaximized)
-            {
-                btnThemuser.Padding = new Padding(10, 5, 10, 5);
-                btnXuatfile.Padding = new Padding(10, 5, 10, 5);
-            }
-            else
-            {
-                btnThemuser.Padding = new Padding(5, 3, 5, 3);
-                btnXuatfile.Padding = new Padding(5, 3, 5, 3);
-            }
+        //    if (isMaximized)
+        //    {
+        //        btnThemuser.Padding = new Padding(10, 5, 10, 5);
+        //        btnXuatfile.Padding = new Padding(10, 5, 10, 5);
+        //    }
+        //    else
+        //    {
+        //        btnThemuser.Padding = new Padding(5, 3, 5, 3);
+        //        btnXuatfile.Padding = new Padding(5, 3, 5, 3);
+        //    }
 
-            containersearch.Invalidate();
-        }
+        //    containersearch.Invalidate();
+        //}
         #endregion
 
         #region Button Styling
@@ -470,32 +467,32 @@ namespace GUI.Forms
         #endregion
 
         #region Custom Search Box Paint
-        private void containersearch_Paint(object sender, PaintEventArgs e)
-        {
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        //private void containersearch_Paint(object sender, PaintEventArgs e)
+        //{
+        //    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+        //    e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-            float offset = borderSize / 2f;
-            RectangleF rect = new RectangleF(
-                offset,
-                offset,
-                containersearch.ClientSize.Width - borderSize,
-                containersearch.ClientSize.Height - borderSize
-            );
+        //    float offset = borderSize / 2f;
+        //    RectangleF rect = new RectangleF(
+        //        offset,
+        //        offset,
+        //        containersearch.ClientSize.Width - borderSize,
+        //        containersearch.ClientSize.Height - borderSize
+        //    );
 
-            using (GraphicsPath path = CreateRoundedRectPath(rect, borderRadius))
-            {
-                using (SolidBrush brush = new SolidBrush(Color.White))
-                {
-                    e.Graphics.FillPath(brush, path);
-                }
+        //    using (GraphicsPath path = CreateRoundedRectPath(rect, borderRadius))
+        //    {
+        //        using (SolidBrush brush = new SolidBrush(Color.White))
+        //        {
+        //            e.Graphics.FillPath(brush, path);
+        //        }
 
-                using (Pen pen = new Pen(borderColor, borderSize))
-                {
-                    e.Graphics.DrawPath(pen, path);
-                }
-            }
-        }
+        //        using (Pen pen = new Pen(borderColor, borderSize))
+        //        {
+        //            e.Graphics.DrawPath(pen, path);
+        //        }
+        //    }
+        //}
 
         private GraphicsPath CreateRoundedRectPath(RectangleF rect, float radius)
         {
@@ -514,129 +511,129 @@ namespace GUI.Forms
         #endregion
 
         #region TextBox Events - FIX CHÍNH Ở ĐÂY
-        private void searchtextbox_Enter(object sender, EventArgs e)
-        {
-            if (isPlaceholder)
-            {   isPlaceholder = false;
-                searchtextbox.Text = "";
-                searchtextbox.ForeColor = Color.FromArgb(64, 64, 64);
-            }
-        }
+        //private void searchtextbox_Enter(object sender, EventArgs e)
+        //{
+        //    if (isPlaceholder)
+        //    {   isPlaceholder = false;
+        //        searchtextbox.Text = "";
+        //        searchtextbox.ForeColor = Color.FromArgb(64, 64, 64);
+        //    }
+        //}
 
-        private void searchtextbox_Leave(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(searchtextbox.Text))
-            {
-                isPlaceholder = true;
-                searchtextbox.Text = PLACEHOLDER_TEXT;
-                searchtextbox.ForeColor = Color.Silver;
-                dgvDanhsachnhanvien.DataSource = dsNhanVien;
-                lastSearchKeyword = "";
+        //private void searchtextbox_Leave(object sender, EventArgs e)
+        //{
+        //    if (string.IsNullOrWhiteSpace(searchtextbox.Text))
+        //    {
+        //        isPlaceholder = true;
+        //        searchtextbox.Text = PLACEHOLDER_TEXT;
+        //        searchtextbox.ForeColor = Color.Silver;
+        //        dgvDanhsachnhanvien.DataSource = dsNhanVien;
+        //        lastSearchKeyword = "";
 
-            }
-        }
-
-
-        private void searchtextbox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-
-                if (dgvDanhsachnhanvien.Rows.Count > 0)
-                {
-                    dgvDanhsachnhanvien.ClearSelection();
-                    dgvDanhsachnhanvien.Rows[0].Selected = true;
-                    dgvDanhsachnhanvien.FirstDisplayedScrollingRowIndex = 0;
-                }
-            }
-            else if (e.KeyCode == Keys.Escape)
-            {
-                searchtextbox.Clear();
-                dgvDanhsachnhanvien.DataSource = dsNhanVien;
-                lastSearchKeyword = "";
-            }
-        }
+        //    }
+        //}
 
 
-        private void searchtextbox_TextChanged_1(object sender, EventArgs e)
-        {
-            if (isPlaceholder)
-                return;
-            string currentKeyword = searchtextbox.Text.Trim().ToLower();
-            if (currentKeyword == lastSearchKeyword)
-                return;
-            lastSearchKeyword = currentKeyword;
-            PerformSearch();
-        }
+        //private void searchtextbox_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (e.KeyCode == Keys.Enter)
+        //    {
+        //        e.SuppressKeyPress = true;
 
-        private void PerformSearch()
-        {
-            string keyword = searchtextbox.Text.Trim().ToLower();
+        //        if (dgvDanhsachnhanvien.Rows.Count > 0)
+        //        {
+        //            dgvDanhsachnhanvien.ClearSelection();
+        //            dgvDanhsachnhanvien.Rows[0].Selected = true;
+        //            dgvDanhsachnhanvien.FirstDisplayedScrollingRowIndex = 0;
+        //        }
+        //    }
+        //    else if (e.KeyCode == Keys.Escape)
+        //    {
+        //        searchtextbox.Clear();
+        //        dgvDanhsachnhanvien.DataSource = dsNhanVien;
+        //        lastSearchKeyword = "";
+        //    }
+        //}
 
-            // Nếu không có từ khóa → hiển thị toàn bộ danh sách
-            if (string.IsNullOrEmpty(keyword))
-            {
-                dgvDanhsachnhanvien.DataSource = dsNhanVien;
-                return;
-            }
 
-            // Lọc danh sách theo từ khóa (hỗ trợ tìm kiếm theo từng ký tự)
-            var filtered = dsNhanVien
-                .Where(nv =>
-                    (nv.hoTen ?? "").ToLower().Contains(keyword) ||
-                    (nv.email ?? "").ToLower().Contains(keyword) ||
-                    (nv.tenPhong ?? "").ToLower().Contains(keyword) ||
-                    (nv.soDienThoai ?? "").Contains(keyword) ||
-                    (nv.diaChi ?? "").ToLower().Contains(keyword) ||
-                    nv.maNV.ToString().ToLower().Contains(keyword)
-                )
-                .ToList();
+        //private void searchtextbox_TextChanged_1(object sender, EventArgs e)
+        //{
+        //    if (isPlaceholder)
+        //        return;
+        //    string currentKeyword = searchtextbox.Text.Trim().ToLower();
+        //    if (currentKeyword == lastSearchKeyword)
+        //        return;
+        //    lastSearchKeyword = currentKeyword;
+        //    PerformSearch();
+        //}
 
-            dgvDanhsachnhanvien.DataSource = new BindingList<NhanVien>(filtered);
-        }
+        //private void PerformSearch()
+        //{
+        //    string keyword = searchtextbox.Text.Trim().ToLower();
+
+        //    // Nếu không có từ khóa → hiển thị toàn bộ danh sách
+        //    if (string.IsNullOrEmpty(keyword))
+        //    {
+        //        dgvDanhsachnhanvien.DataSource = dsNhanVien;
+        //        return;
+        //    }
+
+        //    // Lọc danh sách theo từ khóa (hỗ trợ tìm kiếm theo từng ký tự)
+        //    var filtered = dsNhanVien
+        //        .Where(nv =>
+        //            (nv.hoTen ?? "").ToLower().Contains(keyword) ||
+        //            (nv.email ?? "").ToLower().Contains(keyword) ||
+        //            (nv.tenPhong ?? "").ToLower().Contains(keyword) ||
+        //            (nv.soDienThoai ?? "").Contains(keyword) ||
+        //            (nv.diaChi ?? "").ToLower().Contains(keyword) ||
+        //            nv.maNV.ToString().ToLower().Contains(keyword)
+        //        )
+        //        .ToList();
+
+        //    dgvDanhsachnhanvien.DataSource = new BindingList<NhanVien>(filtered);
+        //}
 
         #endregion
 
         #region Button Events
-        private void btnThemuser_Click(object sender, EventArgs e)
-        {
-            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
-            {
-                currentOpenForm.BringToFront();
-                currentOpenForm.Focus();
-                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
-                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+        //private void btnThemuser_Click(object sender, EventArgs e)
+        //{
+        //    if (currentOpenForm != null && !currentOpenForm.IsDisposed)
+        //    {
+        //        currentOpenForm.BringToFront();
+        //        currentOpenForm.Focus();
+        //        MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
+        //            "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        return;
+        //    }
 
 
-            ThemNhanVien frmThem = new ThemNhanVien();
-            currentOpenForm = frmThem;
-            CenterFormOnParent(frmThem);
-            frmThem.FormClosed += (s, ev) =>
-            {
-                currentOpenForm = null; // Xóa reference khi form đóng
-            };
+        //    ThemNhanVien frmThem = new ThemNhanVien();
+        //    currentOpenForm = frmThem;
+        //    CenterFormOnParent(frmThem);
+        //    frmThem.FormClosed += (s, ev) =>
+        //    {
+        //        currentOpenForm = null; // Xóa reference khi form đóng
+        //    };
 
-            frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
-            frmThem.Show(this);
-        }
+        //    frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
+        //    frmThem.Show(this);
+        //}
 
-        private void dgvDanhsachnhanvien_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            if (dgvDanhsachnhanvien.Columns[e.ColumnIndex].Name == "gioiTinh" && e.Value != null)
-            {
-                string gioiTinh = e.Value.ToString().Trim();
+        //private void dgvDanhsachnhanvien_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        //{
+        //    if (dgvDanhsachnhanvien.Columns[e.ColumnIndex].Name == "gioiTinh" && e.Value != null)
+        //    {
+        //        string gioiTinh = e.Value.ToString().Trim();
 
-                if (gioiTinh == "0" || gioiTinh.ToLower() == "false")
-                    e.Value = "Nam";
-                else if (gioiTinh == "1" || gioiTinh.ToLower() == "true")
-                    e.Value = "Nữ";
+        //        if (gioiTinh == "0" || gioiTinh.ToLower() == "false")
+        //            e.Value = "Nam";
+        //        else if (gioiTinh == "1" || gioiTinh.ToLower() == "true")
+        //            e.Value = "Nữ";
 
-                e.FormattingApplied = true;
-            }
-        }
+        //        e.FormattingApplied = true;
+        //    }
+        //}
         #endregion
 
         #region Unused Events
@@ -647,5 +644,19 @@ namespace GUI.Forms
         private void containersearch_Paint_1(object sender, PaintEventArgs e) { }
         private void searchtextbox_TextChanged(object sender, EventArgs e) { }
         #endregion
+
+        private void btnDanhsachnv_Click(object sender, EventArgs e)
+        {
+            panel5.Controls.Clear();
+            DSNV_Uc ucDSNV = new DSNV_Uc();
+            ucDSNV.Dock = DockStyle.Fill;
+            panel5.Controls.Add(ucDSNV);
+            ucDSNV.BringToFront();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

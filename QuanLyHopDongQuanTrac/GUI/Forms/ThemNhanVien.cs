@@ -19,6 +19,10 @@ namespace GUI.Forms
     {
         public event EventHandler SuccesfullyUpdated;
 
+        public bool isEditMode = false;
+
+        public NhanVien NhanVienHienTai { get; set; }
+
         public ThemNhanVien()
         {
             InitializeComponent();
@@ -169,17 +173,8 @@ namespace GUI.Forms
 
         private void ThemNhanVien_Load(object sender, EventArgs e)
         {
-            diaChiService = new DiaChiBLL();
             var bllPhongBan = new PhongBanBLL();
-            var tinhList = diaChiService.LayTinhThanh();
             var list = bllPhongBan.LayDSPhongBan();
-
-            // Load tỉnh thành
-            cboTinhThanh.DataSource = tinhList;
-            cboTinhThanh.DisplayMember = "name";
-            cboTinhThanh.ValueMember = "code";
-            cboTinhThanh.SelectedIndex = -1;
-            cboTinhThanh.Text = "Tỉnh/Thành phố";
 
             if (list != null && list.Count > 0)
             {
@@ -192,54 +187,64 @@ namespace GUI.Forms
             {
                 MessageBox.Show("Không có phòng ban nào trong DB!");
             }
-            //Custom textbox
             ApplyRoundedInput(panelHoten, textBoxhoten, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelsdt, textBoxsdt, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelemail, textBoxemail, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelNgaysinh, dateTimengaysinh, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelPhongban, cbbPhong, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelTinh, cboTinhThanh, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelHuyen, cbbQuan, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelPhongban, cbbPhong, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelXa, cbbXa, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelSonha, txtDiaChi, 12, 2, Color.FromArgb(0, 152, 70));
-
-            cboTinhThanh.Text = "Tỉnh/Thành phố";
-            cbbQuan.Text = "Quận/Huyện";
-            cbbXa.Text = "Xã/Phường";
-
-            InitializeButtonStyles();
-
-            cboTinhThanh.SelectedIndexChanged += (s, ev) =>
+            ApplyRoundedInput(panelTrangthai, cboTrangthai, 12, 2, Color.FromArgb(0, 152, 70));
+            LoadComboBoxTrangThai();
+            BoGocButton(buttonAddnew, 20);
+            BoGocButton(btnCancel, 20);
+            if (isEditMode)
             {
-                if (cboTinhThanh.SelectedValue != null)
+                this.Text = "CHỈNH SỬA NHÂN VIÊN";
+                label.Text = "CHỈNH SỬA NHÂN VIÊN";
+                buttonAddnew.Text = "Lưu thay đổi";
+                if (NhanVienHienTai != null)
                 {
-                    string maTinh = cboTinhThanh.SelectedValue.ToString();
-                    var quanList = diaChiService.LayQuanHuyen(maTinh);
-                    cbbQuan.DataSource = quanList;
-                    cbbQuan.DisplayMember = "name_with_type";
-                    cbbQuan.ValueMember = "code";
-                    cbbQuan.SelectedIndex = -1;
-                    cbbQuan.Text = "Quận/Huyện";
+                    // Load dữ liệu vào các control
+                    textBoxhoten.Text = NhanVienHienTai.hoTen;
+                    textBoxemail.Text = NhanVienHienTai.email;
+                    textBoxsdt.Text = NhanVienHienTai.soDienThoai;
+                    txtDiaChi.Text = NhanVienHienTai.diaChi;
+                    dateTimengaysinh.Value = NhanVienHienTai.ngaySinh;
+                    cbbPhong.SelectedValue = NhanVienHienTai.maPhong;
+                    if (NhanVienHienTai.gioiTinh == "0")
+                    {
+                        radioNam.Checked = true;
+                    }
+                    else
+                    {
+                        radioNu.Checked = true;
+                    }
 
+                    cboTrangthai.SelectedValue = NhanVienHienTai.trangThai;
+                    checkTruongphong.Checked = NhanVienHienTai.isTruongPhong;
                 }
-            };
+            }
 
-            cbbQuan.SelectedIndexChanged += (s, ev) =>
+            else
             {
-                if (cbbQuan.SelectedValue != null)
-                {
-                    string maQuan = cbbQuan.SelectedValue.ToString();
-                    var xaList = diaChiService.LayXaPhuong(maQuan);
-                    cbbXa.DataSource = xaList;
-                    cbbXa.DisplayMember = "name_with_type";
-                    cbbXa.ValueMember = "code";
-                    cbbXa.SelectedIndex = -1;
-                    cbbXa.Text = "Xã/Phường";
-                }
-            };
+                this.Text = "THÊM NHÂN VIÊN";
+                buttonAddnew.Text = "Thêm nhân viên ";
+                label.Text = " THÊM NHÂN VIÊN ";
+
+            }
         }
 
+
+        private void LoadComboBoxTrangThai()
+        {
+            NhanVienBLL bll = new NhanVienBLL();
+            var listTrangThai = bll.LayDanhSachTrangThai();
+
+            cboTrangthai.DataSource = listTrangThai;
+            cboTrangthai.DisplayMember = "TenTrangThai";
+            cboTrangthai.ValueMember = "MaTrangThai";
+        }
 
         private void panel5_Paint(object sender, PaintEventArgs e)
         {
@@ -283,8 +288,6 @@ namespace GUI.Forms
 
         private void buttonAddnew_Click(object sender, EventArgs e)
         {
-            //Kiểm tra trường hợp 
-
             if (string.IsNullOrWhiteSpace(textBoxhoten.Text))
             {
                 MessageBox.Show("Vui lòng nhập họ và tên !", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -325,37 +328,7 @@ namespace GUI.Forms
                 return;
             }
 
-            if (cboTinhThanh.SelectedIndex < 0 || cboTinhThanh.Text == "Tỉnh/Thành phố")
-            {
-                MessageBox.Show("Vui lòng chọn Tỉnh/Thành phố!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cboTinhThanh.Focus();
-                return;
-            }
 
-            if (cbbQuan.SelectedIndex < 0 || cbbQuan.Text == "Quận/Huyện")
-            {
-                MessageBox.Show("Vui lòng chọn Quận/Huyện!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbQuan.Focus();
-                return;
-            }
-
-            if (cbbXa.SelectedIndex < 0 || cbbXa.Text == "Xã/Phường")
-            {
-                MessageBox.Show("Vui lòng chọn Xã/Phường!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbXa.Focus();
-                return;
-            }
-
-
-            string diaChi = "";
-            if (cbbXa.SelectedIndex >= 0)
-                diaChi += cbbXa.Text + ", ";
-            if (cbbQuan.SelectedIndex >= 0)
-                diaChi += cbbQuan.Text + ", ";
-            if (cboTinhThanh.SelectedIndex >= 0)
-                diaChi += cboTinhThanh.Text;
-            if (!string.IsNullOrWhiteSpace(txtDiaChi.Text))
-                diaChi = txtDiaChi.Text + ", " + diaChi;
 
             NhanVien nv = new NhanVien
             {
@@ -363,24 +336,39 @@ namespace GUI.Forms
                 hoTen = textBoxhoten.Text,
                 ngaySinh = dateTimengaysinh.Value,
                 gioiTinh = radioNam.Checked ? "0" : "1",
-                diaChi = diaChi,
+                diaChi = txtDiaChi.Text,
                 soDienThoai = textBoxsdt.Text,
-                email = textBoxemail.Text
+                email = textBoxemail.Text,
+                trangThai = Convert.ToInt32(cboTrangthai.SelectedValue)
+
             };
 
-            // Kiểm tra radio trưởng phòng
             bool isTruongPhong = checkTruongphong.Checked;
 
             try
             {
                 var bll = new NhanVienBLL();
-                bll.ThemNhanVien(nv, isTruongPhong);
+                if (isEditMode)
+                {
+                    nv.maNV = NhanVienHienTai.maNV; // Giữ lại mã NV
+                    bll.SuaNhanVien(nv, isTruongPhong); // Method này cần có trong NhanVienBLL
+                    MessageBox.Show("Cập nhật thông tin  nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    SuccesfullyUpdated?.Invoke(this, EventArgs.Empty); // chỉ khi thành công
+                    this.DialogResult = DialogResult.OK;
+                    this.Close(); // chỉ khi thành công
+                    return;
+                }
+                else
+                {
+                    bll.ThemNhanVien(nv, isTruongPhong);
+                    MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
 
-                SuccesfullyUpdated?.Invoke(this, EventArgs.Empty); // chỉ khi thành công
-                this.DialogResult = DialogResult.OK;
-                this.Close(); // chỉ khi thành công
+
             }
             catch (SqlException ex)
             {
@@ -397,34 +385,7 @@ namespace GUI.Forms
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            // Clear TextBox
-            textBoxhoten.Clear();
-            textBoxsdt.Clear();
-            textBoxemail.Clear();
-            txtDiaChi.Clear();
-
-            // Reset ComboBox
-            cboTinhThanh.SelectedIndex = -1;
-            cboTinhThanh.Text = "Tỉnh/Thành phố";
-
-            cbbQuan.DataSource = null;
-            cbbQuan.SelectedIndex = -1;
-            cbbQuan.Text = "Quận/Huyện";
-
-            cbbXa.DataSource = null;
-            cbbXa.SelectedIndex = -1;
-            cbbXa.Text = "Xã/Phường";
-
-            cbbPhong.SelectedIndex = -1;
-            cbbPhong.Text = "Phòng ban";
-
-            // Reset RadioButton
-            radioNam.Checked = false;
-            radioNu.Checked = false;
-            checkTruongphong.Checked = false;
-
-            // Reset DateTimePicker
-            dateTimengaysinh.Value = DateTime.Now;
+            this.Close();
 
         }
 

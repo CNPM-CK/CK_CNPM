@@ -14,7 +14,6 @@ namespace GUI.Forms
 {
     public partial class DanhSachThongSo : UserControl
     {
-        private BindingList<ThongSo> dsThongso;
         #region Fields
         // Search box styling
         private Color borderColor = Color.Black;

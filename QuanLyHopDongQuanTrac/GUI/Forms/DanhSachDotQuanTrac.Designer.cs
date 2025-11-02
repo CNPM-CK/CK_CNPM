@@ -33,6 +33,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachDotQuanTrac));
             panel5 = new Panel();
             panel7 = new Panel();
+            panel1 = new Panel();
+            btnSau = new Button();
+            soTrang = new Label();
+            btnTruoc = new Button();
             dgvDsdotquantrac = new DataGridView();
             panel6 = new Panel();
             btnXuatfile = new Button();
@@ -43,6 +47,7 @@
             pictureFilter = new PictureBox();
             panel5.SuspendLayout();
             panel7.SuspendLayout();
+            panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvDsdotquantrac).BeginInit();
             panel6.SuspendLayout();
             containersearch.SuspendLayout();
@@ -62,12 +67,68 @@
             // 
             // panel7
             // 
+            panel7.Controls.Add(panel1);
             panel7.Controls.Add(dgvDsdotquantrac);
             panel7.Dock = DockStyle.Fill;
             panel7.Location = new Point(0, 61);
             panel7.Name = "panel7";
             panel7.Size = new Size(820, 411);
             panel7.TabIndex = 1;
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.White;
+            panel1.Controls.Add(btnSau);
+            panel1.Controls.Add(soTrang);
+            panel1.Controls.Add(btnTruoc);
+            panel1.Dock = DockStyle.Bottom;
+            panel1.Location = new Point(0, 365);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(820, 46);
+            panel1.TabIndex = 3;
+            // 
+            // btnSau
+            // 
+            btnSau.Anchor = AnchorStyles.None;
+            btnSau.BackColor = Color.FromArgb(255, 107, 53);
+            btnSau.FlatAppearance.BorderColor = SystemColors.ActiveBorder;
+            btnSau.FlatStyle = FlatStyle.Flat;
+            btnSau.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSau.ForeColor = Color.White;
+            btnSau.Location = new Point(485, 9);
+            btnSau.Name = "btnSau";
+            btnSau.Size = new Size(153, 33);
+            btnSau.TabIndex = 1;
+            btnSau.Text = "Trang sau";
+            btnSau.UseVisualStyleBackColor = false;
+            // 
+            // soTrang
+            // 
+            soTrang.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            soTrang.AutoSize = true;
+            soTrang.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            soTrang.ForeColor = Color.Black;
+            soTrang.Location = new Point(384, 13);
+            soTrang.Name = "soTrang";
+            soTrang.Size = new Size(71, 23);
+            soTrang.TabIndex = 2;
+            soTrang.Text = "Trang 1";
+            soTrang.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // btnTruoc
+            // 
+            btnTruoc.Anchor = AnchorStyles.None;
+            btnTruoc.BackColor = Color.FromArgb(255, 107, 53);
+            btnTruoc.FlatAppearance.BorderColor = SystemColors.ActiveBorder;
+            btnTruoc.FlatStyle = FlatStyle.Flat;
+            btnTruoc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnTruoc.ForeColor = Color.White;
+            btnTruoc.Location = new Point(211, 9);
+            btnTruoc.Name = "btnTruoc";
+            btnTruoc.Size = new Size(153, 33);
+            btnTruoc.TabIndex = 0;
+            btnTruoc.Text = "Trang trước";
+            btnTruoc.UseVisualStyleBackColor = false;
             // 
             // dgvDsdotquantrac
             // 
@@ -194,6 +255,8 @@
             Load += DanhSachThongSo_Load;
             panel5.ResumeLayout(false);
             panel7.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvDsdotquantrac).EndInit();
             panel6.ResumeLayout(false);
             containersearch.ResumeLayout(false);
@@ -215,5 +278,9 @@
         private Button btnThemdotquantrac;
         private PictureBox pictureFilter;
         private Button btnXuatfile;
+        private Panel panel1;
+        private Button btnSau;
+        private Label soTrang;
+        private Button btnTruoc;
     }
 }

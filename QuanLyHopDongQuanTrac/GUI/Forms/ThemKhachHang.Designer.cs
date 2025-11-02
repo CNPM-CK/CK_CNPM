@@ -83,7 +83,7 @@
             buttonAddnew = new Button();
             panel2 = new Panel();
             pictureBox1 = new PictureBox();
-            label1 = new Label();
+            label = new Label();
             contextMenuStrip1 = new ContextMenuStrip(components);
             errorProvider1 = new ErrorProvider(components);
             panel1.SuspendLayout();
@@ -647,7 +647,7 @@
             // 
             panel2.BackColor = Color.FromArgb(0, 152, 70);
             panel2.Controls.Add(pictureBox1);
-            panel2.Controls.Add(label1);
+            panel2.Controls.Add(label);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
@@ -659,22 +659,22 @@
             pictureBox1.Image = Properties.Resources.remove_background_logo;
             pictureBox1.Location = new Point(0, 0);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(155, 81);
+            pictureBox1.Size = new Size(155, 80);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;
             // 
-            // label1
+            // label
             // 
-            label1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.White;
-            label1.Location = new Point(204, 9);
-            label1.Name = "label1";
-            label1.Size = new Size(433, 47);
-            label1.TabIndex = 0;
-            label1.Text = "THÊM KHÁCH HÀNG ";
-            label1.TextAlign = ContentAlignment.MiddleCenter;
-            label1.Click += label1_Click;
+            label.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label.ForeColor = Color.White;
+            label.Location = new Point(204, 9);
+            label.Name = "label";
+            label.Size = new Size(433, 47);
+            label.TabIndex = 0;
+            label.Text = "THÊM KHÁCH HÀNG ";
+            label.TextAlign = ContentAlignment.MiddleCenter;
+            label.Click += label1_Click;
             // 
             // contextMenuStrip1
             // 
@@ -754,7 +754,7 @@
 
         private Panel panel1;
         private Panel panel2;
-        private Label label1;
+        private Label label;
         private Panel panel3;
         private TableLayoutPanel tableLayoutPanel1;
         private TextBox textBoxhoten;
