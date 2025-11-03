@@ -33,7 +33,7 @@ namespace GUI.Forms
 
         private BindingList<NhanVien> dsNhanVien;
         private bool isPlaceholder = true;
-        private string lastSearchKeyword = "";
+        private string tuKhoacuoicung = "";
         private Form currentOpenForm = null;
 
 
@@ -118,15 +118,15 @@ namespace GUI.Forms
             dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
             // Đăng ký events
             dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
-            dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;   // ✅ VẼ ICON
-            dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;         // ✅ XỬ LÝ CLICK
-            dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;                 // ✅ WATERMARK
+            dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;
+            dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
+            dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
         }
 
-        private void RefreshDanhSachNhanVien()
+        private void taiDanhSachNhanVien()
         {
-            totalRecords = 0;
-            LoadKhachHangPage();
+            tongSoBanGhi = 0;
+            taiTrangkhachhang();
         }
 
         private Rectangle editRect;
@@ -180,7 +180,7 @@ namespace GUI.Forms
             }
         }
 
-        
+
 
         private void HandleEdit(DataGridViewRow row)
         {
@@ -188,12 +188,9 @@ namespace GUI.Forms
             {
                 currentOpenForm.BringToFront();
                 currentOpenForm.Focus();
-                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
-                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
             }
 
-            // ✅ Lấy trực tiếp từ DataBoundItem
+            // Lấy trực tiếp từ DataBoundItem
             NhanVien nvSource = row.DataBoundItem as NhanVien;
 
             if (nvSource == null)
@@ -202,10 +199,10 @@ namespace GUI.Forms
                 return;
             }
 
-            // ✅ Sử dụng trực tiếp nvSource, KHÔNG TẠO MỚI
+            // Sử dụng trực tiếp nvSource, KHÔNG TẠO MỚI
             ThemNhanVien frmSua = new ThemNhanVien();
             frmSua.isEditMode = true;
-            frmSua.NhanVienHienTai = nvSource;  // ✅ Truyền trực tiếp nvSource
+            frmSua.NhanVienHienTai = nvSource;  // Truyền trực tiếp nvSource
 
             currentOpenForm = frmSua;
             CenterFormOnParent(frmSua);
@@ -215,7 +212,7 @@ namespace GUI.Forms
                 currentOpenForm = null;
             };
 
-            frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
+            frmSua.SuccesfullyUpdated += (s, ev) => taiDanhSachNhanVien();
             frmSua.Show(this);
         }
 
@@ -260,7 +257,7 @@ namespace GUI.Forms
                 try
                 {
                     NhanVienBLL nvBLL = new NhanVienBLL();
-                    nvBLL.XoaNhanVien(maNV);
+                    nvBLL.xoaNhanVien(maNV);
 
                     MessageBox.Show("Đã xóa nhân viên thành công!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -268,7 +265,7 @@ namespace GUI.Forms
                     // ✅ Delay refresh để tránh conflict
                     this.BeginInvoke(new Action(() =>
                     {
-                        RefreshDanhSachNhanVien();
+                        taiDanhSachNhanVien();
                     }));
                 }
                 catch (Exception ex)
@@ -547,7 +544,7 @@ namespace GUI.Forms
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
                 dgvDanhsachnhanvien.DataSource = dsNhanVien;
-                lastSearchKeyword = "";
+                tuKhoacuoicung = "";
 
             }
         }
@@ -569,7 +566,7 @@ namespace GUI.Forms
             {
                 searchtextbox.Clear();
                 dgvDanhsachnhanvien.DataSource = dsNhanVien;
-                lastSearchKeyword = "";
+                tuKhoacuoicung = "";
             }
         }
 
@@ -579,15 +576,15 @@ namespace GUI.Forms
             if (isPlaceholder)
                 return;
             string currentKeyword = searchtextbox.Text.Trim().ToLower();
-            if (currentKeyword == lastSearchKeyword)
+            if (currentKeyword == tuKhoacuoicung)
                 return;
-            lastSearchKeyword = currentKeyword;
+            tuKhoacuoicung = currentKeyword;
             PerformSearch();
         }
 
         private void PerformSearch()
         {
-            // ✅ Kiểm tra null
+            // Kiểm tra null
             if (dsNhanVien == null || dsNhanVien.Count == 0)
             {
                 return;
@@ -647,7 +644,7 @@ namespace GUI.Forms
         private void DSNV_Uc_Load(object sender, EventArgs e)
         {
             NhanVienBLL nvBLL = new NhanVienBLL();
-            dsNhanVien = new BindingList<NhanVien>(nvBLL.LayDanhSachNhanVien_PhanTrang(currentPage,pageSize));
+            dsNhanVien = new BindingList<NhanVien>(nvBLL.layDanhSachNhanVien_PhanTrang(trangHientai, kichthuocTrang));
             InitializeContextMenu();
             InitializeButtonIcons();
             InitializeButtonStyles();
@@ -663,7 +660,7 @@ namespace GUI.Forms
             dgvDanhsachnhanvien.DataSource = dsNhanVien;
             dgvDanhsachnhanvien.ReadOnly = true;
             dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
-            LoadKhachHangPage();
+            taiTrangkhachhang();
 
         }
 
@@ -684,53 +681,58 @@ namespace GUI.Forms
             CenterFormOnParent(frmThem);
             frmThem.FormClosed += (s, ev) =>
             {
-                currentOpenForm = null; // Xóa reference khi form đóng
+                currentOpenForm = null;
             };
 
-            frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
+            frmThem.SuccesfullyUpdated += (s, ev) => taiDanhSachNhanVien();
             frmThem.Show(this);
         }
 
 
-        int currentPage = 1;
-        int pageSize = 15;
-        int totalRecords = 0;
-        int totalPages = 0;
-        private void LoadKhachHangPage()
+        int trangHientai = 1;
+        int kichthuocTrang = 15;
+        int tongSoBanGhi = 0;
+        int tongSoTrang = 0;
+        private void taiTrangkhachhang()
         {
             var bll = new NhanVienBLL();
 
             // 🔹 Tính tổng số trang (chỉ cần 1 lần khi load form)
-            if (totalRecords == 0)
+            if (tongSoBanGhi == 0)
             {
-                totalRecords = bll.DemSoLuongNhanVien();
-                totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+                tongSoBanGhi = bll.demSoLuongNhanVien();
+                tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / kichthuocTrang);
             }
 
-            var data = bll.LayDanhSachNhanVien_PhanTrang(currentPage, pageSize);
+            var data = bll.layDanhSachNhanVien_PhanTrang(trangHientai, kichthuocTrang);
             dgvDanhsachnhanvien.DataSource = data;
 
             // 🔹 Cập nhật label trang
-            soTrang.Text = $"Trang {currentPage}/{totalPages}";
+            soTrang.Text = $"Trang {trangHientai}/{tongSoTrang}";
 
             // 🔹 Disable nút nếu đang ở biên
-            btnTruoc.Enabled = currentPage > 1;
-            btnSau.Enabled = currentPage < totalPages;
+            btnTruoc.Enabled = trangHientai > 1;
+            btnSau.Enabled = trangHientai < tongSoTrang;
         }
 
         private void btnTruoc_Click(object sender, EventArgs e)
         {
-            if (currentPage > 1)
+            if (trangHientai > 1)
             {
-                currentPage--;
-                LoadKhachHangPage();
+                trangHientai--;
+                taiTrangkhachhang();
             }
         }
 
         private void btnSau_Click(object sender, EventArgs e)
         {
-            currentPage++;
-            LoadKhachHangPage();
+            trangHientai++;
+            taiTrangkhachhang();
+        }
+
+        private void picturemicro_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

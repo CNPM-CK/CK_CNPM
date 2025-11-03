@@ -8,26 +8,26 @@ namespace BLL
     {
         private readonly DatabaseAccess dal = new DatabaseAccess();
 
-        public bool ThemThongSo(ThongSo ts)
+        public bool themThongSo(ThongSo ts)
         {
-            return dal.ThemThongSoMoiTruong(ts);
+            return dal.themThongSoMoiTruong(ts);
         }
 
-        public List<ThongSo> LayDanhSachThongSo()
+        public List<ThongSo> layDanhSachThongSo()
         {
-            return dal.GetDanhSachThongSo();
-        }
-
-
-        public bool SuaThongSoMoiTruong(ThongSo ts)
-        {
-            return dal.SuaThongSoMoiTruong(ts);
+            return dal.layDanhSachThongSo();
         }
 
 
-        public bool XoaThongSoMoiTruong(string maTS, out string ketQua)
+        public bool suaThongSoMoiTruong(ThongSo ts)
         {
-            return dal.XoaThongSoMoiTruong(maTS, out ketQua);
+            return dal.suaThongSoMoiTruong(ts);
+        }
+
+
+        public bool xoaThongSoMoiTruong(string maTS, out string ketQua)
+        {
+            return dal.xoaThongSoMoiTruong(maTS, out ketQua);
         }
     }
 }

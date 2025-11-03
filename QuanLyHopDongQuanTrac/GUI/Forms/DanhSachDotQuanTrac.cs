@@ -499,7 +499,7 @@ namespace GUI.Forms
                 try
                 {
                     BLL_DotQuanTrac bll = new BLL_DotQuanTrac();
-                    bll.XoaDotQuanTrac(maDot);
+                    bll.xoaDotQuanTrac(maDot);
 
                     MessageBox.Show("Đã xóa đợt quan trắc thành công!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -644,7 +644,7 @@ namespace GUI.Forms
         private void btnThemuser_Click_1(object sender, EventArgs e)
         {
             var bll = new BLL_DotQuanTrac();
-            maDotHienTai = bll.TaoKeHoachNhap();
+            maDotHienTai = bll.taoKeHoachNhap();
 
             if (string.IsNullOrEmpty(maDotHienTai))
             {
@@ -707,11 +707,11 @@ namespace GUI.Forms
             // 🔹 Tính tổng số trang (chỉ cần 1 lần khi load form)
             if (totalRecords == 0)
             {
-                totalRecords = bll.DemTongKHQT();
+                totalRecords = bll.demTongKHQT();
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
             }
 
-            var data = bll.LayDanhSachDotQuanTrac_PhanTrang(currentPage, pageSize);
+            var data = bll.layDanhSachDotQuanTrac_PhanTrang(currentPage, pageSize);
             dgvDsdotquantrac.DataSource = data;
 
             soTrang.Text = $"Trang {currentPage}/{totalPages}";

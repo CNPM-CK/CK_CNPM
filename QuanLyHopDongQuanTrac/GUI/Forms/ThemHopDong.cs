@@ -168,7 +168,7 @@ namespace GUI.Forms
         private void ThemNhanVien_Load(object sender, EventArgs e)
         {
             var bllKhachHang = new KhachHangBLL();
-            var list = bllKhachHang.LayDanhSachKH();
+            var list = bllKhachHang.layDanhSachKH();
             cbbKhachHang.DropDownStyle = ComboBoxStyle.DropDownList;
             cbbKhachHang.DisplayMember = "tenDoanhNghiep";
             cbbKhachHang.ValueMember = "maKH";

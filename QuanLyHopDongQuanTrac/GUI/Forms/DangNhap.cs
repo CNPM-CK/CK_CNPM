@@ -158,7 +158,7 @@ namespace GUI.Forms
             string username = txtTentk.Text.Trim();
             string password = textBoxmatkhau.Text.Trim();
 
-            var result = taiKhoanBLL.DangNhap(username, password);
+            var result = taiKhoanBLL.dangNhap(username, password);
             if (!result.success)
             {
                 MessageBox.Show(result.message, "Đăng nhập thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -176,7 +176,7 @@ namespace GUI.Forms
             else
             {
                 var nvBLL = new NhanVienBLL();
-                string maPhong = nvBLL.LayPhongBanTheoTaiKhoan(result.account.tenTK);
+                string maPhong = nvBLL.layPhongBanTheoTaiKhoan(result.account.tenTK);
 
                 if (string.IsNullOrEmpty(maPhong))
                 {

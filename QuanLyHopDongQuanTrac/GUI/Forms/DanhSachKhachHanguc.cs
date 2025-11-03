@@ -259,7 +259,7 @@ namespace GUI.Forms
                 try
                 {
                     KhachHangBLL khBLL = new KhachHangBLL();
-                    khBLL.XoaKhachHang(maKH);
+                    khBLL.xoaKhachHang(maKH);
 
                     MessageBox.Show("Đã xóa khách hàng thành công!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -643,11 +643,11 @@ namespace GUI.Forms
             // 🔹 Tính tổng số trang (chỉ cần 1 lần khi load form)
             if (totalRecords == 0)
             {
-                totalRecords = bll.DemTongSoKhachHang();
+                totalRecords = bll.demTongSoKhachHang();
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
             }
 
-            var data = bll.LayDanhSachKH_PhanTrang(currentPage, pageSize);
+            var data = bll.layDanhSachKH_PhanTrang(currentPage, pageSize);
             dgvDanhsachnhanvien.DataSource = data;
 
             // 🔹 Cập nhật label trang

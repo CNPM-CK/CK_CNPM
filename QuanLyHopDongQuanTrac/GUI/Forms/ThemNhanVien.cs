@@ -174,7 +174,7 @@ namespace GUI.Forms
         private void ThemNhanVien_Load(object sender, EventArgs e)
         {
             var bllPhongBan = new PhongBanBLL();
-            var list = bllPhongBan.LayDSPhongBan();
+            var list = bllPhongBan.layDSPhongBan();
 
             if (list != null && list.Count > 0)
             {
@@ -239,7 +239,7 @@ namespace GUI.Forms
         private void LoadComboBoxTrangThai()
         {
             NhanVienBLL bll = new NhanVienBLL();
-            var listTrangThai = bll.LayDanhSachTrangThai();
+            var listTrangThai = bll.layDanhSachTrangThai();
 
             cboTrangthai.DataSource = listTrangThai;
             cboTrangthai.DisplayMember = "TenTrangThai";
@@ -351,7 +351,7 @@ namespace GUI.Forms
                 if (isEditMode)
                 {
                     nv.maNV = NhanVienHienTai.maNV; // Giữ lại mã NV
-                    bll.SuaNhanVien(nv, isTruongPhong); // Method này cần có trong NhanVienBLL
+                    bll.suaNhanVien(nv, isTruongPhong); // Method này cần có trong NhanVienBLL
                     MessageBox.Show("Cập nhật thông tin  nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     SuccesfullyUpdated?.Invoke(this, EventArgs.Empty); // chỉ khi thành công
                     this.DialogResult = DialogResult.OK;
@@ -360,7 +360,7 @@ namespace GUI.Forms
                 }
                 else
                 {
-                    bll.ThemNhanVien(nv, isTruongPhong);
+                    bll.themNhanVien(nv, isTruongPhong);
                     MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);

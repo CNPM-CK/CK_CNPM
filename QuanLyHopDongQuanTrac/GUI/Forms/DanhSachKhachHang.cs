@@ -58,7 +58,7 @@ namespace GUI.Forms
         private void DanhSachNhanVien_Load(object sender, EventArgs e)
         {
             KhachHangBLL khBLL = new KhachHangBLL();
-            dsKhachhang = new BindingList<KhachHang>(khBLL.LayDanhSachKH());
+            dsKhachhang = new BindingList<KhachHang>(khBLL.layDanhSachKH());
 
             InitializeButtonIcons();
             InitializeSettingMenu();
@@ -71,7 +71,7 @@ namespace GUI.Forms
         {
             KhachHangBLL khBLL = new KhachHangBLL();
             dsKhachhang.Clear();
-            foreach (var kh in khBLL.LayDanhSachKH())
+            foreach (var kh in khBLL.layDanhSachKH())
                 dsKhachhang.Add(kh);
         }
 

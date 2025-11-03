@@ -13,7 +13,7 @@ namespace BLL
     {
         private readonly DatabaseAccess dal = new DatabaseAccess();
 
-        public string ThemNenMau(string tenNenMau, string moTa)
+        public string themNenMau(string tenNenMau, string moTa)
         {
             if (string.IsNullOrWhiteSpace(tenNenMau))
                 throw new Exception("Tên nền mẫu không được để trống!");
@@ -21,26 +21,26 @@ namespace BLL
             if (string.IsNullOrWhiteSpace(moTa))
                 throw new Exception("Mô tả không được để trống!");
 
-            return dal.ThemNenMau(tenNenMau, moTa);
+            return dal.themNenMau(tenNenMau, moTa);
         }
 
 
 
-        public List<NenMau> LayDSNenMau()
+        public List<NenMau> layDSNenMau()
         {
-            return dal.GetDanhSachNenMau();
+            return dal.layDanhSachNenMau();
         }
 
-        public bool SuaNenMau(string maNen, string moTa)
+        public bool suaNenMau(string maNen, string moTa)
         {
-            return dal.SuaNenMau(maNen, moTa);
+            return dal.suaNenMau(maNen, moTa);
         }
 
-        public void XoaNenMau(string maNen)
+        public void xoaNenMau(string maNen)
         {
             try
             {
-                dal.XoaNenMau(maNen);
+                dal.xoaNenMau(maNen);
             }
             catch (Exception ex)
             {

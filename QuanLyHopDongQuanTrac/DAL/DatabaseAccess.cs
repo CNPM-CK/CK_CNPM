@@ -27,7 +27,7 @@ namespace DAL
     }
     public class DatabaseAccess
     {
-        public TaiKhoan? KiemTraDangNhap(string username)
+        public TaiKhoan? kiemTraDangNhap(string username)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -58,7 +58,7 @@ namespace DAL
         }
 
 
-        public List<NhanVien> LayDanhSachNhanVien() {
+        public List<NhanVien> layDanhSachNhanVien() {
 
             List<NhanVien> dsNhanvien = new List<NhanVien>();
             using (SqlConnection conn = SqlConnectionData.Connect())
@@ -125,7 +125,7 @@ namespace DAL
 
         }
 
-        public List<NhanVien> LayDanhSachNhanVien_PhanTrang(int pageNumber, int pageSize)
+        public List<NhanVien> layDanhSachNhanVien_PhanTrang(int pageNumber, int pageSize)
         {
             List<NhanVien> dsNhanvien = new List<NhanVien>();
 
@@ -184,7 +184,7 @@ namespace DAL
         }
 
 
-        public List<KhachHang> LayDanhSachKH()
+        public List<KhachHang> layDanhSachKH()
         {
 
             List<KhachHang> dsKhachhang = new List<KhachHang>();
@@ -220,7 +220,7 @@ namespace DAL
         }
 
 
-        public List<KhachHang> LayDanhSachKH_PhanTrang(int pageNumber, int pageSize)
+        public List<KhachHang> layDanhSachKH_PhanTrang(int pageNumber, int pageSize)
         {
             List<KhachHang> dsKhachhang = new List<KhachHang>();
 
@@ -259,7 +259,7 @@ namespace DAL
         }
 
 
-        public void ThemNhanVien(NhanVien nv, bool isTruongPhong)
+        public void themNhanVien(NhanVien nv, bool isTruongPhong)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -283,7 +283,7 @@ namespace DAL
         }
 
 
-        public void ThemKhachHang(KhachHang kh)
+        public void themKhachHang(KhachHang kh)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -308,7 +308,7 @@ namespace DAL
         }
 
 
-        public void SuaNhanVien(NhanVien nv, bool isTruongPhong)
+        public void suaNhanVien(NhanVien nv, bool isTruongPhong)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -344,7 +344,7 @@ namespace DAL
         
 
 
-        public void SuaKhachHang(KhachHang kh)
+        public void suaKhachHang(KhachHang kh)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -376,7 +376,7 @@ namespace DAL
         }
 
 
-        public void XoaKhachHang(string maKH)
+        public void xoaKhachHang(string maKH)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -398,7 +398,7 @@ namespace DAL
             }
         }
 
-        public void XoaNhanVien(string maNV)
+        public void xoaNhanVien(string maNV)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -420,7 +420,7 @@ namespace DAL
             }
         }
 
-        public List<PhongBan> LayDSPhongBan()
+        public List<PhongBan> layDSPhongBan()
         {
             var list = new List<PhongBan>();
 
@@ -475,7 +475,7 @@ namespace DAL
 
 
 
-        public PhongBan? LayPhongBanTheoMa(string maPhong)
+        public PhongBan? layPhongBanTheoMa(string maPhong)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -510,7 +510,7 @@ namespace DAL
 
         }
 
-        public string LayPhongBanTheoTaiKhoan(string tenTK)
+        public string layPhongBanTheoTaiKhoan(string tenTK)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -525,7 +525,7 @@ namespace DAL
                 }
             }
         }
-        public bool ThemThongSoMoiTruong(ThongSo ts)
+        public bool themThongSoMoiTruong(ThongSo ts)
         {
             try
             {
@@ -552,7 +552,7 @@ namespace DAL
         }
 
 
-        public List<ThongSo> LayDSThongSo()
+        public List<ThongSo> layDSThongSo()
         {
             var list = new List<ThongSo>();
             using (SqlConnection conn = SqlConnectionData.Connect())
@@ -584,7 +584,7 @@ namespace DAL
         }
 
 
-        public List<HopDong> LayDanhSachHD()
+        public List<HopDong> layDanhSachHD()
         {
             var list = new List<HopDong>();
 
@@ -618,7 +618,7 @@ namespace DAL
             }
             return list;
         }
-        public string ThemNenMau(string tenNenMau, string moTa)
+        public string themNenMau(string tenNenMau, string moTa)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -637,7 +637,7 @@ namespace DAL
         }
 
 
-        public List<ThongSo> GetDanhSachThongSo()
+        public List<ThongSo> layDanhSachThongSo()
         {
             List<ThongSo> list = new List<ThongSo>();
 
@@ -668,7 +668,7 @@ namespace DAL
             return list;
         }
 
-        public List<NenMau> GetDanhSachNenMau()
+        public List<NenMau> layDanhSachNenMau()
         {
             List<NenMau> list = new List<NenMau>();
 
@@ -698,7 +698,7 @@ namespace DAL
         }
 
 
-        public void XoaNenMau(string maNen)
+        public void xoaNenMau(string maNen)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -721,7 +721,7 @@ namespace DAL
         }
 
 
-        public bool SuaNenMau(string maNen, string moTa)
+        public bool suaNenMau(string maNen, string moTa)
         {
             try
             {
@@ -749,7 +749,7 @@ namespace DAL
         }
 
 
-        public string TaoDotQuanTracDraft()
+        public string taoDotQuanTracNhap()
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -773,7 +773,7 @@ namespace DAL
         }
 
 
-        public List<DTO_DotQuanTrac> LayDanhSachQuanTrac()
+        public List<DTO_DotQuanTrac> layDanhSachQuanTrac()
         {
 
             List<DTO_DotQuanTrac> dsDQT = new List<DTO_DotQuanTrac>();
@@ -815,7 +815,7 @@ namespace DAL
         }
 
 
-        public DTO_DotNen ThemNenMauVaoDot(string maDot, string maNen)
+        public DTO_DotNen themNenMauVaoDot(string maDot, string maNen)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -856,7 +856,7 @@ namespace DAL
         }
 
 
-        public DataTable LayDanhSachTrangThai()
+        public DataTable layDanhSachTrangThai()
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -872,7 +872,7 @@ namespace DAL
         }
 
 
-        public bool LuuChiTietNenMau(string maDN,string tenViTri,string toaDo,string ghiChu,List<ChiTietQuanTracView> danhSachThongSo)
+        public bool luuChiTietNenMau(string maDN,string tenViTri,string toaDo,string ghiChu,List<ChiTietQuanTracView> danhSachThongSo)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -887,7 +887,7 @@ namespace DAL
                     cmd.Parameters.AddWithValue("@toaDo", string.IsNullOrWhiteSpace(toaDo) ? (object)DBNull.Value : toaDo);
                     cmd.Parameters.AddWithValue("@ghiChu", string.IsNullOrWhiteSpace(ghiChu) ? (object)DBNull.Value : ghiChu);
 
-                    string jsonThongSo = ConvertToJsonArray(danhSachThongSo);
+                    string jsonThongSo = chuyendoiJsonquaArray(danhSachThongSo);
                     cmd.Parameters.AddWithValue("@danhSachThongSo", jsonThongSo);
 
                     try
@@ -903,7 +903,7 @@ namespace DAL
             }
         }
 
-        public bool SuaChiTietNenMau(string maDN, string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSachThongSo)
+        public bool suaChiTietNenMau(string maDN, string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSachThongSo)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -919,7 +919,7 @@ namespace DAL
                     cmd.Parameters.AddWithValue("@ghiChu", string.IsNullOrWhiteSpace(ghiChu) ? (object)DBNull.Value : ghiChu);
 
                     // Chuyển danh sách thông số thành JSON
-                    string jsonThongSo = ConvertToJsonArray(danhSachThongSo);
+                    string jsonThongSo = chuyendoiJsonquaArray(danhSachThongSo);
                     cmd.Parameters.AddWithValue("@danhSachThongSo", jsonThongSo);
 
                     try
@@ -936,7 +936,7 @@ namespace DAL
         }
 
 
-        private string ConvertToJsonArray(List<ChiTietQuanTracView> danhSach)
+        private string chuyendoiJsonquaArray(List<ChiTietQuanTracView> danhSach)
         {
             if (danhSach == null || danhSach.Count == 0)
                 return "[]";
@@ -949,19 +949,19 @@ namespace DAL
 
                 // ⭐ maDNTS - Thêm nếu CÓ (Proc sẽ tự xử lý)
                 if (!string.IsNullOrWhiteSpace(item.MaDNTS))
-                    properties.Add($"\"maDNTS\":\"{EscapeJson(item.MaDNTS)}\"");
+                    properties.Add($"\"maDNTS\":\"{escapeJson(item.MaDNTS)}\"");
 
                 // maTS - BẮT BUỘC
                 if (!string.IsNullOrWhiteSpace(item.MaTS))
-                    properties.Add($"\"maTS\":\"{EscapeJson(item.MaTS)}\"");
+                    properties.Add($"\"maTS\":\"{escapeJson(item.MaTS)}\"");
 
                 // tenTS - TÙY CHỌN
                 if (!string.IsNullOrWhiteSpace(item.TenTS))
-                    properties.Add($"\"tenTS\":\"{EscapeJson(item.TenTS)}\"");
+                    properties.Add($"\"tenTS\":\"{escapeJson(item.TenTS)}\"");
 
                 // donVi - TÙY CHỌN
                 if (!string.IsNullOrWhiteSpace(item.DonVi))
-                    properties.Add($"\"donVi\":\"{EscapeJson(item.DonVi)}\"");
+                    properties.Add($"\"donVi\":\"{escapeJson(item.DonVi)}\"");
 
                 // giaTriToiThieu - TÙY CHỌN
                 if (item.GiaTriToiThieu.HasValue)
@@ -973,11 +973,11 @@ namespace DAL
 
                 // phuongPhap - TÙY CHỌN
                 if (!string.IsNullOrWhiteSpace(item.PhuongPhap))
-                    properties.Add($"\"phuongPhap\":\"{EscapeJson(item.PhuongPhap)}\"");
+                    properties.Add($"\"phuongPhap\":\"{escapeJson(item.PhuongPhap)}\"");
 
                 // maPhong - TÙY CHỌN
                 if (!string.IsNullOrWhiteSpace(item.MaPhong))
-                    properties.Add($"\"maPhong\":\"{EscapeJson(item.MaPhong)}\"");
+                    properties.Add($"\"maPhong\":\"{escapeJson(item.MaPhong)}\"");
 
                 jsonItems.Add("{" + string.Join(",", properties) + "}");
             }
@@ -986,7 +986,7 @@ namespace DAL
         }
 
 
-        private string EscapeJson(string input)
+        private string escapeJson(string input)
         {
             if (string.IsNullOrEmpty(input))
                 return "";
@@ -1003,7 +1003,7 @@ namespace DAL
    
 
 
-        public (bool Success, string Message) XoaDotQuanTrac(string maDot)
+        public (bool Success, string Message) xoaDotQuanTrac(string maDot)
         {
             try
             {
@@ -1035,7 +1035,7 @@ namespace DAL
         }
 
 
-        public bool HoanTatKeHoachQuanTrac(DTO_DotQuanTrac dto)
+        public bool hoanTatKeHoachQuanTrac(DTO_DotQuanTrac dto)
         {
             try
             {
@@ -1074,7 +1074,7 @@ namespace DAL
         }
 
 
-        public bool SuaThongSoMoiTruong(ThongSo ts)
+        public bool suaThongSoMoiTruong(ThongSo ts)
         {
             try
             {
@@ -1104,7 +1104,7 @@ namespace DAL
         }
 
 
-        public bool XoaThongSoMoiTruong(string maTS, out string ketQua)
+        public bool xoaThongSoMoiTruong(string maTS, out string ketQua)
         {
             ketQua = "";
 
@@ -1139,7 +1139,7 @@ namespace DAL
                 return false;
             }
         }
-        public List<HopDongVaTenDN> LayDanhSachHopDong()
+        public List<HopDongVaTenDN> layDanhSachHopDong()
         {
             var list = new List<HopDongVaTenDN>();
 
@@ -1187,7 +1187,7 @@ namespace DAL
             //}
         }
 
-        public List<TrangThaiKhachHang> LayTrangThaiKhachHang()
+        public List<TrangThaiKhachHang> layTrangThaiKhachHang()
         {
             List<TrangThaiKhachHang> list = new List<TrangThaiKhachHang>();
 
@@ -1214,7 +1214,7 @@ namespace DAL
             return list;
         }
 
-        public int DemTongSoKhachHang()
+        public int demTongSoKhachHang()
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -1227,7 +1227,7 @@ namespace DAL
             }
         }
 
-        public List<DTO_DotQuanTrac> LayDanhSachDotQuanTrac_PhanTrang(int pageNumber, int pageSize)
+        public List<DTO_DotQuanTrac> layDanhSachDotQuanTrac_PhanTrang(int pageNumber, int pageSize)
         {
             List<DTO_DotQuanTrac> list = new List<DTO_DotQuanTrac>();
 
@@ -1265,7 +1265,7 @@ namespace DAL
         }
 
 
-        public int DemTongKHQT()
+        public int demTongKHQT()
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -1278,7 +1278,7 @@ namespace DAL
             }
         }
 
-        public int DemTongDSNV()
+        public int demTongDSNV()
         {
             int count = 0;
 
@@ -1294,7 +1294,7 @@ namespace DAL
 
             return count;
         }
-        public List<TrangThaiNhanVien> LayTrangThaiNhanVien()
+        public List<TrangThaiNhanVien> layTrangThaiNhanVien()
         {
             List<TrangThaiNhanVien> list = new List<TrangThaiNhanVien>();
 

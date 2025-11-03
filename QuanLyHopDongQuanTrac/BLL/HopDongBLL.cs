@@ -13,7 +13,7 @@ namespace BLL
         private readonly DatabaseAccess dal = new DatabaseAccess();
         public List<HopDong> LayDanhSachHD()
         {
-            return dal.LayDanhSachHD();
+            return dal.layDanhSachHD();
         }
         public void ThemHopDong(HopDong hd)
         {
@@ -23,7 +23,7 @@ namespace BLL
 
         public void SuaNhanVien(NhanVien nv, bool truongPhong)
         {
-            dal.SuaNhanVien(nv, truongPhong);
+            dal.suaNhanVien(nv, truongPhong);
         }
 
 
@@ -31,7 +31,7 @@ namespace BLL
         {
             try
             {
-                dal.XoaNhanVien(maNV);
+                dal.xoaNhanVien(maNV);
             }
             catch (Exception ex)
             {

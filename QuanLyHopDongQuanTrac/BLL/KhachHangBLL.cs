@@ -12,22 +12,22 @@ namespace BLL
     {
         private readonly DatabaseAccess dal = new DatabaseAccess();
 
-        public List<KhachHang> LayDanhSachKH()
+        public List<KhachHang> layDanhSachKH()
         {
-            return dal.LayDanhSachKH();
+            return dal.layDanhSachKH();
         }
         
 
-        public void ThemKhachHang(KhachHang kh)
+        public void themKhachHang(KhachHang kh)
         {
-            dal.ThemKhachHang(kh);
+            dal.themKhachHang(kh);
         }
 
-        public void XoaKhachHang(string maKH) 
+        public void xoaKhachHang(string maKH) 
         {
             try
             {
-                dal.XoaKhachHang(maKH);
+                dal.xoaKhachHang(maKH);
             }
             catch (Exception ex)
             {
@@ -35,22 +35,22 @@ namespace BLL
             }
         }
 
-        public List<TrangThaiKhachHang> LayTrangThaiKhachHang()
+        public List<TrangThaiKhachHang> layTrangThaiKhachHang()
         {
-            return dal.LayTrangThaiKhachHang();
+            return dal.layTrangThaiKhachHang();
         }
 
-        public void SuaKhachHang(KhachHang kh) 
+        public void suaKhachHang(KhachHang kh) 
         {
-            dal.SuaKhachHang(kh);
+            dal.suaKhachHang(kh);
         }
 
 
-        public (bool daThayDoi, string logThayDoi) KiemTraThayDoi(KhachHang khMoi,KhachHang khCu)
+        public (bool daThayDoi, string logThayDoi) kiemTraThayDoi(KhachHang khMoi,KhachHang khCu)
         {
             StringBuilder log = new StringBuilder();
 
-            string ChuanHoaDiaChi(string dc)
+            string chuanHoaDiaChi(string dc)
             {
                 if (string.IsNullOrWhiteSpace(dc)) return "";
                 var parts = dc.Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -71,8 +71,8 @@ namespace BLL
             if ((khMoi.nguoiDaiDien?.Trim() ?? "") != (khCu.nguoiDaiDien?.Trim() ?? ""))
                 log.AppendLine($"Người đại diện khác: '{khCu.nguoiDaiDien}' → '{khMoi.nguoiDaiDien}'");
 
-            string dcCu = ChuanHoaDiaChi(khCu.diaChi);
-            string dcMoi = ChuanHoaDiaChi(khMoi.diaChi);
+            string dcCu = chuanHoaDiaChi(khCu.diaChi);
+            string dcMoi = chuanHoaDiaChi(khMoi.diaChi);
             if (dcMoi != dcCu)
                 log.AppendLine($"Địa chỉ khác: '{dcCu}' → '{dcMoi}'");
 
@@ -81,14 +81,14 @@ namespace BLL
         }
 
 
-        public List<KhachHang> LayDanhSachKH_PhanTrang(int pageNumber, int pageSize)
+        public List<KhachHang> layDanhSachKH_PhanTrang(int pageNumber, int pageSize)
         {
-            return dal.LayDanhSachKH_PhanTrang(pageNumber, pageSize);
+            return dal.layDanhSachKH_PhanTrang(pageNumber, pageSize);
         }
 
-        public int DemTongSoKhachHang()
+        public int demTongSoKhachHang()
         {
-            return dal.DemTongSoKhachHang();
+            return dal.demTongSoKhachHang();
         }
 
 

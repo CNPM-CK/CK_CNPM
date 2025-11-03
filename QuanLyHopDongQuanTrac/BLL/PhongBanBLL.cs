@@ -12,19 +12,19 @@ namespace BLL
     {
         public readonly DatabaseAccess dal = new DatabaseAccess();
 
-        public List<PhongBan> LayDSPhongBan()
+        public List<PhongBan> layDSPhongBan()
         {
-            return dal.LayDSPhongBan();
+            return dal.layDSPhongBan();
         }
 
 
-        public List<PhongBan> LayPTNvaPHT()
+        public List<PhongBan> layPTNvaPHT()
         {
             return dal.layPTNvaPHT();
         }
-        public PhongBan LayPhongBanTheoMa(string maPhong)
+        public PhongBan layPhongBanTheoMa(string maPhong)
         {
-            return dal.LayPhongBanTheoMa(maPhong);
+            return dal.layPhongBanTheoMa(maPhong);
         }
     }
 }

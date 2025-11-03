@@ -18,8 +18,8 @@ namespace GUI.Forms
     {
         private BLL_DotQuanTrac bllDotQuanTrac;
         private NenMauBLL bllNenMau;
-        private bool isLoadingComboBox = false;
-        private string lastSelectedMaNen = "";
+        private bool taiNenMau = false;
+        private string nenMauDuocChon = "";
         public string MaDotHienTai { get; set; }
 
         public KeHoachQuanTrac()
@@ -180,16 +180,16 @@ namespace GUI.Forms
             ApplyRoundedInput(panelNenmau, cboNenmau, 12, 2, Color.FromArgb(0, 152, 70));
 
             InitializeButtonStyles();
-            LoadDanhSachHopDong();
-            LoadDanhSachNenMau();
-            LoadComboBoxTrangThai();
+            taiDanhSachHopDong();
+            taiDanhSachNenMau();
+            taiTrangThai();
         }
 
-        private void LoadDanhSachHopDong()
+        private void taiDanhSachHopDong()
         {
             try
             {
-                List<HopDongVaTenDN> dsHopDong = bllDotQuanTrac.LayDanhSachHopDong();
+                List<HopDongVaTenDN> dsHopDong = bllDotQuanTrac.layDanhSachHopDong();
 
                 if (dsHopDong == null || dsHopDong.Count == 0)
                 {
@@ -217,12 +217,12 @@ namespace GUI.Forms
         }
 
 
-        private void LoadDanhSachNenMau()
+        private void taiDanhSachNenMau()
         {
-            isLoadingComboBox = true;
+            taiNenMau = true;
             try
             {
-                List<NenMau> dsNenmau = bllNenMau.LayDSNenMau();
+                List<NenMau> dsNenmau = bllNenMau.layDSNenMau();
 
                 if (dsNenmau == null || dsNenmau.Count == 0)
                 {
@@ -248,12 +248,12 @@ namespace GUI.Forms
             }
             finally
             {
-                isLoadingComboBox = false;
+                taiNenMau = false;
             }
         }
 
 
-        private void LoadComboBoxTrangThai()
+        private void taiTrangThai()
         {
             var bll = new BLL_DotQuanTrac();
             DataTable dt = bll.LayDanhSachTrangThai();
@@ -265,7 +265,7 @@ namespace GUI.Forms
         }
 
         //KeHoachQuanTrac
-        private void Uc_SuaNenMauClicked(object sender, EventArgs e)
+        private void nhanSuaNenMauUC(object sender, EventArgs e)
         {
             if (sender is NenMauConTrol uc)
             {
@@ -276,7 +276,7 @@ namespace GUI.Forms
                 frmChiTiet.MaDN = uc.MaDN;  // ✅ ĐÚNG - Dùng MaDN từ UserControl
                 frmChiTiet.TenNenMauDaChon = uc.TenNenMau;
                 frmChiTiet.MaNen = uc.MaNen;
-                frmChiTiet.IsEditMode = true;
+                frmChiTiet.chinhSua = true;
 
                 // ✅ Set dữ liệu trước khi show form
                 frmChiTiet.SetDataForEdit(
@@ -306,7 +306,7 @@ namespace GUI.Forms
             }
         }
 
-        private void Uc_XoaNenMauClicked(object sender, EventArgs e)
+        private void nhanXoaNenMauUC(object sender, EventArgs e)
         {
             if (sender is NenMauConTrol uc)
             {
@@ -318,13 +318,13 @@ namespace GUI.Forms
                 {
                     flowNenmau.Controls.Remove(uc);
                     uc.Dispose();
-                    CapNhatSoThuTuNenMau();
+                    capNhatSoThuTuNenMau();
                 }
             }
         }
 
 
-        private void CapNhatSoThuTuNenMau()
+        private void capNhatSoThuTuNenMau()
         {
             for (int i = 0; i < flowNenmau.Controls.Count; i++)
             {
@@ -350,7 +350,7 @@ namespace GUI.Forms
             ThemNenMau1 add = new ThemNenMau1();
             if (add.ShowDialog() == DialogResult.OK)
             {
-                LoadDanhSachNenMau();
+                taiDanhSachNenMau();
             }
         }
 
@@ -400,18 +400,6 @@ namespace GUI.Forms
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
-
-                        // Kiểm tra nền mẫu đã có thông tin chi tiết chưa
-                        //var bll = new BLL_DotQuanTrac();
-                        //var dotNen = bll.LayThongTinDotNen(maDN);
-
-                        //if (dotNen == null || string.IsNullOrWhiteSpace(dotNen.TenViTri))
-                        //{
-                        //    MessageBox.Show($"Nền mẫu '{ucNenMau.TenNenMau}' chưa có thông tin vị trí!\n" +
-                        //        "Vui lòng nhấp đúp vào nền mẫu để nhập chi tiết.", "Cảnh báo",
-                        //        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        //    return;
-                        //}
                     }
                 }
                 
@@ -446,7 +434,7 @@ namespace GUI.Forms
                 Cursor = Cursors.WaitCursor;
 
                 BLL_DotQuanTrac bllDotQuanTrac = new BLL_DotQuanTrac();
-                bool ketQua = bllDotQuanTrac.HoanTatKeHoachQuanTrac(dto);
+                bool ketQua = bllDotQuanTrac.hoanTatKeHoachQuanTrac(dto);
 
                 if (ketQua)
                 {
@@ -486,9 +474,9 @@ namespace GUI.Forms
 
         private void cboNenmau_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (isLoadingComboBox || cboNenmau.SelectedIndex == -1) return;
+            if (taiNenMau || cboNenmau.SelectedIndex == -1) return;
             if (!(cboNenmau.SelectedItem is NenMau nenChon)) return;
-            if (nenChon.maNen == lastSelectedMaNen) return;
+            if (nenChon.maNen == nenMauDuocChon) return;
 
             try
             {
@@ -503,11 +491,11 @@ namespace GUI.Forms
                 if (result != DialogResult.Yes)
                     return;
 
-                lastSelectedMaNen = nenChon.maNen;
+                nenMauDuocChon = nenChon.maNen;
 
                 // GỌI BLL để thêm vào DB trước khi mở form chi tiết
                 var bll = new BLL_DotQuanTrac();
-                var dn = bll.ThemNenMauVaoDot(MaDotHienTai, nenChon.maNen);
+                var dn = bll.themNenMauVaoDot(MaDotHienTai, nenChon.maNen);
 
                 if (dn == null)
                 {
@@ -538,12 +526,12 @@ namespace GUI.Forms
                             ghiChu: f.GhiChu                    // ✅ Tham số thứ 8: ghi chú
                         );
 
-                        uc.XoaNenMauClicked += Uc_XoaNenMauClicked;
-                        uc.SuaNenMauClicked += Uc_SuaNenMauClicked;
+                        uc.nhanXoaNenMau += nhanXoaNenMauUC;
+                        uc.nhanSuaNenMau += nhanSuaNenMauUC;
                         uc.Width = flowNenmau.Width - 20;
 
                         flowNenmau.Controls.Add(uc);
-                        CapNhatSoThuTuNenMau();
+                        capNhatSoThuTuNenMau();
                     }
                 }
             }
@@ -553,13 +541,13 @@ namespace GUI.Forms
             }
             finally
             {
-                isLoadingComboBox = true;
+                taiNenMau = true;
                 cboNenmau.SelectedIndex = -1;
-                lastSelectedMaNen = "";
-                isLoadingComboBox = false;
+                nenMauDuocChon = "";
+                taiNenMau = false;
             }
         }
-
+         
         private void panel2_Paint(object sender, PaintEventArgs e)
         {
 

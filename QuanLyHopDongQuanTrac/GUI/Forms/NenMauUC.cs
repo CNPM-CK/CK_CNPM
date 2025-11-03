@@ -24,7 +24,10 @@ namespace GUI.Forms
             set { txtTennenmau.Text = value; }
         }
 
-        public string TenViTri { get; set; }
+        public string TenViTri {
+            get { return txtVitri?.Text?.Trim(); }
+            set { if (txtVitri != null) txtVitri.Text = value; }
+        }
         public string ToaDo { get; set; }
         public string GhiChu { get; set; }
 
@@ -269,7 +272,7 @@ namespace GUI.Forms
                 this.MaDN = maDN;
                 this.MaNen = maNen;
                 this.TenNenMauDaChon = tenNenMau;
-                this.TenViTri = viTri;       
+                this.TenViTri = viTri;
                 this.ToaDo = toaDo;
                 this.GhiChu = ghiChu;
                 txtTennenmau.Text = tenNenMau ?? string.Empty;
@@ -299,26 +302,28 @@ namespace GUI.Forms
             lblNenmau.Text = $"Nền mẫu {index}";
         }
 
-        public event EventHandler XoaNenMauClicked;
+        public event EventHandler nhanXoaNenMau;
 
-        public event EventHandler SuaNenMauClicked;
+        public event EventHandler nhanSuaNenMau;
 
         private void btnSua_Click(object sender, EventArgs e)
         {
-            SuaNenMauClicked?.Invoke(this, EventArgs.Empty);
+            nhanSuaNenMau?.Invoke(this, EventArgs.Empty);
         }
 
         private void btnXoa_Click(object sender, EventArgs e)
         {
-            XoaNenMauClicked?.Invoke(this, EventArgs.Empty);
+            nhanXoaNenMau?.Invoke(this, EventArgs.Empty);
         }
-        
+
 
         private void NenMauConTrol_Load(object sender, EventArgs e)
         {
 
             ApplyRoundedInput(panelMota, txtMota, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelTennenmau, txtTennenmau, 12, 2, Color.FromArgb(0, 152, 70));
+            ApplyRoundedInput(panelVitri, txtVitri, 12, 2, Color.FromArgb(0, 152, 70));
+
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e) { }
@@ -330,12 +335,8 @@ namespace GUI.Forms
         private void dgvThongso_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 
         private void txtTennenmau_TextChanged(object sender, EventArgs e) { }
-
-
-
         private void panel1_Paint(object sender, PaintEventArgs e) { }
         private void panel1_Paint_1(object sender, PaintEventArgs e) { }
-
-
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) {}
     }
 }

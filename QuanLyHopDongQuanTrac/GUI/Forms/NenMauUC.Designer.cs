@@ -34,6 +34,9 @@
             btnSua = new Button();
             btnXoa = new Button();
             panel4 = new Panel();
+            label2 = new Label();
+            panelVitri = new Panel();
+            txtVitri = new TextBox();
             panelTennenmau = new Panel();
             txtTennenmau = new TextBox();
             lblNenmau = new Label();
@@ -46,6 +49,7 @@
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             panel4.SuspendLayout();
+            panelVitri.SuspendLayout();
             panelTennenmau.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
@@ -81,6 +85,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.Size = new Size(998, 53);
             tableLayoutPanel1.TabIndex = 0;
+            tableLayoutPanel1.Paint += tableLayoutPanel1_Paint;
             // 
             // btnSua
             // 
@@ -114,6 +119,8 @@
             // 
             // panel4
             // 
+            panel4.Controls.Add(label2);
+            panel4.Controls.Add(panelVitri);
             panel4.Controls.Add(panelTennenmau);
             panel4.Controls.Add(lblNenmau);
             panel4.Dock = DockStyle.Fill;
@@ -121,6 +128,34 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(692, 47);
             panel4.TabIndex = 5;
+            // 
+            // label2
+            // 
+            label2.Anchor = AnchorStyles.Left;
+            label2.AutoSize = true;
+            label2.Location = new Point(358, 9);
+            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(63, 25);
+            label2.TabIndex = 6;
+            label2.Text = "Vị trí :";
+            // 
+            // panelVitri
+            // 
+            panelVitri.Controls.Add(txtVitri);
+            panelVitri.Location = new Point(439, 3);
+            panelVitri.Name = "panelVitri";
+            panelVitri.Size = new Size(250, 39);
+            panelVitri.TabIndex = 5;
+            // 
+            // txtVitri
+            // 
+            txtVitri.Enabled = false;
+            txtVitri.Location = new Point(3, 5);
+            txtVitri.Multiline = true;
+            txtVitri.Name = "txtVitri";
+            txtVitri.Size = new Size(244, 31);
+            txtVitri.TabIndex = 0;
             // 
             // panelTennenmau
             // 
@@ -252,6 +287,8 @@
             tableLayoutPanel1.ResumeLayout(false);
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
+            panelVitri.ResumeLayout(false);
+            panelVitri.PerformLayout();
             panelTennenmau.ResumeLayout(false);
             panelTennenmau.PerformLayout();
             panel2.ResumeLayout(false);
@@ -279,5 +316,8 @@
         private Label lblNenmau;
         private TextBox txtTennenmau;
         private Panel panelTennenmau;
+        private Panel panelVitri;
+        private TextBox txtVitri;
+        private Label label2;
     }
 }
