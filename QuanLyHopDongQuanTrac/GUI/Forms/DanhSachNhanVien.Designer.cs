@@ -38,7 +38,6 @@
             panel5 = new Panel();
             label1 = new Label();
             sidebar = new Panel();
-            btnHopdong = new Button();
             btnDanhsachnv = new Button();
             panel3 = new Panel();
             labelFooter = new Label();
@@ -145,31 +144,12 @@
             // sidebar
             // 
             sidebar.BackColor = Color.FromArgb(224, 234, 230);
-            sidebar.Controls.Add(btnHopdong);
             sidebar.Controls.Add(btnDanhsachnv);
             sidebar.Dock = DockStyle.Left;
             sidebar.Location = new Point(0, 0);
             sidebar.Name = "sidebar";
             sidebar.Size = new Size(193, 472);
             sidebar.TabIndex = 0;
-            // 
-            // btnHopdong
-            // 
-            btnHopdong.BackColor = Color.FromArgb(10, 113, 78);
-            btnHopdong.Cursor = Cursors.Hand;
-            btnHopdong.FlatStyle = FlatStyle.Flat;
-            btnHopdong.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnHopdong.ForeColor = Color.White;
-            btnHopdong.Image = (Image)resources.GetObject("btnHopdong.Image");
-            btnHopdong.ImageAlign = ContentAlignment.MiddleLeft;
-            btnHopdong.Location = new Point(0, 61);
-            btnHopdong.Name = "btnHopdong";
-            btnHopdong.Size = new Size(193, 61);
-            btnHopdong.TabIndex = 1;
-            btnHopdong.Text = "Danh sách hợp đồng";
-            btnHopdong.TextAlign = ContentAlignment.MiddleRight;
-            btnHopdong.UseVisualStyleBackColor = false;
-            btnHopdong.Click += button1_Click;
             // 
             // btnDanhsachnv
             // 
@@ -247,7 +227,6 @@
         private Button btnDanhsachnv;
         private Label labelFooter;
         private PictureBox pictureBox2;
-        private Button btnHopdong;
         private Panel panel5;
         private Label label1;
     }

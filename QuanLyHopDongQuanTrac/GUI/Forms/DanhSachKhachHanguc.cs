@@ -133,13 +133,13 @@ namespace GUI.Forms
             dgvDanhsachnhanvien.DataSource = dsKhachhang;
             dgvDanhsachnhanvien.ReadOnly = true;
             dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
-            LoadKhachHangPage();
+            taiTrangKhachHang();
         }
 
-        private void RefreshDanhSachKhachHang()
+        private void lamMoiDanhSachKhachHang()
         {
             totalRecords = 0;
-            LoadKhachHangPage();
+            taiTrangKhachHang();
         }
         #endregion
 
@@ -226,10 +226,10 @@ namespace GUI.Forms
                 currentOpenForm = null;
             };
 
-            frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachKhachHang();
+            frmSua.SuccesfullyUpdated += (s, ev) => lamMoiDanhSachKhachHang();
             if (frmSua.ShowDialog() == DialogResult.OK)
             {
-                RefreshDanhSachKhachHang();
+                lamMoiDanhSachKhachHang();
             }
         }
 
@@ -264,7 +264,7 @@ namespace GUI.Forms
                     MessageBox.Show("Đã xóa khách hàng thành công!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    RefreshDanhSachKhachHang();
+                    lamMoiDanhSachKhachHang();
                 }
                 catch (Exception ex)
                 {
@@ -623,7 +623,7 @@ namespace GUI.Forms
                 currentOpenForm = null;
             };
 
-            frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachKhachHang();
+            frmThem.SuccesfullyUpdated += (s, ev) => lamMoiDanhSachKhachHang();
             frmThem.Show();
         }
         #endregion
@@ -636,7 +636,7 @@ namespace GUI.Forms
         int pageSize = 15;
         int totalRecords = 0;
         int totalPages = 0;
-        private void LoadKhachHangPage()
+        private void taiTrangKhachHang()
         {
             var bll = new KhachHangBLL();
 
@@ -663,17 +663,22 @@ namespace GUI.Forms
             if (currentPage > 1)
             {
                 currentPage--;
-                LoadKhachHangPage();
+                taiTrangKhachHang();
             }
         }
 
         private void btnSau_Click(object sender, EventArgs e)
         {
             currentPage++;
-            LoadKhachHangPage();
+            taiTrangKhachHang();
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void picturemicro_Click(object sender, EventArgs e)
         {
 
         }

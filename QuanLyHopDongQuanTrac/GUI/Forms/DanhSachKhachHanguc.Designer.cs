@@ -207,6 +207,7 @@
             picturemicro.SizeMode = PictureBoxSizeMode.Zoom;
             picturemicro.TabIndex = 8;
             picturemicro.TabStop = false;
+            picturemicro.Click += picturemicro_Click;
             // 
             // containersearch
             // 

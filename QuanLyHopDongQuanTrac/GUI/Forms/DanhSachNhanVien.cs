@@ -205,13 +205,13 @@ namespace GUI.Forms
                 btnDanhsachnv.TextAlign = ContentAlignment.MiddleRight;
                 btnDanhsachnv.Padding = new Padding(0, 0, 2, 0);
             }
-            if (btnHopdong.Image != null)
-            {
-                btnHopdong.Image = new Bitmap(btnHopdong.Image, new Size(30, 30));
-                btnHopdong.ImageAlign = ContentAlignment.MiddleLeft;
-                btnHopdong.TextAlign = ContentAlignment.MiddleRight;
-                btnHopdong.Padding = new Padding(0, 0, 2, 0);
-            }
+            //if (btnHopdong.Image != null)
+            //{
+            //    btnHopdong.Image = new Bitmap(btnHopdong.Image, new Size(30, 30));
+            //    btnHopdong.ImageAlign = ContentAlignment.MiddleLeft;
+            //    btnHopdong.TextAlign = ContentAlignment.MiddleRight;
+            //    btnHopdong.Padding = new Padding(0, 0, 2, 0);
+            //}
         }
         #endregion
 

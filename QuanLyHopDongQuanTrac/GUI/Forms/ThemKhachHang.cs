@@ -302,11 +302,16 @@ namespace GUI.Forms
                     SuccesfullyUpdated?.Invoke(this, EventArgs.Empty); // ✅ Quan trọng
                     this.DialogResult = DialogResult.OK;
                     this.Close();
+
                 }
                 else
                 {
                     bll.themKhachHang(kh);
                     MessageBox.Show("Thêm khách hàng thành công!", "Thông báo");
+                    SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                   
                 }
             }
             catch (SqlException ex)

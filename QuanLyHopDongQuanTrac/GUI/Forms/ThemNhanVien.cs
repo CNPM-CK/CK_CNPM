@@ -362,7 +362,6 @@ namespace GUI.Forms
                 {
                     bll.themNhanVien(nv, isTruongPhong);
                     MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                     SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
                     this.DialogResult = DialogResult.OK;
                     this.Close();
