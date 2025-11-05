@@ -37,6 +37,7 @@
             panelMatkhau = new Panel();
             textBoxmatkhau = new TextBox();
             panelTentk = new Panel();
+            button4 = new Button();
             txtTentk = new TextBox();
             button3 = new Button();
             label8 = new Label();
@@ -49,9 +50,8 @@
             label3 = new Label();
             label2 = new Label();
             panel3 = new Panel();
-            tableLayoutPanel2 = new TableLayoutPanel();
+            label5 = new Label();
             pictureBox1 = new PictureBox();
-            label1 = new Label();
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -60,7 +60,6 @@
             panelMatkhau.SuspendLayout();
             panelTentk.SuspendLayout();
             panel3.SuspendLayout();
-            tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -141,6 +140,7 @@
             // 
             // panelMatkhau
             // 
+            panelMatkhau.Controls.Add(button4);
             panelMatkhau.Controls.Add(textBoxmatkhau);
             panelMatkhau.Location = new Point(77, 282);
             panelMatkhau.Name = "panelMatkhau";
@@ -164,6 +164,16 @@
             panelTentk.Name = "panelTentk";
             panelTentk.Size = new Size(353, 64);
             panelTentk.TabIndex = 13;
+            // 
+            // button4
+            // 
+            button4.BackgroundImage = (Image)resources.GetObject("button4.BackgroundImage");
+            button4.BackgroundImageLayout = ImageLayout.Zoom;
+            button4.Location = new Point(283, 6);
+            button4.Name = "button4";
+            button4.Size = new Size(51, 51);
+            button4.TabIndex = 15;
+            button4.UseVisualStyleBackColor = true;
             // 
             // txtTentk
             // 
@@ -244,12 +254,12 @@
             // 
             // button1
             // 
-            button1.BackColor = Color.FromArgb(125, 199, 84);
+            button1.BackColor = Color.FromArgb(0, 152, 70);
             button1.Cursor = Cursors.Hand;
             button1.FlatAppearance.BorderColor = Color.White;
             button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            button1.ForeColor = Color.DarkGreen;
+            button1.ForeColor = Color.FromArgb(0, 77, 0);
             button1.Location = new Point(77, 411);
             button1.Name = "button1";
             button1.Size = new Size(281, 55);
@@ -295,56 +305,36 @@
             // panel3
             // 
             panel3.BackColor = Color.Green;
-            panel3.Controls.Add(tableLayoutPanel2);
+            panel3.Controls.Add(label5);
+            panel3.Controls.Add(pictureBox1);
             panel3.Dock = DockStyle.Fill;
             panel3.Location = new Point(117, 60);
             panel3.Name = "panel3";
             panel3.Size = new Size(512, 562);
             panel3.TabIndex = 1;
             // 
-            // tableLayoutPanel2
+            // label5
             // 
-            tableLayoutPanel2.BackColor = Color.FromArgb(125, 199, 84);
-            tableLayoutPanel2.ColumnCount = 3;
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 8.505747F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 91.4942551F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 30F));
-            tableLayoutPanel2.Controls.Add(pictureBox1, 1, 1);
-            tableLayoutPanel2.Controls.Add(label1, 1, 2);
-            tableLayoutPanel2.Dock = DockStyle.Fill;
-            tableLayoutPanel2.Location = new Point(0, 0);
-            tableLayoutPanel2.Name = "tableLayoutPanel2";
-            tableLayoutPanel2.RowCount = 4;
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 23.1607628F));
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 76.83923F));
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 122F));
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 26F));
-            tableLayoutPanel2.Size = new Size(512, 562);
-            tableLayoutPanel2.TabIndex = 1;
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 163);
+            label5.ForeColor = Color.FromArgb(0, 77, 0);
+            label5.Location = new Point(84, 448);
+            label5.Name = "label5";
+            label5.Size = new Size(345, 62);
+            label5.TabIndex = 3;
+            label5.Text = "Hệ thống quản lý \nhợp đồng sinh trắc môi trường";
+            label5.TextAlign = ContentAlignment.MiddleCenter;
+            label5.Click += label5_Click;
             // 
             // pictureBox1
             // 
-            pictureBox1.Dock = DockStyle.Fill;
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(43, 98);
+            pictureBox1.Location = new Point(0, 62);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(435, 312);
+            pictureBox1.Size = new Size(512, 332);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 0;
+            pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Dock = DockStyle.Fill;
-            label1.Font = new Font("Arial", 13.2000008F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 163);
-            label1.ForeColor = Color.Green;
-            label1.Location = new Point(43, 413);
-            label1.Name = "label1";
-            label1.Size = new Size(435, 122);
-            label1.TabIndex = 1;
-            label1.Text = "Hệ thống quản lý \nhợp đồng sinh trắc môi trường";
-            label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // DangNhap
             // 
@@ -368,8 +358,7 @@
             panelTentk.ResumeLayout(false);
             panelTentk.PerformLayout();
             panel3.ResumeLayout(false);
-            tableLayoutPanel2.ResumeLayout(false);
-            tableLayoutPanel2.PerformLayout();
+            panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
@@ -380,9 +369,6 @@
         private TableLayoutPanel tableLayoutPanel1;
         private Panel panel2;
         private Panel panel3;
-        private TableLayoutPanel tableLayoutPanel2;
-        private PictureBox pictureBox1;
-        private Label label1;
         private TableLayoutPanel tableLayoutPanel3;
         private Label label2;
         private Panel panel4;
@@ -399,5 +385,8 @@
         private Button button3;
         private Panel panelMatkhau;
         private Panel panelTentk;
+        private PictureBox pictureBox1;
+        private Label label5;
+        private Button button4;
     }
 }
