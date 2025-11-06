@@ -176,7 +176,7 @@ namespace GUI.Forms
             diaChiService = new DiaChiBLL();
             var bllPhongBan = new PhongBanBLL();
             var tinhList = diaChiService.LayTinhThanh();
-            var list = bllPhongBan.LayDSPhongBan();
+            var list = bllPhongBan.layDSPhongBan();
 
             // Load phòng 
             if (list != null && list.Count > 0)
@@ -280,7 +280,7 @@ namespace GUI.Forms
                 // Kiểm tra xem nhân viên này có phải trưởng phòng không
                 if (!string.IsNullOrEmpty(nhanVienHienTai.maPhong))
                 {
-                    var phongBan = bllPhongBan.LayPhongBanTheoMa(nhanVienHienTai.maPhong);
+                    var phongBan = bllPhongBan.layPhongBanTheoMa(nhanVienHienTai.maPhong);
                     if (phongBan != null && phongBan.truongPhong == nhanVienHienTai.maNV)
                     {
                         checkTruongphong.Checked = true;
@@ -451,7 +451,7 @@ namespace GUI.Forms
             {
                 var bll = new NhanVienBLL();
 
-                var (daThayDoi, logThayDoi) = bll.KiemTraThayDoi(nv, nhanVienBanDau, isTruongPhong);
+                var (daThayDoi, logThayDoi) = bll.kiemTraThayDoi(nv, nhanVienBanDau, isTruongPhong);
 
                 if (!daThayDoi)
                 {
@@ -460,7 +460,7 @@ namespace GUI.Forms
                     return;
                 }
                 // Thực hiện cập nhật
-                bll.SuaNhanVien(nv, isTruongPhong);
+                bll.suaNhanVien(nv, isTruongPhong);
                 MessageBox.Show("Sửa nhân viên thành công!", "Thông báo",
                                MessageBoxButtons.OK, MessageBoxIcon.Information);
 

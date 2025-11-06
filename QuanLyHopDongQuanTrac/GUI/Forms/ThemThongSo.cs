@@ -279,7 +279,7 @@ namespace GUI.Forms
                     thongSoCanSua.GiaTriToiDa = giaTriMax;
                     thongSoCanSua.GiaTriToiThieu = giaTriMin;
 
-                    if (bll.SuaThongSoMoiTruong(thongSoCanSua))
+                    if (bll.suaThongSoMoiTruong(thongSoCanSua))
                     {
                         MessageBox.Show("Cập nhật thông số thành công!", "Thành công",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -303,7 +303,7 @@ namespace GUI.Forms
                         GiaTriToiThieu = giaTriMin
                     };
 
-                    if (bll.ThemThongSo(ts))
+                    if (bll.themThongSo(ts))
                     {
                         MessageBox.Show("Thêm thông số thành công!", "Thành công",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);

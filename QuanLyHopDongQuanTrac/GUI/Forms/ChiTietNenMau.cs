@@ -17,7 +17,7 @@ namespace GUI.Forms
 
     public partial class ChiTietNenMau : Form
     {
-        public bool IsEditMode { get; set; } = false;
+        public bool chinhSua { get; set; } = false;
 
         private Rectangle deleteRect;
         public List<ChiTietQuanTracView> ChiTietDaChon { get; private set; }
@@ -27,11 +27,11 @@ namespace GUI.Forms
         public string MaDN { get; set; }
         public string TenNenMauDaChon { get; set; }
 
-        private string _tenViTriEdit;
+        private string tenViTriChinhSua;
         
-        private string _toaDoEdit;
+        private string toaDoChinhSua;
         
-        private string _ghiChuEdit;
+        private string ghiChuChinhSua;
 
         public string TenViTri
         {
@@ -51,7 +51,7 @@ namespace GUI.Forms
             set { txtGhichu.Text = value; }
         }
 
-        private List<ChiTietQuanTracView> _danhSachChinhSua;
+        private List<ChiTietQuanTracView> danhSachChinhSua;
 
         private BindingList<ChiTietQuanTracView> danhSachChiTiet = new BindingList<ChiTietQuanTracView>();
         private NenMauBLL bllNenMau;
@@ -204,6 +204,31 @@ namespace GUI.Forms
         #endregion
         private void Form1_Load(object sender, EventArgs e)
         {
+            dgvThongso.AutoGenerateColumns = false;
+            dgvThongso.Columns.Clear();
+            dgvThongso.AllowUserToAddRows = false;
+            dgvThongso.ReadOnly = true;
+            dgvThongso.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvThongso.MultiSelect = false;
+            dgvThongso.RowTemplate.Height = 50;
+
+            // Font settings
+            dgvThongso.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular);
+            dgvThongso.DefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
+            dgvThongso.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgvThongso.RowHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
+
+            // Header styling
+            dgvThongso.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 152, 70);
+            dgvThongso.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvThongso.EnableHeadersVisualStyles = false;
+
+            // Cell styling
+            dgvThongso.DefaultCellStyle.BackColor = Color.White;
+            dgvThongso.DefaultCellStyle.ForeColor = Color.Black;
+            dgvThongso.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dgvThongso.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvThongso.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             ApplyRoundedInput(panelChonthongso, cboThongso, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelPhongpt, cboPhongpt, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelTennenmau, txtTennenmau, 12, 2, Color.FromArgb(0, 152, 70));
@@ -215,7 +240,7 @@ namespace GUI.Forms
 
             var thongSo = new ThongSoBLL();
             var phongBan = new PhongBanBLL();
-            var listPhongban = phongBan.LayPTNvaPHT();
+            var listPhongban = phongBan.layPTNvaPHT();
 
             if (listPhongban != null && listPhongban.Count > 0)
             {
@@ -235,7 +260,7 @@ namespace GUI.Forms
                 txtTennenmau.ReadOnly = true; // Không cho sửa
                 txtTennenmau.BackColor = Color.FromArgb(240, 240, 240); // Màu xám nhạt
 
-                if (IsEditMode)
+                if (chinhSua)
                 {
                     this.Text = $"Sửa nền mẫu - {TenNenMauDaChon}";
                     label.Text = "Cập nhật thông tin nền mẫu";
@@ -252,7 +277,7 @@ namespace GUI.Forms
 
             LoadComboBoxThongSo();
 
-            var list = thongSo.LayDanhSachThongSo();
+            var list = thongSo.layDanhSachThongSo();
             if (list != null && list.Count > 0)
             {
                 cboThongso.DataSource = list;
@@ -346,10 +371,19 @@ namespace GUI.Forms
             dgvThongso.CellPainting += dgvThongso_CellPainting;
             dgvThongso.CellClick += dgvThongso_CellClick;
 
-            if (IsEditMode && _danhSachChinhSua != null)
+            if (chinhSua && danhSachChinhSua != null)
             {
-                LoadDataForEdit(_tenViTriEdit, _toaDoEdit, _ghiChuEdit, _danhSachChinhSua);
+                LoadDataForEdit(tenViTriChinhSua, toaDoChinhSua, ghiChuChinhSua, danhSachChinhSua);
             }
+            // Vô hiệu hóa edit
+            dgvThongso.ReadOnly = true;
+            dgvThongso.AllowUserToAddRows = false;
+            dgvThongso.AllowUserToDeleteRows = false;
+            dgvThongso.EditMode = DataGridViewEditMode.EditProgrammatically;
+
+            // Chỉ cho phép select cả dòng (không select từng cell)
+            dgvThongso.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvThongso.MultiSelect = false;
 
         }
 
@@ -366,10 +400,10 @@ namespace GUI.Forms
 
         public void SetDataForEdit(string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSach)
         {
-            _tenViTriEdit = tenViTri;
-            _toaDoEdit = toaDo;
-            _ghiChuEdit = ghiChu;
-            _danhSachChinhSua = danhSach;
+            tenViTriChinhSua = tenViTri;
+            toaDoChinhSua = toaDo;
+            ghiChuChinhSua = ghiChu;
+            danhSachChinhSua = danhSach;
         }
 
         public void LoadDataForEdit(string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSach)
@@ -404,7 +438,7 @@ namespace GUI.Forms
         private void LoadComboBoxThongSo()
         {
             var thongSo = new ThongSoBLL();
-            var list = thongSo.LayDanhSachThongSo();
+            var list = thongSo.layDanhSachThongSo();
 
             if (list != null && list.Count > 0)
             {
@@ -473,13 +507,9 @@ namespace GUI.Forms
                 bool ketQua;
                 string thongBao;
 
-                if (IsEditMode)
+                if (chinhSua)
                 {
-                    // CHẾ ĐỘ SỬA - Proc sẽ tự động:
-                    //   • Giữ mã cũ cho thông số có maDNTS
-                    //   • Tạo mã mới cho thông số không có maDNTS
-                    //   • Xóa thông số không còn trong danh sách
-                    ketQua = bll.SuaChiTietNenMau(
+                    ketQua = bll.suaChiTietNenMau(
                         maDN: MaDN,
                         tenViTri: txtTenvitri.Text.Trim(),
                         toaDo: txtToado.Text.Trim(),
@@ -491,7 +521,7 @@ namespace GUI.Forms
                 else
                 {
                     // CHẾ ĐỘ TẠO MỚI
-                    ketQua = bll.LuuChiTietNenMau(
+                    ketQua = bll.luuChiTietNenMau(
                         maDN: MaDN,
                         tenViTri: txtTenvitri.Text.Trim(),
                         toaDo: txtToado.Text.Trim(),
@@ -532,84 +562,6 @@ namespace GUI.Forms
                 MessageBox.Show($"Lỗi khi lưu chi tiết nền mẫu:\n{ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            //try
-            //{
-            //    // ✅ Validation form
-            //    if (string.IsNullOrWhiteSpace(txtTennenmau.Text))
-            //    {
-            //        MessageBox.Show("Vui lòng nhập tên nền mẫu!", "Thông báo",
-            //            MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //        txtTennenmau.Focus();
-            //        return;
-            //    }
-
-            //    if (string.IsNullOrWhiteSpace(txtTenvitri.Text))
-            //    {
-            //        MessageBox.Show("Vui lòng nhập tên vị trí!", "Thông báo",
-            //            MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //        txtTenvitri.Focus();
-            //        return;
-            //    }
-
-            //    // ✅ Kiểm tra phải có ít nhất 1 thông số
-            //    if (danhSachChiTiet.Count == 0)
-            //    {
-            //        MessageBox.Show("Vui lòng thêm ít nhất một thông số!", "Thông báo",
-            //            MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //        return;
-            //    }
-
-            //    // ✅ Kiểm tra MaDN có tồn tại không
-            //    if (string.IsNullOrWhiteSpace(MaDN))
-            //    {
-            //        MessageBox.Show("Không tìm thấy mã đợt nền (MaDN)!\nVui lòng tạo lại nền mẫu.", "Lỗi",
-            //            MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        return;
-            //    }
-
-            //    // ✅ Gọi BLL để lưu
-            //    BLL_DotQuanTrac bll = new BLL_DotQuanTrac();
-
-            //    bool ketQua = bll.LuuChiTietNenMau(
-            //        maDN: MaDN,
-            //        tenViTri: txtTenvitri.Text.Trim(),
-            //        toaDo: txtToado.Text.Trim(),
-            //        ghiChu: txtGhichu.Text.Trim(),
-            //        danhSachThongSo: danhSachChiTiet.ToList()
-            //    );
-
-            //    if (ketQua)
-            //    {
-            //        MessageBox.Show(
-            //            $"Lưu chi tiết nền mẫu thành công!\n\n" +
-            //            $"Nền mẫu: {txtTennenmau.Text}\n" +
-            //            $"Vị trí: {txtTenvitri.Text}\n" +
-            //            $"Số thông số: {danhSachChiTiet.Count}",
-            //            "Thành công",
-            //            MessageBoxButtons.OK,
-            //            MessageBoxIcon.Information
-            //        );
-
-            //        // ✅ Lưu thông tin để trả về form cha
-            //        this.ChiTietDaChon = danhSachChiTiet.ToList();
-            //        this.TenNenMauDaChon = txtTennenmau.Text.Trim();
-            //        this.MoTaNen = txtGhichu.Text.Trim();
-
-            //        // ✅ Đóng form với DialogResult.OK
-            //        this.DialogResult = DialogResult.OK;
-            //        this.Close();
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("Lưu thất bại! Vui lòng kiểm tra lại dữ liệu.", "Lỗi",
-            //            MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"Lỗi khi lưu chi tiết nền mẫu:\n{ex.Message}", "Lỗi",
-            //        MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
         }
        
 

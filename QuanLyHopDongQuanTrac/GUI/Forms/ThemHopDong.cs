@@ -15,19 +15,14 @@ using System.Windows.Forms;
 
 namespace GUI.Forms
 {
-    public partial class ThemNhanVien : Form
+    public partial class ThemHopDong : Form
     {
         public event EventHandler SuccesfullyUpdated;
 
-        public bool isEditMode = false;
-
-        public NhanVien NhanVienHienTai { get; set; }
-
-        public ThemNhanVien()
+        public ThemHopDong()
         {
             InitializeComponent();
         }
-        private DiaChiBLL diaChiService;
 
 
         #region Custom TextBox và Label cho Form Nhân viên
@@ -71,8 +66,7 @@ namespace GUI.Forms
             else if (ctrl is ComboBox cbo)
             {
                 cbo.FlatStyle = FlatStyle.Flat;
-                if (cbo.DropDownStyle != ComboBoxStyle.DropDown)
-                    cbo.DropDownStyle = ComboBoxStyle.DropDown;
+                cbo.DropDownStyle = ComboBoxStyle.DropDownList;
             }
 
             // Căn chỉnh vị trí & kích thước control con trong panel
@@ -173,78 +167,33 @@ namespace GUI.Forms
 
         private void ThemNhanVien_Load(object sender, EventArgs e)
         {
-            var bllPhongBan = new PhongBanBLL();
-            var list = bllPhongBan.layDSPhongBan();
+            var bllKhachHang = new KhachHangBLL();
+            var list = bllKhachHang.layDanhSachKH();
+            cbbKhachHang.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbKhachHang.DisplayMember = "tenDoanhNghiep";
+            cbbKhachHang.ValueMember = "maKH";
 
             if (list != null && list.Count > 0)
             {
-                cbbPhong.DataSource = list;
-                cbbPhong.DisplayMember = "tenPhong";
-                cbbPhong.ValueMember = "maPhong";
-                cbbPhong.SelectedIndex = -1;
+                var data = new List<KhachHang>();
+                data.Add(new KhachHang { maKH = null, tenDoanhNghiep = "— Chọn khách hàng —" });
+                data.AddRange(list);
+
+                cbbKhachHang.DataSource = data;
+                cbbKhachHang.SelectedIndex = 0;
             }
             else
             {
-                MessageBox.Show("Không có phòng ban nào trong DB!");
+                MessageBox.Show("Không có khách hàng nào trong DB!");
             }
-            ApplyRoundedInput(panelHoten, textBoxhoten, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelsdt, textBoxsdt, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelemail, textBoxemail, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelNgaysinh, dateTimengaysinh, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelPhongban, cbbPhong, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelPhongban, cbbPhong, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelSonha, txtDiaChi, 12, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panelTrangthai, cboTrangthai, 12, 2, Color.FromArgb(0, 152, 70));
-            LoadComboBoxTrangThai();
-            BoGocButton(buttonAddnew, 20);
-            BoGocButton(btnCancel, 20);
-            if (isEditMode)
-            {
-                this.Text = "CHỈNH SỬA NHÂN VIÊN";
-                label.Text = "CHỈNH SỬA NHÂN VIÊN";
-                buttonAddnew.Text = "Lưu thay đổi";
-                if (NhanVienHienTai != null)
-                {
-                    // Load dữ liệu vào các control
-                    textBoxhoten.Text = NhanVienHienTai.hoTen;
-                    textBoxemail.Text = NhanVienHienTai.email;
-                    textBoxsdt.Text = NhanVienHienTai.soDienThoai;
-                    txtDiaChi.Text = NhanVienHienTai.diaChi;
-                    dateTimengaysinh.Value = NhanVienHienTai.ngaySinh;
-                    cbbPhong.SelectedValue = NhanVienHienTai.maPhong;
-                    if (NhanVienHienTai.gioiTinh == "0")
-                    {
-                        radioNam.Checked = true;
-                    }
-                    else
-                    {
-                        radioNu.Checked = true;
-                    }
+            //Custom textbox
+            //ApplyRoundedInput(panelKhachHang, cbbKhachHang, 12, 2, Color.FromArgb(0, 152, 70));
+            //ApplyRoundedInput(panelKhachHang, cbbKhachHang, 12, 2, Color.FromArgb(0, 152, 70));
+            InitializeButtonStyles();
 
-                    cboTrangthai.SelectedValue = NhanVienHienTai.trangThai;
-                    checkTruongphong.Checked = NhanVienHienTai.isTruongPhong;
-                }
-            }
 
-            else
-            {
-                this.Text = "THÊM NHÂN VIÊN";
-                buttonAddnew.Text = "Thêm nhân viên ";
-                label.Text = " THÊM NHÂN VIÊN ";
-
-            }
         }
 
-
-        private void LoadComboBoxTrangThai()
-        {
-            NhanVienBLL bll = new NhanVienBLL();
-            var listTrangThai = bll.layDanhSachTrangThai();
-
-            cboTrangthai.DataSource = listTrangThai;
-            cboTrangthai.DisplayMember = "TenTrangThai";
-            cboTrangthai.ValueMember = "MaTrangThai";
-        }
 
         private void panel5_Paint(object sender, PaintEventArgs e)
         {
@@ -288,86 +237,33 @@ namespace GUI.Forms
 
         private void buttonAddnew_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBoxhoten.Text))
-            {
-                MessageBox.Show("Vui lòng nhập họ và tên !", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBoxemail.Focus();
-                return;
-            }
+            //Kiểm tra trường hợp
 
-            if (string.IsNullOrWhiteSpace(textBoxemail.Text))
+            if (cbbKhachHang.SelectedIndex <= 0)
             {
-                MessageBox.Show("Vui lòng nhập email!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBoxemail.Focus();
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(textBoxsdt.Text))
-            {
-                MessageBox.Show("Vui lòng nhập số điện thoại !", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBoxsdt.Focus();
-                return;
-            }
-
-            if (cbbPhong.SelectedIndex < 0)
-            {
-                MessageBox.Show("Vui lòng chọn phòng ban!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbPhong.Focus();
-                return;
-            }
-
-            if (!radioNam.Checked && !radioNu.Checked)
-            {
-                MessageBox.Show("Vui lòng chọn giới tính!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!dateTimengaysinh.Checked)
-            {
-                MessageBox.Show("Vui lòng chọn ngày sinh!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Khách hàng là bắt buộc!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbbKhachHang.Focus();
                 return;
             }
 
 
-
-            NhanVien nv = new NhanVien
+            HopDong hd = new HopDong
             {
-                maPhong = cbbPhong.SelectedValue.ToString(),
-                hoTen = textBoxhoten.Text,
-                ngaySinh = dateTimengaysinh.Value,
-                gioiTinh = radioNam.Checked ? "0" : "1",
-                diaChi = txtDiaChi.Text,
-                soDienThoai = textBoxsdt.Text,
-                email = textBoxemail.Text,
-                trangThai = Convert.ToInt32(cboTrangthai.SelectedValue)
-
+                maKH = cbbKhachHang.SelectedValue.ToString(),
+                ngayKy = dateTimePicker1.Value,
+                ngayKetThucHD = dateTimePicker2.Value
             };
-
-            bool isTruongPhong = checkTruongphong.Checked;
 
             try
             {
-                var bll = new NhanVienBLL();
-                if (isEditMode)
-                {
-                    nv.maNV = NhanVienHienTai.maNV; // Giữ lại mã NV
-                    bll.suaNhanVien(nv, isTruongPhong); // Method này cần có trong NhanVienBLL
-                    MessageBox.Show("Cập nhật thông tin  nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    SuccesfullyUpdated?.Invoke(this, EventArgs.Empty); // chỉ khi thành công
-                    this.DialogResult = DialogResult.OK;
-                    this.Close(); // chỉ khi thành công
-                    return;
-                }
-                else
-                {
-                    bll.themNhanVien(nv, isTruongPhong);
-                    MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
-                }
+                var bll = new HopDongBLL();
+                bll.ThemHopDong(hd);
 
+                MessageBox.Show("Thêm hợp đồng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                SuccesfullyUpdated?.Invoke(this, EventArgs.Empty); // chỉ khi thành công
+                this.DialogResult = DialogResult.OK;
+                this.Close(); // chỉ khi thành công
             }
             catch (SqlException ex)
             {
@@ -384,7 +280,12 @@ namespace GUI.Forms
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+
+            cbbKhachHang.SelectedIndex = 0;
+
+            // Reset DateTimePicker
+            dateTimePicker1.Value = DateTime.Now;
+            dateTimePicker2.Value = DateTime.Now;
 
         }
 

@@ -14,7 +14,6 @@ namespace GUI.Forms
 {
     public partial class DanhSachThongSo : UserControl
     {
-        private BindingList<ThongSo> dsThongso;
         #region Fields
         // Search box styling
         private Color borderColor = Color.Black;
@@ -73,7 +72,7 @@ namespace GUI.Forms
         private void LoadData()
         {
             var bll = new ThongSoBLL();
-            var list = bll.LayDanhSachThongSo();
+            var list = bll.layDanhSachThongSo();
             dsThongSo = new BindingList<ThongSo>(list);
         }
 
@@ -517,7 +516,7 @@ namespace GUI.Forms
                     ThongSoBLL bll = new ThongSoBLL();
                     string ketQua;
 
-                    bool success = bll.XoaThongSoMoiTruong(maTS, out ketQua);
+                    bool success = bll.xoaThongSoMoiTruong(maTS, out ketQua);
 
                     if (success)
                     {
@@ -726,8 +725,13 @@ namespace GUI.Forms
         {
             ThongSoBLL tsBLL = new ThongSoBLL();
             dsThongSo.Clear();
-            foreach (var nv in tsBLL.LayDanhSachThongSo())
+            foreach (var nv in tsBLL.layDanhSachThongSo())
                 dsThongSo.Add(nv);
+        }
+
+        private void panel6_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

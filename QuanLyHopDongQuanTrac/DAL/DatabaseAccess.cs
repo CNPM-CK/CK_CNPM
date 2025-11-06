@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
@@ -19,9 +20,7 @@ namespace DAL
         public static SqlConnection Connect()
         {
             //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-
             string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-
             //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
             SqlConnection conn = new SqlConnection(connectionStr);
@@ -31,7 +30,7 @@ namespace DAL
 
     public class DatabaseAccess
     {
-        public TaiKhoan? KiemTraDangNhap(string username)
+        public TaiKhoan? kiemTraDangNhap(string username)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -58,7 +57,7 @@ namespace DAL
             return null;
         }
 
-        public List<NhanVien> LayDanhSachNhanVien()
+        public List<NhanVien> layDanhSachNhanVien()
         {
             List<NhanVien> dsNhanvien = new List<NhanVien>();
             using (SqlConnection conn = SqlConnectionData.Connect())
@@ -77,12 +76,10 @@ namespace DAL
                             {
                                 var gioiTinhValue = reader["gioiTinh"];
 
-                                // Nếu là bool/bit
                                 if (gioiTinhValue is bool boolValue)
                                 {
                                     gioiTinh = boolValue ? "1" : "0";
                                 }
-                                // Nếu là string
                                 else
                                 {
                                     string strValue = gioiTinhValue.ToString().Trim().ToLower();
@@ -103,7 +100,9 @@ namespace DAL
                                 gioiTinh = gioiTinh,
                                 diaChi = reader["diaChi"].ToString(),
                                 email = reader["email"].ToString(),
-                                soDienThoai = reader["soDienThoai"].ToString()
+                                soDienThoai = reader["soDienThoai"].ToString(),
+                                isTruongPhong = reader["isTruongPhong"] != DBNull.Value && Convert.ToInt32(reader["isTruongPhong"]) == 1,
+                                trangThai = Convert.ToInt32(reader["trangThai"])
                             };
                             dsNhanvien.Add(nv);
                         }
@@ -113,7 +112,65 @@ namespace DAL
             return dsNhanvien;
         }
 
-        public List<KhachHang> LayDanhSachKH()
+        public List<NhanVien> layDanhSachNhanVien_PhanTrang(int pageNumber, int pageSize)
+        {
+            List<NhanVien> dsNhanvien = new List<NhanVien>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = new SqlCommand("LayDanhSachNhanVien_PhanTrang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string gioiTinh = "0";
+                            if (reader["gioiTinh"] != DBNull.Value)
+                            {
+                                var gioiTinhValue = reader["gioiTinh"];
+                                if (gioiTinhValue is bool boolValue)
+                                    gioiTinh = boolValue ? "1" : "0";
+                                else
+                                {
+                                    string strValue = gioiTinhValue.ToString().Trim().ToLower();
+                                    if (strValue == "1" || strValue == "true" || strValue == "nữ" || strValue == "nu")
+                                        gioiTinh = "1";
+                                    else
+                                        gioiTinh = "0";
+                                }
+                            }
+
+                            var nv = new NhanVien
+                            {
+                                maNV = reader["maNV"].ToString(),
+                                maPhong = reader["maPhong"].ToString(),
+                                tenPhong = reader["tenPhong"].ToString(),
+                                hoTen = reader["hoTen"].ToString(),
+                                ngaySinh = Convert.ToDateTime(reader["ngaySinh"]),
+                                gioiTinh = gioiTinh,
+                                diaChi = reader["diaChi"].ToString(),
+                                email = reader["email"].ToString(),
+                                soDienThoai = reader["soDienThoai"].ToString(),
+                                isTruongPhong = reader["isTruongPhong"] != DBNull.Value && Convert.ToInt32(reader["isTruongPhong"]) == 1,
+                                trangThai = Convert.ToInt32(reader["trangThai"])
+                            };
+
+                            dsNhanvien.Add(nv);
+                        }
+                    }
+                }
+            }
+
+            return dsNhanvien;
+        }
+
+        public List<KhachHang> layDanhSachKH()
         {
             List<KhachHang> dsKhachhang = new List<KhachHang>();
             using (SqlConnection conn = SqlConnectionData.Connect())
@@ -134,6 +191,10 @@ namespace DAL
                             kh.diaChi = reader["diaChi"].ToString();
                             kh.nguoiDaiDien = reader["nguoiDaiDien"].ToString();
                             kh.soDienThoaiKH = reader["soDienThoaiKH"].ToString();
+                            kh.emailDoanhNghiep = reader["emailDoanhNghiep"].ToString();
+                            kh.emailNguoiDaiDien = reader["emailNguoiDaiDien"].ToString();
+                            kh.maSoThue = reader["maSoThue"].ToString();
+                            kh.trangThai = Convert.ToInt32(reader["trangThai"]);
                             dsKhachhang.Add(kh);
                         }
                     }
@@ -142,7 +203,45 @@ namespace DAL
             return dsKhachhang;
         }
 
-        public void ThemNhanVien(NhanVien nv, bool isTruongPhong)
+        public List<KhachHang> layDanhSachKH_PhanTrang(int pageNumber, int pageSize)
+        {
+            List<KhachHang> dsKhachhang = new List<KhachHang>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("LayDSKH_PhanTrang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            KhachHang kh = new KhachHang
+                            {
+                                maKH = reader["maKH"].ToString(),
+                                tenDoanhNghiep = reader["tenDoanhNghiep"].ToString(),
+                                kyHieuDN = reader["kyHieuDN"]?.ToString(),
+                                diaChi = reader["diaChi"]?.ToString(),
+                                nguoiDaiDien = reader["nguoiDaiDien"]?.ToString(),
+                                soDienThoaiKH = reader["soDienThoaiKH"]?.ToString(),
+                                maSoThue = reader["maSoThue"]?.ToString(),
+                                emailNguoiDaiDien = reader["emailNguoiDaiDien"]?.ToString(),
+                                emailDoanhNghiep = reader["emailDoanhNghiep"]?.ToString(),
+                                trangThai = Convert.ToInt32(reader["trangThai"])
+                            };
+                            dsKhachhang.Add(kh);
+                        }
+                    }
+                }
+            }
+            return dsKhachhang;
+        }
+
+        public void themNhanVien(NhanVien nv, bool isTruongPhong)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -158,12 +257,13 @@ namespace DAL
                     cmd.Parameters.AddWithValue("@soDienThoai", nv.soDienThoai);
                     cmd.Parameters.AddWithValue("@email", nv.email);
                     cmd.Parameters.AddWithValue("@isTruongPhong", isTruongPhong ? 1 : 0);
+                    cmd.Parameters.AddWithValue("@trangThai", nv.trangThai);
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public void ThemKhachHang(KhachHang kh)
+        public void themKhachHang(KhachHang kh)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -174,16 +274,20 @@ namespace DAL
 
                     cmd.Parameters.AddWithValue("@tenDoanhNghiep", kh.tenDoanhNghiep);
                     cmd.Parameters.AddWithValue("@kyHieuDN", string.IsNullOrEmpty(kh.kyHieuDN) ? (object)DBNull.Value : kh.kyHieuDN);
-                    cmd.Parameters.AddWithValue("@diaChi", kh.diaChi);
-                    cmd.Parameters.AddWithValue("@nguoiDaiDien", kh.nguoiDaiDien);
-                    cmd.Parameters.AddWithValue("@soDienThoaiKH", kh.soDienThoaiKH);
+                    cmd.Parameters.AddWithValue("@diaChi", string.IsNullOrEmpty(kh.diaChi) ? (object)DBNull.Value : kh.diaChi);
+                    cmd.Parameters.AddWithValue("@nguoiDaiDien", string.IsNullOrEmpty(kh.nguoiDaiDien) ? (object)DBNull.Value : kh.nguoiDaiDien);
+                    cmd.Parameters.AddWithValue("@soDienThoaiKH", string.IsNullOrEmpty(kh.soDienThoaiKH) ? (object)DBNull.Value : kh.soDienThoaiKH);
+                    cmd.Parameters.AddWithValue("@maSoThue", string.IsNullOrEmpty(kh.maSoThue) ? (object)DBNull.Value : kh.maSoThue);
+                    cmd.Parameters.AddWithValue("@emailNguoiDaiDien", string.IsNullOrEmpty(kh.emailNguoiDaiDien) ? (object)DBNull.Value : kh.emailNguoiDaiDien);
+                    cmd.Parameters.AddWithValue("@emailDoanhNghiep", string.IsNullOrEmpty(kh.emailDoanhNghiep) ? (object)DBNull.Value : kh.emailDoanhNghiep);
+                    cmd.Parameters.AddWithValue("@trangThai", kh.trangThai > 0 ? kh.trangThai : (object)DBNull.Value);
 
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public void SuaNhanVien(NhanVien nv, bool isTruongPhong)
+        public void suaNhanVien(NhanVien nv, bool isTruongPhong)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -204,7 +308,7 @@ namespace DAL
                     cmd.Parameters.AddWithValue("@soDienThoai", nv.soDienThoai);
                     cmd.Parameters.AddWithValue("@Email", nv.email);
                     cmd.Parameters.AddWithValue("@isTruongPhong", isTruongPhong ? 1 : 0);
-
+                    cmd.Parameters.AddWithValue("@trangThai", nv.trangThai);
                     try
                     {
                         cmd.ExecuteNonQuery();
@@ -217,7 +321,7 @@ namespace DAL
             }
         }
 
-        public void SuaKhachHang(KhachHang kh)
+        public void suaKhachHang(KhachHang kh)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -228,24 +332,27 @@ namespace DAL
 
                     cmd.Parameters.AddWithValue("@maKH", kh.maKH);
                     cmd.Parameters.AddWithValue("@tenDoanhNghiep", kh.tenDoanhNghiep);
-                    cmd.Parameters.AddWithValue("@kyHieuDN", kh.kyHieuDN);
+                    cmd.Parameters.AddWithValue("@kyHieuDN", (object)kh.kyHieuDN ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@diaChi", kh.diaChi);
                     cmd.Parameters.AddWithValue("@nguoiDaiDien", kh.nguoiDaiDien);
                     cmd.Parameters.AddWithValue("@soDienThoaiKH", kh.soDienThoaiKH);
-
+                    cmd.Parameters.AddWithValue("@maSoThue", (object)kh.maSoThue ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@emailNguoiDaiDien", (object)kh.emailNguoiDaiDien ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@emailDoanhNghiep", (object)kh.emailDoanhNghiep ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@trangThai", kh.trangThai);
                     try
                     {
                         cmd.ExecuteNonQuery();
                     }
                     catch (SqlException ex)
                     {
-                        throw new Exception("Lỗi khi sửa khách hàng : " + ex.Message);
+                        throw new Exception("Lỗi khi sửa khách hàng: " + ex.Message, ex);
                     }
                 }
             }
         }
 
-        public void XoaKhachHang(string maKH)
+        public void xoaKhachHang(string maKH)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -267,7 +374,7 @@ namespace DAL
             }
         }
 
-        public void XoaNhanVien(string maNV)
+        public void xoaNhanVien(string maNV)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -289,7 +396,7 @@ namespace DAL
             }
         }
 
-        public List<PhongBan> LayDSPhongBan()
+        public List<PhongBan> layDSPhongBan()
         {
             var list = new List<PhongBan>();
 
@@ -341,7 +448,7 @@ namespace DAL
             return list;
         }
 
-        public PhongBan? LayPhongBanTheoMa(string maPhong)
+        public PhongBan? layPhongBanTheoMa(string maPhong)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -375,7 +482,7 @@ namespace DAL
             return null;
         }
 
-        public string LayPhongBanTheoTaiKhoan(string tenTK)
+        public string layPhongBanTheoTaiKhoan(string tenTK)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -391,7 +498,7 @@ namespace DAL
             }
         }
 
-        public bool ThemThongSoMoiTruong(ThongSo ts)
+        public bool themThongSoMoiTruong(ThongSo ts)
         {
             try
             {
@@ -417,10 +524,9 @@ namespace DAL
             }
         }
 
-        public List<ThongSo> LayDSThongSo()
+        public List<ThongSo> layDSThongSo()
         {
             var list = new List<ThongSo>();
-
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
                 conn.Open();
@@ -448,7 +554,38 @@ namespace DAL
             return list;
         }
 
-        public string ThemNenMau(string tenNenMau, string moTa)
+        public List<HopDong> layDanhSachHD()
+        {
+            var list = new List<HopDong>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("layDanhSachHopDong", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (SqlDataReader r = cmd.ExecuteReader())
+                    {
+                        while (r.Read())
+                        {
+                            list.Add(new HopDong
+                            {
+                                maHD = r["maHD"].ToString(),
+                                maKH = r["maKH"].ToString(),
+                                ngayKy = r.GetDateTime(r.GetOrdinal("ngayKy")),
+                                ngayKetThucHD = r.GetDateTime(r.GetOrdinal("ngayKetThucHD")),
+                                trangThai = r["trangThai"].ToString(),
+                                tanSuatQuanTrac = r["tanSuatQuanTrac"].ToString(),
+                                soHD = r["soHD"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+        public string themNenMau(string tenNenMau, string moTa)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -466,53 +603,7 @@ namespace DAL
             }
         }
 
-        public List<HopDong> LayDanhSachHopDong()
-        {
-            List<HopDong> list = new List<HopDong>();
-
-            try
-            {
-                using (SqlConnection conn = SqlConnectionData.Connect())
-                {
-                    conn.Open();
-                    using (SqlCommand cmd = new SqlCommand("sp_LayDanhSachHopDong", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                HopDong dto = new HopDong
-                                {
-                                    MaHD = reader["maHD"].ToString(),
-                                    MaKH = reader["maKH"].ToString(),
-                                    TenDoanhNghiep = reader["tenDoanhNghiep"].ToString(),
-                                    NguoiDaiDien = reader["nguoiDaiDien"].ToString(),
-                                    NgayKy = Convert.ToDateTime(reader["ngayKy"]),
-                                    NgayDuKien = Convert.ToDateTime(reader["ngayDuKien"]),
-                                    TrangThai = Convert.ToBoolean(reader["trangThai"]),
-                                    DisplayText = reader["displayText"].ToString()
-                                };
-
-                                list.Add(dto);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw new Exception("Lỗi khi lấy danh sách hợp đồng: " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi: " + ex.Message);
-            }
-            return list;
-        }
-
-        public List<ThongSo> GetDanhSachThongSo()
+        public List<ThongSo> layDanhSachThongSo()
         {
             List<ThongSo> list = new List<ThongSo>();
 
@@ -543,7 +634,7 @@ namespace DAL
             return list;
         }
 
-        public List<NenMau> GetDanhSachNenMau()
+        public List<NenMau> layDanhSachNenMau()
         {
             List<NenMau> list = new List<NenMau>();
 
@@ -571,7 +662,7 @@ namespace DAL
             return list;
         }
 
-        public void XoaNenMau(string maNen)
+        public void xoaNenMau(string maNen)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -593,7 +684,7 @@ namespace DAL
             }
         }
 
-        public bool SuaNenMau(string maNen, string moTa)
+        public bool suaNenMau(string maNen, string moTa)
         {
             try
             {
@@ -619,7 +710,7 @@ namespace DAL
             }
         }
 
-        public string TaoDotQuanTracDraft()
+        public string taoDotQuanTracNhap()
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -642,7 +733,7 @@ namespace DAL
             }
         }
 
-        public List<DTO_DotQuanTrac> LayDanhSachQuanTrac()
+        public List<DTO_DotQuanTrac> layDanhSachQuanTrac()
         {
             List<DTO_DotQuanTrac> dsDQT = new List<DTO_DotQuanTrac>();
             using (SqlConnection conn = SqlConnectionData.Connect())
@@ -675,7 +766,7 @@ namespace DAL
             return dsDQT;
         }
 
-        public DTO_DotNen ThemNenMauVaoDot(string maDot, string maNen)
+        public DTO_DotNen themNenMauVaoDot(string maDot, string maNen)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -715,7 +806,7 @@ namespace DAL
             }
         }
 
-        public DataTable LayDanhSachTrangThai()
+        public DataTable layDanhSachTrangThai()
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -730,7 +821,7 @@ namespace DAL
             }
         }
 
-        public bool LuuChiTietNenMau(string maDN, string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSachThongSo)
+        public bool luuChiTietNenMau(string maDN, string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSachThongSo)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -739,14 +830,12 @@ namespace DAL
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    // Parameters
                     cmd.Parameters.AddWithValue("@maDN", maDN);
                     cmd.Parameters.AddWithValue("@tenViTri", tenViTri);
                     cmd.Parameters.AddWithValue("@toaDo", string.IsNullOrWhiteSpace(toaDo) ? (object)DBNull.Value : toaDo);
                     cmd.Parameters.AddWithValue("@ghiChu", string.IsNullOrWhiteSpace(ghiChu) ? (object)DBNull.Value : ghiChu);
 
-                    // Chuyển danh sách thông số thành JSON
-                    string jsonThongSo = ConvertToJsonArray(danhSachThongSo);
+                    string jsonThongSo = chuyendoiJsonquaArray(danhSachThongSo);
                     cmd.Parameters.AddWithValue("@danhSachThongSo", jsonThongSo);
 
                     try
@@ -762,7 +851,7 @@ namespace DAL
             }
         }
 
-        public bool SuaChiTietNenMau(string maDN, string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSachThongSo)
+        public bool suaChiTietNenMau(string maDN, string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSachThongSo)
         {
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
@@ -771,14 +860,12 @@ namespace DAL
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    // Parameters
                     cmd.Parameters.AddWithValue("@maDN", maDN);
                     cmd.Parameters.AddWithValue("@tenViTri", tenViTri);
                     cmd.Parameters.AddWithValue("@toaDo", string.IsNullOrWhiteSpace(toaDo) ? (object)DBNull.Value : toaDo);
                     cmd.Parameters.AddWithValue("@ghiChu", string.IsNullOrWhiteSpace(ghiChu) ? (object)DBNull.Value : ghiChu);
 
-                    // Chuyển danh sách thông số thành JSON
-                    string jsonThongSo = ConvertToJsonArray(danhSachThongSo);
+                    string jsonThongSo = chuyendoiJsonquaArray(danhSachThongSo);
                     cmd.Parameters.AddWithValue("@danhSachThongSo", jsonThongSo);
 
                     try
@@ -794,7 +881,7 @@ namespace DAL
             }
         }
 
-        private string ConvertToJsonArray(List<ChiTietQuanTracView> danhSach)
+        private string chuyendoiJsonquaArray(List<ChiTietQuanTracView> danhSach)
         {
             if (danhSach == null || danhSach.Count == 0)
                 return "[]";
@@ -805,37 +892,29 @@ namespace DAL
             {
                 var properties = new List<string>();
 
-                // maDNTS - Thêm nếu CÓ (Proc sẽ tự xử lý)
                 if (!string.IsNullOrWhiteSpace(item.MaDNTS))
-                    properties.Add($"\"maDNTS\":\"{EscapeJson(item.MaDNTS)}\"");
+                    properties.Add($"\"maDNTS\":\"{escapeJson(item.MaDNTS)}\"");
 
-                // maTS - BẮT BUỘC
                 if (!string.IsNullOrWhiteSpace(item.MaTS))
-                    properties.Add($"\"maTS\":\"{EscapeJson(item.MaTS)}\"");
+                    properties.Add($"\"maTS\":\"{escapeJson(item.MaTS)}\"");
 
-                // tenTS - TÙY CHỌN
                 if (!string.IsNullOrWhiteSpace(item.TenTS))
-                    properties.Add($"\"tenTS\":\"{EscapeJson(item.TenTS)}\"");
+                    properties.Add($"\"tenTS\":\"{escapeJson(item.TenTS)}\"");
 
-                // donVi - TÙY CHỌN
                 if (!string.IsNullOrWhiteSpace(item.DonVi))
-                    properties.Add($"\"donVi\":\"{EscapeJson(item.DonVi)}\"");
+                    properties.Add($"\"donVi\":\"{escapeJson(item.DonVi)}\"");
 
-                // giaTriToiThieu - TÙY CHỌN
                 if (item.GiaTriToiThieu.HasValue)
                     properties.Add($"\"giaTriToiThieu\":{item.GiaTriToiThieu.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
 
-                // giaTriToiDa - TÙY CHỌN
                 if (item.GiaTriToiDa.HasValue)
                     properties.Add($"\"giaTriToiDa\":{item.GiaTriToiDa.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
 
-                // phuongPhap - TÙY CHỌN
                 if (!string.IsNullOrWhiteSpace(item.PhuongPhap))
-                    properties.Add($"\"phuongPhap\":\"{EscapeJson(item.PhuongPhap)}\"");
+                    properties.Add($"\"phuongPhap\":\"{escapeJson(item.PhuongPhap)}\"");
 
-                // maPhong - TÙY CHỌN
                 if (!string.IsNullOrWhiteSpace(item.MaPhong))
-                    properties.Add($"\"maPhong\":\"{EscapeJson(item.MaPhong)}\"");
+                    properties.Add($"\"maPhong\":\"{escapeJson(item.MaPhong)}\"");
 
                 jsonItems.Add("{" + string.Join(",", properties) + "}");
             }
@@ -843,20 +922,20 @@ namespace DAL
             return "[" + string.Join(",", jsonItems) + "]";
         }
 
-        private string EscapeJson(string input)
+        private string escapeJson(string input)
         {
             if (string.IsNullOrEmpty(input))
                 return "";
 
             return input
-                .Replace("\\", "\\\\")  // Backslash
-                .Replace("\"", "\\\"")  // Double quote
-                .Replace("\n", "\\n")   // Newline
-                .Replace("\r", "\\r")   // Carriage return
-                .Replace("\t", "\\t");  // Tab
+                .Replace("\\", "\\\\")
+                .Replace("\"", "\\\"")
+                .Replace("\n", "\\n")
+                .Replace("\r", "\\r")
+                .Replace("\t", "\\t");
         }
 
-        public (bool Success, string Message) XoaDotQuanTrac(string maDot)
+        public (bool Success, string Message) xoaDotQuanTrac(string maDot)
         {
             try
             {
@@ -887,12 +966,20 @@ namespace DAL
             }
         }
 
-        public bool HoanTatKeHoachQuanTrac(DTO_DotQuanTrac dto)
+        public bool hoanTatKeHoachQuanTrac(DTO_DotQuanTrac dto)
         {
             try
             {
                 using (SqlConnection conn = SqlConnectionData.Connect())
                 {
+                    Debug.WriteLine(dto.TrangThai);
+                    Debug.WriteLine(dto.MaDot);
+                    Debug.WriteLine(dto.MaHD);
+                    Debug.WriteLine(dto.NoiDung);
+                    Debug.WriteLine(dto.DotQuanTrac);
+                    Debug.WriteLine(dto.NgayBatDau);
+                    Debug.WriteLine(dto.NgayDuKien);
+                    Debug.WriteLine(dto.NgayTraKQ);
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand("sp_HoanTatKeHoachQuanTrac", conn))
                     {
@@ -906,7 +993,6 @@ namespace DAL
                         cmd.Parameters.AddWithValue("@ngayDuKien", dto.NgayDuKien);
                         cmd.Parameters.AddWithValue("@ngayTraKQ", dto.NgayTraKQ.HasValue ? (object)dto.NgayTraKQ.Value : DBNull.Value);
                         cmd.Parameters.AddWithValue("@trangThai", dto.TrangThai);
-
                         cmd.ExecuteNonQuery();
                         return true;
                     }
@@ -918,7 +1004,7 @@ namespace DAL
             }
         }
 
-        public bool SuaThongSoMoiTruong(ThongSo ts)
+        public bool suaThongSoMoiTruong(ThongSo ts)
         {
             try
             {
@@ -947,7 +1033,7 @@ namespace DAL
             }
         }
 
-        public bool XoaThongSoMoiTruong(string maTS, out string ketQua)
+        public bool xoaThongSoMoiTruong(string maTS, out string ketQua)
         {
             ketQua = "";
 
@@ -983,8 +1069,174 @@ namespace DAL
             }
         }
 
+        public List<HopDongVaTenDN> layDanhSachHopDong()
+        {
+            var list = new List<HopDongVaTenDN>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("layDanhSachHopDongVaTenDN", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (SqlDataReader r = cmd.ExecuteReader())
+                    {
+                        while (r.Read())
+                        {
+                            list.Add(new HopDongVaTenDN
+                            {
+                                maHD = r["maHD"].ToString(),
+                                maHDVaKH = r["maHDVaKH"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+        public void ThemHopDong(HopDong hd)
+        {
+            // Method implementation commented out in original
+        }
+
+        public List<TrangThaiKhachHang> layTrangThaiKhachHang()
+        {
+            List<TrangThaiKhachHang> list = new List<TrangThaiKhachHang>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("dbo.sp_LayTrangThaiKhachHang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new TrangThaiKhachHang
+                            {
+                                maTrangThai = reader.GetInt32(0),
+                                tenTrangThai = reader.GetString(1)
+                            });
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        public int demTongSoKhachHang()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("DemTongKhachHang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    return (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        public List<DTO_DotQuanTrac> layDanhSachDotQuanTrac_PhanTrang(int pageNumber, int pageSize)
+        {
+            List<DTO_DotQuanTrac> list = new List<DTO_DotQuanTrac>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("dbo.LayDotQuanTrac_PhanTrang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            DTO_DotQuanTrac dqt = new DTO_DotQuanTrac
+                            {
+                                MaDot = reader["MaDot"].ToString(),
+                                MaHD = reader["MaHD"].ToString(),
+                                NoiDung = reader["NoiDung"]?.ToString(),
+                                DotQuanTrac = reader["DotQuanTrac"]?.ToString(),
+                                NgayBatDau = reader["NgayBatDau"] != DBNull.Value ? Convert.ToDateTime(reader["NgayBatDau"]) : DateTime.MinValue,
+                                NgayDuKien = reader["NgayDuKien"] != DBNull.Value ? Convert.ToDateTime(reader["NgayDuKien"]) : DateTime.MinValue,
+                                NgayTraKQ = reader["NgayTraKQ"] != DBNull.Value ? Convert.ToDateTime(reader["NgayTraKQ"]) : (DateTime?)null,
+                                TrangThai = reader["TrangThai"]?.ToString()
+                            };
+                            list.Add(dqt);
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        public int demTongKHQT()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("DemTongKHQT", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    return (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        public int demTongDSNV()
+        {
+            int count = 0;
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("DemTongNhanVien", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    count = (int)cmd.ExecuteScalar();
+                }
+            }
+
+            return count;
+        }
+
+        public List<TrangThaiNhanVien> layTrangThaiNhanVien()
+        {
+            List<TrangThaiNhanVien> list = new List<TrangThaiNhanVien>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_LayTrangThaiNhanVien", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            TrangThaiNhanVien tt = new TrangThaiNhanVien
+                            {
+                                MaTrangThai = Convert.ToInt32(reader["maTrangThai"]),
+                                TenTrangThai = reader["tenTrangThai"].ToString()
+                            };
+                            list.Add(tt);
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
         // =============================================
-        // PHẦN QUẢN LÝ KẾT QUẢ
+        // PHẦN QUẢN LÝ KẾT QUẢ (HỆ THỐNG CŨ)
         // =============================================
 
         public List<DTO_KetQua> LayDanhSachKetQua()
@@ -1214,59 +1466,41 @@ namespace DAL
         {
             List<DTO_KetQuaHeader> list = new List<DTO_KetQuaHeader>();
 
-            //using (SqlConnection conn = SqlConnectionData.Connect())
-            //{
-            //    conn.Open();
-            //    using (SqlCommand cmd = new SqlCommand("sp_LayDanhSachKetQua", conn))
-            //    {
-            //        cmd.CommandType = CommandType.StoredProcedure;
-
-            //        using (SqlDataReader reader = cmd.ExecuteReader())
-            //        {
-            //            while (reader.Read())
-            //            {
-            //                list.Add(new DTO_KetQuaHeader
-            //                {
-            //                    MaKQ = reader["maKQ"].ToString(),
-            //                    NgayTao = Convert.ToDateTime(reader["ngayTao"]),
-            //                    SoNenMau = Convert.ToInt32(reader["SoNenMau"]),
-            //                    NgayTraKQ = reader["ngayTraKQ"] == DBNull.Value ? null : Convert.ToDateTime(reader["ngayTraKQ"]),
-            //                    TenNhanVien = reader["NguoiNhap"].ToString(),
-            //                    TrangThai = reader["TrangThai"].ToString(),
-            //                    GhiChu = reader["ghiChu"] == DBNull.Value ? "" : reader["ghiChu"].ToString(),
-            //                    DotQuanTrac = reader["dotQuanTrac"] == DBNull.Value ? "" : reader["dotQuanTrac"].ToString(),
-            //                    MaDot = reader["maDot"] == DBNull.Value ? "" : reader["maDot"].ToString()
-            //                });
-            //            }
-            //        }
-            //    }
-            ////}
-            //return list;
             try
             {
-                var result = ExecuteStoredProcedure("sp_LayDanhSachKetQua", null);
-
-                if (result != null && result.Rows.Count > 0)
+                using (SqlConnection conn = SqlConnectionData.Connect())
                 {
-                    foreach (DataRow row in result.Rows)
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_LayDanhSachKetQua", conn))
                     {
-                        DTO_KetQuaHeader header = new DTO_KetQuaHeader
-                        {
-                            MaKQ = row["maKQ"].ToString(),
-                            NgayTao = Convert.ToDateTime(row["ngayTao"]),
-                            NgayTraKQ = row["ngayTraKQ"] != DBNull.Value
-                                ? Convert.ToDateTime(row["ngayTraKQ"])
-                                : (DateTime?)null,
-                            TenNhanVien = row["NguoiNhap"].ToString(),
-                            // ✅ FIX: ĐỌC ĐÚNG CỘT trangThaiXacNhan (BIT)
-                            TrangThaiXacNhan = Convert.ToBoolean(row["trangThaiXacNhan"]),
-                            GhiChu = row["ghiChu"] != DBNull.Value ? row["ghiChu"].ToString() : "",
-                            DotQuanTrac = row["dotQuanTrac"] != DBNull.Value ? row["dotQuanTrac"].ToString() : "",
-                            MaDot = row["maDot"] != DBNull.Value ? row["maDot"].ToString() : "",
-                            SoNenMau = Convert.ToInt32(row["SoNenMau"])
-                        };
+                        cmd.CommandType = CommandType.StoredProcedure;
 
-                        list.Add(header);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                DTO_KetQuaHeader header = new DTO_KetQuaHeader
+                                {
+                                    MaKQ = reader["maKQ"].ToString(),
+                                    NgayTao = Convert.ToDateTime(reader["ngayTao"]),
+                                    NgayTraKQ = reader["ngayTraKQ"] != DBNull.Value
+                                        ? Convert.ToDateTime(reader["ngayTraKQ"])
+                                        : (DateTime?)null,
+                                    TenNhanVien = reader["NguoiNhap"].ToString(),
+
+                                    // ✅ FIX: Đọc từ cột TrangThai (TEXT) và chuyển sang bool
+                                    TrangThaiXacNhan = reader["TrangThai"].ToString().Trim()
+                                        .Equals("Đã xác nhận", StringComparison.OrdinalIgnoreCase),
+
+                                    GhiChu = reader["ghiChu"] != DBNull.Value ? reader["ghiChu"].ToString() : "",
+                                    DotQuanTrac = reader["dotQuanTrac"] != DBNull.Value ? reader["dotQuanTrac"].ToString() : "",
+                                    MaDot = reader["maDot"] != DBNull.Value ? reader["maDot"].ToString() : "",
+                                    SoNenMau = Convert.ToInt32(reader["SoNenMau"])
+                                };
+
+                                list.Add(header);
+                            }
+                        }
                     }
                 }
 
@@ -1276,7 +1510,6 @@ namespace DAL
             {
                 throw new Exception("Lỗi khi lấy danh sách kết quả: " + ex.Message);
             }
-
         }
 
         /// <summary>
@@ -1616,6 +1849,5 @@ namespace DAL
                 }
             }
         }
-
     }
 }

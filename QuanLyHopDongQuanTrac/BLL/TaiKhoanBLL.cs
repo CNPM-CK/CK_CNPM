@@ -17,7 +17,7 @@ namespace BLL
         private readonly DatabaseAccess dal = new DatabaseAccess();
 
 
-        public (bool success, string message, TaiKhoan?account) DangNhap(string tenTK, string matKhau) {
+        public (bool success, string message, TaiKhoan?account) dangNhap(string tenTK, string matKhau) {
 
             //Trường hợp hai trường đều rỗng :
             if (string.IsNullOrWhiteSpace(tenTK) && string.IsNullOrWhiteSpace(matKhau))
@@ -32,7 +32,7 @@ namespace BLL
                 return (false, "Thông tin đăng nhập chứa kí tự không hợp lệ ",null);
 
             //Kiểm tra tính tồn tại của tài khoản 
-            var account = dal.KiemTraDangNhap(tenTK);
+            var account = dal.kiemTraDangNhap(tenTK);
             if (account == null)
                 return (false, "Tài khoản không tồn tại trong hệ thống ",null);
 

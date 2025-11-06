@@ -19,11 +19,11 @@ namespace BLL
         }
 
 
-        public List<HopDong> LayDanhSachHopDong()
+        public List<HopDongVaTenDN> layDanhSachHopDong()
         {
             try
             {
-                return dal.LayDanhSachHopDong();
+                return dal.layDanhSachHopDong();
             }
             catch (Exception ex)
             {
@@ -32,18 +32,18 @@ namespace BLL
         }
 
 
-        public List<DTO_DotQuanTrac> LayDanhSachDotQuanTrac()
+        public List<DTO_DotQuanTrac> layDanhSachDotQuanTrac()
         {
-            return dal.LayDanhSachQuanTrac();
+            return dal.layDanhSachQuanTrac();
         }
 
 
-        public bool KiemTraHopDongTonTai(string maHD)
+        public bool kiemTraHopDongTonTai(string maHD)
         {
             try
             {
-                var dsHopDong = dal.LayDanhSachHopDong();
-                return dsHopDong.Exists(hd => hd.MaHD == maHD);
+                var dsHopDong = dal.layDanhSachHD();
+                return dsHopDong.Exists(hd => hd.maHD == maHD);
             }
             catch
             {
@@ -52,13 +52,13 @@ namespace BLL
         }
 
 
-        public string TaoKeHoachNhap()
+        public string taoKeHoachNhap()
         {
-            return dal.TaoDotQuanTracDraft();
+            return dal.taoDotQuanTracNhap();
         }
 
 
-        public DTO_DotNen ThemNenMauVaoDot(string maDot, string maNen)
+        public DTO_DotNen themNenMauVaoDot(string maDot, string maNen)
         {
             if (string.IsNullOrWhiteSpace(maDot))
                 throw new ArgumentException("Mã đợt không hợp lệ!");
@@ -66,17 +66,17 @@ namespace BLL
             if (string.IsNullOrWhiteSpace(maNen))
                 throw new ArgumentException("Mã nền mẫu không hợp lệ!");
 
-            return dal.ThemNenMauVaoDot(maDot, maNen);
+            return dal.themNenMauVaoDot(maDot, maNen);
         }
 
 
         public DataTable LayDanhSachTrangThai()
         {
-            return dal.LayDanhSachTrangThai();
+            return dal.layDanhSachTrangThai();
         }
 
 
-        public bool LuuChiTietNenMau(
+        public bool luuChiTietNenMau(
             string maDN,
             string tenViTri,
             string toaDo,
@@ -107,10 +107,10 @@ namespace BLL
                 }
             }
 
-            return dal.LuuChiTietNenMau(maDN, tenViTri, toaDo, ghiChu, danhSachThongSo);
+            return dal.luuChiTietNenMau(maDN, tenViTri, toaDo, ghiChu, danhSachThongSo);
         }
 
-        public bool SuaChiTietNenMau(string maDN, string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSachThongSo)
+        public bool suaChiTietNenMau(string maDN, string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSachThongSo)
         {
             // VALIDATION
             if (string.IsNullOrWhiteSpace(maDN))
@@ -147,25 +147,20 @@ namespace BLL
             if (!string.IsNullOrEmpty(duplicateTS))
                 throw new ArgumentException($"Thông số '{duplicateTS}' bị trùng lặp trong danh sách!");
 
-            return dal.SuaChiTietNenMau(maDN, tenViTri, toaDo, ghiChu, danhSachThongSo);
+            return dal.suaChiTietNenMau(maDN, tenViTri, toaDo, ghiChu, danhSachThongSo);
         }
 
 
-        //public DTO_DotNen LayThongTinDotNen(string maDN)
-        //{
-        //    return dal.LayThongTinDotNen(maDN);
-        //}
-
-        public (bool Success, string Message) XoaDotQuanTrac(string maDot)
+        public (bool Success, string Message) xoaDotQuanTrac(string maDot)
         {
             if (string.IsNullOrWhiteSpace(maDot))
                 return (false, "Mã đợt quan trắc không hợp lệ!");
 
-            return dal.XoaDotQuanTrac(maDot);
+            return dal.xoaDotQuanTrac(maDot);
         }
 
 
-        public bool HoanTatKeHoachQuanTrac(DTO_DotQuanTrac dto)
+        public bool hoanTatKeHoachQuanTrac(DTO_DotQuanTrac dto)
         {
             if (string.IsNullOrWhiteSpace(dto.MaDot))
                 throw new ArgumentException("Mã đợt không được để trống!");
@@ -182,7 +177,18 @@ namespace BLL
             if (dto.NgayTraKQ.HasValue && dto.NgayTraKQ.Value < dto.NgayBatDau)
                 throw new ArgumentException("Ngày trả kết quả phải >= ngày bắt đầu!");
 
-            return dal.HoanTatKeHoachQuanTrac(dto);
+            return dal.hoanTatKeHoachQuanTrac(dto);
+        }
+
+
+        public List<DTO_DotQuanTrac> layDanhSachDotQuanTrac_PhanTrang(int pageNumber, int pageSize)
+        {
+            return dal.layDanhSachDotQuanTrac_PhanTrang(pageNumber, pageSize);
+        }
+
+        public int demTongKHQT()
+        {
+            return dal.demTongKHQT();
         }
     }
 }

@@ -54,7 +54,7 @@ namespace GUI.Forms
         {
             try
             {
-                LoadData();
+                //LoadData();
                 InitializeDataGridView();
                 InitializeCustomSearchBox();
                 InitializeContextMenu();
@@ -72,9 +72,8 @@ namespace GUI.Forms
 
         private void LoadData()
         {
-            var bll = new BLL_DotQuanTrac();
-            var list = bll.LayDanhSachDotQuanTrac();
-            dsDotQuanTrac = new BindingList<DTO_DotQuanTrac>(list);
+            totalRecords = 0;
+            LoadKeHoachPage();
         }
 
         private void InitializeDataGridView()
@@ -178,6 +177,7 @@ namespace GUI.Forms
             // Register events - QUAN TRỌNG
             dgvDsdotquantrac.CellPainting += DgvDsdotquantrac_CellPainting;
             dgvDsdotquantrac.CellClick += DgvDsdotquantrac_CellClick;
+            LoadKeHoachPage();
         }
 
         private void InitializeCustomSearchBox()
@@ -254,6 +254,8 @@ namespace GUI.Forms
                 btnXuatfile.Size = new Size(66, 40);
                 BoGocButton(btnXuatfile, 20);
             }
+            BoGocButton(btnTruoc, 20);
+            BoGocButton(btnSau, 20);
         }
 
         private void InitializeWatermark()
@@ -497,12 +499,13 @@ namespace GUI.Forms
                 try
                 {
                     BLL_DotQuanTrac bll = new BLL_DotQuanTrac();
-                    bll.XoaDotQuanTrac(maDot);
+                    bll.xoaDotQuanTrac(maDot);
 
                     MessageBox.Show("Đã xóa đợt quan trắc thành công!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    RefreshData();
+                    //RefreshData();
+                    LoadData();
                 }
                 catch (Exception ex)
                 {
@@ -512,20 +515,6 @@ namespace GUI.Forms
             }
         }
 
-        private void RefreshData()
-        {
-            try
-            {
-                LoadData();
-                dgvDsdotquantrac.DataSource = dsDotQuanTrac;
-                dgvDsdotquantrac.Refresh();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi làm mới dữ liệu: {ex.Message}", "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
         #endregion
 
         #region Search Functionality
@@ -655,7 +644,7 @@ namespace GUI.Forms
         private void btnThemuser_Click_1(object sender, EventArgs e)
         {
             var bll = new BLL_DotQuanTrac();
-            maDotHienTai = bll.TaoKeHoachNhap();
+            maDotHienTai = bll.taoKeHoachNhap();
 
             if (string.IsNullOrEmpty(maDotHienTai))
             {
@@ -671,17 +660,9 @@ namespace GUI.Forms
 
                 if (kh.ShowDialog(this) == DialogResult.OK)
                 {
-                    RefreshList();
+                    LoadData();
                 }
             }
-        }
-
-        private void RefreshList()
-        {
-            BLL_DotQuanTrac ds = new BLL_DotQuanTrac();
-            dsDotQuanTrac.Clear();
-            foreach (var nv in ds.LayDanhSachDotQuanTrac())
-                dsDotQuanTrac.Add(nv);
         }
 
         private void ExportToPDF()
@@ -715,5 +696,43 @@ namespace GUI.Forms
         {
         }
         #endregion
+        int currentPage = 1;
+        int pageSize = 15;
+        int totalRecords = 0;
+        int totalPages = 0;
+        private void LoadKeHoachPage()
+        {
+            var bll = new BLL_DotQuanTrac();
+
+            // 🔹 Tính tổng số trang (chỉ cần 1 lần khi load form)
+            if (totalRecords == 0)
+            {
+                totalRecords = bll.demTongKHQT();
+                totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+            }
+
+            var data = bll.layDanhSachDotQuanTrac_PhanTrang(currentPage, pageSize);
+            dgvDsdotquantrac.DataSource = data;
+
+            soTrang.Text = $"Trang {currentPage}/{totalPages}";
+
+            btnTruoc.Enabled = currentPage > 1;
+            btnSau.Enabled = currentPage < totalPages;
+        }
+
+        private void btnTruoc_Click(object sender, EventArgs e)
+        {
+            if (currentPage > 1)
+            {
+                currentPage--;
+                LoadKeHoachPage();
+            }
+        }
+
+        private void btnSau_Click(object sender, EventArgs e)
+        {
+            currentPage++;
+            LoadKeHoachPage();
+        }
     }
 }

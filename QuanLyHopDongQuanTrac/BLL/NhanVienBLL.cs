@@ -12,28 +12,28 @@ namespace BLL
     {
         private readonly DatabaseAccess dal = new DatabaseAccess();
 
-        public List<NhanVien> LayDanhSachNhanVien()
+        public List<NhanVien> layDanhSachNhanVien()
         {
-            return dal.LayDanhSachNhanVien();
+            return dal.layDanhSachNhanVien();
         }
 
-        public void ThemNhanVien(NhanVien nv,bool truongPhong)
+        public void themNhanVien(NhanVien nv,bool truongPhong)
         {
-            dal.ThemNhanVien(nv, truongPhong);
-        }
-
-
-        public void SuaNhanVien(NhanVien nv, bool truongPhong)
-        {
-            dal.SuaNhanVien(nv, truongPhong);
+            dal.themNhanVien(nv, truongPhong);
         }
 
 
-        public void XoaNhanVien(string maNV)
+        public void suaNhanVien(NhanVien nv, bool truongPhong)
+        {
+            dal.suaNhanVien(nv, truongPhong);
+        }
+
+
+        public void xoaNhanVien(string maNV)
         {
             try
             {
-                dal.XoaNhanVien(maNV);
+                dal.xoaNhanVien(maNV);
             }
             catch (Exception ex)
             {
@@ -42,7 +42,7 @@ namespace BLL
         }
 
 
-        public (bool daThayDoi, string logThayDoi) KiemTraThayDoi(NhanVien nvMoi, NhanVien nvCu, bool isTruongPhongMoi)
+        public (bool daThayDoi, string logThayDoi) kiemTraThayDoi(NhanVien nvMoi, NhanVien nvCu, bool isTruongPhongMoi)
         {
             StringBuilder log = new StringBuilder();
 
@@ -78,7 +78,7 @@ namespace BLL
             if (dcMoi != dcCu)
                 log.AppendLine($"Địa chỉ khác: '{dcCu}' → '{dcMoi}'");
 
-            bool laTruongPhongCu = KiemTraTruongPhong(nvCu.maNV, nvCu.maPhong);
+            bool laTruongPhongCu = kiemTraTruongPhong(nvCu.maNV, nvCu.maPhong);
             if (isTruongPhongMoi != laTruongPhongCu)
                 log.AppendLine($"Trạng thái trưởng phòng khác: '{laTruongPhongCu}' → '{isTruongPhongMoi}'");
 
@@ -86,20 +86,35 @@ namespace BLL
             return (daThayDoi, log.ToString());
         }
 
-        private bool KiemTraTruongPhong(string maNV, string maPhong)
+        private bool kiemTraTruongPhong(string maNV, string maPhong)
         {
             if (string.IsNullOrEmpty(maPhong)) return false;
 
             var phongBanBLL = new PhongBanBLL();
-            var phongBan = phongBanBLL.LayPhongBanTheoMa(maPhong);
+            var phongBan = phongBanBLL.layPhongBanTheoMa(maPhong);
 
             return phongBan != null && phongBan.truongPhong == maNV;
         }
 
 
-        public string LayPhongBanTheoTaiKhoan(string tenTK)
+        public string layPhongBanTheoTaiKhoan(string tenTK)
         {
-            return dal.LayPhongBanTheoTaiKhoan(tenTK);
+            return dal.layPhongBanTheoTaiKhoan(tenTK);
+        }
+
+        public List<TrangThaiNhanVien> layDanhSachTrangThai()
+        {
+            return dal.layTrangThaiNhanVien();
+        }
+
+        public List<NhanVien> layDanhSachNhanVien_PhanTrang(int pageNumber, int pageSize)
+        {
+            return dal.layDanhSachNhanVien_PhanTrang(pageNumber, pageSize);
+        }
+
+        public int demSoLuongNhanVien()
+        {
+            return dal.demTongDSNV();
         }
     }
 }

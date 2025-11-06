@@ -1,10 +1,11 @@
-﻿using System;
+﻿using BLL;
+using DTO;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
-using BLL;
-using DTO;
 
 namespace GUI.Forms
 {
@@ -411,5 +412,28 @@ namespace GUI.Forms
         }
 
         private void dgvDanhsachketqua_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
+
+        private void dgvDanhsachketqua_Paint(object sender, PaintEventArgs e)
+        {
+            if (Properties.Resources.greenlogo == null) return;
+
+            int dgvWidth = dgvDanhsachketqua.Width;
+            int dgvHeight = dgvDanhsachketqua.Height;
+            Image watermark = Properties.Resources.greenlogo;
+
+            int x = (dgvWidth - watermark.Width) / 2;
+            int y = (dgvHeight - watermark.Height) / 2;
+
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.Matrix33 = 0.3f;
+            ImageAttributes attributes = new ImageAttributes();
+            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+            e.Graphics.DrawImage(watermark,
+                new Rectangle(x, y, watermark.Width, watermark.Height),
+                0, 0, watermark.Width, watermark.Height,
+                GraphicsUnit.Pixel,
+                attributes);
+        }
     }
 }

@@ -222,6 +222,7 @@
             btnXuatFile.TabIndex = 3;
             btnXuatFile.Text = "Xuất file";
             btnXuatFile.UseVisualStyleBackColor = true;
+            btnXuatFile.Click += btnXuatFile_Click_1;
             // 
             // btnXacNhan
             // 

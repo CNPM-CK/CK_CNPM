@@ -69,7 +69,7 @@ namespace GUI.Forms
         private void LoadData()
         {
             var bll = new NenMauBLL();
-            var list = bll.LayDSNenMau();
+            var list = bll.layDSNenMau();
             dsNenmau = new BindingList<NenMau>(list);
         }
 
@@ -515,7 +515,7 @@ namespace GUI.Forms
                 try
                 {
                     NenMauBLL nvBLL = new NenMauBLL();
-                    nvBLL.XoaNenMau(maNen);
+                    nvBLL.xoaNenMau(maNen);
 
                     MessageBox.Show("Xóa nền mẫu thành công !", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -702,7 +702,7 @@ namespace GUI.Forms
         {
             NenMauBLL tsBLL = new NenMauBLL();
             dsNenmau.Clear();
-            foreach (var nm in tsBLL.LayDSNenMau())
+            foreach (var nm in tsBLL.layDSNenMau())
                 dsNenmau.Add(nm);
         }
     }

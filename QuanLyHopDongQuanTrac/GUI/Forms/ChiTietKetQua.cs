@@ -3,56 +3,52 @@ using DTO;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Text;
+using System.IO;
 using System.Windows.Forms;
+using Microsoft.Reporting.NETCore;
 
 namespace GUI.Forms
 {
     public partial class ChiTietKetQua : Form
     {
-        private string maKQ;
-        private KetQuaBLL ketQuaBLL = new KetQuaBLL();
+        private readonly string maKQ;
+        private readonly KetQuaBLL ketQuaBLL = new KetQuaBLL();
         private DTO_KetQuaFull ketQuaFull;
         private Panel panelNenMau;
-
-        // ✅ THÊM FLAG ĐỂ BIẾT CÓ THAY ĐỔI TRẠNG THÁI HAY KHÔNG
         private bool daThayDoiTrangThai = false;
+
+        public bool DaThayDoiTrangThai => daThayDoiTrangThai;
 
         public ChiTietKetQua(string maKQ)
         {
             InitializeComponent();
             this.maKQ = maKQ;
+
+            // lifecycle
             this.Load += ChiTietKetQua_Load;
             this.Resize += ChiTietKetQua_Resize;
-
-            // ✅ THÊM EVENT FORMCLOSING
             this.FormClosing += ChiTietKetQua_FormClosing;
+
+            // CHỐT 1 handler cho nút Xuất file
+            if (this.btnXuatFile != null)
+            {
+                try { this.btnXuatFile.Click -= btnXuatFile_Click; } catch { }
+                try { this.btnXuatFile.Click -= btnXuatFile_Click_1; } catch { }
+                this.btnXuatFile.Click += btnXuatFile_Click;   // chỉ dùng 1
+            }
         }
 
-        // ✅ THÊM PROPERTY ĐỂ FORM CHA KIỂM TRA
-        public bool DaThayDoiTrangThai
-        {
-            get { return daThayDoiTrangThai; }
-        }
-
-        // ✅ XỬ LÝ KHI ĐÓNG FORM - FIXED
         private void ChiTietKetQua_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Set DialogResult nếu có thay đổi
-            if (daThayDoiTrangThai)
-            {
-                this.DialogResult = DialogResult.OK;
-            }
-            else
-            {
-                this.DialogResult = DialogResult.Cancel;
-            }
+            this.DialogResult = daThayDoiTrangThai ? DialogResult.OK : DialogResult.Cancel;
         }
 
         private void ChiTietKetQua_Load(object sender, EventArgs e)
         {
             try
             {
-                // ✅ THIẾT LẬP FORM
                 this.WindowState = FormWindowState.Normal;
                 this.StartPosition = FormStartPosition.CenterScreen;
                 this.FormBorderStyle = FormBorderStyle.Sizable;
@@ -80,7 +76,6 @@ namespace GUI.Forms
                 panelNenMau.Location = new Point(15, headerHeight);
                 panelNenMau.Size = new Size(this.ClientSize.Width - 30, availableHeight);
 
-                // Update width của các GroupBox và DataGridView
                 foreach (Control ctrl in panelNenMau.Controls)
                 {
                     if (ctrl is GroupBox grp)
@@ -141,7 +136,6 @@ namespace GUI.Forms
 
             bool daXacNhan = ketQuaFull.Header.TrangThaiXacNhan;
 
-            // ✅ MÃ KẾT QUẢ
             if (txtMaKQ != null)
             {
                 txtMaKQ.Text = ketQuaFull.Header.MaKQ;
@@ -153,7 +147,6 @@ namespace GUI.Forms
                 txtMaKQ.ReadOnly = true;
             }
 
-            // ✅ NGÀY TẠO
             if (dtpNgayDo != null)
             {
                 dtpNgayDo.Value = ketQuaFull.Header.NgayTao;
@@ -163,7 +156,6 @@ namespace GUI.Forms
                 dtpNgayDo.Enabled = false;
             }
 
-            // ✅ NGƯỜI NHẬP
             if (txtNhanVienNhap != null)
             {
                 txtNhanVienNhap.Text = ketQuaFull.Header.TenNhanVien ?? "";
@@ -172,24 +164,17 @@ namespace GUI.Forms
                 txtNhanVienNhap.ReadOnly = true;
             }
 
-            // ✅ TRẠNG THÁI
             if (txtTrangThai != null)
             {
                 string trangThai = daXacNhan ? "✅ Đã xác nhận" : "⏳ Chờ xác nhận";
-
                 txtTrangThai.Text = trangThai;
-                txtTrangThai.BackColor = daXacNhan
-                    ? Color.FromArgb(200, 255, 200)
-                    : Color.FromArgb(255, 245, 200);
-                txtTrangThai.ForeColor = daXacNhan
-                    ? Color.FromArgb(0, 128, 0)
-                    : Color.FromArgb(204, 136, 0);
+                txtTrangThai.BackColor = daXacNhan ? Color.FromArgb(200, 255, 200) : Color.FromArgb(255, 245, 200);
+                txtTrangThai.ForeColor = daXacNhan ? Color.FromArgb(0, 128, 0) : Color.FromArgb(204, 136, 0);
                 txtTrangThai.Font = boldFont;
                 txtTrangThai.TextAlign = HorizontalAlignment.Center;
                 txtTrangThai.ReadOnly = true;
             }
 
-            // ✅ GHI CHÚ
             if (txtGhiChu != null)
             {
                 txtGhiChu.Text = ketQuaFull.Header.GhiChu ?? "";
@@ -199,12 +184,10 @@ namespace GUI.Forms
                 txtGhiChu.ReadOnly = true;
             }
 
-            // ✅ ĐỢT QUAN TRẮC VÀ SỐ NỀN MẪU
             if (txtNenMau != null)
             {
                 int soNenMau = ketQuaFull.DanhSachNenMau.Count;
                 string dotText = ketQuaFull.Header.DotQuanTrac ?? "Chưa xác định";
-
                 txtNenMau.Text = $"📊 {dotText} ({soNenMau} nền mẫu)";
                 txtNenMau.BackColor = Color.FromArgb(240, 255, 245);
                 txtNenMau.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
@@ -212,7 +195,6 @@ namespace GUI.Forms
                 txtNenMau.ReadOnly = true;
             }
 
-            // ✅ BUTTONS - BO GÓC
             if (btnXacNhan != null)
             {
                 btnXacNhan.Enabled = !daXacNhan;
@@ -223,8 +205,6 @@ namespace GUI.Forms
                 btnXacNhan.Cursor = !daXacNhan ? Cursors.Hand : Cursors.Default;
                 btnXacNhan.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
                 btnXacNhan.Text = "✓ Xác Nhận";
-
-                // ✅ BO GÓC
                 ApplyRoundedCorners(btnXacNhan, 12);
             }
 
@@ -238,8 +218,6 @@ namespace GUI.Forms
                 btnHuyXacNhan.Cursor = daXacNhan ? Cursors.Hand : Cursors.Default;
                 btnHuyXacNhan.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
                 btnHuyXacNhan.Text = "✗ Hủy Xác Nhận";
-
-                // ✅ BO GÓC
                 ApplyRoundedCorners(btnHuyXacNhan, 12);
             }
 
@@ -252,21 +230,15 @@ namespace GUI.Forms
                 btnXuatFile.Cursor = Cursors.Hand;
                 btnXuatFile.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
                 btnXuatFile.Text = "📄 Xuất File";
-
-                // ✅ BO GÓC
                 ApplyRoundedCorners(btnXuatFile, 12);
             }
         }
 
         private void HienThiDanhSachNenMauNhomTheoBang()
         {
-            // ✅ XÓA dgvChiTiet CŨ
             if (dgvChiTiet != null && panel1.Controls.Contains(dgvChiTiet))
-            {
                 panel1.Controls.Remove(dgvChiTiet);
-            }
 
-            // ✅ TẠO PANEL HIỂN THỊ NỀN MẪU
             panelNenMau = this.Controls.Find("panelNenMau", true).Length > 0
                 ? this.Controls.Find("panelNenMau", true)[0] as Panel
                 : null;
@@ -283,8 +255,7 @@ namespace GUI.Forms
                     AutoScroll = true,
                     Location = new Point(15, headerHeight),
                     Size = new Size(this.ClientSize.Width - 30, availableHeight),
-                    BackColor = Color.FromArgb(240, 242, 245),
-                    BorderStyle = BorderStyle.None
+                    BackColor = Color.FromArgb(240, 242, 245)
                 };
                 panel1.Controls.Add(panelNenMau);
                 panelNenMau.BringToFront();
@@ -310,15 +281,14 @@ namespace GUI.Forms
                     FlatStyle = FlatStyle.Flat
                 };
 
-                // ✅ HEADER PANEL (Màu xanh lá đậm) - THÊM MÃ KQNEN
-                Panel headerPanel = new Panel
+                var headerPanel = new Panel
                 {
                     Height = 60,
                     Dock = DockStyle.Top,
                     BackColor = Color.FromArgb(0, 152, 70)
                 };
 
-                Label lblHeader = new Label
+                var lblHeader = new Label
                 {
                     Text = $"   📋 NỀN MẪU {groupIndex}: {nenMau.TenNenMau?.ToUpper() ?? "N/A"} ({nenMau.MaNen})  •  Mã KQ Nền: {nenMau.MaKQNen}",
                     Font = new Font("Segoe UI", 12F, FontStyle.Bold),
@@ -331,8 +301,7 @@ namespace GUI.Forms
                 };
                 headerPanel.Controls.Add(lblHeader);
 
-                // ✅ INFO PANEL (Thông tin vị trí, tọa độ)
-                Panel infoPanel = new Panel
+                var infoPanel = new Panel
                 {
                     Height = 50,
                     Dock = DockStyle.Top,
@@ -344,10 +313,10 @@ namespace GUI.Forms
                 string toaDoText = !string.IsNullOrEmpty(nenMau.ToaDo) ? nenMau.ToaDo : "Chưa xác định tọa độ";
                 int soThongSo = nenMau.DanhSachThongSo?.Count ?? 0;
 
-                Label lblInfo = new Label
+                var lblInfo = new Label
                 {
                     Text = $"📍 Vị trí: {viTriText}     •     🗺️ Tọa độ: {toaDoText}     •     📊 Số thông số: {soThongSo}",
-                    Font = new Font("Segoe UI", 10.2F, FontStyle.Regular),
+                    Font = new Font("Segoe UI", 10.2F),
                     ForeColor = Color.FromArgb(0, 102, 204),
                     AutoSize = false,
                     Dock = DockStyle.Fill,
@@ -355,7 +324,6 @@ namespace GUI.Forms
                 };
                 infoPanel.Controls.Add(lblInfo);
 
-                // ✅ DATAGRIDVIEW - THÊM CỘT MÃ KQ CHI TIẾT
                 DataGridView dgvThongSo = TaoDGVThongSo(groupIndex, nenMau, grpNenMau.Width);
 
                 Panel dgvContainer = new Panel
@@ -367,7 +335,6 @@ namespace GUI.Forms
                 };
                 dgvContainer.Controls.Add(dgvThongSo);
 
-                // ✅ TÍNH CHIỀU CAO GROUPBOX
                 int soThongSoHienThi = Math.Max(3, Math.Min(soThongSo, 8));
                 int dgvHeight = dgvThongSo.ColumnHeadersHeight + (soThongSoHienThi * dgvThongSo.RowTemplate.Height) + 20;
                 dgvThongSo.Height = dgvHeight;
@@ -412,7 +379,6 @@ namespace GUI.Forms
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right
             };
 
-            // ✅ STYLE CHO HEADER
             dgv.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = Color.FromArgb(52, 58, 64),
@@ -424,7 +390,6 @@ namespace GUI.Forms
                 WrapMode = DataGridViewTriState.True
             };
 
-            // ✅ STYLE CHO CELLS
             dgv.DefaultCellStyle = new DataGridViewCellStyle
             {
                 Font = new Font("Segoe UI", 9.5F),
@@ -443,7 +408,6 @@ namespace GUI.Forms
                 SelectionForeColor = Color.White
             };
 
-            // ✅ THÊM CÁC CỘT (THÊM CỘT MÃ KQ CHI TIẾT)
             int containerWidth = grpWidth - 50;
 
             dgv.Columns.Add(new DataGridViewTextBoxColumn
@@ -567,7 +531,6 @@ namespace GUI.Forms
                 }
             });
 
-            // ✅ BIND DATA
             int stt = 0;
             if (nenMau.DanhSachThongSo != null)
             {
@@ -587,7 +550,6 @@ namespace GUI.Forms
                     row.Cells["QCVN"].Value = thongSo.QCVN ?? "Không quy định";
                     row.Cells["TinhTrang"].Value = thongSo.TinhTrang ?? "";
 
-                    // ✅ FORMAT TÌNH TRẠNG
                     string tinhTrang = thongSo.TinhTrang ?? "";
                     if (tinhTrang.Contains("Vượt") || tinhTrang.Contains("vượt"))
                     {
@@ -652,7 +614,8 @@ namespace GUI.Forms
             button.Region = new Region(path);
         }
 
-        // ✅ XÁC NHẬN KẾT QUẢ - FIXED
+        // ================== XỬ LÝ TRẠNG THÁI ==================
+
         private void btnXacNhan_Click(object sender, EventArgs e)
         {
             var confirm = MessageBox.Show(
@@ -666,14 +629,10 @@ namespace GUI.Forms
             if (confirm == DialogResult.Yes)
             {
                 var (success, message) = ketQuaBLL.CapNhatTrangThaiKetQua(maKQ, true);
-
                 if (success)
                 {
                     MessageBox.Show("✓ " + message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // ✅ ĐÁNH DẤU ĐÃ THAY ĐỔI - QUAN TRỌNG!
                     daThayDoiTrangThai = true;
-
                     LoadChiTietKetQua();
                 }
                 else
@@ -683,7 +642,6 @@ namespace GUI.Forms
             }
         }
 
-        // ✅ HỦY XÁC NHẬN KẾT QUẢ - FIXED
         private void btnHuyXacNhan_Click(object sender, EventArgs e)
         {
             var confirm = MessageBox.Show(
@@ -697,14 +655,10 @@ namespace GUI.Forms
             if (confirm == DialogResult.Yes)
             {
                 var (success, message) = ketQuaBLL.CapNhatTrangThaiKetQua(maKQ, false);
-
                 if (success)
                 {
                     MessageBox.Show("✓ " + message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // ✅ ĐÁNH DẤU ĐÃ THAY ĐỔI - QUAN TRỌNG!
                     daThayDoiTrangThai = true;
-
                     LoadChiTietKetQua();
                 }
                 else
@@ -714,22 +668,120 @@ namespace GUI.Forms
             }
         }
 
-        private void btnXuatFile_Click(object sender, EventArgs e)
+        // ================== XUẤT PDF ==================
+
+        // Giữ 2 tên handler để tương thích Designer; cả 2 gọi chung
+        private void btnXuatFile_Click(object sender, EventArgs e) => ExportPdfReport();
+        private void btnXuatFile_Click_1(object sender, EventArgs e) => ExportPdfReport();
+
+        private void ExportPdfReport()
         {
             try
             {
-                MessageBox.Show(
-                    "Chức năng xuất file đang được phát triển!\n\n" +
-                    $"Kết quả: {maKQ}\n" +
-                    $"Số nền mẫu: {ketQuaFull.DanhSachNenMau.Count}\n" +
-                    $"Trạng thái: {(ketQuaFull.Header.TrangThaiXacNhan ? "Đã xác nhận" : "Chưa xác nhận")}",
-                    "Thông tin xuất file",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                if (ketQuaFull == null || ketQuaFull.Header == null)
+                {
+                    MessageBox.Show("Chưa có dữ liệu để xuất.");
+                    return;
+                }
+
+                // hỗ trợ tiếng Việt
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+                // RDLC path (thử 2 khả năng)
+                string rdlcPath = Path.Combine(Application.StartupPath, "GUI", "Report", "ChiTietKetQua.rdlc");
+                if (!File.Exists(rdlcPath))
+                    rdlcPath = Path.Combine(Application.StartupPath, "Report", "ChiTietKetQua.rdlc");
+
+                if (!File.Exists(rdlcPath))
+                {
+                    MessageBox.Show("Không tìm thấy RDLC: " + rdlcPath);
+                    return;
+                }
+
+                // 1) Chuẩn bị dữ liệu
+                var headerData = new[]
+                {
+                    new {
+                        ketQuaFull.Header.MaKQ,
+                        ketQuaFull.Header.NgayTao,
+                        ketQuaFull.Header.NgayTraKQ,
+                        ketQuaFull.Header.TenNhanVien,
+                        ketQuaFull.Header.TrangThai,
+                        ketQuaFull.Header.GhiChu,
+                        ketQuaFull.Header.DotQuanTrac,
+                        ketQuaFull.Header.MaDot,
+                        ketQuaFull.Header.SoNenMau
+                    }
+                };
+
+                var chiTietData = ketQuaFull.DanhSachNenMau
+                    .SelectMany(nm => nm.DanhSachThongSo.Select(ct => new {
+                        MaKQ = ketQuaFull.Header.MaKQ,
+                        MaKQNen = nm.MaKQNen,
+                        TenNenMau = nm.TenNenMau,
+                        ViTri = nm.ViTri,
+                        ToaDo = nm.ToaDo,
+                        TenTS = ct.TenTS,
+                        DonVi = ct.DonVi,
+                        PhuongPhapPhanTich = ct.PhuongPhapPhanTich,
+                        KetQua = ct.KetQua,
+                        GioiHanPhatHien = ct.GioiHanPhatHien,
+                        QCVN = ct.QCVN,
+                        TinhTrang = ct.TinhTrang
+                    }))
+                    .ToList();
+
+                // 2) Nạp RDLC
+                using var defStream = File.OpenRead(rdlcPath);
+                var report = new LocalReport();
+                report.LoadReportDefinition(defStream);
+
+                report.DataSources.Clear();
+                report.DataSources.Add(new ReportDataSource("dsHeader", headerData));
+                report.DataSources.Add(new ReportDataSource("dsChiTiet", chiTietData));
+
+                // 3) TRUYỀN THAM SỐ CHẮC CHẮN (mỗi cái 1 try; nếu RDLC không có thì bỏ qua)
+                try
+                {
+                    report.SetParameters(new ReportParameter("pNgayIn", DateTime.Now.ToString("dd/MM/yyyy")));
+                }
+                catch { /* RDLC không có pNgayIn */ }
+
+                try
+                {
+                    report.SetParameters(new ReportParameter("pTieuDe", $"PHIẾU KẾT QUẢ - {ketQuaFull.Header.MaKQ}"));
+                }
+                catch { /* RDLC không có pTieuDe */ }
+
+                // 4) Render PDF
+                string deviceInfo = @"<DeviceInfo>
+                    <EmbedFonts>True</EmbedFonts>
+                    <HumanReadablePDF>True</HumanReadablePDF>
+                </DeviceInfo>";
+
+                byte[] pdfBytes = report.Render("PDF", deviceInfo);
+
+                // 5) Save dialog
+                using var sfd = new SaveFileDialog
+                {
+                    Title = "Lưu báo cáo PDF",
+                    Filter = "PDF files (*.pdf)|*.pdf",
+                    FileName = $"KetQua_{ketQuaFull.Header.MaKQ}.pdf",
+                    AddExtension = true
+                };
+
+                if (sfd.ShowDialog(this) == DialogResult.OK)
+                {
+                    File.WriteAllBytes(sfd.FileName, pdfBytes);
+                    MessageBox.Show("Xuất PDF thành công!");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var full = ex.ToString();
+                try { Clipboard.SetText(full); } catch { }
+                MessageBox.Show("Xuất PDF thất bại:\n\n" + full,
+                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

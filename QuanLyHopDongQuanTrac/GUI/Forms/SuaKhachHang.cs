@@ -365,7 +365,7 @@ namespace GUI.Forms
             try
             {
                 var bll = new KhachHangBLL();
-                var (daThayDoi, logThayDoi) = bll.KiemTraThayDoi(kh, khachHangBanDau);
+                var (daThayDoi, logThayDoi) = bll.kiemTraThayDoi(kh, khachHangBanDau);
                 if (!daThayDoi)
                 {
                     MessageBox.Show("Không có thông tin nào thay đổi!", "Thông báo",
@@ -373,7 +373,7 @@ namespace GUI.Forms
                     return;
                 }
 
-                bll.SuaKhachHang(kh);
+                bll.suaKhachHang(kh);
 
                 MessageBox.Show("Sửa thông tin khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 

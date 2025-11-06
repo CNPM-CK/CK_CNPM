@@ -139,6 +139,7 @@
             dgvDanhsachketqua.Size = new Size(640, 294);
             dgvDanhsachketqua.TabIndex = 1;
             dgvDanhsachketqua.CellContentClick += dgvDanhsachketqua_CellContentClick;
+            dgvDanhsachketqua.Paint += dgvDanhsachketqua_Paint;
             // 
             // dataGridView1
             // 

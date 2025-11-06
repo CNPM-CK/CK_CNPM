@@ -228,7 +228,7 @@ namespace GUI.Forms
                 if (isEditMode)
                 {
                     // Chế độ sửa
-                    bool result = bll.SuaNenMau(maNenDangChon, txtMota.Text.Trim());
+                    bool result = bll.suaNenMau(maNenDangChon, txtMota.Text.Trim());
 
                     if (result)
                     {
@@ -250,7 +250,7 @@ namespace GUI.Forms
                 else
                 {
                     // Chế độ thêm mới
-                    string maNenMoi = bll.ThemNenMau(txtTennenmau.Text.Trim(), txtMota.Text.Trim());
+                    string maNenMoi = bll.themNenMau(txtTennenmau.Text.Trim(), txtMota.Text.Trim());
 
                     if (!string.IsNullOrEmpty(maNenMoi))
                     {
