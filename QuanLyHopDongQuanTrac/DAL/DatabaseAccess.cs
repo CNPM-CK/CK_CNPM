@@ -1161,6 +1161,7 @@ namespace DAL
                             {
                                 MaDot = reader["MaDot"].ToString(),
                                 MaHD = reader["MaHD"].ToString(),
+                                TenKhachHang = reader["TenKhachHang"]?.ToString(),
                                 NoiDung = reader["NoiDung"]?.ToString(),
                                 DotQuanTrac = reader["DotQuanTrac"]?.ToString(),
                                 NgayBatDau = reader["NgayBatDau"] != DBNull.Value ? Convert.ToDateTime(reader["NgayBatDau"]) : DateTime.MinValue,
@@ -1235,9 +1236,29 @@ namespace DAL
             return list;
         }
 
-        // =============================================
-        // PHẦN QUẢN LÝ KẾT QUẢ (HỆ THỐNG CŨ)
-        // =============================================
+
+        public bool xoaNenMauKhoiDot(string maDN)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_XoaNenMauKhoiDot", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add(new SqlParameter("@maDN", SqlDbType.VarChar, 15)
+                    {
+                        Value = maDN
+                    });
+
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0; // true nếu xóa thành công
+                }
+            }
+        }
+    }
+}
+
 
         public List<DTO_KetQua> LayDanhSachKetQua()
         {

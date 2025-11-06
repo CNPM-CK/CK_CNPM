@@ -10,6 +10,7 @@ namespace DTO
     {
         public string MaDot { get; set; }
         public string MaHD { get; set; }
+        public string TenKhachHang { get; set; }
         public string NoiDung { get; set; }
         public string DotQuanTrac { get; set; }
         public DateTime NgayBatDau { get; set; }

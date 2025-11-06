@@ -28,9 +28,9 @@ namespace GUI.Forms
         public string TenNenMauDaChon { get; set; }
 
         private string tenViTriChinhSua;
-        
+
         private string toaDoChinhSua;
-        
+
         private string ghiChuChinhSua;
 
         public string TenViTri
@@ -72,7 +72,7 @@ namespace GUI.Forms
 
 
         }
-       
+
         private void BoGocButton(Button btn, int radius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -238,6 +238,8 @@ namespace GUI.Forms
             InitializeButtonStyles();
             cboPhongpt.Enabled = false;
 
+            this.FormClosing += ChiTietNenMau_FormClosing;
+
             var thongSo = new ThongSoBLL();
             var phongBan = new PhongBanBLL();
             var listPhongban = phongBan.layPTNvaPHT();
@@ -245,6 +247,7 @@ namespace GUI.Forms
             if (listPhongban != null && listPhongban.Count > 0)
             {
                 cboPhongpt.DataSource = listPhongban;
+                cboPhongpt.DropDownStyle = ComboBoxStyle.DropDownList;
                 cboPhongpt.DisplayMember = "tenPhong";
                 cboPhongpt.ValueMember = "maPhong";
                 cboPhongpt.SelectedIndex = -1;
@@ -338,7 +341,7 @@ namespace GUI.Forms
 
             dgvThongso.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "MaDNTS",          
+                Name = "MaDNTS",
                 DataPropertyName = "MaDNTS",
                 Visible = false
             });
@@ -375,6 +378,14 @@ namespace GUI.Forms
             {
                 LoadDataForEdit(tenViTriChinhSua, toaDoChinhSua, ghiChuChinhSua, danhSachChinhSua);
             }
+            // === Tùy chỉnh giao diện cột ===
+            dgvThongso.Columns["DonVi"].Width = 100;
+            dgvThongso.Columns["DonVi"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvThongso.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            dgvThongso.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvThongso.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvThongso.Columns["TenTS"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
             // Vô hiệu hóa edit
             dgvThongso.ReadOnly = true;
             dgvThongso.AllowUserToAddRows = false;
@@ -446,6 +457,7 @@ namespace GUI.Forms
                 object selectedValue = cboThongso.SelectedValue;
 
                 cboThongso.DataSource = list;
+                cboThongso.DropDownStyle = ComboBoxStyle.DropDownList;
                 cboThongso.DisplayMember = "TenTS";
                 cboThongso.ValueMember = "MaTS";
 
@@ -466,6 +478,7 @@ namespace GUI.Forms
             }
         }
 
+        private bool camKet = false;
 
         private void btnLuu_Click(object sender, EventArgs e)
         {
@@ -533,6 +546,7 @@ namespace GUI.Forms
 
                 if (ketQua)
                 {
+                    camKet = true;
                     MessageBox.Show(
                         $"{thongBao}\n\n" +
                         $"Nền mẫu: {txtTennenmau.Text}\n" +
@@ -563,7 +577,7 @@ namespace GUI.Forms
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-       
+
 
         private void btnThemthongso_Click_1(object sender, EventArgs e)
         {
@@ -690,7 +704,7 @@ namespace GUI.Forms
             }
         }
 
-        
+
 
         private void cboThongso_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -718,11 +732,25 @@ namespace GUI.Forms
             }
         }
 
-        private void dgvThongso_CellContentClick_1(object sender, DataGridViewCellEventArgs e){}
-        private void cboPhongpt_SelectedIndexChanged(object sender, EventArgs e){}
-        private void cboChon_SelectedIndexChanged(object sender, EventArgs e){}
-        private void dgvThongso_CellContentClick(object sender, DataGridViewCellEventArgs e){}
-        private void txtTennenmau_TextChanged(object sender, EventArgs e){}
+        private void dgvThongso_CellContentClick_1(object sender, DataGridViewCellEventArgs e) { }
+        private void cboPhongpt_SelectedIndexChanged(object sender, EventArgs e) { }
+        private void cboChon_SelectedIndexChanged(object sender, EventArgs e) { }
+        private void dgvThongso_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
+        private void txtTennenmau_TextChanged(object sender, EventArgs e) { }
+
+        private void ChiTietNenMau_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Nếu KHÔNG lưu (Cancel/Close bằng X) và đã cấp MaDN trước đó
+            if (! camKet && !string.IsNullOrWhiteSpace(MaDN))
+            {
+                try
+                {
+                    var bll = new BLL_DotQuanTrac();
+                    bll.xoaNenMauKhoiDot(MaDN); // ✅ xóa Dot_Nen + Dot_Nen_Ts
+                }
+                catch { /* log nếu cần, nhưng đừng throw ở đây */ }
+            }
+        }
     }
 
 }

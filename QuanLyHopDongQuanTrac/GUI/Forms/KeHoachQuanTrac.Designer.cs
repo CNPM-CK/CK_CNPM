@@ -326,7 +326,7 @@
             // dtmBegin
             // 
             dtmBegin.CustomFormat = "dd/MM/yyyy";
-            dtmBegin.Format = DateTimePickerFormat.Short;
+            dtmBegin.Format = DateTimePickerFormat.Custom;
             dtmBegin.Location = new Point(6, 5);
             dtmBegin.Name = "dtmBegin";
             dtmBegin.Size = new Size(372, 27);
@@ -488,7 +488,7 @@
             dtmEnd.Checked = false;
             dtmEnd.CustomFormat = "dd/MM/yyyy";
             dtmEnd.Enabled = false;
-            dtmEnd.Format = DateTimePickerFormat.Short;
+            dtmEnd.Format = DateTimePickerFormat.Custom;
             dtmEnd.Location = new Point(3, 5);
             dtmEnd.Name = "dtmEnd";
             dtmEnd.Size = new Size(372, 27);
@@ -684,7 +684,6 @@
             // 
             // cboTrangthai
             // 
-            cboTrangthai.DropDownStyle = ComboBoxStyle.DropDownList;
             cboTrangthai.FormattingEnabled = true;
             cboTrangthai.Location = new Point(3, 4);
             cboTrangthai.Name = "cboTrangthai";
@@ -746,6 +745,7 @@
             MaximizeBox = false;
             Name = "KeHoachQuanTrac";
             Text = "keHoachquantraccs";
+            FormClosing += KeHoachQuanTrac_FormClosing;
             Load += KeHoachQuanTrac_Load;
             Resize += KeHoachQuanTrac_Resize;
             panel1.ResumeLayout(false);

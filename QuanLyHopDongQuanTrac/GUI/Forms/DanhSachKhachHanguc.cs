@@ -647,8 +647,12 @@ namespace GUI.Forms
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
             }
 
+            
             var data = bll.layDanhSachKH_PhanTrang(currentPage, pageSize);
-            dgvDanhsachnhanvien.DataSource = data;
+            dsKhachhang = new BindingList<KhachHang>(data);
+
+            dgvDanhsachnhanvien.DataSource = dsKhachhang;
+            //dgvDanhsachnhanvien.DataSource = data;
 
             // 🔹 Cập nhật label trang
             soTrang.Text = $"Trang {currentPage}/{totalPages}";

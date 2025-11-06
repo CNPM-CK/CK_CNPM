@@ -140,7 +140,7 @@
             dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
             dgvDsdotquantrac.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvDsdotquantrac.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDsdotquantrac.Dock = DockStyle.Fill;
@@ -158,6 +158,7 @@
             dgvDsdotquantrac.Size = new Size(820, 411);
             dgvDsdotquantrac.TabIndex = 1;
             dgvDsdotquantrac.CellContentClick += dgvDSKH_CellContentClick;
+            dgvDsdotquantrac.Paint += dgvDsdotquantrac_Paint;
             // 
             // panel6
             // 

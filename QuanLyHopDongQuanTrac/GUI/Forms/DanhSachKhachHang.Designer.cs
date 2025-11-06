@@ -35,12 +35,12 @@
             pictureBox1 = new PictureBox();
             panel1 = new Panel();
             panel4 = new Panel();
+            panel5 = new Panel();
             sidebar = new Panel();
             button1 = new Button();
             btnDanhsachnv = new Button();
             panel3 = new Panel();
             labelFooter = new Label();
-            panel5 = new Panel();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxSetting).BeginInit();
@@ -86,6 +86,7 @@
             pictureBoxSetting.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxSetting.TabIndex = 2;
             pictureBoxSetting.TabStop = false;
+            pictureBoxSetting.Click += pictureBoxSetting_Click;
             // 
             // pictureBox1
             // 
@@ -118,6 +119,14 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(1021, 472);
             panel4.TabIndex = 2;
+            // 
+            // panel5
+            // 
+            panel5.Dock = DockStyle.Fill;
+            panel5.Location = new Point(211, 0);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(810, 472);
+            panel5.TabIndex = 1;
             // 
             // sidebar
             // 
@@ -186,20 +195,14 @@
             labelFooter.Text = "© 2025 ECOS. Bản quyền thuộc về ECOS.";
             labelFooter.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // panel5
-            // 
-            panel5.Dock = DockStyle.Fill;
-            panel5.Location = new Point(211, 0);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(810, 472);
-            panel5.TabIndex = 1;
-            // 
             // DanhSachKhachHang
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1021, 565);
             Controls.Add(panel1);
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "DanhSachKhachHang";
             Text = "Form1";
             WindowState = FormWindowState.Maximized;

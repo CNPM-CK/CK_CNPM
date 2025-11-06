@@ -65,7 +65,7 @@ namespace GUI.Forms
             CalculateLayout();
         }
 
-       
+
 
         private void RefreshDanhSachKhachHang()
         {
@@ -96,7 +96,17 @@ namespace GUI.Forms
             ToolStripMenuItem personalItem = new ToolStripMenuItem("Cài đặt cá nhân");
             personalItem.Click += (s, ev) =>
             {
-                MessageBox.Show("Mở trang cài đặt cá nhân...", "Thông báo");
+                //MessageBox.Show("Mở trang cài đặt cá nhân...", "Thông báo");
+                // Xóa toàn bộ control cũ trên panel5
+                panel5.Controls.Clear();
+
+                // Khởi tạo user control TrangCaNhanUC
+                TrangCaNhan trangCaNhanUC = new TrangCaNhan();
+                trangCaNhanUC.Dock = DockStyle.Fill;
+
+                // Thêm vào panel5
+                panel5.Controls.Add(trangCaNhanUC);
+                trangCaNhanUC.BringToFront();
             };
 
             ToolStripMenuItem logoutItem = new ToolStripMenuItem("Đăng xuất");
@@ -273,7 +283,7 @@ namespace GUI.Forms
         private void pictureBox4_Click(object sender, EventArgs e) { }
         private void dgvDanhsachnhanvien_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
         private void containersearch_Paint_1(object sender, PaintEventArgs e) { }
-        private void btnDanhsachnv_Click(object sender, EventArgs e) 
+        private void btnDanhsachnv_Click(object sender, EventArgs e)
         {
             panel5.Controls.Clear();
             DanhSachKhachHanguc danhSachKhachHanguc = new DanhSachKhachHanguc();
@@ -283,5 +293,10 @@ namespace GUI.Forms
         }
         private void searchtextbox_TextChanged(object sender, EventArgs e) { }
         #endregion
+
+        private void pictureBoxSetting_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

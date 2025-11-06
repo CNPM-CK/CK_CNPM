@@ -190,5 +190,13 @@ namespace BLL
         {
             return dal.demTongKHQT();
         }
+
+        public bool xoaNenMauKhoiDot(string maDN)
+        {
+            if (string.IsNullOrWhiteSpace(maDN))
+                throw new ArgumentException("Mã đợt nền không hợp lệ!");
+            return dal.xoaNenMauKhoiDot(maDN);
+        }
+
     }
 }

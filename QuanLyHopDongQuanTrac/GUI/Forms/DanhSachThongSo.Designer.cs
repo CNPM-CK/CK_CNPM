@@ -97,6 +97,7 @@
             dgvDSTS.Size = new Size(820, 411);
             dgvDSTS.TabIndex = 1;
             dgvDSTS.CellContentClick += dgvDSKH_CellContentClick;
+            dgvDSTS.Paint += dgvDSTS_Paint_1;
             // 
             // panel6
             // 

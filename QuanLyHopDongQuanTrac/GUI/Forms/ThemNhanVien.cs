@@ -200,8 +200,8 @@ namespace GUI.Forms
             BoGocButton(btnCancel, 20);
             if (isEditMode)
             {
-                this.Text = "CHỈNH SỬA NHÂN VIÊN";
-                label.Text = "CHỈNH SỬA NHÂN VIÊN";
+                this.Text = "SỬA NHÂN VIÊN";
+                label.Text = "SỬA NHÂN VIÊN";
                 buttonAddnew.Text = "Lưu thay đổi";
                 if (NhanVienHienTai != null)
                 {

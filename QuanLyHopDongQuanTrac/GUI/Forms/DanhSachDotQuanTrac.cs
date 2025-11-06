@@ -112,11 +112,18 @@ namespace GUI.Forms
                     DataPropertyName = "MaDot",
                     HeaderText = "MÃ ĐỢT",
                     Name = "maDot",
+                    Visible = false
+                },
+                new DataGridViewTextBoxColumn 
+                {
+                    DataPropertyName = "TenKhachHang",
+                    HeaderText = "KHÁCH HÀNG",
+                    Name = "tenKhachHang",
                 },
                 new DataGridViewTextBoxColumn
                 {
                     DataPropertyName = "MaHD",
-                    HeaderText = "MÃ HỢP ĐỒNG",
+                    HeaderText = "HỢP ĐỒNG",
                     Name = "maHD",
                 },
                 new DataGridViewTextBoxColumn
@@ -167,9 +174,30 @@ namespace GUI.Forms
                 HeaderText = "Thao tác",
                 ImageLayout = DataGridViewImageCellLayout.Zoom,
             };
+            dgvDsdotquantrac.Columns["maHD"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDsdotquantrac.Columns["dotQuanTrac"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDsdotquantrac.Columns["ngayBatDau"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDsdotquantrac.Columns["ngayDuKien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDsdotquantrac.Columns["ngayTraKQ"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDsdotquantrac.Columns["trangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            // Thu nhỏ cột HỢP ĐỒNG
+            dgvDsdotquantrac.Columns["maHD"].Width = 115; // hoặc 80 tùy bạn muốn nhỏ cỡ nào
+            dgvDsdotquantrac.Columns["maHD"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+
+
+            // Nếu bạn muốn căn trái cho nội dung dài (như tên KH, nội dung)
+            dgvDsdotquantrac.Columns["tenKhachHang"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvDsdotquantrac.Columns["tenKhachHang"].Width = 300;
+            dgvDsdotquantrac.Columns["tenKhachHang"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+
+            dgvDsdotquantrac.Columns["noiDung"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dgvDsdotquantrac.Columns.Add(thaoTacCol);
             dgvDsdotquantrac.ReadOnly = true;
             dgvDsdotquantrac.Columns["ThaoTac"].ReadOnly = false;
+            dgvDsdotquantrac.Columns["ThaoTac"].Width = 100;
+            dgvDsdotquantrac.Columns["ThaoTac"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+
+
 
             // Bind data
             dgvDsdotquantrac.DataSource = dsDotQuanTrac;
@@ -585,6 +613,7 @@ namespace GUI.Forms
             var filtered = dsDotQuanTrac
                 .Where(ts =>
                     (ts.MaDot ?? "").ToLower().Contains(keyword) ||
+                    (ts.TenKhachHang ?? "").ToLower().Contains(keyword) ||
                     (ts.MaHD ?? "").ToLower().Contains(keyword) ||
                     (ts.NoiDung ?? "").ToLower().Contains(keyword) ||
                     //(ts.TrangThai ?? "").ToLower().Contains(keyword) ||
@@ -659,9 +688,9 @@ namespace GUI.Forms
                 kh.StartPosition = FormStartPosition.CenterParent;
 
                 if (kh.ShowDialog(this) == DialogResult.OK)
-                {
                     LoadData();
-                }
+                else
+                    bll.xoaDotQuanTrac(maDotHienTai); 
             }
         }
 
@@ -733,6 +762,29 @@ namespace GUI.Forms
         {
             currentPage++;
             LoadKeHoachPage();
+        }
+
+        private void dgvDsdotquantrac_Paint(object sender, PaintEventArgs e)
+        {
+            if (Properties.Resources.greenlogo == null) return;
+
+            int dgvWidth = dgvDsdotquantrac.Width;
+            int dgvHeight = dgvDsdotquantrac.Height;
+            Image watermark = Properties.Resources.greenlogo;
+
+            int x = (dgvWidth - watermark.Width) / 2;
+            int y = (dgvHeight - watermark.Height) / 2;
+
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.Matrix33 = 0.3f;
+            ImageAttributes attributes = new ImageAttributes();
+            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+            e.Graphics.DrawImage(watermark,
+                new Rectangle(x, y, watermark.Width, watermark.Height),
+                0, 0, watermark.Width, watermark.Height,
+                GraphicsUnit.Pixel,
+                attributes);
         }
     }
 }

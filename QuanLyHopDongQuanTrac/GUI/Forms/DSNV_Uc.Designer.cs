@@ -11,14 +11,19 @@
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        //protected override void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        // Dispose resources
+        //        voiceSearch?.Dispose();
+        //        initTimer?.Dispose();
+        //        _voiceLock?.Dispose();
+
+        //        components?.Dispose();
+        //    }
+        //    base.Dispose(disposing);
+        //}
 
         #region Component Designer generated code
 
@@ -113,6 +118,7 @@
             searchtextbox.Name = "searchtextbox";
             searchtextbox.Size = new Size(125, 30);
             searchtextbox.TabIndex = 0;
+            searchtextbox.TextChanged += searchtextbox_TextChanged_2;
             // 
             // picturemicro
             // 
@@ -189,6 +195,7 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(828, 46);
             panel1.TabIndex = 4;
+            panel1.Paint += panel1_Paint;
             // 
             // btnSau
             // 

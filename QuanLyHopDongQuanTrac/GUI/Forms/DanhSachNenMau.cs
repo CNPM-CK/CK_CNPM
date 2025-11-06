@@ -705,5 +705,28 @@ namespace GUI.Forms
             foreach (var nm in tsBLL.layDSNenMau())
                 dsNenmau.Add(nm);
         }
+
+        private void dgvDSTS_Paint(object sender, PaintEventArgs e)
+        {
+            if (Properties.Resources.greenlogo == null) return;
+
+            int dgvWidth = dgvDSTS.Width;
+            int dgvHeight = dgvDSTS.Height;
+            Image watermark = Properties.Resources.greenlogo;
+
+            int x = (dgvWidth - watermark.Width) / 2;
+            int y = (dgvHeight - watermark.Height) / 2;
+
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.Matrix33 = 0.3f;
+            ImageAttributes attributes = new ImageAttributes();
+            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+            e.Graphics.DrawImage(watermark,
+                new Rectangle(x, y, watermark.Width, watermark.Height),
+                0, 0, watermark.Width, watermark.Height,
+                GraphicsUnit.Pixel,
+                attributes);
+        }
     }
 }

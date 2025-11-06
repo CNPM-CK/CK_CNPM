@@ -204,6 +204,7 @@ namespace GUI.Forms
                 }
 
                 cboHopdong.DataSource = dsHopDong;
+                cboHopdong.DropDownStyle = ComboBoxStyle.DropDownList;
                 cboHopdong.DisplayMember = "maHDVaKH";
                 cboHopdong.ValueMember = "maHD";
                 cboHopdong.SelectedIndex = -1;
@@ -237,6 +238,7 @@ namespace GUI.Forms
                 }
 
                 cboNenmau.DataSource = dsNenmau;
+                cboNenmau.DropDownStyle = ComboBoxStyle.DropDownList;
                 cboNenmau.DisplayMember = "DisplayText";
                 cboNenmau.ValueMember = "tenNenMau";
                 cboNenmau.SelectedIndex = -1;
@@ -259,6 +261,7 @@ namespace GUI.Forms
             DataTable dt = bll.LayDanhSachTrangThai();
 
             cboTrangthai.DataSource = dt;
+            cboTrangthai.DropDownStyle = ComboBoxStyle.DropDownList;
             cboTrangthai.DisplayMember = "tenTrangThai";
             cboTrangthai.ValueMember = "maTrangThai";
             cboTrangthai.SelectedIndex = 0;
@@ -321,6 +324,7 @@ namespace GUI.Forms
                     capNhatSoThuTuNenMau();
                 }
             }
+
         }
 
 
@@ -402,7 +406,7 @@ namespace GUI.Forms
                         }
                     }
                 }
-                
+
 
                 DTO_DotQuanTrac dto = new DTO_DotQuanTrac
                 {
@@ -474,58 +478,112 @@ namespace GUI.Forms
 
         private void cboNenmau_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //if (taiNenMau || cboNenmau.SelectedIndex == -1) return;
+            //if (!(cboNenmau.SelectedItem is NenMau nenChon)) return;
+            //if (nenChon.maNen == nenMauDuocChon) return;
+
+            //try
+            //{
+            //    DialogResult result = MessageBox.Show(
+            //        $"Bạn có muốn thêm nền mẫu này vào kế hoạch quan trắc?\n\n" +
+            //        $"Tên nền mẫu: {nenChon.tenNenMau}",
+            //        "Xác nhận",
+            //        MessageBoxButtons.YesNo,
+            //        MessageBoxIcon.Question
+            //    );
+
+            //    if (result != DialogResult.Yes)
+            //        return;
+
+            //    nenMauDuocChon = nenChon.maNen;
+
+            //    // GỌI BLL để thêm vào DB trước khi mở form chi tiết
+            //    var bll = new BLL_DotQuanTrac();
+            //    var dn = bll.themNenMauVaoDot(MaDotHienTai, nenChon.maNen);
+
+            //    if (dn == null)
+            //    {
+            //        MessageBox.Show("Lưu nền mẫu thất bại!");
+            //        return;
+            //    }
+
+            //    // Mở form chi tiết để cập nhật bổ sung
+            //    using (var f = new ChiTietNenMau())
+            //    {
+            //        f.StartPosition = FormStartPosition.CenterParent;
+            //        f.MaDN = dn.MaDN;           // ✅ Mã Dot_Nen (khóa chính bảng Dot_Nen)
+            //        f.MaNen = dn.MaNen;         // ✅ Mã nền mẫu (khóa ngoại từ bảng NenMau)
+            //        f.TenNenMauDaChon = nenChon.tenNenMau;
+
+            //        if (f.ShowDialog(this) == DialogResult.OK)
+            //        {
+            //            var uc = new NenMauConTrol();
+
+
+            //            uc.LoadNenMau(
+            //                maDN: dn.MaDN,                      // ✅ Tham số thứ 1: mã Dot_Nen
+            //                maNen: dn.MaNen,                    // ✅ Tham số thứ 2: mã nền mẫu
+            //                tenNenMau: nenChon.tenNenMau,       // ✅ Tham số thứ 3: tên nền mẫu
+            //                moTaNen: f.MoTaNen,                 // ✅ Tham số thứ 4: mô tả
+            //                chiTiet: f.ChiTietDaChon,           // ✅ Tham số thứ 5: danh sách thông số
+            //                viTri: f.TenViTri,                  // ✅ Tham số thứ 6: vị trí
+            //                toaDo: f.ToaDo,                     // ✅ Tham số thứ 7: tọa độ
+            //                ghiChu: f.GhiChu                    // ✅ Tham số thứ 8: ghi chú
+            //            );
+
+            //            uc.nhanXoaNenMau += nhanXoaNenMauUC;
+            //            uc.nhanSuaNenMau += nhanSuaNenMauUC;
+            //            uc.Width = flowNenmau.Width - 20;
+
+            //            flowNenmau.Controls.Add(uc);
+            //            capNhatSoThuTuNenMau();
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Lỗi: " + ex.Message);
+            //}
+            //finally
+            //{
+            //    taiNenMau = true;
+            //    cboNenmau.SelectedIndex = -1;
+            //    nenMauDuocChon = "";
+            //    taiNenMau = false;
+            //}
+
             if (taiNenMau || cboNenmau.SelectedIndex == -1) return;
             if (!(cboNenmau.SelectedItem is NenMau nenChon)) return;
-            if (nenChon.maNen == nenMauDuocChon) return;
 
             try
             {
-                DialogResult result = MessageBox.Show(
-                    $"Bạn có muốn thêm nền mẫu này vào kế hoạch quan trắc?\n\n" +
-                    $"Tên nền mẫu: {nenChon.tenNenMau}",
-                    "Xác nhận",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question
-                );
-
-                if (result != DialogResult.Yes)
-                    return;
-
-                nenMauDuocChon = nenChon.maNen;
-
-                // GỌI BLL để thêm vào DB trước khi mở form chi tiết
+                // ✅ Tạo Dot_Nen TRƯỚC để lấy maDN
                 var bll = new BLL_DotQuanTrac();
                 var dn = bll.themNenMauVaoDot(MaDotHienTai, nenChon.maNen);
 
                 if (dn == null)
                 {
-                    MessageBox.Show("Lưu nền mẫu thất bại!");
+                    MessageBox.Show("Không tạo được nền mẫu!");
                     return;
                 }
 
-                // Mở form chi tiết để cập nhật bổ sung
+                // ✅ Mở form chi tiết
                 using (var f = new ChiTietNenMau())
                 {
-                    f.MaDN = dn.MaDN;           // ✅ Mã Dot_Nen (khóa chính bảng Dot_Nen)
-                    f.MaNen = dn.MaNen;         // ✅ Mã nền mẫu (khóa ngoại từ bảng NenMau)
+                    f.StartPosition = FormStartPosition.CenterParent;
+                    f.MaDN = dn.MaDN;        // lấy từ DB
+                    f.MaNen = dn.MaNen;
                     f.TenNenMauDaChon = nenChon.tenNenMau;
+                    f.chinhSua = false;
 
-                    if (f.ShowDialog() == DialogResult.OK)
+                    if (f.ShowDialog(this) == DialogResult.OK)
                     {
+                        // ✅ Lưu chi tiết vào DB
+                        bll.luuChiTietNenMau(dn.MaDN, f.TenViTri, f.ToaDo, f.GhiChu, f.ChiTietDaChon);
+
+                        // ✅ Hiển thị lên UI
                         var uc = new NenMauConTrol();
-
-                       
-                        uc.LoadNenMau(
-                            maDN: dn.MaDN,                      // ✅ Tham số thứ 1: mã Dot_Nen
-                            maNen: dn.MaNen,                    // ✅ Tham số thứ 2: mã nền mẫu
-                            tenNenMau: nenChon.tenNenMau,       // ✅ Tham số thứ 3: tên nền mẫu
-                            moTaNen: f.MoTaNen,                 // ✅ Tham số thứ 4: mô tả
-                            chiTiet: f.ChiTietDaChon,           // ✅ Tham số thứ 5: danh sách thông số
-                            viTri: f.TenViTri,                  // ✅ Tham số thứ 6: vị trí
-                            toaDo: f.ToaDo,                     // ✅ Tham số thứ 7: tọa độ
-                            ghiChu: f.GhiChu                    // ✅ Tham số thứ 8: ghi chú
-                        );
-
+                        uc.LoadNenMau(dn.MaDN, dn.MaNen, nenChon.tenNenMau, f.MoTaNen, f.ChiTietDaChon, f.TenViTri, f.ToaDo, f.GhiChu);
                         uc.nhanXoaNenMau += nhanXoaNenMauUC;
                         uc.nhanSuaNenMau += nhanSuaNenMauUC;
                         uc.Width = flowNenmau.Width - 20;
@@ -533,21 +591,22 @@ namespace GUI.Forms
                         flowNenmau.Controls.Add(uc);
                         capNhatSoThuTuNenMau();
                     }
+                    else
+                    {
+                        // ❗ User bấm Hủy → phải xóa Dot_Nen vừa tạo
+                        bll.xoaNenMauKhoiDot(dn.MaDN);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message);
             }
             finally
             {
                 taiNenMau = true;
                 cboNenmau.SelectedIndex = -1;
-                nenMauDuocChon = "";
                 taiNenMau = false;
             }
+
         }
-         
+
         private void panel2_Paint(object sender, PaintEventArgs e)
         {
 
@@ -556,6 +615,19 @@ namespace GUI.Forms
         private void cboHopdong_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private bool daTaoDot = false;
+
+        private void KeHoachQuanTrac_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!daTaoDot) return;
+
+            // Nếu chưa lưu hoàn tất thì xóa nháp
+            if (this.DialogResult != DialogResult.OK)
+            {
+                bllDotQuanTrac.xoaDotQuanTrac(MaDotHienTai);
+            }
         }
     }
 }

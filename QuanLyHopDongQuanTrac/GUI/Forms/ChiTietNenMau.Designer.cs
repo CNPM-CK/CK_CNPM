@@ -569,6 +569,7 @@
             Controls.Add(panel1);
             Name = "ChiTietNenMau";
             Text = "Form1";
+            FormClosing += ChiTietNenMau_FormClosing;
             Load += Form1_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();

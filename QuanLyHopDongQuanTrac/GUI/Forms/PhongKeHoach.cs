@@ -56,16 +56,9 @@ namespace GUI.Forms
         #region Form Load
         private void DanhSachNhanVien_Load(object sender, EventArgs e)
         {
-            // TODO: Thay bằng KeHoachBLL khi có
-            // KeHoachBLL khBLL = new KeHoachBLL();
-            // dsKeHoach = new BindingList<KeHoach>(khBLL.LayDanhSachKeHoach());
-
-            // Tạm thời dùng dữ liệu mẫu để test
 
             InitializeContextMenu();
             InitializeButtonIcons();
-            //InitializeButtonStyles();
-            //InitializeCustomSearchBox();
             InitializeSettingMenu();
             InitializeDataGridView();
             CalculateLayout();
@@ -105,51 +98,8 @@ namespace GUI.Forms
 
         private void dgvDSKH_Paint(object sender, PaintEventArgs e)
         {
-            //if (Properties.Resources.greenlogo == null) return;
-
-            //int dgvWidth = dgvDSKH.Width;
-            //int dgvHeight = dgvDSKH.Height;
-            //Image watermark = Properties.Resources.greenlogo;
-
-            //int x = (dgvWidth - watermark.Width) / 2;
-            //int y = (dgvHeight - watermark.Height) / 2;
-
-            //ColorMatrix matrix = new ColorMatrix();
-            //matrix.Matrix33 = 0.3f;
-            //ImageAttributes attributes = new ImageAttributes();
-            //attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-
-            //e.Graphics.DrawImage(watermark,
-            //    new Rectangle(x, y, watermark.Width, watermark.Height),
-            //    0, 0, watermark.Width, watermark.Height,
-            //    GraphicsUnit.Pixel,
-            //    attributes);
         }
 
-        private void InitializeCustomSearchBox()
-        {
-            //containersearch.BackColor = Color.Transparent;
-            //containersearch.Size = new Size(400, SEARCH_HEIGHT);
-            //containersearch.BringToFront();
-
-            //searchtextbox.BorderStyle = BorderStyle.None;
-            //searchtextbox.BackColor = Color.White;
-            //searchtextbox.Font = new Font("Segoe UI", 10F);
-            //searchtextbox.ForeColor = Color.Silver;
-            //searchtextbox.Text = PLACEHOLDER_TEXT;
-            //searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
-            //searchtextbox.Size = new Size(containersearch.Width - (borderSize * 2 + 10), 28);
-            //searchtextbox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-
-            //containersearch.Controls.Add(searchtextbox);
-
-            //// Đăng ký events
-            //searchtextbox.Enter += searchtextbox_Enter;
-            //searchtextbox.Leave += searchtextbox_Leave;
-            //searchtextbox.TextChanged += searchtextbox_TextChanged_1;
-            //searchtextbox.KeyDown += searchtextbox_KeyDown;
-            //containersearch.Paint += containersearch_Paint;
-        }
 
         private void InitializeContextMenu()
         {
@@ -243,53 +193,6 @@ namespace GUI.Forms
 
         private void CalculateLayout()
         {
-            //int formWidth = this.ClientSize.Width;
-            //bool isMaximized = this.WindowState == FormWindowState.Maximized;
-            //int btnWidth = isMaximized ? 80 : 66;
-            //int btnHeight = isMaximized ? 50 : 40;
-            //int btnRadius = isMaximized ? 25 : 20;
-
-            //btnXuatfile.Size = new Size(btnWidth, btnHeight);
-            //btnThemuser.Size = new Size(btnWidth, btnHeight);
-            //BoGocButton(btnXuatfile, btnRadius);
-            //BoGocButton(btnThemuser, btnRadius);
-
-            //btnXuatfile.Left = formWidth - btnWidth - MARGIN;
-            //btnThemuser.Left = btnXuatfile.Left - btnWidth - SPACING;
-
-            //pictureFilter.Left = MARGIN;
-
-            //int leftBoundary = pictureFilter.Right + SPACING;
-            //int rightBoundary = btnThemuser.Left - SPACING - picturemicro.Width - SPACING;
-            //int availableWidth = rightBoundary - leftBoundary;
-
-            //int searchWidth = Math.Max(MIN_SEARCH_WIDTH, Math.Min(availableWidth, MAX_SEARCH_WIDTH));
-            //if (searchWidth < MIN_SEARCH_WIDTH)
-            //{
-            //    searchWidth = Math.Max(150, availableWidth);
-            //}
-
-            //containersearch.Left = leftBoundary;
-            //containersearch.Width = searchWidth;
-            //containersearch.Height = SEARCH_HEIGHT;
-
-            //searchtextbox.Width = searchWidth - (borderSize * 2 + 10);
-            //searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
-
-            //picturemicro.Left = containersearch.Right + SPACING;
-
-            //if (isMaximized)
-            //{
-            //    btnThemuser.Padding = new Padding(10, 5, 10, 5);
-            //    btnXuatfile.Padding = new Padding(10, 5, 10, 5);
-            //}
-            //else
-            //{
-            //    btnThemuser.Padding = new Padding(5, 3, 5, 3);
-            //    btnXuatfile.Padding = new Padding(5, 3, 5, 3);
-            //}
-
-            //containersearch.Invalidate();
         }
         #endregion
 
@@ -313,29 +216,6 @@ namespace GUI.Forms
         #region Custom Search Box Paint
         private void containersearch_Paint(object sender, PaintEventArgs e)
         {
-            //e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            //e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-            //float offset = borderSize / 2f;
-            //RectangleF rect = new RectangleF(
-            //    offset,
-            //    offset,
-            //    containersearch.ClientSize.Width - borderSize,
-            //    containersearch.ClientSize.Height - borderSize
-            //);
-
-            //using (GraphicsPath path = CreateRoundedRectPath(rect, borderRadius))
-            //{
-            //    using (SolidBrush brush = new SolidBrush(Color.White))
-            //    {
-            //        e.Graphics.FillPath(brush, path);
-            //    }
-
-            //    using (Pen pen = new Pen(borderColor, borderSize))
-            //    {
-            //        e.Graphics.DrawPath(pen, path);
-            //    }
-            //}
         }
 
         private GraphicsPath CreateRoundedRectPath(RectangleF rect, float radius)
