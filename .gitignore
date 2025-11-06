@@ -58,3 +58,4 @@ publish/
 # Others
 *.log
 *.vsix
+GUI/Model/
