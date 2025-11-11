@@ -12,7 +12,7 @@ namespace GUI
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new DanhSachKetQua());
+            Application.Run(new TrangChu());
             //Application.Run(new DanhSachNhanVien());
             //Application.Run(new DanhSachKeHoach());
 

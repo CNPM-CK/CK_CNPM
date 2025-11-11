@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTO
 {
-    public class HopDong
+    public class HopDongDTO
     {
         public string maHD { get; set; }
         public string maKH { get; set; }

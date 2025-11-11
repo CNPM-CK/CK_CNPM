@@ -42,10 +42,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Forms\DanhSachHD.cs">
+    <Compile Update="Forms\DanhSachHopDonguc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Forms\DanhSachKetQuaUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Forms\TrangChu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Forms\ThemHopDong.cs">
+    <Compile Update="Forms\NenMauNhapLieuUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Forms\NhapThongSo.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -174,6 +183,22 @@
     <None Update="Model\vosk-model-vn-0.4\README">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ADMIN\.nuget\packages\vosk\0.3.38\build\lib\win-x64\libgcc_s_seh-1.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ADMIN\.nuget\packages\vosk\0.3.38\build\lib\win-x64\libstdc++-6.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ADMIN\.nuget\packages\vosk\0.3.38\build\lib\win-x64\libvosk.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\ADMIN\.nuget\packages\vosk\0.3.38\build\lib\win-x64\libwinpthread-1.dll" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿namespace GUI.Forms
 {
-    partial class ThemHopDong
+    partial class ThemHopDongForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            label6 = new Label();
+            cbbTrangThai = new ComboBox();
             btnCancel = new Button();
             buttonAddnew = new Button();
             label5 = new Label();
@@ -49,6 +51,8 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(cbbTrangThai);
             panel1.Controls.Add(btnCancel);
             panel1.Controls.Add(buttonAddnew);
             panel1.Controls.Add(label5);
@@ -67,6 +71,24 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(800, 632);
             panel1.TabIndex = 0;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.Location = new Point(473, 401);
+            label6.Name = "label6";
+            label6.Size = new Size(92, 23);
+            label6.TabIndex = 19;
+            label6.Text = "Trạng thái";
+            // 
+            // cbbTrangThai
+            // 
+            cbbTrangThai.FormattingEnabled = true;
+            cbbTrangThai.Location = new Point(473, 427);
+            cbbTrangThai.Name = "cbbTrangThai";
+            cbbTrangThai.Size = new Size(277, 28);
+            cbbTrangThai.TabIndex = 18;
             // 
             // btnCancel
             // 
@@ -96,7 +118,7 @@
             buttonAddnew.Name = "buttonAddnew";
             buttonAddnew.Size = new Size(370, 54);
             buttonAddnew.TabIndex = 16;
-            buttonAddnew.Text = "Thêm nhân viên";
+            buttonAddnew.Text = "Thêm hợp đồng";
             buttonAddnew.UseVisualStyleBackColor = false;
             buttonAddnew.Click += buttonAddnew_Click;
             // 
@@ -209,7 +231,6 @@
             label1.TabIndex = 0;
             label1.Text = "THÊM HỢP ĐỒNG MỚI";
             label1.TextAlign = ContentAlignment.MiddleCenter;
-            label1.Click += label1_Click;
             // 
             // ThemHopDong
             // 
@@ -220,7 +241,7 @@
             MaximizeBox = false;
             Name = "ThemHopDong";
             Text = "Thêm hợp đồng";
-            Load += ThemNhanVien_Load;
+            Load += ThemHopDong_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panel2.ResumeLayout(false);
@@ -244,5 +265,7 @@
         private Label label4;
         private Button buttonAddnew;
         private Button btnCancel;
+        private Label label6;
+        private ComboBox cbbTrangThai;
     }
 }

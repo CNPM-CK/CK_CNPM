@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -15,11 +16,11 @@ using System.Windows.Forms;
 
 namespace GUI.Forms
 {
-    public partial class ThemHopDong : Form
+    public partial class ThemHopDongForm : Form
     {
         public event EventHandler SuccesfullyUpdated;
 
-        public ThemHopDong()
+        public ThemHopDongForm()
         {
             InitializeComponent();
         }
@@ -165,7 +166,7 @@ namespace GUI.Forms
         #endregion
 
 
-        private void ThemNhanVien_Load(object sender, EventArgs e)
+        private void ThemHopDong_Load(object sender, EventArgs e)
         {
             var bllKhachHang = new KhachHangBLL();
             var list = bllKhachHang.layDanhSachKH();
@@ -186,52 +187,48 @@ namespace GUI.Forms
             {
                 MessageBox.Show("Không có khách hàng nào trong DB!");
             }
-            //Custom textbox
-            //ApplyRoundedInput(panelKhachHang, cbbKhachHang, 12, 2, Color.FromArgb(0, 152, 70));
-            //ApplyRoundedInput(panelKhachHang, cbbKhachHang, 12, 2, Color.FromArgb(0, 152, 70));
+
+            var bllTanSuatQT = new TanSuatQTBLL();
+            var list_tsqt = bllTanSuatQT.LayDanhSachTSQT();
+            cbbTanSuatQT.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbTanSuatQT.DisplayMember = "tenTSQT";
+            cbbTanSuatQT.ValueMember = "maTSQT";
+
+            if (list != null && list.Count > 0)
+            {
+                var data = new List<TanSuatQTDTO>();
+                data.Add(new TanSuatQTDTO { maTSQT = null, tenTSQT = "— Chọn tần suất quan trắc —" });
+                data.AddRange(list_tsqt);
+
+                cbbTanSuatQT.DataSource = data;
+                cbbTanSuatQT.SelectedIndex = 0;
+            }
+            else
+            {
+                MessageBox.Show("Không có khách hàng nào trong DB!");
+            }
+            ;
+            var bllTrangThai = new TrangThaiBLL();
+            var list_tt = bllTrangThai.layDanhSachTrangThaiHD();
+            cbbTrangThai.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbbTrangThai.DisplayMember = "tenTT";
+            cbbTrangThai.ValueMember = "maTT";
+
+            if (list != null && list.Count > 0)
+            {
+                var data = new List<TrangThaiHDDTO>();
+                data.Add(new TrangThaiHDDTO { maTT = null, tenTT = "— Chọn trạng thái quan trắc —" });
+                data.AddRange(list_tt);
+
+                cbbTrangThai.DataSource = data;
+                cbbTrangThai.SelectedIndex = 0;
+            }
+            else
+            {
+                MessageBox.Show("Không có trạng thái nào trong DB!");
+            }
             InitializeButtonStyles();
 
-
-        }
-
-
-        private void panel5_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBoxhoten_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label10_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel3_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
 
         }
 
@@ -245,15 +242,27 @@ namespace GUI.Forms
                 cbbKhachHang.Focus();
                 return;
             }
-
-
-            HopDong hd = new HopDong
+            if (cbbTanSuatQT.SelectedIndex <= 0)
+            {
+                MessageBox.Show("Vui lòng chọn tần suất quan trắc!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbbKhachHang.Focus();
+                return;
+            }
+            if (cbbTrangThai.SelectedIndex <= 0)
+            {
+                MessageBox.Show("Vui lòng chọn trạng thái quan trắc!", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbbKhachHang.Focus();
+                return;
+            }
+            HopDongDTO hd = new HopDongDTO
             {
                 maKH = cbbKhachHang.SelectedValue.ToString(),
+                soHD = textBox1.Text.ToString(),
+                tanSuatQuanTrac = cbbTanSuatQT.SelectedValue.ToString(),
                 ngayKy = dateTimePicker1.Value,
-                ngayKetThucHD = dateTimePicker2.Value
+                ngayKetThucHD = dateTimePicker2.Value,
+                trangThai = cbbTrangThai.SelectedValue.ToString(),
             };
-
             try
             {
                 var bll = new HopDongBLL();
@@ -282,6 +291,9 @@ namespace GUI.Forms
         {
 
             cbbKhachHang.SelectedIndex = 0;
+            cbbTanSuatQT.SelectedIndex = 0;
+            cbbTrangThai.SelectedIndex = 0;
+            textBox1.Clear();
 
             // Reset DateTimePicker
             dateTimePicker1.Value = DateTime.Now;
@@ -289,7 +301,7 @@ namespace GUI.Forms
 
         }
 
-        private void textBoxemail_TextChanged(object sender, EventArgs e)
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

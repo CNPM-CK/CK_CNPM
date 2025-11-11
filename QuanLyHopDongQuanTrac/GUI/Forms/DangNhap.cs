@@ -1,4 +1,5 @@
 using BLL;
+using GUI.Common;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Drawing.Drawing2D;
@@ -201,63 +202,48 @@ namespace GUI.Forms
                 MessageBox.Show(result.message, "Đăng nhập thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            //Chuyển hướng nếu vai trò là admin
-            if (result.account!.vaiTro == 1 || result.account!.vaiTro == 2)
-            {
-
-                DanhSachNhanVien listEmployees = new DanhSachNhanVien();
-                listEmployees.Show();
-                this.Hide();
-            }
-            else
+            SessionStore.Current.SignIn(
+                result.account!.tenTK,
+                result.account!.vaiTro
+            );
+            if (result.account!.vaiTro != 1 && result.account!.vaiTro != 2)
             {
                 var nvBLL = new NhanVienBLL();
                 string maPhong = nvBLL.layPhongBanTheoTaiKhoan(result.account.tenTK);
-
                 if (string.IsNullOrEmpty(maPhong))
                 {
                     MessageBox.Show("Không tìm thấy phòng ban cho nhân viên này!",
                                     "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-
-                Form formPhong = null;
-
-                switch (maPhong)
-                {
-                    case "P001":
-                        formPhong = new DanhSachKhachHang();
-                        break;
-                    case "P002":
-                        formPhong = new DanhSachKeHoach();
-                        break;
-                    //case "P003":
-                    //    formPhong = new PhongHienTruongForm();
-                    //    break;
-                    //case "P004":
-                    //    formPhong = new PhongThiNghiemForm();
-                    //    break;
-                    //case "P005":
-                    //    formPhong = new PhongKetQuaForm();
-                    //    break;
-                    //case "P006":
-                    //    formPhong = new PhongQuanTracForm();
-                    //    break;
-                    default:
-                        MessageBox.Show("Phòng ban chưa được hỗ trợ!",
-                                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                }
-
-                if (formPhong != null)
-                {
-                    formPhong.Show();
-                    this.Hide();
-                }
+                SessionStore.Current.MaPhong = maPhong;
             }
+            Form next = CreateNextFormFromSession();
+            next.FormClosed += (s, _) => this.Close();
+            next.Show();
+            this.Hide();
+        }
 
+        private Form CreateNextFormFromSession()
+        {
+            var ss = SessionStore.Current;
 
+            if (ss.VaiTro == 1 || ss.VaiTro == 2)
+                return new DanhSachNhanVien();
+
+            switch (ss.MaPhong)
+            {
+                case "P001": return new DanhSachKhachHang();
+                case "P002": return new DanhSachKeHoach();
+                case "P003": return new DanhSachNhapLieu();
+                case "P004": return new DanhSachNhapLieu();
+                // case "P005": return new PhongKetQuaForm();
+                // case "P006": return new PhongQuanTracForm();
+                default:
+                    MessageBox.Show("Phòng ban chưa được hỗ trợ!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return new DanhSachKhachHang();
+            }
         }
 
         private void textBoxMatKhau_KeyDown(object sender, KeyEventArgs e)
