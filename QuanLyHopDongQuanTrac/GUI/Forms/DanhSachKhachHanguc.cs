@@ -1,5 +1,6 @@
 ﻿using BLL;
 using DTO;
+using GUI.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,8 @@ namespace GUI.Forms
 {
     public partial class DanhSachKhachHanguc : UserControl
     {
+        private readonly bool _isPhongKinhDoanh = SessionStore.Current.MaPhong == "P001";
+
         #region Fields
         private Color borderColor = Color.Black;
         private int borderRadius = 12;
@@ -97,6 +100,7 @@ namespace GUI.Forms
             dgvDanhsachnhanvien.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151);
             dgvDanhsachnhanvien.DefaultCellStyle.SelectionForeColor = Color.Black;
             dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDanhsachnhanvien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvDanhsachnhanvien.Columns.AddRange(new DataGridViewColumn[]
             {
@@ -111,28 +115,21 @@ namespace GUI.Forms
                 new DataGridViewTextBoxColumn { DataPropertyName = "tenTrangThai", HeaderText = "Trạng thái", Name = "tenTrangThai" },
                 new DataGridViewTextBoxColumn { DataPropertyName = "diaChi", HeaderText = "Địa chỉ", Name = "diaChi" }
             });
-
-            DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+            if (_isPhongKinhDoanh)
             {
-                Name = "ThaoTac",
-                HeaderText = "Thao tác",
-                ImageLayout = DataGridViewImageCellLayout.Zoom
-            };
-            dgvDanhsachnhanvien.Columns["maKH"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDanhsachnhanvien.Columns["kyHieuDN"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDanhsachnhanvien.Columns["soDienThoaiKH"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDanhsachnhanvien.Columns["maSoThue"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDanhsachnhanvien.Columns["tenTrangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
-
-            dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
+                DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+                {
+                    Name = "ThaoTac",
+                    HeaderText = "Thao tác",
+                    ImageLayout = DataGridViewImageCellLayout.Zoom
+                };
+                dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
+            }
+            // Gán data và event
             dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;
             dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
             dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
 
-            dgvDanhsachnhanvien.DataSource = dsKhachhang;
-            dgvDanhsachnhanvien.ReadOnly = true;
-            dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
             taiTrangKhachHang();
         }
 
@@ -146,15 +143,13 @@ namespace GUI.Forms
         #region DataGridView Events
         private void dgvDanhsachnhanvien_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
+            if (!_isPhongKinhDoanh) return;
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
             {
                 e.PaintBackground(e.ClipBounds, true);
 
-                int iconWidth = 24;
-                int iconHeight = 24;
-                int spacing = 10;
+                int iconWidth = 24, iconHeight = 24, spacing = 10;
                 int totalWidth = (iconWidth * 2) + spacing;
-
                 int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
                 int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
 
@@ -170,22 +165,17 @@ namespace GUI.Forms
 
         private void dgvDanhsachnhanvien_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (!_isPhongKinhDoanh) return;
             if (e.RowIndex < 0 || e.ColumnIndex != dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
                 return;
 
             var clickPoint = dgvDanhsachnhanvien.PointToClient(Cursor.Position);
             DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
 
-            if (row.Cells["maKH"].Value == null) return;
-
             if (editRect.Contains(clickPoint))
-            {
                 HandleEdit(row);
-            }
             else if (deleteRect.Contains(clickPoint))
-            {
                 HandleDelete(row);
-            }
         }
 
         private void HandleEdit(DataGridViewRow row)
@@ -363,6 +353,8 @@ namespace GUI.Forms
 
         private void InitializeButtonStyles()
         {
+            btnThemuser.Visible = _isPhongKinhDoanh;
+            btnXuatfile.Visible = _isPhongKinhDoanh;
             btnThemuser.Size = new Size(66, 40);
             btnXuatfile.Size = new Size(66, 40);
 
@@ -647,7 +639,7 @@ namespace GUI.Forms
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
             }
 
-            
+
             var data = bll.layDanhSachKH_PhanTrang(currentPage, pageSize);
             dsKhachhang = new BindingList<KhachHang>(data);
 

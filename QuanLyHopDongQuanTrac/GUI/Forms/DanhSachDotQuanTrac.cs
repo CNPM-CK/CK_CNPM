@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BLL;
+using DTO;
+using GUI.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,13 +10,12 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
-using BLL;
-using DTO;
 
 namespace GUI.Forms
 {
     public partial class DanhSachDotQuanTrac : UserControl
     {
+        private readonly bool _isPhongKeHoach = SessionStore.Current.MaPhong == "P002";
         private string maDotHienTai = null;
         #region Fields
         // Search box styling
@@ -103,6 +105,7 @@ namespace GUI.Forms
             dgvDsdotquantrac.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151);
             dgvDsdotquantrac.DefaultCellStyle.SelectionForeColor = Color.Black;
             dgvDsdotquantrac.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDsdotquantrac.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             // Define columns
             dgvDsdotquantrac.Columns.AddRange(new DataGridViewColumn[]
@@ -166,20 +169,16 @@ namespace GUI.Forms
                     Name = "trangThai",
                 }
             });
-
-            // Add action column
-            DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+            if (_isPhongKeHoach)
             {
-                Name = "ThaoTac",
-                HeaderText = "Thao tác",
-                ImageLayout = DataGridViewImageCellLayout.Zoom,
-            };
-            dgvDsdotquantrac.Columns["maHD"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDsdotquantrac.Columns["dotQuanTrac"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDsdotquantrac.Columns["ngayBatDau"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDsdotquantrac.Columns["ngayDuKien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDsdotquantrac.Columns["ngayTraKQ"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDsdotquantrac.Columns["trangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+                {
+                    Name = "ThaoTac",
+                    HeaderText = "Thao tác",
+                    ImageLayout = DataGridViewImageCellLayout.Zoom
+                };
+                dgvDsdotquantrac.Columns.Add(thaoTacCol);
+            }
             // Thu nhỏ cột HỢP ĐỒNG
             dgvDsdotquantrac.Columns["maHD"].Width = 115; // hoặc 80 tùy bạn muốn nhỏ cỡ nào
             dgvDsdotquantrac.Columns["maHD"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -191,13 +190,7 @@ namespace GUI.Forms
             dgvDsdotquantrac.Columns["tenKhachHang"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 
             dgvDsdotquantrac.Columns["noiDung"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvDsdotquantrac.Columns.Add(thaoTacCol);
             dgvDsdotquantrac.ReadOnly = true;
-            dgvDsdotquantrac.Columns["ThaoTac"].ReadOnly = false;
-            dgvDsdotquantrac.Columns["ThaoTac"].Width = 100;
-            dgvDsdotquantrac.Columns["ThaoTac"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-
-
 
             // Bind data
             dgvDsdotquantrac.DataSource = dsDotQuanTrac;
@@ -271,6 +264,8 @@ namespace GUI.Forms
 
         private void InitializeButtonStyles()
         {
+            btnThemdotquantrac.Visible = _isPhongKeHoach;
+            btnXuatfile.Visible = _isPhongKeHoach;
             if (btnThemdotquantrac != null)
             {
                 btnThemdotquantrac.Size = new Size(66, 40);
@@ -419,6 +414,7 @@ namespace GUI.Forms
         #region DataGridView Events - ✅ FIXED GIỐNG DanhSachNhanVien
         private void DgvDsdotquantrac_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
+            if (!_isPhongKeHoach) return;
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvDsdotquantrac.Columns["ThaoTac"].Index)
             {
                 e.PaintBackground(e.ClipBounds, true);
@@ -449,6 +445,7 @@ namespace GUI.Forms
 
         private void DgvDsdotquantrac_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (!_isPhongKeHoach) return;
             if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
 
             // Kiểm tra cột ThaoTac tồn tại

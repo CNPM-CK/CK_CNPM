@@ -1,5 +1,6 @@
 ﻿using BLL;
 using DTO;
+using GUI.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,7 @@ namespace GUI.Forms
 {
     public partial class DanhSachHopDonguc : UserControl
     {
+        private readonly bool _isPhongKinhDoanh = SessionStore.Current.MaPhong == "P001";
         #region Fields
         private Color borderColor = Color.Black;
         private int borderRadius = 12;
@@ -109,15 +111,16 @@ namespace GUI.Forms
                 new DataGridViewTextBoxColumn { DataPropertyName = "tanSuatQuanTrac", HeaderText = "Tần suất quan trắc", Name = "tanSuatQuanTrac" },
                 new DataGridViewTextBoxColumn { DataPropertyName = "soHD", HeaderText = "Số hợp đồng", Name = "soHD" }
             });
-
-            DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+            if (_isPhongKinhDoanh)
             {
-                Name = "ThaoTac",
-                HeaderText = "Thao tác",
-                ImageLayout = DataGridViewImageCellLayout.Zoom
-            };
-            dgvdanhsachHopDong.Columns.Add(thaoTacCol);
-
+                DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+                {
+                    Name = "ThaoTac",
+                    HeaderText = "Thao tác",
+                    ImageLayout = DataGridViewImageCellLayout.Zoom
+                };
+                dgvdanhsachHopDong.Columns.Add(thaoTacCol);
+            }
             dgvdanhsachHopDong.CellFormatting += dgvdanhsachHopDong_CellFormatting;
             dgvdanhsachHopDong.CellPainting += dgvdanhsachHopDong_CellPainting;
             dgvdanhsachHopDong.CellClick += dgvdanhsachHopDong_CellClick;
@@ -125,7 +128,6 @@ namespace GUI.Forms
 
             dgvdanhsachHopDong.DataSource = dsHopDong;
             dgvdanhsachHopDong.ReadOnly = true;
-            dgvdanhsachHopDong.Columns["ThaoTac"].ReadOnly = false;
             taiTrangKhachHang();
         }
 
@@ -139,6 +141,7 @@ namespace GUI.Forms
         #region DataGridView Events
         private void dgvdanhsachHopDong_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
+            if (!_isPhongKinhDoanh) return;
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvdanhsachHopDong.Columns["ThaoTac"].Index)
             {
                 e.PaintBackground(e.ClipBounds, true);
@@ -163,6 +166,7 @@ namespace GUI.Forms
 
         private void dgvdanhsachHopDong_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (!_isPhongKinhDoanh) return;
             if (e.RowIndex < 0 || e.ColumnIndex != dgvdanhsachHopDong.Columns["ThaoTac"].Index)
                 return;
 
@@ -329,6 +333,8 @@ namespace GUI.Forms
 
         private void InitializeButtonStyles()
         {
+            btnThemuser.Visible = _isPhongKinhDoanh;
+            btnXuatfile.Visible = _isPhongKinhDoanh;
             btnThemuser.Size = new Size(66, 40);
             btnXuatfile.Size = new Size(66, 40);
 

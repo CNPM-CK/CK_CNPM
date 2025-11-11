@@ -2,6 +2,7 @@ using BLL;
 using GUI.Common;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 namespace GUI.Forms
@@ -206,6 +207,7 @@ namespace GUI.Forms
                 result.account!.tenTK,
                 result.account!.vaiTro
             );
+            Debug.WriteLine(result.account.vaiTro);
             if (result.account!.vaiTro != 1 && result.account!.vaiTro != 2)
             {
                 var nvBLL = new NhanVienBLL();
@@ -218,7 +220,7 @@ namespace GUI.Forms
                 }
                 SessionStore.Current.MaPhong = maPhong;
             }
-            Form next = CreateNextFormFromSession();
+            Form next = new TrangChu();
             next.FormClosed += (s, _) => this.Close();
             next.Show();
             this.Hide();

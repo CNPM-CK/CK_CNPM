@@ -652,7 +652,7 @@ INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoi
 
 GO
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV001', N'P004', N'Trần Quang Thái', CAST(N'2005-09-17' AS Date), 1, N'62 Ấp Bắc Chan 1, Xã Tuyên Thạnh, Thị xã Kiến Tường, Long An', N'0854707222', N'thaideptrai@gmail.com', CAST(N'2025-10-12' AS Date), 1)
-INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV002', N'P004', N'Tôn Quốc Thái', CAST(N'2005-07-14' AS Date), 0, N'Xã Trung Hóa, Huyện Minh Hóa, Quảng Bình', N'0123456789', N'thaiton@gmail.com', CAST(N'2025-10-12' AS Date), 1)
+INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV002', N'P003', N'Tôn Quốc Thái', CAST(N'2005-07-14' AS Date), 0, N'Xã Trung Hóa, Huyện Minh Hóa, Quảng Bình', N'0123456789', N'thaiton@gmail.com', CAST(N'2025-10-12' AS Date), 1)
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV003', N'P002', N'Nguyễn Hoàng Sơn', CAST(N'1988-12-26' AS Date), 1, N'Xã An Đồng, Huyện An Dương, Hải Phòng', N'5555500000', N'hoangson@gmail.com', CAST(N'2025-10-12' AS Date), 1)
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV006', N'P002', N'Nguyễn Tiến Phú', CAST(N'1990-01-30' AS Date), 0, N'Xã Vạn Ninh, Huyện Quảng Ninh, Quảng Bình', N'2225552222', N'tienphu@gmail.com', CAST(N'2025-10-14' AS Date), 1)
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV007', N'P001', N'Phan Trí Tâm', CAST(N'1998-12-28' AS Date), 0, N'Thị trấn Long Phú, Huyện Long Phú, Sóc Trăng', N'4567891230', N'ptt@gmail.com', CAST(N'2025-10-15' AS Date), 1)
@@ -4372,4 +4372,140 @@ INSERT INTO [KetQuaChiTiet] VALUES
 ('KQCT0213', 'KQNM0069', 'TS0006', N'mg/L', N'TCVN 6625:2000', 12.3, N'KPH (LOD=4)', N'100'),
 ('KQCT0214', 'KQNM0069', 'TS0007', N'mg/L', N'TCVN 6202:2008', 0.38, N'', N'6');
 GO
+
+ALTER PROCEDURE [dbo].[layDotQuanTracNhapLieu_PhanTrang]
+    @pageNumber INT,
+    @pageSize   INT,
+    @maPhong    VARCHAR(15) = NULL   -- cho phép null để lấy tất cả
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    ;WITH Dot AS (
+        SELECT
+            d.maDot,
+            d.maHD,
+            d.ngayBatDau,
+            d.ngayDuKien,
+            ngayConLai = DATEDIFF(DAY, CAST(GETDATE() AS date), CAST(d.ngayDuKien AS date)),
+
+            hoanThanh = CASE
+                WHEN NOT EXISTS (
+                    SELECT 1
+                    FROM Dot_Nen dn
+                    JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
+                    LEFT JOIN KetQua k ON k.maDNTS = ts.maDNTS
+                    WHERE dn.maDot = d.maDot
+                      AND (@maPhong IS NULL OR ts.maPhong = @maPhong)
+                      AND (k.maDNTS IS NULL OR k.giaTriDoDuoc IS NULL)
+                )
+                THEN 1 ELSE 0
+            END
+        FROM DotQuanTrac d
+		WHERE 
+			(@maPhong IS NULL OR @maPhong = '' OR EXISTS (
+				SELECT 1
+				FROM Dot_Nen dn
+				JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
+				WHERE dn.maDot = d.maDot
+				  AND ts.maPhong = @maPhong
+			))
+    ),
+    Base AS (
+        SELECT
+            maDot, maHD, ngayBatDau, ngayDuKien, ngayConLai,
+            trangThai =
+                CASE
+                    WHEN hoanThanh = 1 THEN N'Hoàn thành'
+                    WHEN ngayConLai < 0 THEN N'Hết hạn'
+                    WHEN ngayConLai BETWEEN 0 AND 7 THEN N'Gần hết hạn'
+                    ELSE N'Còn hạn'
+                END
+        FROM Dot
+    )
+    SELECT 
+        maDot, maHD, ngayBatDau, ngayDuKien, ngayConLai, trangThai
+    FROM Base
+    ORDER BY ngayConLai DESC, maDot
+    OFFSET (@pageNumber - 1) * @pageSize ROWS
+    FETCH NEXT @pageSize ROWS ONLY;
+
+    SELECT TotalRecords = COUNT(*) FROM Base;
+END
+GO
+
+ALTER PROCEDURE [dbo].[layDotQuanTracNhapLieu_PhanTrang]
+    @pageNumber INT,
+    @pageSize   INT,
+    @maPhong    VARCHAR(15) = NULL   -- NULL/'' => lấy tất cả
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    ;WITH Dot AS (
+        SELECT
+            d.maDot,
+            d.maHD,
+            d.ngayBatDau,
+            d.ngayDuKien,
+
+            -- Số ngày còn lại gốc (có thể âm nếu quá hạn)
+            ngayConLaiRaw = DATEDIFF(DAY, CAST(GETDATE() AS date), CAST(d.ngayDuKien AS date)),
+
+            -- Xác định đã hoàn thành cho phạm vi phòng (hoặc tất cả khi @maPhong null/'')
+            hoanThanh = CASE
+                WHEN NOT EXISTS (
+                    SELECT 1
+                    FROM Dot_Nen dn
+                    JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
+                    LEFT JOIN KetQua k ON k.maDNTS = ts.maDNTS
+                    WHERE dn.maDot = d.maDot
+                      AND (@maPhong IS NULL OR @maPhong = '' OR ts.maPhong = @maPhong)
+                      AND (k.maDNTS IS NULL OR k.giaTriDoDuoc IS NULL)
+                )
+                THEN 1 ELSE 0
+            END
+        FROM DotQuanTrac d
+        WHERE
+            -- Nếu có mã phòng thì chỉ lấy đợt có giao việc cho phòng đó
+            (@maPhong IS NULL OR @maPhong = '' OR EXISTS (
+                SELECT 1
+                FROM Dot_Nen dn
+                JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
+                WHERE dn.maDot = d.maDot
+                  AND ts.maPhong = @maPhong
+            ))
+    ),
+    Base AS (
+        SELECT
+            maDot,
+            maHD,
+            ngayBatDau,
+            ngayDuKien,
+
+            -- Hiển thị: nếu hoàn thành thì không âm (floor = 0), nếu chưa thì giữ nguyên
+            ngayConLai = CASE
+                            WHEN hoanThanh = 1 AND ngayConLaiRaw < 0 THEN 0
+                            ELSE ngayConLaiRaw
+                         END,
+
+            -- Trạng thái: ưu tiên Hoàn thành, còn lại dựa trên ngayConLaiRaw (để biết có trễ hạn thật)
+            trangThai =
+                CASE
+                    WHEN hoanThanh = 1              THEN N'Hoàn thành'
+                    WHEN ngayConLaiRaw < 0          THEN N'Hết hạn'
+                    WHEN ngayConLaiRaw BETWEEN 0 AND 7 THEN N'Gần hết hạn'
+                    ELSE                               N'Còn hạn'
+                END
+        FROM Dot
+    )
+    SELECT  maDot, maHD, ngayBatDau, ngayDuKien, ngayConLai, trangThai
+    FROM    Base
+    ORDER BY trangThai, ngayConLai DESC, maDot
+    OFFSET (@pageNumber - 1) * @pageSize ROWS
+    FETCH NEXT @pageSize ROWS ONLY;
+
+    -- Tổng bản ghi cho UI
+    SELECT TotalRecords = COUNT(*) FROM Base;
+END
 

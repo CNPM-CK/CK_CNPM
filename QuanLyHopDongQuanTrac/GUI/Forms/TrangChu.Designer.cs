@@ -68,7 +68,7 @@
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1021, 64);
+            panel2.Size = new Size(1204, 64);
             panel2.TabIndex = 0;
             // 
             // pictureBox2
@@ -76,7 +76,7 @@
             pictureBox2.Anchor = AnchorStyles.Right;
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(880, 12);
+            pictureBox2.Location = new Point(1063, 12);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(41, 38);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
@@ -88,7 +88,7 @@
             pictureBoxSetting.Anchor = AnchorStyles.Right;
             pictureBoxSetting.Cursor = Cursors.Hand;
             pictureBoxSetting.Image = Properties.Resources.settingicon_2;
-            pictureBoxSetting.Location = new Point(943, 12);
+            pictureBoxSetting.Location = new Point(1126, 12);
             pictureBoxSetting.Name = "pictureBoxSetting";
             pictureBoxSetting.Size = new Size(44, 38);
             pictureBoxSetting.SizeMode = PictureBoxSizeMode.Zoom;
@@ -113,7 +113,7 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1021, 678);
+            panel1.Size = new Size(1204, 678);
             panel1.TabIndex = 0;
             // 
             // panel4
@@ -124,7 +124,7 @@
             panel4.Dock = DockStyle.Fill;
             panel4.Location = new Point(0, 64);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1021, 585);
+            panel4.Size = new Size(1204, 585);
             panel4.TabIndex = 2;
             // 
             // panel5
@@ -133,7 +133,7 @@
             panel5.Dock = DockStyle.Fill;
             panel5.Location = new Point(220, 0);
             panel5.Name = "panel5";
-            panel5.Size = new Size(801, 585);
+            panel5.Size = new Size(984, 585);
             panel5.TabIndex = 1;
             // 
             // label1
@@ -141,7 +141,7 @@
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Black", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(16, 0);
+            label1.Location = new Point(108, 0);
             label1.Name = "label1";
             label1.Size = new Size(938, 100);
             label1.TabIndex = 0;
@@ -314,14 +314,14 @@
             panel3.Dock = DockStyle.Bottom;
             panel3.Location = new Point(0, 649);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1021, 29);
+            panel3.Size = new Size(1204, 29);
             panel3.TabIndex = 1;
             // 
             // labelFooter
             // 
             labelFooter.Anchor = AnchorStyles.None;
             labelFooter.AutoSize = true;
-            labelFooter.Location = new Point(380, 3);
+            labelFooter.Location = new Point(472, 3);
             labelFooter.Name = "labelFooter";
             labelFooter.Size = new Size(277, 20);
             labelFooter.TabIndex = 0;
@@ -332,7 +332,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1021, 678);
+            ClientSize = new Size(1204, 678);
             Controls.Add(panel1);
             Name = "TrangChu";
             Text = "Trang chủ";

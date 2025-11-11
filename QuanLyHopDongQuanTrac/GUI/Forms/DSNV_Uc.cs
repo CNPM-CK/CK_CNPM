@@ -1,5 +1,6 @@
 ﻿using BLL;
 using DTO;
+using GUI.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +19,14 @@ namespace GUI.Forms
 {
     public partial class DSNV_Uc : UserControl
     {
+        // Fields
+        private readonly bool _isAdmin = (SessionStore.Current?.VaiTro ?? 0) == 1;
+
+        private bool HasThaoTacColumn() =>
+            dgvDanhsachnhanvien.Columns.Contains("ThaoTac");
+
+        private int ThaoTacIndex() =>
+            HasThaoTacColumn() ? dgvDanhsachnhanvien.Columns["ThaoTac"].Index : -1;
         #region Fields
 
         //private TimKiemGiongNoi voiceSearch;
@@ -98,6 +107,8 @@ namespace GUI.Forms
             dgvDanhsachnhanvien.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151);
             dgvDanhsachnhanvien.DefaultCellStyle.SelectionForeColor = Color.Black;
             dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDanhsachnhanvien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
 
             // Thêm các cột
             dgvDanhsachnhanvien.Columns.AddRange(new DataGridViewColumn[]
@@ -114,27 +125,26 @@ namespace GUI.Forms
                 new DataGridViewTextBoxColumn { DataPropertyName = "tenTrangThai", HeaderText = "Trạng Thái", Name = "tenTrangThai" }
 
             });
-
-            // Thêm cột thao tác
-            DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+            if (_isAdmin)
             {
-                Name = "ThaoTac",
-                HeaderText = "Thao tác",
-                ImageLayout = DataGridViewImageCellLayout.Zoom
-            };
-            dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
+                var thaoTacCol = new DataGridViewImageColumn
+                {
+                    Name = "ThaoTac",
+                    HeaderText = "Thao tác",
+                    ImageLayout = DataGridViewImageCellLayout.Zoom
+                };
+                dgvDanhsachnhanvien.Columns.Add(thaoTacCol);
+            }
 
-            // Đăng ký events
             dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
 
-            dgvDanhsachnhanvien.DataSource = dsNhanVien;
-            dgvDanhsachnhanvien.ReadOnly = true;
-            dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
-            // Đăng ký events
-            dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
-            dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;
-            dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
-            dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
+            if (_isAdmin && HasThaoTacColumn())
+            {
+                dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;
+                dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
+                dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
+                dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
+            }
         }
 
         private void taiDanhSachNhanVien()
@@ -148,51 +158,43 @@ namespace GUI.Forms
 
         private void dgvDanhsachnhanvien_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
-            {
-                e.PaintBackground(e.ClipBounds, true);
+            if (!_isAdmin || !HasThaoTacColumn()) return;
+            if (e.RowIndex < 0) return;
+            if (e.ColumnIndex != ThaoTacIndex()) return;
 
-                int iconWidth = 24;
-                int iconHeight = 24;
-                int spacing = 10;
-                int totalWidth = (iconWidth * 2) + spacing;
+            e.PaintBackground(e.ClipBounds, true);
 
-                int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
-                int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
+            int iconWidth = 24, iconHeight = 24, spacing = 10;
+            int totalWidth = (iconWidth * 2) + spacing;
+            int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
+            int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
 
-                editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
+            editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
+            deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
+
+            if (Properties.Resources.edit != null)
                 e.Graphics.DrawImage(Properties.Resources.edit, editRect);
-
-                deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
+            if (Properties.Resources.trash_can != null)
                 e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
 
-                e.Handled = true;
-            }
+            e.Handled = true;
         }
 
         private void dgvDanhsachnhanvien_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= dgvDanhsachnhanvien.Rows.Count)
-                return;
-
-            if (e.ColumnIndex != dgvDanhsachnhanvien.Columns["ThaoTac"].Index)
-                return;
+            if (!_isAdmin || !HasThaoTacColumn()) return;
+            if (e.RowIndex < 0 || e.RowIndex >= dgvDanhsachnhanvien.Rows.Count) return;
+            if (e.ColumnIndex != ThaoTacIndex()) return;
 
             var clickPoint = dgvDanhsachnhanvien.PointToClient(Cursor.Position);
             DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
 
-            if (row.Cells["maNV"].Value == null)
-                return;
+            if (row?.Cells["maNV"]?.Value == null) return;
 
-            if (editRect.Contains(clickPoint))
-            {
-                HandleEdit(row);
-            }
-            else if (deleteRect.Contains(clickPoint))
-            {
-                HandleDelete(row);
-            }
+            if (editRect.Contains(clickPoint)) HandleEdit(row);
+            else if (deleteRect.Contains(clickPoint)) HandleDelete(row);
         }
+
 
 
 
@@ -384,6 +386,8 @@ namespace GUI.Forms
 
         private void InitializeButtonStyles()
         {
+            btnThemuser.Visible = _isAdmin;
+            btnXuatfile.Visible = _isAdmin;
             btnThemuser.Size = new Size(66, 40);
             btnXuatfile.Size = new Size(66, 40);
 
@@ -692,15 +696,9 @@ namespace GUI.Forms
             InitializeCustomSearchBox();
             InitializeDataGridView();
             CalculateLayout();
-            // Đăng ký events
-            dgvDanhsachnhanvien.CellFormatting += dgvDanhsachnhanvien_CellFormatting;
-            dgvDanhsachnhanvien.CellPainting += dgvDanhsachnhanvien_CellPainting;
-            dgvDanhsachnhanvien.CellClick += dgvDanhsachnhanvien_CellClick;
-            dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
 
             dgvDanhsachnhanvien.DataSource = dsNhanVien;
             dgvDanhsachnhanvien.ReadOnly = true;
-            dgvDanhsachnhanvien.Columns["ThaoTac"].ReadOnly = false;
             taiTrangkhachhang();
             //InitializeVoiceSearch();
 
