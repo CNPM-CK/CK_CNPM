@@ -65,8 +65,6 @@ namespace GUI.Forms
             TrangCaNhan.anhDaiDienDaThayDoi += taiAnhDaiDienNguoiDung;
 
         }
-
-
         private Rectangle editRect;
         private Rectangle deleteRect;
 
@@ -79,6 +77,7 @@ namespace GUI.Forms
         {
 
         }
+
 
         private void CenterFormOnParent(Form childForm)
         {
@@ -102,7 +101,6 @@ namespace GUI.Forms
                 panel5.Controls.Add(trangCaNhan);
                 trangCaNhan.BringToFront();
             };
-
 
             ToolStripMenuItem logoutItem = new ToolStripMenuItem("Đăng xuất");
             logoutItem.Click += (s, ev) =>

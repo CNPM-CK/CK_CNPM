@@ -16,6 +16,7 @@ namespace GUI.Forms
 {
     public partial class DanhSachDotNhapLieuUC : UserControl
     {
+        private readonly bool _isPhongTN_HT = SessionStore.Current.MaPhong == "P003" || SessionStore.Current.MaPhong == "P004";
         private string maDotHienTai = null;
         #region Fields
         // Search box styling
@@ -150,17 +151,17 @@ namespace GUI.Forms
 
             });
 
-            // Add action column
-            DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+            if (_isPhongTN_HT)
             {
-                Name = "ThaoTac",
-                HeaderText = "THAO TÁC",
-                ImageLayout = DataGridViewImageCellLayout.Zoom,
-                //Image = Properties.Resources.edit
-            };
-            dgvDsdotquantrac.Columns.Add(thaoTacCol);
+                DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+                {
+                    Name = "ThaoTac",
+                    HeaderText = "Thao tác",
+                    ImageLayout = DataGridViewImageCellLayout.Zoom
+                };
+                dgvDsdotquantrac.Columns.Add(thaoTacCol);
+            }
             dgvDsdotquantrac.ReadOnly = true;
-            dgvDsdotquantrac.Columns["ThaoTac"].ReadOnly = false;
 
             // Bind data
             dgvDsdotquantrac.DataSource = dsDotQuanTrac;
@@ -308,6 +309,7 @@ namespace GUI.Forms
         #region DataGridView Events - ✅ FIXED GIỐNG DanhSachNhanVien
         private void DgvDsdotquantrac_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
+            if (!_isPhongTN_HT) return;
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvDsdotquantrac.Columns["ThaoTac"].Index)
             {
                 e.PaintBackground(e.ClipBounds, true);
@@ -334,6 +336,8 @@ namespace GUI.Forms
 
         private void DgvDsdotquantrac_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (!_isPhongTN_HT) return;
+
             // 🧱 Chống double-click nhanh
             if ((DateTime.Now - _lastClickTime).TotalMilliseconds < 250)
                 return; // bỏ qua nếu click quá nhanh
@@ -574,6 +578,7 @@ namespace GUI.Forms
         int pageSize = 15;
         int totalRecords = 0;
         int totalPages = 0;
+
         private void LoadKeHoachPage()
         {
             var bll = new DotQuanTracNhapLieuBLL();
@@ -583,21 +588,34 @@ namespace GUI.Forms
                 totalRecords = bll.demTongKHQT();
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
             }
-            string? maPhong = SessionStore.Current.MaPhong;
 
+            string maPhong = SessionStore.Current?.MaPhong;
+            var data = new List<DanhSachDotNhapLieuDTO>();
             if (string.IsNullOrEmpty(maPhong))
             {
-                //MessageBox.Show("Không tìm thấy mã phòng trong phiên đăng nhập!",
-                //    "Lỗi session", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //return;
-                maPhong = "P003";
+                if (SessionStore.Current?.VaiTro == 1)
+                {
+                    data = bll.layDanhSachDotQuanTracNhapLieu_PhanTrang(currentPage, pageSize, "");
+
+                }
+                else
+                {
+                    MessageBox.Show("Không tìm thấy mã phòng trong phiên đăng nhập!",
+                        "Lỗi session", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else
+            {
+                data = bll.layDanhSachDotQuanTracNhapLieu_PhanTrang(currentPage, pageSize, maPhong);
             }
 
-            var data = bll.layDanhSachDotQuanTracNhapLieu_PhanTrang(currentPage, pageSize, maPhong);
+            // Bind data an toàn
+            dgvDsdotquantrac.AutoGenerateColumns = false;
+            dgvDsdotquantrac.DataSource = null;
             dgvDsdotquantrac.DataSource = data;
 
             soTrang.Text = $"Trang {currentPage}/{totalPages}";
-
             btnTruoc.Enabled = currentPage > 1;
             btnSau.Enabled = currentPage < totalPages;
         }

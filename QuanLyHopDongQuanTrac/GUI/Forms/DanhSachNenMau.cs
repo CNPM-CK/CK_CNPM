@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BLL;
+using DTO;
+using GUI.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,20 +10,19 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
-using BLL;
-using DTO;
 
 namespace GUI.Forms
 {
     public partial class DanhSachNenMau : UserControl
     {
+        private readonly bool _isPhongKeHoach = SessionStore.Current.MaPhong == "P002";
         #region Fields
         // Search box styling
         private Color borderColor = Color.Black;
         private int borderRadius = 12;
         private int borderSize = 2;
         private const int SEARCH_HEIGHT = 50;
-        private const string PLACEHOLDER_TEXT = "Tìm kiếm thông số...";
+        private const string PLACEHOLDER_TEXT = "Tìm kiếm nền mẫu...";
 
         // Layout constants (giống DanhSachNhanVien)
         private const int MARGIN = 15;
@@ -98,6 +100,7 @@ namespace GUI.Forms
             dgvDSTS.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151); // Màu nền khi chọn
             dgvDSTS.DefaultCellStyle.SelectionForeColor = Color.Black; // Màu chữ khi chọn
             dgvDSTS.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDSTS.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
 
             // Define columns
@@ -128,15 +131,16 @@ namespace GUI.Forms
             });
 
             // Add action column
-            DataGridViewImageColumn actionCol = new DataGridViewImageColumn
+            if (_isPhongKeHoach)
             {
-                Name = "ThaoTac",
-                HeaderText = "Thao tác",
-                ImageLayout = DataGridViewImageCellLayout.Zoom,
-                Width = 100
-            };
-            dgvDSTS.Columns.Add(actionCol);
-            dgvDSTS.Columns["ThaoTac"].ReadOnly = false;
+                DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
+                {
+                    Name = "ThaoTac",
+                    HeaderText = "Thao tác",
+                    ImageLayout = DataGridViewImageCellLayout.Zoom
+                };
+                dgvDSTS.Columns.Add(thaoTacCol);
+            }
 
             // Bind data
             dgvDSTS.DataSource = dsNenmau;
@@ -211,6 +215,8 @@ namespace GUI.Forms
 
         private void InitializeButtonStyles()
         {
+            btnThemNenMau.Visible = _isPhongKeHoach;
+            btnXuatfile.Visible = _isPhongKeHoach;
             // ✅ Set initial button size và bo góc
             if (btnThemNenMau != null)
             {
@@ -344,6 +350,7 @@ namespace GUI.Forms
 
         private void DgvDSTS_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
+            if (!_isPhongKeHoach) return;
             if (e.RowIndex >= 0 && e.ColumnIndex == dgvDSTS.Columns["ThaoTac"].Index)
             {
                 e.PaintBackground(e.ClipBounds, true);
@@ -376,6 +383,7 @@ namespace GUI.Forms
 
         private void DgvDSTS_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (!_isPhongKeHoach) return;
             try
             {
                 // Validate indices

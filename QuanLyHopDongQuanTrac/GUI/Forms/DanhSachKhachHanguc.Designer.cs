@@ -86,7 +86,7 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(810, 45);
             panel1.TabIndex = 2;
-            panel1.Paint += panel1_Paint;
+            //panel1.Paint += panel1_Paint;
             // 
             // btnSau
             // 
@@ -180,7 +180,7 @@
             panel6.Name = "panel6";
             panel6.Size = new Size(810, 61);
             panel6.TabIndex = 0;
-            panel6.Paint += panel6_Paint;
+            //panel6.Paint += panel6_Paint;
             // 
             // btnXuatfile
             // 
@@ -207,7 +207,7 @@
             picturemicro.SizeMode = PictureBoxSizeMode.Zoom;
             picturemicro.TabIndex = 8;
             picturemicro.TabStop = false;
-            picturemicro.Click += picturemicro_Click;
+            //picturemicro.Click += picturemicro_Click;
             // 
             // containersearch
             // 
