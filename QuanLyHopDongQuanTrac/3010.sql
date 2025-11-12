@@ -9215,3 +9215,331 @@ BEGIN
     -- Tổng bản ghi cho UI
     SELECT TotalRecords = COUNT(*) FROM Base;
 END
+
+CREATE TABLE dbo.ThongBao (
+    maTB        VARCHAR(15)     NOT NULL,       -- Mã thông báo
+    loaiTB      NVARCHAR(50)    NOT NULL,       -- Loại thông báo (VD: QUA_HAN_DOT, QUA_HAN_HD)
+    maDot       VARCHAR(15)     NULL,           -- FK -> DotQuanTrac
+    maHD        VARCHAR(15)     NULL,           -- FK -> HopDong
+    tieuDe      NVARCHAR(255)   NOT NULL,       -- Tiêu đề thông báo
+    noiDung     NVARCHAR(MAX)   NULL,           -- Nội dung chi tiết
+    ngayTao     DATETIME        NOT NULL DEFAULT GETDATE(),  -- Ngày tạo thông báo
+    daGuiEmail  BIT             NOT NULL DEFAULT(0),         -- Đã gửi email hay chưa (0 = chưa, 1 = đã gửi)
+
+    CONSTRAINT PK_ThongBao PRIMARY KEY (maTB),
+
+    -- Ràng buộc FK nhưng KHÔNG CASCADE để tránh lỗi multiple path
+    CONSTRAINT FK_ThongBao_DotQuanTrac
+        FOREIGN KEY (maDot) REFERENCES dbo.DotQuanTrac(maDot)
+        ON DELETE SET NULL
+        ON UPDATE NO ACTION,
+
+    CONSTRAINT FK_ThongBao_HopDong
+        FOREIGN KEY (maHD) REFERENCES dbo.HopDong(maHD)
+        ON DELETE SET NULL
+        ON UPDATE NO ACTION
+);
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[sp_LayChiTietDotQuanTrac] --Mục đích là sửa đợt quan trắc 
+    @maDot VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Bảng 1: Thông tin đợt quan trắc
+    SELECT 
+        dt.maDot,
+        dt.maHD,
+        dt.noiDung,
+        dt.dotQuanTrac,
+        dt.ngayBatDau,
+        dt.ngayDuKien,
+        dt.ngayTraKQ,
+        dt.trangThai
+    FROM DotQuanTrac dt
+    WHERE dt.maDot = @maDot;
+    
+    -- Bảng 2: Danh sách nền mẫu của đợt
+    SELECT 
+        dn.maDN,
+        dn.maNen,
+        dn.tenViTri,
+        dn.toaDo,
+        dn.ghiChu,
+        nm.tenNenMau,
+        nm.moTa
+    FROM Dot_Nen dn
+    INNER JOIN NenMau nm ON dn.maNen = nm.maNen
+    WHERE dn.maDot = @maDot;
+    
+    -- Bảng 3: Chi tiết thông số của từng nền mẫu
+    SELECT 
+        dnts.maDNTS,
+        dnts.maDN,
+        dnts.maTS,
+        dnts.tenTS,
+        dnts.donVi,
+        dnts.giaTriToiThieu,
+        dnts.giaTriToiDa,
+        dnts.phuongPhap,
+        dnts.maPhong,
+        pb.tenPhong
+    FROM Dot_Nen_Ts dnts
+    INNER JOIN Dot_Nen dn ON dnts.maDN = dn.maDN
+    LEFT JOIN PhongBan pb ON dnts.maPhong = pb.maPhong
+    WHERE dn.maDot = @maDot
+    ORDER BY dnts.maDN, dnts.maDNTS;
+END
+GO
+
+
+------- Kiểm tra quá hạn đợt quan trắc và insert vào bảng thông báo 
+CREATE OR ALTER PROCEDURE sp_KiemTraQuaHanDotQuanTrac
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @NgayHienTai DATE = CAST(GETDATE() AS DATE);
+    DECLARE @NewMaTB VARCHAR(15);
+
+    DECLARE cur CURSOR FOR
+    SELECT dq.maDot, dq.maHD, kh.tenDoanhNghiep, dq.ngayDuKien
+    FROM DotQuanTrac dq
+    JOIN HopDong hd ON dq.maHD = hd.maHD
+    JOIN KhachHang kh ON hd.maKH = kh.maKH
+    WHERE dq.trangThai <> 6
+      AND dq.ngayDuKien < @NgayHienTai
+      AND EXISTS (
+            SELECT 1
+            FROM Dot_Nen_TS dnts
+            JOIN Dot_Nen dn ON dnts.maDN = dn.maDN
+            WHERE dn.maDot = dq.maDot
+              AND NOT EXISTS (
+                    SELECT 1 FROM KetQua kq WHERE kq.maDNTS = dnts.maDNTS
+              )
+        )
+      AND NOT EXISTS (
+            SELECT 1 FROM ThongBao tb 
+            WHERE tb.maDot = dq.maDot AND tb.loaiTB = 'QUA_HAN_DOT'
+      );
+
+    DECLARE @maDot VARCHAR(15), @maHD VARCHAR(15), @tenKH NVARCHAR(255), @ngayDuKien DATE, @soNgayTre INT;
+
+    OPEN cur;
+    FETCH NEXT FROM cur INTO @maDot, @maHD, @tenKH, @ngayDuKien;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        SET @soNgayTre = DATEDIFF(DAY, @ngayDuKien, @NgayHienTai);
+
+        SELECT @NewMaTB = 'TB' + RIGHT('000000' + CAST(ISNULL(CAST(SUBSTRING(MAX(maTB), 3, 6) AS INT), 0) + 1 AS VARCHAR(6)), 6)
+        FROM ThongBao;
+
+        INSERT INTO ThongBao(maTB, loaiTB, maDot, maHD, tieuDe, noiDung, ngayTao)
+        VALUES (
+            @NewMaTB,
+            'QUA_HAN_DOT',
+            @maDot,
+            @maHD,
+            N'Đợt quan trắc ' + @maDot + N' đã quá hạn trả kết quả',
+            N'Khách hàng: ' + @tenKH + 
+            N'. Ngày dự kiến: ' + CONVERT(VARCHAR(10), @ngayDuKien, 103) +
+            N'. Ngày hiện tại: ' + CONVERT(VARCHAR(10), @NgayHienTai, 103) +
+            N'. Số ngày trễ: ' + CAST(@soNgayTre AS NVARCHAR(10)),
+            GETDATE()
+        );
+
+        FETCH NEXT FROM cur INTO @maDot, @maHD, @tenKH, @ngayDuKien;
+    END;
+
+    CLOSE cur;
+    DEALLOCATE cur;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_layDanhSachThongBaoQuaHan
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @NgayHienTai DATE = CAST(GETDATE() AS DATE);
+
+    SELECT 
+        tb.maTB,
+        tb.maDot,
+        tb.maHD,
+        tb.tieuDe,
+        tb.noiDung,
+        tb.ngayTao,
+        tb.loaiTB,
+        kh.tenDoanhNghiep AS tenKhachHang,
+        dq.ngayDuKien
+    FROM ThongBao tb
+    INNER JOIN DotQuanTrac dq ON tb.maDot = dq.maDot
+    INNER JOIN HopDong hd ON dq.maHD = hd.maHD
+    INNER JOIN KhachHang kh ON hd.maKH = kh.maKH
+    WHERE tb.loaiTB = 'QUA_HAN_DOT'
+    ORDER BY tb.ngayTao DESC;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_LayThongBaoTheoDot --phục vụ gửi mail 
+    @maDot VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @NgayHienTai DATE = CAST(GETDATE() AS DATE);
+
+    SELECT 
+        tb.maTB,
+        tb.maDot,
+        tb.maHD,
+        tb.tieuDe,
+        tb.noiDung,
+        tb.ngayTao,
+        tb.loaiTB,
+        kh.tenDoanhNghiep AS tenKhachHang,
+        dq.ngayDuKien
+    FROM ThongBao tb
+    INNER JOIN DotQuanTrac dq ON tb.maDot = dq.maDot
+    INNER JOIN HopDong hd ON dq.maHD = hd.maHD
+    INNER JOIN KhachHang kh ON hd.maKH = kh.maKH
+    WHERE tb.loaiTB = 'QUA_HAN_DOT'
+      AND ISNULL(tb.daGuiEmail, 0) = 0  
+      AND tb.maDot = @maDot      -- ✅ thêm điều kiện này
+    ORDER BY tb.ngayTao DESC;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_LayEmailTruongPhong
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        pb.maPhong,
+        pb.tenPhong,
+        nv.hoTen AS tenTruongPhong,
+        nv.email
+    FROM PhongBan pb
+    INNER JOIN NhanVien nv ON pb.truongPhong = nv.maNV
+    WHERE nv.email IS NOT NULL AND nv.email <> '';
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_CapNhatTrangThaiEmail
+    @maDot VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE ThongBao
+    SET daGuiEmail = 1
+    WHERE maDot = @maDot
+      AND loaiTB = 'QUA_HAN_DOT'; -- chỉ cập nhật cho loại cảnh báo quá hạn
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_CapNhatThongTinCaNhan
+    @MaNV        VARCHAR(15),
+    @HoTen       NVARCHAR(60),
+    @NgaySinh    DATE           = NULL,
+    @GioiTinh    BIT            = NULL,    -- 1: Nam, 0: Nữ
+    @DiaChi      NVARCHAR(150)  = NULL,
+    @SoDienThoai VARCHAR(20),
+    @Email       VARCHAR(50)    = NULL,
+    @AnhDaiDien  NVARCHAR(255)  = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRAN;
+
+        -- 1️⃣ Kiểm tra nhân viên tồn tại
+        IF NOT EXISTS (SELECT 1 FROM NhanVien WHERE maNV = @MaNV AND daXoa = 0)
+        BEGIN
+            RAISERROR(N'Không tìm thấy nhân viên cần cập nhật!', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        -- 2️⃣ Kiểm tra họ tên hợp lệ
+        IF LTRIM(RTRIM(@HoTen)) = ''
+        BEGIN
+            RAISERROR(N'Họ tên không được để trống!', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        IF PATINDEX('%[^a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵýỷỹ ]%', @HoTen) > 0
+        BEGIN
+            RAISERROR(N'Họ tên không hợp lệ! Chỉ được chứa chữ cái và khoảng trắng.', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        -- 3️⃣ Kiểm tra tuổi hợp lệ (16–65)
+        IF @NgaySinh IS NOT NULL
+        BEGIN
+            DECLARE @Tuoi INT = DATEDIFF(YEAR, @NgaySinh, GETDATE());
+            IF (DATEADD(YEAR, @Tuoi, @NgaySinh) > GETDATE()) SET @Tuoi -= 1;
+            IF @Tuoi < 16 OR @Tuoi > 65
+            BEGIN
+                RAISERROR(N'Tuổi không hợp lệ! Nhân viên phải từ 16 đến 65 tuổi.', 16, 1);
+                ROLLBACK TRAN; RETURN;
+            END;
+        END;
+
+        -- 4️⃣ Kiểm tra số điện thoại hợp lệ (10 chữ số, bắt đầu bằng 0)
+        DECLARE @soDienThoaiTrimmed VARCHAR(20) = LTRIM(RTRIM(@SoDienThoai));
+        IF LEN(@soDienThoaiTrimmed) <> 10 
+           OR LEFT(@soDienThoaiTrimmed, 1) <> '0' 
+           OR PATINDEX('%[^0-9]%', @soDienThoaiTrimmed) > 0
+        BEGIN
+            RAISERROR(N'Số điện thoại không hợp lệ! Phải bắt đầu bằng 0, đúng 10 chữ số, không chứa ký tự khác.', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        -- 5️⃣ Kiểm tra email hợp lệ
+        IF @Email IS NULL OR LTRIM(RTRIM(@Email)) = ''
+        BEGIN
+            RAISERROR(N'Email không được để trống!', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        IF @Email NOT LIKE '%_@_%._%' 
+           OR @Email LIKE '%..%' 
+           OR @Email LIKE '%.@%' 
+           OR RIGHT(@Email, 4) NOT IN ('.com', '.net', '.org', '.edu', '.gov', '.vn')
+        BEGIN
+            RAISERROR(N'Email không hợp lệ! Vui lòng nhập đúng định dạng (vd: abc@gmail.com).', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        -- 6️⃣ Kiểm tra trùng email
+        IF EXISTS (SELECT 1 FROM NhanVien WHERE email = @Email AND maNV <> @MaNV AND daXoa = 0)
+        BEGIN
+            RAISERROR(N'Email này đã tồn tại cho nhân viên khác!', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        -- 7️⃣ Cập nhật thông tin cá nhân
+        UPDATE NhanVien
+        SET hoTen       = @HoTen,
+            ngaySinh    = @NgaySinh,
+            gioiTinh    = @GioiTinh,
+            diaChi      = @DiaChi,
+            soDienThoai = @SoDienThoai,
+            email       = @Email,
+            anhDaiDien  = @AnhDaiDien
+        WHERE maNV = @MaNV AND daXoa = 0;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        DECLARE @ErrMsg NVARCHAR(4000) = ERROR_MESSAGE();
+        RAISERROR(@ErrMsg, 16, 1);
+    END CATCH;
+END;
+GO
