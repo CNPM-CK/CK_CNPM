@@ -1,4 +1,5 @@
-﻿using BLL;
+
+using BLL;
 using DTO;
 using GUI.Common;
 using System;

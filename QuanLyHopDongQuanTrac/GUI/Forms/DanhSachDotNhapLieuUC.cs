@@ -151,7 +151,6 @@ namespace GUI.Forms
 
             });
 
-            // Add action column
             if (_isPhongTN_HT)
             {
                 DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
@@ -338,6 +337,7 @@ namespace GUI.Forms
         private void DgvDsdotquantrac_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (!_isPhongTN_HT) return;
+
             // 🧱 Chống double-click nhanh
             if ((DateTime.Now - _lastClickTime).TotalMilliseconds < 250)
                 return; // bỏ qua nếu click quá nhanh
@@ -619,7 +619,6 @@ namespace GUI.Forms
             btnTruoc.Enabled = currentPage > 1;
             btnSau.Enabled = currentPage < totalPages;
         }
-
 
         private void btnTruoc_Click(object sender, EventArgs e)
         {

@@ -61,18 +61,10 @@ namespace GUI.Forms
         {
             InitializeButtonIcons();
             InitializeSettingMenu();
+            taiAnhDaiDienNguoiDung();
+            TrangCaNhan.anhDaiDienDaThayDoi += taiAnhDaiDienNguoiDung;
+
         }
-
-
-
-        //private void taiDanhSachNhanVien()
-        //{
-        //    NhanVienBLL nvBLL = new NhanVienBLL();
-        //    dsNhanVien.Clear();
-        //    foreach (var nv in nvBLL.layDanhSachNhanVien())
-        //        dsNhanVien.Add(nv);
-        //}
-
         private Rectangle editRect;
         private Rectangle deleteRect;
 
@@ -86,73 +78,6 @@ namespace GUI.Forms
 
         }
 
-        //private void HandleEdit(DataGridViewRow row)
-        //{
-        //    if (currentOpenForm != null && !currentOpenForm.IsDisposed)
-        //    {
-        //        currentOpenForm.BringToFront();
-        //        currentOpenForm.Focus();
-        //        MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
-        //            "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //        return;
-        //    }
-
-        //    NhanVien nv = new NhanVien
-        //    {
-        //        maNV = row.Cells["maNV"].Value.ToString(),
-        //        maPhong = row.Cells["maPhong"].Value?.ToString(),
-        //        hoTen = row.Cells["hoTen"].Value?.ToString(),
-        //        ngaySinh = row.Cells["ngaySinh"].Value != null ? Convert.ToDateTime(row.Cells["ngaySinh"].Value) : DateTime.MinValue,
-        //        gioiTinh = row.Cells["gioiTinh"].Value?.ToString(),
-        //        diaChi = row.Cells["diaChi"].Value?.ToString(),
-        //        soDienThoai = row.Cells["soDienThoai"].Value?.ToString(),
-        //        email = row.Cells["email"].Value?.ToString()
-        //    };
-
-        //    SuaNhanVien frmSua = new SuaNhanVien(nv);
-        //    currentOpenForm = frmSua;
-        //    CenterFormOnParent(frmSua);
-
-        //    frmSua.FormClosed += (s, ev) =>
-        //    {
-        //        currentOpenForm = null; // Xóa reference khi form đóng
-        //    };
-
-        //    frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachNhanVien();
-        //    frmSua.Show(this);
-        //}
-
-        //private void HandleDelete(DataGridViewRow row)
-        //{
-        //    string maNV = row.Cells["maNV"].Value.ToString();
-        //    string hoTen = row.Cells["hoTen"].Value?.ToString();
-
-        //    DialogResult result = MessageBox.Show(
-        //        $"Bạn có chắc chắn muốn xóa nhân viên '{hoTen}' (Mã: {maNV}) không?",
-        //        "Xác nhận xóa",
-        //        MessageBoxButtons.YesNo,
-        //        MessageBoxIcon.Question
-        //    );
-
-        //    if (result == DialogResult.Yes)
-        //    {
-        //        try
-        //        {
-        //            NhanVienBLL nvBLL = new NhanVienBLL();
-        //            nvBLL.xoaNhanVien(maNV);
-
-        //            MessageBox.Show("Đã xóa nhân viên thành công!", "Thông báo",
-        //                MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-        //            RefreshDanhSachNhanVien();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show("Có lỗi xảy ra khi xóa nhân viên: " + ex.Message,
-        //                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        }
-        //    }
-        //}
 
         private void CenterFormOnParent(Form childForm)
         {
@@ -170,7 +95,11 @@ namespace GUI.Forms
             ToolStripMenuItem personalItem = new ToolStripMenuItem("Cài đặt cá nhân");
             personalItem.Click += (s, ev) =>
             {
-                MessageBox.Show("Mở trang cài đặt cá nhân...", "Thông báo");
+                panel5.Controls.Clear();
+                TrangCaNhan trangCaNhan = new TrangCaNhan();
+                trangCaNhan.Dock = DockStyle.Fill;
+                panel5.Controls.Add(trangCaNhan);
+                trangCaNhan.BringToFront();
             };
 
             ToolStripMenuItem logoutItem = new ToolStripMenuItem("Đăng xuất");
@@ -332,6 +261,93 @@ namespace GUI.Forms
             DSDNLuc.Dock = DockStyle.Fill;
             panel5.Controls.Add(DSDNLuc);
             DSDNLuc.BringToFront();
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            panel5.Controls.Clear();
+            TrangThongBao ttb = new TrangThongBao();
+            ttb.Dock = DockStyle.Fill;
+            panel5.Controls.Add(ttb);
+            ttb.BringToFront();
+        }
+
+        private void taiAnhDaiDienNguoiDung()
+        {
+            try
+            {
+                string email = SessionStore.Current.UserName;
+                if (string.IsNullOrEmpty(email))
+                    return;
+
+                NhanVienBLL bll = new NhanVienBLL();
+                NhanVien nv = bll.layThongTinCaNhan(email);
+                if (nv == null || string.IsNullOrEmpty(nv.anhDaiDien))
+                {
+                    pictureBoxSetting.Image = Properties.Resources.macdinh; // ảnh mặc định
+                    return;
+                }
+
+                string avatarsFolder = Path.Combine(Application.StartupPath, "Avatars");
+                string imgPath = Path.Combine(avatarsFolder, nv.anhDaiDien);
+
+                if (File.Exists(imgPath))
+                {
+                    // Dùng stream để tránh file lock
+                    using (var fs = new FileStream(imgPath, FileMode.Open, FileAccess.Read))
+                    {
+                        pictureBoxSetting.Image = Image.FromStream(fs);
+                        lamTronAnhDaiDien(pictureBoxSetting, 2, Color.White);
+
+                    }
+                }
+                else
+                {
+                    pictureBoxSetting.Image = Properties.Resources.macdinh;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải ảnh đại diện: " + ex.Message);
+            }
+        }
+        private void lamTronAnhDaiDien(PictureBox picBox, int borderSize = 2, Color? borderColor = null)
+        {
+            int diameter = Math.Min(picBox.Width, picBox.Height);
+            Bitmap bmp = new Bitmap(diameter, diameter);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.Clear(Color.Transparent);
+
+                // Vẽ hình tròn (không trừ 1 pixel)
+                using (GraphicsPath path = new GraphicsPath())
+                {
+                    path.AddEllipse(0, 0, diameter, diameter);
+                    g.SetClip(path);
+                    g.DrawImage(picBox.Image, 0, 0, diameter, diameter);
+                }
+
+                // Vẽ viền nhẹ
+                using (Pen pen = new Pen(borderColor ?? Color.White, borderSize))
+                {
+                    g.ResetClip();
+                    g.DrawEllipse(pen, borderSize / 2f, borderSize / 2f,
+                                  diameter - borderSize, diameter - borderSize);
+                }
+            }
+
+            picBox.Image = bmp;
+            picBox.Region = new Region(new Rectangle(0, 0, diameter, diameter));
+            picBox.SizeMode = PictureBoxSizeMode.Zoom;
+            picBox.BackColor = Color.Transparent;
+
+        }
+
+
+        private void pictureBoxSetting_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

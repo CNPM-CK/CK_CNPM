@@ -38,13 +38,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Avatars\" />
     <Folder Include="Resources\Logo\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Forms\DanhSachHopDonguc.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="Forms\DanhSachHopDonguc.cs" />
     <Compile Update="Forms\DanhSachKetQuaUC.cs">
       <SubType>UserControl</SubType>
     </Compile>

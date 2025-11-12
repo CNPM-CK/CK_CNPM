@@ -19,6 +19,7 @@ namespace GUI.Forms
     public partial class DanhSachHopDonguc : UserControl
     {
         private readonly bool _isPhongKinhDoanh = SessionStore.Current.MaPhong == "P001";
+
         #region Fields
         private Color borderColor = Color.Black;
         private int borderRadius = 12;
@@ -110,6 +111,7 @@ namespace GUI.Forms
                 new DataGridViewTextBoxColumn { DataPropertyName = "trangThai", HeaderText = "Trạng thái", Name = "trangThai" },
                 new DataGridViewTextBoxColumn { DataPropertyName = "tanSuatQuanTrac", HeaderText = "Tần suất quan trắc", Name = "tanSuatQuanTrac" },
                 new DataGridViewTextBoxColumn { DataPropertyName = "soHD", HeaderText = "Số hợp đồng", Name = "soHD" }
+
             });
             if (_isPhongKinhDoanh)
             {
@@ -128,6 +130,8 @@ namespace GUI.Forms
 
             dgvdanhsachHopDong.DataSource = dsHopDong;
             dgvdanhsachHopDong.ReadOnly = true;
+            dgvdanhsachHopDong.Columns["ThaoTac"].ReadOnly = false;
+
             taiTrangKhachHang();
         }
 

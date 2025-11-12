@@ -198,5 +198,105 @@ namespace BLL
             return dal.xoaNenMauKhoiDot(maDN);
         }
 
+
+        public class ChiTietDotQuanTracDTO
+        {
+            public DTO_DotQuanTrac ThongTinDot { get; set; }
+            public List<NenMauTrongDot> DanhSachNenMau { get; set; }
+        }
+
+        public class NenMauTrongDot
+        {
+            public string MaDN { get; set; }
+            public string MaNen { get; set; }
+            public string TenNenMau { get; set; }
+            public string MoTaNen { get; set; }
+            public string TenViTri { get; set; }
+            public string ToaDo { get; set; }
+            public string GhiChu { get; set; }
+            public List<ChiTietQuanTracView> DanhSachThongSo { get; set; }
+        }
+
+        public ChiTietDotQuanTracDTO LayChiTietDotQuanTrac(string maDot)
+        {
+            try
+            {
+                DataSet ds = dal.layChiTietDotQuanTrac(maDot);
+
+                if (ds == null || ds.Tables.Count < 3)
+                    return null;
+
+                ChiTietDotQuanTracDTO result = new ChiTietDotQuanTracDTO();
+
+                // ✅ Bảng 0: Thông tin đợt
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    DataRow row = ds.Tables[0].Rows[0];
+                    result.ThongTinDot = new DTO_DotQuanTrac
+                    {
+                        MaDot = row["maDot"].ToString(),
+                        MaHD = row["maHD"].ToString(),
+                        NoiDung = row["noiDung"].ToString(),
+                        DotQuanTrac = row["dotQuanTrac"].ToString(),
+                        NgayBatDau = Convert.ToDateTime(row["ngayBatDau"]),
+                        NgayDuKien = Convert.ToDateTime(row["ngayDuKien"]),
+                        NgayTraKQ = row["ngayTraKQ"] != DBNull.Value
+                            ? Convert.ToDateTime(row["ngayTraKQ"])
+                            : (DateTime?)null,
+                        TrangThai = row["trangThai"].ToString()
+                    };
+                }
+
+                // ✅ Bảng 1: Danh sách nền mẫu
+                result.DanhSachNenMau = new List<NenMauTrongDot>();
+
+                foreach (DataRow rowNen in ds.Tables[1].Rows)
+                {
+                    string maDN = rowNen["maDN"].ToString();
+
+                    var nenMau = new NenMauTrongDot
+                    {
+                        MaDN = maDN,
+                        MaNen = rowNen["maNen"].ToString(),
+                        TenNenMau = rowNen["tenNenMau"].ToString(),
+                        MoTaNen = rowNen["moTa"].ToString(),
+                        TenViTri = rowNen["tenViTri"].ToString(),
+                        ToaDo = rowNen["toaDo"].ToString(),
+                        GhiChu = rowNen["ghiChu"].ToString(),
+                        DanhSachThongSo = new List<ChiTietQuanTracView>()
+                    };
+
+                    // ✅ Bảng 2: Lấy thông số của nền mẫu này
+                    DataRow[] thongSoRows = ds.Tables[2].Select($"maDN = '{maDN}'");
+
+                    foreach (DataRow rowTS in thongSoRows)
+                    {
+                        nenMau.DanhSachThongSo.Add(new ChiTietQuanTracView
+                        {
+                            MaTS = rowTS["maTS"].ToString(),
+                            TenTS = rowTS["tenTS"].ToString(),
+                            DonVi = rowTS["donVi"].ToString(),
+                            GiaTriToiThieu = rowTS["giaTriToiThieu"] != DBNull.Value
+                                ? Convert.ToDouble(rowTS["giaTriToiThieu"])
+                                : (double?)null,
+                            GiaTriToiDa = rowTS["giaTriToiDa"] != DBNull.Value
+                                ? Convert.ToDouble(rowTS["giaTriToiDa"])
+                                : (double?)null,
+                            PhuongPhap = rowTS["phuongPhap"].ToString(),
+                            MaPhong = rowTS["maPhong"].ToString(),
+                            TenPhong = rowTS["tenPhong"].ToString()
+                        });
+                    }
+
+                    result.DanhSachNenMau.Add(nenMau);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi BLL_LayChiTietDotQuanTrac: " + ex.Message);
+            }
+        }
     }
 }

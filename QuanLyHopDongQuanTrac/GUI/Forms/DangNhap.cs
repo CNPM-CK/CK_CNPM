@@ -220,33 +220,48 @@ namespace GUI.Forms
                 }
                 SessionStore.Current.MaPhong = maPhong;
             }
-            Form next = new TrangChu();
-            next.FormClosed += (s, _) => this.Close();
-            next.Show();
+            //Form next = CreateNextFormFromSession();
+            //next.FormClosed += (s, _) => this.Close();
+            //next.Show();
+            //this.Hide();
+            TrangChu trangChu = new TrangChu();
+            trangChu.FormClosed += (s, _) => this.Close();
+            trangChu.Show();
             this.Hide();
+
         }
 
-        private Form CreateNextFormFromSession()
-        {
-            var ss = SessionStore.Current;
+        //private Form CreateNextFormFromSession()
+        //{
+        //    var ss = SessionStore.Current;
 
-            if (ss.VaiTro == 1 || ss.VaiTro == 2)
-                return new DanhSachNhanVien();
+        //    Form next = new TrangChu();
+        //    next.FormClosed += (s, _) => this.Close();
+        //    next.Show();
+        //    this.Hide();
+        //}
 
-            switch (ss.MaPhong)
-            {
-                case "P001": return new DanhSachKhachHang();
-                case "P002": return new DanhSachKeHoach();
-                case "P003": return new DanhSachNhapLieu();
-                case "P004": return new DanhSachNhapLieu();
-                // case "P005": return new PhongKetQuaForm();
-                // case "P006": return new PhongQuanTracForm();
-                default:
-                    MessageBox.Show("Phòng ban chưa được hỗ trợ!", "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return new DanhSachKhachHang();
-            }
-        }
+        //private Form CreateNextFormFromSession()
+        //{
+        //    var ss = SessionStore.Current;
+
+        //    if (ss.VaiTro == 1 || ss.VaiTro == 2)
+        //        return new DanhSachNhanVien();
+
+        //    switch (ss.MaPhong)
+        //    {
+        //        case "P001": return new DanhSachKhachHang();
+        //        case "P002": return new DanhSachKeHoach();
+        //        case "P003": return new DanhSachNhapLieu();
+        //        case "P004": return new DanhSachNhapLieu();
+        //        // case "P005": return new PhongKetQuaForm();
+        //        // case "P006": return new PhongQuanTracForm();
+        //        default:
+        //            MessageBox.Show("Phòng ban chưa được hỗ trợ!", "Thông báo",
+        //                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            return new DanhSachKhachHang();
+        //    }
+        //}
 
         private void textBoxMatKhau_KeyDown(object sender, KeyEventArgs e)
         {

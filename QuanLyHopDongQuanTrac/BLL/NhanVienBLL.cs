@@ -116,5 +116,23 @@ namespace BLL
         {
             return dal.demTongDSNV();
         }
+
+        public NhanVien layThongTinCaNhan(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                throw new ArgumentException("Email không được để trống.");
+
+            return dal.layThongTinCaNhan(email);
+        }
+
+
+        public void capNhatThongTinCaNhan(NhanVien nv)
+        {
+            if (nv == null) throw new ArgumentNullException(nameof(nv));
+            if (string.IsNullOrEmpty(nv.maNV))
+                throw new ArgumentException("Ma nhan vien khong duoc de trong");
+
+            dal.capNhatThongTinCaNhan(nv);
+        }
     }
 }

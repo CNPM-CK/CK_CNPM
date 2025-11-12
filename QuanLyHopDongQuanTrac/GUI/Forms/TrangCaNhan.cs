@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BLL;
+using DTO;
+using GUI.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,6 +16,10 @@ namespace GUI.Forms
 {
     public partial class TrangCaNhan : UserControl
     {
+        public static event Action anhDaiDienDaThayDoi;
+
+        private string maNVHienTai;
+        private string anhDaiDienHienTai;
         public TrangCaNhan()
         {
             InitializeComponent();
@@ -156,10 +163,7 @@ namespace GUI.Forms
             return path;
         }
         #endregion
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
 
-        }
 
         private void TrangCaNhan_Load(object sender, EventArgs e)
         {
@@ -172,6 +176,310 @@ namespace GUI.Forms
             ApplyRoundedInput(panelMatkhaumoi, txtMatkhaumoi, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelXacnhan, txtXacnhan, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelNgaysinh, dateTimePicker1, 12, 2, Color.FromArgb(0, 152, 70));
+            taiThongTinCaNhan();
+        }
+
+
+        private void taiThongTinCaNhan()
+        {
+            try
+            {
+                string email = SessionStore.Current.UserName;
+                if (string.IsNullOrEmpty(email))
+                {
+                    MessageBox.Show("Không tìm thấy thông tin đăng nhập!", "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                NhanVienBLL bll = new NhanVienBLL();
+                NhanVien nv = bll.layThongTinCaNhan(email);
+
+                if (nv == null)
+                {
+                    MessageBox.Show("Không tìm thấy thông tin cá nhân!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // 🔸 Hiển thị thông tin lên form
+                txtHoten.Text = nv.hoTen;
+                txtEmail.Text = nv.email;
+                txtSdt.Text = nv.soDienThoai;
+                txtDiachi.Text = nv.diaChi;
+
+                // Ngày sinh
+                if (nv.ngaySinh != DateTime.MinValue)
+                    dateTimePicker1.Value = nv.ngaySinh;
+
+                // Giới tính
+                if (!string.IsNullOrEmpty(nv.gioiTinh))
+                {
+                    if (nv.gioiTinh == "0")
+                        radioBtnnam.Checked = true;
+                    else if (nv.gioiTinh == "1")
+                        radioBtnnu.Checked = true;
+                }
+
+                maNVHienTai = nv.maNV;
+                anhDaiDienHienTai = nv.anhDaiDien;
+                taiAnhDaiDien(nv.anhDaiDien);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải thông tin cá nhân: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void taiAnhDaiDien(string anhDaiDien)
+        {
+            // Giải phóng ảnh cũ trước
+            if (ptbAnhcanhan.Image != null)
+            {
+                ptbAnhcanhan.Image.Dispose();
+                ptbAnhcanhan.Image = null;
+            }
+
+            if (!string.IsNullOrEmpty(anhDaiDien))
+            {
+                // ✅ ĐÃ SỬA: Đổi từ "Images/NhanVien" → "Avatars"
+                string imgPath = Path.Combine(Application.StartupPath, "Avatars", anhDaiDien);
+
+                if (File.Exists(imgPath))
+                {
+                    // ✅ Load ảnh KHÔNG BỊ LOCK FILE
+                    using (var fs = new FileStream(imgPath, FileMode.Open, FileAccess.Read))
+                    {
+                        ptbAnhcanhan.Image = Image.FromStream(fs);
+                    }
+                }
+                else
+                {
+                    // Nếu không tìm thấy ảnh, dùng ảnh mặc định
+                    ptbAnhcanhan.Image = Properties.Resources.macdinh;
+                }
+            }
+            else
+            {
+                // Nếu chưa có ảnh đại diện, dùng ảnh mặc định
+                ptbAnhcanhan.Image = Properties.Resources.macdinh;
+            }
+        }
+
+
+        private void btnQuenmk_Click(object sender, EventArgs e)
+        {
+            QuenMatKhau1 form = new QuenMatKhau1();
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.ShowDialog();
+        }
+
+        private void chinhSuaAnh_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(maNVHienTai))
+            {
+                MessageBox.Show("Khong xac dinh duoc nhan vien!", "Loi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Chọn ảnh đại diện ";
+                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string avatarsFolder = Path.Combine(Application.StartupPath, "Avatars");
+                        if (!Directory.Exists(avatarsFolder))
+                            Directory.CreateDirectory(avatarsFolder);
+
+                        string ext = Path.GetExtension(ofd.FileName);
+                        string fileName = maNVHienTai + ext; // VD: NV001.jpg
+                        string destPath = Path.Combine(avatarsFolder, fileName);
+
+                        //// Copy (overwrite nếu đã có)
+                        //File.Copy(ofd.FileName, destPath, true);
+                        //anhDaiDienHienTai = fileName;
+
+                        // Giải phóng ảnh cũ trước khi load mới để tránh lỗi locked file
+                        if (ptbAnhcanhan.Image != null)
+                        {
+                            ptbAnhcanhan.Image.Dispose();
+                            ptbAnhcanhan.Image = null;
+                        }
+
+                        File.Copy(ofd.FileName, destPath, true);
+                        anhDaiDienHienTai = fileName;
+                        using (FileStream fs = new FileStream(destPath, FileMode.Open, FileAccess.Read))
+                        {
+                            ptbAnhcanhan.Image = Image.FromStream(fs);
+                        }
+                        //ptbAnhcanhan.Image = Image.FromFile(destPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi khi cập nhật ảnh đại diện : " + ex.Message,
+                            "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void btnLuu_Click(object sender, EventArgs e)
+        {
+            //try
+            //{
+            //    var bll = new NhanVienBLL();
+            //    var nv = new NhanVien
+            //    {
+            //        maNV = maNVHienTai,
+            //        hoTen = txtHoten.Text.Trim(),
+            //        email = txtEmail.Text.Trim(),
+            //        soDienThoai = txtSdt.Text.Trim(),
+            //        diaChi = txtDiachi.Text.Trim(),
+            //        ngaySinh = dateTimePicker1.Value,
+            //        gioiTinh = radioBtnnam.Checked ? "0" : "1",
+            //        anhDaiDien = anhDaiDienHienTai
+            //    };
+
+            //    bll.capNhatThongTinCaNhan(nv);
+            //    MessageBox.Show("Cập nhật thông tin cá nhân thành công !",
+            //                    "Thong bao", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //    anhDaiDienDaThayDoi?.Invoke();
+            //    taiThongTinCaNhan();
+
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Loi: " + ex.Message, "Loi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+            try
+            {
+                //ĐỔI MẬT KHẨU
+                string mkCu = txtMatkhaucu.Text.Trim();
+                string mkMoi = txtMatkhaumoi.Text.Trim();
+                string mkXacNhan = txtXacnhan.Text.Trim();
+
+                // Người dùng có ý định đổi mật khẩu (ít nhất 1 ô được nhập)
+                bool userWantsChangePassword =
+                    !string.IsNullOrWhiteSpace(mkCu) ||
+                    !string.IsNullOrWhiteSpace(mkMoi) ||
+                    !string.IsNullOrWhiteSpace(mkXacNhan);
+
+                if (userWantsChangePassword)
+                {
+                    // Kiểm tra đủ 3 trường
+                    if (string.IsNullOrWhiteSpace(mkCu) ||
+                        string.IsNullOrWhiteSpace(mkMoi) ||
+                        string.IsNullOrWhiteSpace(mkXacNhan))
+                    {
+                        MessageBox.Show("Vui lòng nhập đầy đủ 3 trường mật khẩu.",
+                            "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    string tenTK = SessionStore.Current.UserName;
+                    TaiKhoanBLL tkBll = new TaiKhoanBLL();
+
+                    var kqDoiMK = tkBll.doiMatKhau(tenTK, mkCu, mkMoi, mkXacNhan);
+
+                    if (!kqDoiMK.success)
+                    {
+                        MessageBox.Show(kqDoiMK.message,
+                            "Đổi mật khẩu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return; // ❌ Dừng lại, KHÔNG lưu thông tin cá nhân nếu đổi mật khẩu thất bại
+                    }
+                    else
+                    {
+                        MessageBox.Show(kqDoiMK.message,
+                            "Đổi mật khẩu", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // Xóa trắng các ô
+                        txtMatkhaucu.Clear();
+                        txtMatkhaumoi.Clear();
+                        txtXacnhan.Clear();
+                    }
+                }
+
+                // CẬP NHẬT THÔNG TIN CÁ NHÂN
+                var bll = new NhanVienBLL();
+                var nv = new NhanVien
+                {
+                    maNV = maNVHienTai,
+                    hoTen = txtHoten.Text.Trim(),
+                    email = txtEmail.Text.Trim(),
+                    soDienThoai = txtSdt.Text.Trim(),
+                    diaChi = txtDiachi.Text.Trim(),
+                    ngaySinh = dateTimePicker1.Value,
+                    gioiTinh = radioBtnnam.Checked ? "0" : "1",
+                    anhDaiDien = anhDaiDienHienTai
+                };
+
+                bll.capNhatThongTinCaNhan(nv);
+
+                MessageBox.Show("Cập nhật thông tin cá nhân thành công!",
+                                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Gọi sự kiện để refresh lại trang chủ hoặc form
+                anhDaiDienDaThayDoi?.Invoke();
+                taiThongTinCaNhan();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message,
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void txtHoten_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtEmail_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtSdt_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtDiachi_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtMatkhaucu_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioBtnnam_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioBtnnu_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ptbAnhcanhan_Click(object sender, EventArgs e)
+        {
 
         }
 
@@ -180,11 +488,19 @@ namespace GUI.Forms
 
         }
 
-        private void btnQuenmk_Click(object sender, EventArgs e)
+        private void panel2_Paint(object sender, PaintEventArgs e)
         {
-            QuenMatKhau1 form = new QuenMatKhau1();
-            form.StartPosition = FormStartPosition.CenterParent;
-            form.ShowDialog();
+
+        }
+
+        private void txtMatkhaumoi_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtXacnhan_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

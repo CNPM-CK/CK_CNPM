@@ -19,6 +19,10 @@ namespace DAL
     {
         public static SqlConnection Connect()
         {
+
+            //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
@@ -2175,6 +2179,255 @@ namespace DAL
                     cmd.Parameters.AddWithValue("@ngayDo", kq.ngayDo);
                     cmd.Parameters.AddWithValue("@giaTriDoDuoc", kq.giaTriDoDuoc);
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+         public DataSet layChiTietDotQuanTrac(string maDot)
+        {
+            try
+            {
+                using (SqlConnection conn = SqlConnectionData.Connect())
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_LayChiTietDotQuanTrac", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@maDot", maDot);
+
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        DataSet ds = new DataSet();
+                        da.Fill(ds);
+                        return ds;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi DAL_LayChiTietDotQuanTrac: " + ex.Message);
+            }
+        }
+
+        public void kiemTraQuaHan()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_KiemTraQuaHanDotQuanTrac", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            
+        }
+
+
+        public DataTable layDanhSachThongBao()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_LayDanhSachThongBaoQuaHan", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        return dt;
+                    }
+                }
+            }
+        }
+
+
+        public List<string> layEmailTruongPhong()
+        {
+            List<string> emails = new List<string>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_LayEmailTruongPhong", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string email = reader["email"]?.ToString();
+                            if (!string.IsNullOrWhiteSpace(email))
+                                emails.Add(email.Trim());
+                        }
+                    }
+                }
+            }
+
+            return emails;
+        }
+
+
+        public void capNhatTrangThaiEmail(string maDot)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_CapNhatTrangThaiEmail", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@maDot", maDot);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        public DataTable layThongBaoTheoDot(string maDot)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_LayThongBaoTheoDot", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@maDot", maDot);
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        return dt;
+                    }
+                }
+            }
+        }
+
+
+        public NhanVien layThongTinCaNhan(string email)
+        {
+            NhanVien nv = null;
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("dbo.sp_LayThongTinCaNhan", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            DateTime ngaySinhValue = DateTime.MinValue;
+                            if (reader["ngaySinh"] != DBNull.Value)
+                            {
+                                ngaySinhValue = Convert.ToDateTime(reader["ngaySinh"]);
+                            }
+
+                            // ✅ Xử lý gioiTinh: bit -> string "0"/"1" (NHẤT QUÁN VỚI suaNhanVien)
+                            string gioiTinhStr = "";
+                            if (reader["gioiTinh"] != DBNull.Value)
+                            {
+                                bool gt = Convert.ToBoolean(reader["gioiTinh"]);
+                                // Trong DB: 0 = Nam (false), 1 = Nữ (true)
+                                gioiTinhStr = gt ? "1" : "0";  // 1 = Nữ, 0 = Nam
+                            }
+
+                            nv = new NhanVien
+                            {
+                                maNV = reader["maNV"].ToString(),
+                                maPhong = reader["maPhong"].ToString(),
+                                hoTen = reader["hoTen"].ToString(),
+                                ngaySinh = ngaySinhValue,
+                                gioiTinh = gioiTinhStr,  // "0" hoặc "1"
+                                diaChi = reader["diaChi"].ToString(),
+                                soDienThoai = reader["soDienThoai"].ToString(),
+                                email = reader["email"].ToString(),
+                                anhDaiDien = reader["anhDaiDien"] == DBNull.Value
+                                                ? null
+                                                : reader["anhDaiDien"].ToString()
+                            };
+                        }
+                    }
+                }
+            }
+            return nv;
+        }
+
+
+        public void capNhatThongTinCaNhan(NhanVien nv)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("dbo.sp_CapNhatThongTinCaNhan", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@MaNV", nv.maNV);
+                    cmd.Parameters.AddWithValue("@HoTen", nv.hoTen);
+                    cmd.Parameters.AddWithValue("@NgaySinh", nv.ngaySinh);
+
+                    // ✅ ĐÚNG: Convert string "0"/"1" -> bit
+                    bool gioiTinhBit = false; // Mặc định = 0 = Nam
+                    if (!string.IsNullOrEmpty(nv.gioiTinh))
+                    {
+                        string gt = nv.gioiTinh.Trim();
+                        // "1" = Nữ = true, "0" = Nam = false
+                        gioiTinhBit = (gt == "1");
+                    }
+                    cmd.Parameters.AddWithValue("@GioiTinh", gioiTinhBit);
+
+                    cmd.Parameters.AddWithValue("@DiaChi", (object)nv.diaChi ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@SoDienThoai", nv.soDienThoai);
+                    cmd.Parameters.AddWithValue("@Email", (object)nv.email ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@AnhDaiDien",
+                        string.IsNullOrEmpty(nv.anhDaiDien) ? (object)DBNull.Value : nv.anhDaiDien);
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Lỗi khi cập nhật thông tin cá nhân: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+
+        public (bool Success, string Message) doiMatKhau(string tenTK, string matKhauMoiHash)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = new SqlCommand("sp_CapNhatMatKhau", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@ContactInfo", tenTK);
+                    cmd.Parameters.AddWithValue("@MatKhauMoi", matKhauMoiHash);
+
+                    var pSuccess = new SqlParameter("@Success", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    var pMessage = new SqlParameter("@Message", SqlDbType.NVarChar, 200)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    cmd.Parameters.Add(pSuccess);
+                    cmd.Parameters.Add(pMessage);
+
+                    cmd.ExecuteNonQuery();
+
+                    bool success = (pSuccess.Value != DBNull.Value) && (bool)pSuccess.Value;
+                    string message = pMessage.Value?.ToString() ?? "";
+
+                    return (success, message);
                 }
             }
         }

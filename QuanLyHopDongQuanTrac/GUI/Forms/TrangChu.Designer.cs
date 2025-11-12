@@ -1,4 +1,5 @@
-﻿namespace GUI.Forms
+
+namespace GUI.Forms
 {
     partial class TrangChu
     {
