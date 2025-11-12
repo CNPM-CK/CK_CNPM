@@ -28,11 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TrangCaNhan));
             panel1 = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel2 = new TableLayoutPanel();
-            ptbAnhcanhan = new PictureBox();
             tableLayoutPanel3 = new TableLayoutPanel();
             panel9 = new Panel();
             panelDiachi = new Panel();
@@ -55,9 +53,12 @@
             dateTimePicker1 = new DateTimePicker();
             label5 = new Label();
             panel8 = new Panel();
-            radioButton2 = new RadioButton();
-            radioButton1 = new RadioButton();
+            radioBtnnu = new RadioButton();
+            radioBtnnam = new RadioButton();
             label6 = new Label();
+            tableLayoutPanel5 = new TableLayoutPanel();
+            ptbAnhcanhan = new PictureBox();
+            chinhSuaAnh = new Label();
             panel10 = new Panel();
             tableLayoutPanel4 = new TableLayoutPanel();
             panel16 = new Panel();
@@ -75,6 +76,7 @@
             panel11 = new Panel();
             label8 = new Label();
             panel13 = new Panel();
+            button1 = new Button();
             btnQuenmk = new Button();
             btnLuu = new Button();
             panel2 = new Panel();
@@ -82,7 +84,6 @@
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)ptbAnhcanhan).BeginInit();
             tableLayoutPanel3.SuspendLayout();
             panel9.SuspendLayout();
             panelDiachi.SuspendLayout();
@@ -95,6 +96,8 @@
             panel6.SuspendLayout();
             panelNgaysinh.SuspendLayout();
             panel8.SuspendLayout();
+            tableLayoutPanel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ptbAnhcanhan).BeginInit();
             panel10.SuspendLayout();
             tableLayoutPanel4.SuspendLayout();
             panel16.SuspendLayout();
@@ -140,8 +143,8 @@
             tableLayoutPanel2.ColumnCount = 2;
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80F));
-            tableLayoutPanel2.Controls.Add(ptbAnhcanhan, 0, 0);
             tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 1, 0);
+            tableLayoutPanel2.Controls.Add(tableLayoutPanel5, 0, 0);
             tableLayoutPanel2.Dock = DockStyle.Fill;
             tableLayoutPanel2.Location = new Point(3, 3);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -149,17 +152,6 @@
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel2.Size = new Size(1041, 315);
             tableLayoutPanel2.TabIndex = 0;
-            // 
-            // ptbAnhcanhan
-            // 
-            ptbAnhcanhan.Dock = DockStyle.Fill;
-            ptbAnhcanhan.Image = (Image)resources.GetObject("ptbAnhcanhan.Image");
-            ptbAnhcanhan.Location = new Point(3, 3);
-            ptbAnhcanhan.Name = "ptbAnhcanhan";
-            ptbAnhcanhan.Size = new Size(202, 309);
-            ptbAnhcanhan.SizeMode = PictureBoxSizeMode.Zoom;
-            ptbAnhcanhan.TabIndex = 0;
-            ptbAnhcanhan.TabStop = false;
             // 
             // tableLayoutPanel3
             // 
@@ -210,6 +202,7 @@
             txtDiachi.Name = "txtDiachi";
             txtDiachi.Size = new Size(673, 29);
             txtDiachi.TabIndex = 0;
+            txtDiachi.TextChanged += txtDiachi_TextChanged;
             // 
             // label7
             // 
@@ -250,6 +243,7 @@
             txtEmail.Name = "txtEmail";
             txtEmail.Size = new Size(673, 29);
             txtEmail.TabIndex = 0;
+            txtEmail.TextChanged += txtEmail_TextChanged;
             // 
             // label3
             // 
@@ -290,6 +284,7 @@
             txtHoten.Name = "txtHoten";
             txtHoten.Size = new Size(673, 29);
             txtHoten.TabIndex = 0;
+            txtHoten.TextChanged += txtHoten_TextChanged;
             // 
             // label2
             // 
@@ -330,6 +325,7 @@
             txtSdt.Name = "txtSdt";
             txtSdt.Size = new Size(673, 29);
             txtSdt.TabIndex = 0;
+            txtSdt.TextChanged += txtSdt_TextChanged;
             // 
             // label4
             // 
@@ -371,6 +367,7 @@
             dateTimePicker1.Name = "dateTimePicker1";
             dateTimePicker1.Size = new Size(673, 27);
             dateTimePicker1.TabIndex = 0;
+            dateTimePicker1.ValueChanged += dateTimePicker1_ValueChanged;
             // 
             // label5
             // 
@@ -387,8 +384,8 @@
             // 
             // panel8
             // 
-            panel8.Controls.Add(radioButton2);
-            panel8.Controls.Add(radioButton1);
+            panel8.Controls.Add(radioBtnnu);
+            panel8.Controls.Add(radioBtnnam);
             panel8.Controls.Add(label6);
             panel8.Dock = DockStyle.Fill;
             panel8.Location = new Point(3, 207);
@@ -396,27 +393,29 @@
             panel8.Size = new Size(821, 45);
             panel8.TabIndex = 4;
             // 
-            // radioButton2
+            // radioBtnnu
             // 
-            radioButton2.AutoSize = true;
-            radioButton2.Location = new Point(249, 11);
-            radioButton2.Name = "radioButton2";
-            radioButton2.Size = new Size(50, 24);
-            radioButton2.TabIndex = 5;
-            radioButton2.TabStop = true;
-            radioButton2.Text = "Nữ";
-            radioButton2.UseVisualStyleBackColor = true;
+            radioBtnnu.AutoSize = true;
+            radioBtnnu.Location = new Point(249, 11);
+            radioBtnnu.Name = "radioBtnnu";
+            radioBtnnu.Size = new Size(50, 24);
+            radioBtnnu.TabIndex = 5;
+            radioBtnnu.TabStop = true;
+            radioBtnnu.Text = "Nữ";
+            radioBtnnu.UseVisualStyleBackColor = true;
+            radioBtnnu.CheckedChanged += radioBtnnu_CheckedChanged;
             // 
-            // radioButton1
+            // radioBtnnam
             // 
-            radioButton1.AutoSize = true;
-            radioButton1.Location = new Point(139, 10);
-            radioButton1.Name = "radioButton1";
-            radioButton1.Size = new Size(62, 24);
-            radioButton1.TabIndex = 4;
-            radioButton1.TabStop = true;
-            radioButton1.Text = "Nam";
-            radioButton1.UseVisualStyleBackColor = true;
+            radioBtnnam.AutoSize = true;
+            radioBtnnam.Location = new Point(139, 10);
+            radioBtnnam.Name = "radioBtnnam";
+            radioBtnnam.Size = new Size(62, 24);
+            radioBtnnam.TabIndex = 4;
+            radioBtnnam.TabStop = true;
+            radioBtnnam.Text = "Nam";
+            radioBtnnam.UseVisualStyleBackColor = true;
+            radioBtnnam.CheckedChanged += radioBtnnam_CheckedChanged;
             // 
             // label6
             // 
@@ -430,6 +429,47 @@
             label6.TabIndex = 3;
             label6.Text = "Giới tính :";
             label6.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // tableLayoutPanel5
+            // 
+            tableLayoutPanel5.ColumnCount = 1;
+            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel5.Controls.Add(ptbAnhcanhan, 0, 0);
+            tableLayoutPanel5.Controls.Add(chinhSuaAnh, 0, 1);
+            tableLayoutPanel5.Dock = DockStyle.Fill;
+            tableLayoutPanel5.Location = new Point(3, 3);
+            tableLayoutPanel5.Name = "tableLayoutPanel5";
+            tableLayoutPanel5.RowCount = 2;
+            tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 90F));
+            tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel5.Size = new Size(202, 309);
+            tableLayoutPanel5.TabIndex = 2;
+            // 
+            // ptbAnhcanhan
+            // 
+            ptbAnhcanhan.Dock = DockStyle.Fill;
+            ptbAnhcanhan.Image = Properties.Resources.macdinh;
+            ptbAnhcanhan.Location = new Point(3, 3);
+            ptbAnhcanhan.Name = "ptbAnhcanhan";
+            ptbAnhcanhan.Size = new Size(196, 272);
+            ptbAnhcanhan.SizeMode = PictureBoxSizeMode.Zoom;
+            ptbAnhcanhan.TabIndex = 0;
+            ptbAnhcanhan.TabStop = false;
+            ptbAnhcanhan.Click += ptbAnhcanhan_Click;
+            // 
+            // chinhSuaAnh
+            // 
+            chinhSuaAnh.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            chinhSuaAnh.AutoSize = true;
+            chinhSuaAnh.Cursor = Cursors.Hand;
+            chinhSuaAnh.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            chinhSuaAnh.Location = new Point(3, 283);
+            chinhSuaAnh.Name = "chinhSuaAnh";
+            chinhSuaAnh.Size = new Size(196, 20);
+            chinhSuaAnh.TabIndex = 1;
+            chinhSuaAnh.Text = "Đổi ảnh đại diện";
+            chinhSuaAnh.TextAlign = ContentAlignment.MiddleCenter;
+            chinhSuaAnh.Click += chinhSuaAnh_Click;
             // 
             // panel10
             // 
@@ -484,6 +524,7 @@
             txtXacnhan.Name = "txtXacnhan";
             txtXacnhan.Size = new Size(673, 29);
             txtXacnhan.TabIndex = 0;
+            txtXacnhan.TextChanged += txtXacnhan_TextChanged;
             // 
             // label11
             // 
@@ -524,6 +565,7 @@
             txtMatkhaumoi.Name = "txtMatkhaumoi";
             txtMatkhaumoi.Size = new Size(673, 29);
             txtMatkhaumoi.TabIndex = 0;
+            txtMatkhaumoi.TextChanged += txtMatkhaumoi_TextChanged;
             // 
             // label10
             // 
@@ -564,6 +606,7 @@
             txtMatkhaucu.Name = "txtMatkhaucu";
             txtMatkhaucu.Size = new Size(673, 29);
             txtMatkhaucu.TabIndex = 0;
+            txtMatkhaucu.TextChanged += txtMatkhaucu_TextChanged;
             // 
             // label9
             // 
@@ -594,13 +637,14 @@
             label8.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label8.Location = new Point(444, 0);
             label8.Name = "label8";
-            label8.Size = new Size(157, 25);
+            label8.Size = new Size(185, 25);
             label8.TabIndex = 0;
-            label8.Text = "Đặt lại mật khẩu ";
+            label8.Text = "ĐẶT LẠI MẬT KHẨU";
             label8.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // panel13
             // 
+            panel13.Controls.Add(button1);
             panel13.Controls.Add(btnQuenmk);
             panel13.Controls.Add(btnLuu);
             panel13.Dock = DockStyle.Fill;
@@ -609,16 +653,32 @@
             panel13.Size = new Size(1041, 53);
             panel13.TabIndex = 2;
             // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.None;
+            button1.BackColor = Color.FromArgb(255, 128, 0);
+            button1.Cursor = Cursors.Hand;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button1.ForeColor = Color.White;
+            button1.Location = new Point(658, 5);
+            button1.Name = "button1";
+            button1.Size = new Size(164, 45);
+            button1.TabIndex = 2;
+            button1.Text = "Xác thực khuôn mặt";
+            button1.UseVisualStyleBackColor = false;
+            // 
             // btnQuenmk
             // 
             btnQuenmk.Anchor = AnchorStyles.None;
             btnQuenmk.BackColor = Color.Red;
+            btnQuenmk.Cursor = Cursors.Hand;
             btnQuenmk.FlatStyle = FlatStyle.Flat;
             btnQuenmk.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnQuenmk.ForeColor = Color.White;
-            btnQuenmk.Location = new Point(558, 5);
+            btnQuenmk.Location = new Point(463, 5);
             btnQuenmk.Name = "btnQuenmk";
-            btnQuenmk.Size = new Size(145, 45);
+            btnQuenmk.Size = new Size(165, 45);
             btnQuenmk.TabIndex = 1;
             btnQuenmk.Text = "Quên mật khẩu ?";
             btnQuenmk.UseVisualStyleBackColor = false;
@@ -628,15 +688,17 @@
             // 
             btnLuu.Anchor = AnchorStyles.None;
             btnLuu.BackColor = Color.FromArgb(0, 152, 70);
+            btnLuu.Cursor = Cursors.Hand;
             btnLuu.FlatStyle = FlatStyle.Flat;
             btnLuu.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLuu.ForeColor = Color.White;
-            btnLuu.Location = new Point(384, 5);
+            btnLuu.Location = new Point(264, 5);
             btnLuu.Name = "btnLuu";
-            btnLuu.Size = new Size(145, 45);
+            btnLuu.Size = new Size(165, 45);
             btnLuu.TabIndex = 0;
             btnLuu.Text = "Lưu thay đổi";
             btnLuu.UseVisualStyleBackColor = false;
+            btnLuu.Click += btnLuu_Click;
             // 
             // panel2
             // 
@@ -671,7 +733,6 @@
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)ptbAnhcanhan).EndInit();
             tableLayoutPanel3.ResumeLayout(false);
             panel9.ResumeLayout(false);
             panel9.PerformLayout();
@@ -694,6 +755,9 @@
             panelNgaysinh.ResumeLayout(false);
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
+            tableLayoutPanel5.ResumeLayout(false);
+            tableLayoutPanel5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)ptbAnhcanhan).EndInit();
             panel10.ResumeLayout(false);
             tableLayoutPanel4.ResumeLayout(false);
             panel16.ResumeLayout(false);
@@ -723,7 +787,6 @@
         private Label label1;
         private TableLayoutPanel tableLayoutPanel1;
         private TableLayoutPanel tableLayoutPanel2;
-        private PictureBox ptbAnhcanhan;
         private TableLayoutPanel tableLayoutPanel3;
         private Panel panel3;
         private Panel panelHoten;
@@ -746,8 +809,8 @@
         private TextBox txtDiachi;
         private Label label7;
         private Panel panel8;
-        private RadioButton radioButton2;
-        private RadioButton radioButton1;
+        private RadioButton radioBtnnu;
+        private RadioButton radioBtnnam;
         private Label label6;
         private Panel panel10;
         private Panel panel11;
@@ -768,5 +831,9 @@
         private Panel panel13;
         private Button btnQuenmk;
         private Button btnLuu;
+        private Button button1;
+        private TableLayoutPanel tableLayoutPanel5;
+        private Label chinhSuaAnh;
+        private PictureBox ptbAnhcanhan;
     }
 }

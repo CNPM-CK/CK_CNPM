@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace GUI.Forms
 {
-    public partial class DanhSachHD : Form
+    public partial class DanhSachHDForm : Form
     {
         #region Fields
 
@@ -31,11 +31,11 @@ namespace GUI.Forms
         private const int SEARCH_HEIGHT = 50;
         private const string PLACEHOLDER_TEXT = "Tìm kiếm hợp đồng...";
 
-        private BindingList<HopDong> dsHopDong;
+        private BindingList<HopDongDTO> dsHopDong;
         private bool isPlaceholder = true;
         private string lastSearchKeyword = "";
 
-        public DanhSachHD()
+        public DanhSachHDForm()
         {
             InitializeComponent();
             this.DoubleBuffered = true;
@@ -56,7 +56,7 @@ namespace GUI.Forms
         private void DanhSachHopDong_Load(object sender, EventArgs e)
         {
             HopDongBLL hdBLL = new HopDongBLL();
-            dsHopDong = new BindingList<HopDong>(hdBLL.LayDanhSachHD());
+            dsHopDong = new BindingList<HopDongDTO>(hdBLL.LayDanhSachHD());
 
             InitializeContextMenu();
             InitializeButtonIcons();
@@ -158,20 +158,21 @@ namespace GUI.Forms
 
         private void HandleEdit(DataGridViewRow row)
         {
-            //HopDong hd = new HopDong
-            //{
-            //    maHD = row.Cells["maHD"].Value.ToString(),
-            //    maKH = row.Cells["maKH"].Value?.ToString(),
-            //    ngayKy = row.Cells["ngayKy"].Value != null ? Convert.ToDateTime(row.Cells["ngayKy"].Value) : DateTime.MinValue,
-            //    ngayDuKien = row.Cells["ngayDuKien"].Value != null ? Convert.ToDateTime(row.Cells["ngayDuKien"].Value) : DateTime.MinValue,
-            //    ngayThucTe = row.Cells["ngayThucTe"].Value != null ? Convert.ToDateTime(row.Cells["ngayThucTe"].Value) : DateTime.MinValue,
-            //    trangThai = row.Cells["trangThai"].Value?.ToString()
-            //};
+            HopDongDTO hd = new HopDongDTO
+            {
+                maHD = row.Cells["maHD"].Value.ToString(),
+                maKH = row.Cells["maKH"].Value?.ToString(),
+                ngayKy = row.Cells["ngayKy"].Value != null ? Convert.ToDateTime(row.Cells["ngayKy"].Value) : DateTime.MinValue,
+                ngayKetThucHD = row.Cells["ngayKetThucHD"].Value != null ? Convert.ToDateTime(row.Cells["ngayKetThucHD"].Value) : DateTime.MinValue,
+                trangThai = row.Cells["trangThai"].Value?.ToString(),
+                tanSuatQuanTrac = row.Cells["tanSuatQuanTrac"].Value?.ToString(),
+                soHD = row.Cells["soHD"].Value?.ToString(),
+            };
 
-            //SuaHopDong frmSua = new SuaHopDong(hd);
-            //CenterFormOnParent(frmSua);
-            //frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachHoaDon();
-            //frmSua.Show(this);
+            SuaHopDongForm frmSua = new SuaHopDongForm(hd);
+            CenterFormOnParent(frmSua);
+            frmSua.SuccesfullyUpdated += (s, ev) => RefreshDanhSachHoaDon();
+            frmSua.Show(this);
         }
 
         private void HandleDelete(DataGridViewRow row)
@@ -549,7 +550,7 @@ namespace GUI.Forms
         #region Button Events
         private void btnThemuser_Click(object sender, EventArgs e)
         {
-            ThemHopDong frmThem = new ThemHopDong();
+            ThemHopDongForm frmThem = new ThemHopDongForm();
             CenterFormOnParent(frmThem);
             frmThem.SuccesfullyUpdated += (s, ev) => RefreshDanhSachHoaDon();
             frmThem.Show(this);
@@ -568,6 +569,7 @@ namespace GUI.Forms
         private void containersearch_Paint_1(object sender, PaintEventArgs e) { }
         private void btnDanhsachnv_Click(object sender, EventArgs e) { }
         private void searchtextbox_TextChanged(object sender, EventArgs e) { }
+
         #endregion
     }
 }

@@ -81,7 +81,7 @@
             label7 = new Label();
             panel2 = new Panel();
             pictureBox1 = new PictureBox();
-            label1 = new Label();
+            label = new Label();
             panel1.SuspendLayout();
             panel11.SuspendLayout();
             tableLayoutPanel12.SuspendLayout();
@@ -705,7 +705,7 @@
             // 
             panel2.BackColor = Color.FromArgb(0, 152, 70);
             panel2.Controls.Add(pictureBox1);
-            panel2.Controls.Add(label1);
+            panel2.Controls.Add(label);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
@@ -723,18 +723,18 @@
             pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;
             // 
-            // label1
+            // label
             // 
-            label1.Anchor = AnchorStyles.Top;
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.White;
-            label1.Location = new Point(392, 9);
-            label1.Name = "label1";
-            label1.Size = new Size(327, 38);
-            label1.TabIndex = 0;
-            label1.Text = "KẾ HOẠCH QUAN TRẮC";
-            label1.TextAlign = ContentAlignment.MiddleCenter;
+            label.Anchor = AnchorStyles.Top;
+            label.AutoSize = true;
+            label.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label.ForeColor = Color.White;
+            label.Location = new Point(392, 9);
+            label.Name = "label";
+            label.Size = new Size(327, 38);
+            label.TabIndex = 0;
+            label.Text = "KẾ HOẠCH QUAN TRẮC";
+            label.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // KeHoachQuanTrac
             // 
@@ -800,7 +800,7 @@
         private Panel panel1;
         private Panel panel2;
         private TableLayoutPanel tableLayoutPanel1;
-        private Label label1;
+        private Label label;
         private Panel panel3;
         private TableLayoutPanel tableLayoutPanel2;
         private Panel panel4;

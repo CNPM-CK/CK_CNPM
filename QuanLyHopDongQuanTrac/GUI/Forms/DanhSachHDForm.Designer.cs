@@ -1,6 +1,6 @@
 ﻿namespace GUI.Forms
 {
-    partial class DanhSachHD
+    partial class DanhSachHDForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachHD));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachHDForm));
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             panel2 = new Panel();
             pictureBox4 = new PictureBox();
             pictureBoxSetting = new PictureBox();
@@ -164,24 +164,24 @@
             dgvdanhsachHopDong.AllowUserToAddRows = false;
             dgvdanhsachHopDong.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvdanhsachHopDong.BackgroundColor = Color.White;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 10F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvdanhsachHopDong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 10F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvdanhsachHopDong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvdanhsachHopDong.ColumnHeadersHeight = 30;
             dgvdanhsachHopDong.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvdanhsachHopDong.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Window;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+            dgvdanhsachHopDong.DefaultCellStyle = dataGridViewCellStyle4;
             dgvdanhsachHopDong.Dock = DockStyle.Fill;
             dgvdanhsachHopDong.EnableHeadersVisualStyles = false;
             dgvdanhsachHopDong.Location = new Point(0, 0);
@@ -362,13 +362,13 @@
             labelFooter.Text = "© 2025 ECOS. Bản quyền thuộc về ECOS.";
             labelFooter.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // DanhSachHD
+            // DanhSachHDForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1021, 565);
             Controls.Add(panel1);
-            Name = "DanhSachHD";
+            Name = "DanhSachHDForm";
             Text = "Quản lý hợp đồng";
             WindowState = FormWindowState.Maximized;
             Load += DanhSachHopDong_Load;

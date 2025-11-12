@@ -12,7 +12,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Vosk;
 
 
 namespace GUI.Forms
@@ -21,15 +20,15 @@ namespace GUI.Forms
     {
         #region Fields
 
-        private TimKiemGiongNoi voiceSearch;
-        private bool isVoiceSearchReady = false;
-        private System.Threading.Timer initTimer;
-        private readonly object _voiceSearchLock = new object();
-        private readonly string MODEL_PATH = Path.Combine(
-            Application.StartupPath,  // thư mục chứa .exe
-            "Model",
-            "vosk-model-vi-0.4"
-        );
+        //private TimKiemGiongNoi voiceSearch;
+        //private bool isVoiceSearchReady = false;
+        //private System.Threading.Timer initTimer;
+        //private readonly object _voiceSearchLock = new object();
+        //private readonly string MODEL_PATH = Path.Combine(
+        //    Application.StartupPath,  // thư mục chứa .exe
+        //    "Model",
+        //    "vosk-model-vi-0.4"
+        //);
 
 
         private Color borderColor = Color.Black;
@@ -55,8 +54,8 @@ namespace GUI.Forms
         {
             InitializeComponent();
             this.DoubleBuffered = true;
-            string modelPath = Path.Combine(Application.StartupPath, "Model", "vosk-model-vn-0.4");
-            voiceSearch = new TimKiemGiongNoi(modelPath);
+            //string modelPath = Path.Combine(Application.StartupPath, "Model", "vosk-model-vn-0.4");
+            //voiceSearch = new TimKiemGiongNoi(modelPath);
         }
 
         [DllImport("gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
@@ -228,7 +227,10 @@ namespace GUI.Forms
             };
 
             frmSua.SuccesfullyUpdated += (s, ev) => taiDanhSachNhanVien();
-            frmSua.Show(this);
+            if (frmSua.ShowDialog(this) == DialogResult.OK)
+            {
+                taiDanhSachNhanVien(); // chỉ gọi khi form đóng thành công
+            }
         }
 
         private void HandleDelete(DataGridViewRow row)
@@ -660,25 +662,25 @@ namespace GUI.Forms
 
         private void TestVoskModel()
         {
-            try
-            {
-                string modelPath = Path.Combine(Application.StartupPath, "Model", "vosk-model-vn-0.4");
+            //try
+            //{
+            //    string modelPath = Path.Combine(Application.StartupPath, "Model", "vosk-model-vn-0.4");
 
-                MessageBox.Show($"Testing model at: {modelPath}");
+            //    MessageBox.Show($"Testing model at: {modelPath}");
 
-                Vosk.Vosk.SetLogLevel(0); // Enable logging để debug
-                using (var testModel = new Model(modelPath))
-                {
-                    using (var testRecognizer = new VoskRecognizer(testModel, 16000.0f))
-                    {
-                        MessageBox.Show("✅ Model test SUCCESS!");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ Model test FAILED:\n\n{ex.GetType().Name}\n{ex.Message}\n\n{ex.StackTrace}");
-            }
+            //    Vosk.Vosk.SetLogLevel(0); // Enable logging để debug
+            //    using (var testModel = new Model(modelPath))
+            //    {
+            //        using (var testRecognizer = new VoskRecognizer(testModel, 16000.0f))
+            //        {
+            //            MessageBox.Show("✅ Model test SUCCESS!");
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"❌ Model test FAILED:\n\n{ex.GetType().Name}\n{ex.Message}\n\n{ex.StackTrace}");
+            //}
         }
 
         private async void DSNV_Uc_Load(object sender, EventArgs e)
@@ -781,106 +783,6 @@ namespace GUI.Forms
         private CancellationTokenSource _voiceCts;
         private bool _isDisposed = false;
 
-        private async void picturemicro_Click(object sender, EventArgs e)
-        {
-            //// ✅ Kiểm tra lock
-            //lock (_voiceSearchLock)
-            //{
-            //    if (_isDisposed || voiceSearch == null || !isVoiceSearchReady)
-            //    {
-            //        MessageBox.Show("Dịch vụ nhận diện giọng nói không khả dụng!",
-            //            "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //        return;
-            //    }
-            //}
-
-            //// ✅ Kiểm tra task đang chạy
-            //if (_currentVoiceTask != null && !_currentVoiceTask.IsCompleted)
-            //{
-            //    searchtextbox.Text = "⏸️ Đang xử lý, vui lòng đợi...";
-            //    return;
-            //}
-
-            //picturemicro.Enabled = false;
-            //isPlaceholder = false;
-            //searchtextbox.Text = "🎤 Đang nghe...";
-            //searchtextbox.ForeColor = Color.Gray;
-
-            //Action<string> partialHandler = text =>
-            //{
-            //    if (_isDisposed) return;
-
-            //    try
-            //    {
-            //        if (InvokeRequired)
-            //        {
-            //            BeginInvoke(new Action(() =>
-            //            {
-            //                if (!_isDisposed && !IsDisposed)
-            //                {
-            //                    searchtextbox.Text = text;
-            //                    searchtextbox.ForeColor = Color.Black;
-            //                }
-            //            }));
-            //        }
-            //        else
-            //        {
-            //            searchtextbox.Text = text;
-            //            searchtextbox.ForeColor = Color.Black;
-            //        }
-            //    }
-            //    catch { }
-            //};
-
-            //try
-            //{
-            //    voiceSearch.OnPartialResult += partialHandler;
-
-            //    _currentVoiceTask = voiceSearch.RecognizeFromMicAsync(5);
-            //    string result = await _currentVoiceTask;
-
-            //    if (!_isDisposed && !IsDisposed)
-            //    {
-            //        searchtextbox.Text = result;
-            //        searchtextbox.ForeColor = result.StartsWith("(") ? Color.Red : Color.Black;
-
-            //        if (!result.StartsWith("("))
-            //        {
-            //            PerformSearch();
-            //        }
-            //    }
-            //}
-            //catch (ObjectDisposedException)
-            //{
-            //    if (!_isDisposed)
-            //        searchtextbox.Text = "(Dịch vụ đã bị đóng)";
-            //}
-            //catch (Exception ex)
-            //{
-            //    if (!_isDisposed && !IsDisposed)
-            //    {
-            //        searchtextbox.Text = $"(Lỗi: {ex.Message})";
-            //        searchtextbox.ForeColor = Color.Red;
-            //    }
-            //}
-            //finally
-            //{
-            //    try
-            //    {
-            //        voiceSearch.OnPartialResult -= partialHandler;
-            //    }
-            //    catch { }
-
-            //    if (!_isDisposed && !IsDisposed)
-            //    {
-            //        picturemicro.Enabled = true;
-            //    }
-
-            //    _currentVoiceTask = null;
-            //}
-
-        }
-
         private void btnThemuser_Click(object sender, EventArgs e)
         {
             if (currentOpenForm != null && !currentOpenForm.IsDisposed)
@@ -914,8 +816,8 @@ namespace GUI.Forms
                 if (disposing)
                 {
                     // ✅ Cleanup voice search trước
-                    voiceSearch?.Dispose();
-                    voiceSearch = null;
+                    //voiceSearch?.Dispose();
+                    //voiceSearch = null;
                 }
             }
 

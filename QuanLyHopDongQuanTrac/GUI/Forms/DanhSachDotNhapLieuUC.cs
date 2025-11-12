@@ -1,18 +1,20 @@
-﻿using System;
+﻿using BLL;
+using DTO;
+using GUI.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
-using BLL;
-using DTO;
 
 namespace GUI.Forms
 {
-    public partial class DanhSachDotQuanTrac : UserControl
+    public partial class DanhSachDotNhapLieuUC : UserControl
     {
         private string maDotHienTai = null;
         #region Fields
@@ -30,18 +32,17 @@ namespace GUI.Forms
         private const int MAX_SEARCH_WIDTH = 500;
 
         // Data & State
-        private BindingList<DTO_DotQuanTrac> dsDotQuanTrac;
+        private BindingList<DanhSachDotNhapLieuDTO> dsDotQuanTrac;
         private bool isPlaceholder = true;
         private string lastSearchKeyword = "";
         private Form currentOpenForm = null;
 
         // Cell action rectangles
         private Rectangle editRect;
-        private Rectangle deleteRect;
         #endregion
 
         #region Constructor
-        public DanhSachDotQuanTrac()
+        public DanhSachDotNhapLieuUC()
         {
             InitializeComponent();
             this.Load += DanhSachThongSo_Load;
@@ -57,9 +58,6 @@ namespace GUI.Forms
                 //LoadData();
                 InitializeDataGridView();
                 InitializeCustomSearchBox();
-                InitializeContextMenu();
-                InitializeButtonIcons();
-                InitializeButtonStyles();
                 InitializeWatermark();
                 CalculateLayout();
             }
@@ -78,6 +76,7 @@ namespace GUI.Forms
 
         private void InitializeDataGridView()
         {
+
             dgvDsdotquantrac.AutoGenerateColumns = false;
             dgvDsdotquantrac.Columns.Clear();
             dgvDsdotquantrac.AllowUserToAddRows = false;
@@ -85,6 +84,9 @@ namespace GUI.Forms
             dgvDsdotquantrac.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvDsdotquantrac.MultiSelect = false;
             dgvDsdotquantrac.RowTemplate.Height = 50;
+            dgvDsdotquantrac.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDsdotquantrac.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
 
             // Font settings
             dgvDsdotquantrac.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular);
@@ -109,100 +111,60 @@ namespace GUI.Forms
             {
                 new DataGridViewTextBoxColumn
                 {
-                    DataPropertyName = "MaDot",
+                    DataPropertyName = "maDot",
                     HeaderText = "MÃ ĐỢT",
                     Name = "maDot",
-                    Visible = false
                 },
                 new DataGridViewTextBoxColumn
                 {
-                    DataPropertyName = "TenKhachHang",
-                    HeaderText = "KHÁCH HÀNG",
-                    Name = "tenKhachHang",
-                },
-                new DataGridViewTextBoxColumn
-                {
-                    DataPropertyName = "MaHD",
-                    HeaderText = "HỢP ĐỒNG",
+                    DataPropertyName = "maHD",
+                    HeaderText = "MÃ HỢP ĐỒNG",
                     Name = "maHD",
                 },
                 new DataGridViewTextBoxColumn
                 {
-                    DataPropertyName = "NoiDung",
-                    HeaderText = "NỘI DUNG",
-                    Name = "noiDung",
-                },
-                new DataGridViewTextBoxColumn
-                {
-                    DataPropertyName = "DotQuanTrac",
-                    HeaderText = "ĐỢT QUAN TRẮC",
-                    Name = "dotQuanTrac",
-                },
-                new DataGridViewTextBoxColumn
-                {
-                    DataPropertyName = "NgayBatDau",
+                    DataPropertyName = "ngayBatDau",
                     HeaderText = "NGÀY BẮT ĐẦU",
                     Name = "ngayBatDau",
                     DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }
                 },
                 new DataGridViewTextBoxColumn
                 {
-                    DataPropertyName = "NgayDuKien",
+                    DataPropertyName = "ngayDuKien",
                     HeaderText = "NGÀY DỰ KIẾN",
                     Name = "ngayDuKien",
                     DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }
                 },
                 new DataGridViewTextBoxColumn
                 {
-                    DataPropertyName = "NgayTraKQ",
-                    HeaderText = "NGÀY TRẢ KẾT QUẢ",
-                    Name = "ngayTraKQ",
-                    DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }
+                    DataPropertyName = "ngayConLai",
+                    HeaderText = "SỐ NGÀY CÒN LẠI",
+                    Name = "ngayConLai",
                 },
                 new DataGridViewTextBoxColumn
                 {
-                    DataPropertyName = "TrangThai",
-                    HeaderText = "TRẠNG THÁI ",
+                    DataPropertyName = "trangThai",
+                    HeaderText = "TRẠNG THÁI",
                     Name = "trangThai",
                 }
+
             });
 
             // Add action column
             DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
             {
                 Name = "ThaoTac",
-                HeaderText = "Thao tác",
+                HeaderText = "THAO TÁC",
                 ImageLayout = DataGridViewImageCellLayout.Zoom,
+                //Image = Properties.Resources.edit
             };
-            dgvDsdotquantrac.Columns["maHD"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDsdotquantrac.Columns["dotQuanTrac"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDsdotquantrac.Columns["ngayBatDau"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDsdotquantrac.Columns["ngayDuKien"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDsdotquantrac.Columns["ngayTraKQ"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvDsdotquantrac.Columns["trangThai"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            // Thu nhỏ cột HỢP ĐỒNG
-            dgvDsdotquantrac.Columns["maHD"].Width = 115; // hoặc 80 tùy bạn muốn nhỏ cỡ nào
-            dgvDsdotquantrac.Columns["maHD"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-
-
-            // Nếu bạn muốn căn trái cho nội dung dài (như tên KH, nội dung)
-            dgvDsdotquantrac.Columns["tenKhachHang"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvDsdotquantrac.Columns["tenKhachHang"].Width = 300;
-            dgvDsdotquantrac.Columns["tenKhachHang"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-
-            dgvDsdotquantrac.Columns["noiDung"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dgvDsdotquantrac.Columns.Add(thaoTacCol);
             dgvDsdotquantrac.ReadOnly = true;
             dgvDsdotquantrac.Columns["ThaoTac"].ReadOnly = false;
-            dgvDsdotquantrac.Columns["ThaoTac"].Width = 100;
-            dgvDsdotquantrac.Columns["ThaoTac"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-
-
 
             // Bind data
             dgvDsdotquantrac.DataSource = dsDotQuanTrac;
 
-            // Register events - QUAN TRỌNG
             dgvDsdotquantrac.CellPainting += DgvDsdotquantrac_CellPainting;
             dgvDsdotquantrac.CellClick += DgvDsdotquantrac_CellClick;
             LoadKeHoachPage();
@@ -233,57 +195,6 @@ namespace GUI.Forms
             searchtextbox.TextChanged += Searchtextbox_TextChanged;
             searchtextbox.KeyDown += Searchtextbox_KeyDown;
             containersearch.Paint += Containersearch_Paint;
-        }
-
-        private void InitializeContextMenu()
-        {
-            if (btnXuatfile == null) return;
-
-            ContextMenuStrip menu = new ContextMenuStrip();
-
-            ToolStripMenuItem pdfItem = new ToolStripMenuItem("Xuất PDF");
-            pdfItem.Click += (s, ev) => ExportToPDF();
-
-            ToolStripMenuItem excelItem = new ToolStripMenuItem("Xuất Excel");
-            excelItem.Click += (s, ev) => ExportToExcel();
-
-            menu.Items.Add(pdfItem);
-            menu.Items.Add(excelItem);
-
-            btnXuatfile.Click += (s, ev) =>
-            {
-                menu.Show(btnXuatfile, new Point(0, btnXuatfile.Height));
-            };
-        }
-
-        private void InitializeButtonIcons()
-        {
-            if (btnThemdotquantrac != null && btnThemdotquantrac.Image != null)
-            {
-                btnThemdotquantrac.Image = new Bitmap(btnThemdotquantrac.Image, new Size(24, 24));
-            }
-
-            if (btnXuatfile != null && btnXuatfile.Image != null)
-            {
-                btnXuatfile.Image = new Bitmap(btnXuatfile.Image, new Size(24, 24));
-            }
-        }
-
-        private void InitializeButtonStyles()
-        {
-            if (btnThemdotquantrac != null)
-            {
-                btnThemdotquantrac.Size = new Size(66, 40);
-                BoGocButton(btnThemdotquantrac, 20);
-            }
-
-            if (btnXuatfile != null)
-            {
-                btnXuatfile.Size = new Size(66, 40);
-                BoGocButton(btnXuatfile, 20);
-            }
-            BoGocButton(btnTruoc, 20);
-            BoGocButton(btnSau, 20);
         }
 
         private void InitializeWatermark()
@@ -328,7 +239,7 @@ namespace GUI.Forms
 
         private void CalculateLayout()
         {
-            if (btnXuatfile == null || btnThemdotquantrac == null || containersearch == null) return;
+            if (containersearch == null) return;
 
             int formWidth = this.Width;
 
@@ -337,19 +248,10 @@ namespace GUI.Forms
 
             int btnWidth = isMaximized ? 80 : 66;
             int btnHeight = isMaximized ? 50 : 40;
-            int btnRadius = isMaximized ? 25 : 20;
             int topOffset = 10;
 
-            btnXuatfile.Size = new Size(btnWidth, btnHeight);
-            btnThemdotquantrac.Size = new Size(btnWidth, btnHeight);
-            BoGocButton(btnXuatfile, btnRadius);
-            BoGocButton(btnThemdotquantrac, btnRadius);
-
-            btnXuatfile.Left = formWidth - btnWidth - MARGIN;
-            btnThemdotquantrac.Left = btnXuatfile.Left - btnWidth - SPACING;
-
             int leftBoundary = pictureFilter != null ? pictureFilter.Right + SPACING : MARGIN;
-            int rightBoundary = btnThemdotquantrac.Left - SPACING;
+            int rightBoundary = formWidth - MARGIN; 
 
             if (picturemicro != null)
             {
@@ -381,20 +283,7 @@ namespace GUI.Forms
                 picturemicro.Left = containersearch.Right + SPACING;
             }
 
-            if (isMaximized)
-            {
-                btnThemdotquantrac.Padding = new Padding(10, 5, 10, 5);
-                btnXuatfile.Padding = new Padding(10, 5, 10, 5);
-            }
-            else
-            {
-                btnThemdotquantrac.Padding = new Padding(5, 3, 5, 3);
-                btnXuatfile.Padding = new Padding(5, 3, 5, 3);
-            }
-
-            btnXuatfile.Top = topOffset;
-            btnThemdotquantrac.Top = topOffset;
-
+            containersearch.Top = topOffset;
             containersearch.Invalidate();
         }
         #endregion
@@ -425,8 +314,8 @@ namespace GUI.Forms
 
                 int iconWidth = 24;
                 int iconHeight = 24;
-                int spacing = 10;
-                int totalWidth = (iconWidth * 2) + spacing;
+                int spacing = 15;
+                int totalWidth = (iconWidth) + spacing;
 
                 int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
                 int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
@@ -437,18 +326,19 @@ namespace GUI.Forms
                     e.Graphics.DrawImage(Properties.Resources.edit, editRect);
                 }
 
-                deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
-                if (Properties.Resources.trash_can != null)
-                {
-                    e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
-                }
-
                 e.Handled = true;
             }
         }
 
+        private DateTime _lastClickTime = DateTime.MinValue; // biến toàn cục trong class
+
         private void DgvDsdotquantrac_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // 🧱 Chống double-click nhanh
+            if ((DateTime.Now - _lastClickTime).TotalMilliseconds < 250)
+                return; // bỏ qua nếu click quá nhanh
+            _lastClickTime = DateTime.Now;
+
             if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
 
             // Kiểm tra cột ThaoTac tồn tại
@@ -464,19 +354,20 @@ namespace GUI.Forms
             if (!dgvDsdotquantrac.Columns.Contains("maDot") || row.Cells["maDot"].Value == null)
                 return;
 
-            // Lấy điểm click
+            // Lấy điểm click trong tọa độ của DataGridView
             var clickPoint = dgvDsdotquantrac.PointToClient(Cursor.Position);
 
+            // Kiểm tra có click đúng vào icon edit không
             if (editRect.Contains(clickPoint))
                 HandleEdit(row);
-            else if (deleteRect.Contains(clickPoint))
-                HandleDelete(row);
         }
         #endregion
 
         #region CRUD Operations
         private void HandleEdit(DataGridViewRow row)
         {
+            Debug.WriteLine($"CellClick fired: {DateTime.Now:HH:mm:ss.fff}");
+
             if (currentOpenForm != null && !currentOpenForm.IsDisposed)
             {
                 currentOpenForm.BringToFront();
@@ -487,108 +378,52 @@ namespace GUI.Forms
             }
 
             string maDot = row.Cells["maDot"].Value?.ToString();
-
-            if (string.IsNullOrEmpty(maDot))
+            DTO_DotQuanTrac dot = new DTO_DotQuanTrac
             {
-                MessageBox.Show("Không tìm thấy mã đợt quan trắc!",
-                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                MaDot = maDot,
+            };
 
-            try
-            {
-                Cursor = Cursors.WaitCursor;
+            DanhSachThongSoNhapLieuForm frmNhapLieu = new DanhSachThongSoNhapLieuForm(dot);
+            currentOpenForm = frmNhapLieu;
+            CenterFormOnParent(frmNhapLieu);
+            frmNhapLieu.FormClosed += (s, ev) => { currentOpenForm = null; };
+            //frmNhapLieu.SuccesfullyUpdated += (s, ev) => RefreshData();
+            frmNhapLieu.Show(this.FindForm());
 
-                // ✅ Tạo form và SET FLAG TRƯỚC
-                KeHoachQuanTrac frmEdit = new KeHoachQuanTrac();
-                frmEdit.dangChinhSua = true; // ✅ SET TRƯỚC KHI SHOW
-                frmEdit.MaDotHienTai = maDot; // ✅ SET MÃ ĐỢT
-
-                currentOpenForm = frmEdit;
-                CenterFormOnParent(frmEdit);
-
-                frmEdit.FormClosed += (s, ev) =>
-                {
-                    currentOpenForm = null;
-                    Cursor = Cursors.Default;
-                };
-
-                // ✅ Load dữ liệu SAU KHI form.Load hoàn tất
-                bool dataLoaded = false;
-                frmEdit.Shown += (s, ev) => // ✅ Dùng Shown thay vì Load
-                {
-                    if (!dataLoaded)
-                    {
-                        dataLoaded = true;
-                        try
-                        {
-                            frmEdit.taiDuLieuChinhsua(maDot);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show($"Lỗi load dữ liệu:\n{ex.Message}",
-                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            frmEdit.Close();
-                        }
-                    }
-                };
-
-                Cursor = Cursors.Default;
-
-                // ✅ Hiển thị form
-                DialogResult result = frmEdit.ShowDialog(this.FindForm());
-
-                if (result == DialogResult.OK)
-                {
-                    LoadData(); // ✅ Refresh danh sách
-                    MessageBox.Show("Cập nhật kế hoạch quan trắc thành công!",
-                        "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi mở form chỉnh sửa:\n{ex.Message}\n\n{ex.StackTrace}",
-                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                currentOpenForm = null;
-            }
-            finally
-            {
-                Cursor = Cursors.Default;
-            }
         }
 
-        private void HandleDelete(DataGridViewRow row)
-        {
-            string maDot = row.Cells["maDot"].Value?.ToString();
-            string noiDung = row.Cells["noiDung"].Value?.ToString();
+        //private void HandleDelete(DataGridViewRow row)
+        //{
+        //    string maDot = row.Cells["maDot"].Value?.ToString();
+        //    string noiDung = row.Cells["noiDung"].Value?.ToString();
 
-            DialogResult result = MessageBox.Show(
-                $"Bạn có chắc chắn muốn xóa đợt quan trắc '{noiDung}' (Mã: {maDot}) không?",
-                "Xác nhận xóa",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question
-            );
+        //    DialogResult result = MessageBox.Show(
+        //        $"Bạn có chắc chắn muốn xóa đợt quan trắc '{noiDung}' (Mã: {maDot}) không?",
+        //        "Xác nhận xóa",
+        //        MessageBoxButtons.YesNo,
+        //        MessageBoxIcon.Question
+        //    );
 
-            if (result == DialogResult.Yes)
-            {
-                try
-                {
-                    BLL_DotQuanTrac bll = new BLL_DotQuanTrac();
-                    bll.xoaDotQuanTrac(maDot);
+        //    if (result == DialogResult.Yes)
+        //    {
+        //        try
+        //        {
+        //            BLL_DotQuanTrac bll = new BLL_DotQuanTrac();
+        //            bll.xoaDotQuanTrac(maDot);
 
-                    MessageBox.Show("Đã xóa đợt quan trắc thành công!", "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            MessageBox.Show("Đã xóa đợt quan trắc thành công!", "Thông báo",
+        //                MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    //RefreshData();
-                    LoadData();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Có lỗi xảy ra khi xóa đợt quan trắc: {ex.Message}",
-                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
+        //            //RefreshData();
+        //            LoadData();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show($"Có lỗi xảy ra khi xóa đợt quan trắc: {ex.Message}",
+        //                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        }
+        //    }
+        //}
 
         #endregion
 
@@ -649,26 +484,25 @@ namespace GUI.Forms
 
         private void PerformSearch()
         {
-            string keyword = searchtextbox.Text.Trim().ToLower();
+            //string keyword = searchtextbox.Text.Trim().ToLower();
 
-            if (string.IsNullOrEmpty(keyword))
-            {
-                dgvDsdotquantrac.DataSource = dsDotQuanTrac;
-                return;
-            }
+            //if (string.IsNullOrEmpty(keyword))
+            //{
+            //    dgvDsdotquantrac.DataSource = dsDotQuanTrac;
+            //    return;
+            //}
 
-            var filtered = dsDotQuanTrac
-                .Where(ts =>
-                    (ts.MaDot ?? "").ToLower().Contains(keyword) ||
-                    (ts.TenKhachHang ?? "").ToLower().Contains(keyword) ||
-                    (ts.MaHD ?? "").ToLower().Contains(keyword) ||
-                    (ts.NoiDung ?? "").ToLower().Contains(keyword) ||
-                    //(ts.TrangThai ?? "").ToLower().Contains(keyword) ||
-                    (ts.DotQuanTrac ?? "").ToLower().Contains(keyword)
-                )
-                .ToList();
+            //var filtered = dsDotQuanTrac
+            //    .Where(ts =>
+            //        (ts.MaDot ?? "").ToLower().Contains(keyword) ||
+            //        (ts.MaHD ?? "").ToLower().Contains(keyword) ||
+            //        (ts.NoiDung ?? "").ToLower().Contains(keyword) ||
+            //        //(ts.TrangThai ?? "").ToLower().Contains(keyword) ||
+            //        (ts.DotQuanTrac ?? "").ToLower().Contains(keyword)
+            //    )
+            //    .ToList();
 
-            dgvDsdotquantrac.DataSource = new BindingList<DTO_DotQuanTrac>(filtered);
+            //dgvDsdotquantrac.DataSource = new BindingList<DTO_DotQuanTrac>(filtered);
         }
         #endregion
 
@@ -716,50 +550,13 @@ namespace GUI.Forms
         }
         #endregion
 
-        #region Button Events
-        private void btnThemuser_Click_1(object sender, EventArgs e)
-        {
-            var bll = new BLL_DotQuanTrac();
-            maDotHienTai = bll.taoKeHoachNhap();
-
-            if (string.IsNullOrEmpty(maDotHienTai))
-            {
-                MessageBox.Show("Tạo kế hoạch nháp thất bại!",
-                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            using (var kh = new KeHoachQuanTrac())
-            {
-                kh.MaDotHienTai = maDotHienTai;
-                kh.StartPosition = FormStartPosition.CenterParent;
-
-                if (kh.ShowDialog(this) == DialogResult.OK)
-                    LoadData();
-                else
-                    bll.xoaDotQuanTrac(maDotHienTai);
-            }
-        }
-
-        private void ExportToPDF()
-        {
-            MessageBox.Show("Chức năng xuất PDF đang được phát triển.",
-                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void ExportToExcel()
-        {
-            MessageBox.Show("Chức năng xuất Excel đang được phát triển.",
-                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-        #endregion
-
         #region Helper Methods
         private void CenterFormOnParent(Form childForm)
         {
             Form parentForm = this.FindForm();
             if (parentForm != null)
             {
+                childForm.Width = (int)(childForm.Width * 1.5);
                 childForm.StartPosition = FormStartPosition.Manual;
                 childForm.Location = new Point(
                     parentForm.Location.X + (parentForm.Width - childForm.Width) / 2,
@@ -767,6 +564,7 @@ namespace GUI.Forms
                 );
             }
         }
+
 
         private void dgvDSKH_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -778,16 +576,24 @@ namespace GUI.Forms
         int totalPages = 0;
         private void LoadKeHoachPage()
         {
-            var bll = new BLL_DotQuanTrac();
+            var bll = new DotQuanTracNhapLieuBLL();
 
-            // 🔹 Tính tổng số trang (chỉ cần 1 lần khi load form)
             if (totalRecords == 0)
             {
                 totalRecords = bll.demTongKHQT();
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
             }
+            string? maPhong = SessionStore.Current.MaPhong;
 
-            var data = bll.layDanhSachDotQuanTrac_PhanTrang(currentPage, pageSize);
+            if (string.IsNullOrEmpty(maPhong))
+            {
+                //MessageBox.Show("Không tìm thấy mã phòng trong phiên đăng nhập!",
+                //    "Lỗi session", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return;
+                maPhong = "P003";
+            }
+
+            var data = bll.layDanhSachDotQuanTracNhapLieu_PhanTrang(currentPage, pageSize, maPhong);
             dgvDsdotquantrac.DataSource = data;
 
             soTrang.Text = $"Trang {currentPage}/{totalPages}";
@@ -809,34 +615,6 @@ namespace GUI.Forms
         {
             currentPage++;
             LoadKeHoachPage();
-        }
-
-        private void dgvDsdotquantrac_Paint(object sender, PaintEventArgs e)
-        {
-            if (Properties.Resources.greenlogo == null) return;
-
-            int dgvWidth = dgvDsdotquantrac.Width;
-            int dgvHeight = dgvDsdotquantrac.Height;
-            Image watermark = Properties.Resources.greenlogo;
-
-            int x = (dgvWidth - watermark.Width) / 2;
-            int y = (dgvHeight - watermark.Height) / 2;
-
-            ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f;
-            ImageAttributes attributes = new ImageAttributes();
-            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-
-            e.Graphics.DrawImage(watermark,
-                new Rectangle(x, y, watermark.Width, watermark.Height),
-                0, 0, watermark.Width, watermark.Height,
-                GraphicsUnit.Pixel,
-                attributes);
-        }
-
-        private void picturemicro_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

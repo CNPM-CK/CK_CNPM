@@ -341,19 +341,15 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[KetQua](
 	[maKQ] [varchar](15) NOT NULL,
-	[maNen] [varchar](15) NOT NULL,
-	[maTS] [varchar](15) NOT NULL,
 	[nhanVienNhap] [varchar](15) NOT NULL,
-	[maBC] [varchar](15) NOT NULL,
 	[ngayDo] [date] NOT NULL,
 	[giaTriDoDuoc] [int] NOT NULL,
-	[ghiChu] [text] NULL,
 	[maDNTS] [varchar](15) NULL,
  CONSTRAINT [PK_KetQua] PRIMARY KEY CLUSTERED 
 (
 	[maKQ] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+)
 GO
 /****** Object:  Table [dbo].[KhachHang]    Script Date: 10/30/2025 12:14:41 AM ******/
 SET ANSI_NULLS ON
@@ -409,6 +405,7 @@ CREATE TABLE [dbo].[NhanVien](
 	[ngayTao] [date] NULL,
 	[trangThai] [int] NOT NULL,
 	[daXoa] BIT NOT NULL DEFAULT 0 ,
+	[anhDaiDien] NVARCHAR(255) NULL,
  CONSTRAINT [PK_NhanVien] PRIMARY KEY CLUSTERED 
 (
 	[maNV] ASC
@@ -838,36 +835,30 @@ REFERENCES [dbo].[KhachHang] ([maKH])
 GO
 ALTER TABLE [dbo].[HopDong] CHECK CONSTRAINT [fk_HopDong_KhachHang]
 GO
-ALTER TABLE [dbo].[KetQua]  WITH CHECK ADD  CONSTRAINT [fk_KetQua_BaoCaoKetQua] FOREIGN KEY([maBC])
-REFERENCES [dbo].[BaoCaoKetQua] ([maBC])
-GO
 --khoa ngoai trang thai của bảng nhân viên 
 ALTER TABLE [dbo].[NhanVien]
 ADD CONSTRAINT FK_NhanVien_TrangThai
 FOREIGN KEY ([trangThai]) REFERENCES [dbo].[TrangThai_NhanVien]([maTrangThai]);
 go 
 
-ALTER TABLE [dbo].[KetQua] CHECK CONSTRAINT [fk_KetQua_BaoCaoKetQua]
-GO
-ALTER TABLE [dbo].[KetQua]  WITH CHECK ADD  CONSTRAINT [FK_KetQua_DotNenTs] FOREIGN KEY([maDNTS])
-REFERENCES [dbo].[Dot_Nen_Ts] ([maDNTS])
-GO
-ALTER TABLE [dbo].[KetQua] CHECK CONSTRAINT [FK_KetQua_DotNenTs]
-GO
-ALTER TABLE [dbo].[KetQua]  WITH CHECK ADD  CONSTRAINT [fk_KetQua_NenMau] FOREIGN KEY([maNen])
-REFERENCES [dbo].[NenMau] ([maNen])
-GO
-ALTER TABLE [dbo].[KetQua] CHECK CONSTRAINT [fk_KetQua_NenMau]
+--ALTER TABLE [dbo].[KetQua] CHECK CONSTRAINT [fk_KetQua_BaoCaoKetQua]
+--GO
+--ALTER TABLE [dbo].[KetQua] CHECK CONSTRAINT [FK_KetQua_DotNenTs]
+--GO
+--ALTER TABLE [dbo].[KetQua]  WITH CHECK ADD  CONSTRAINT [fk_KetQua_NenMau] FOREIGN KEY([maNen])
+--REFERENCES [dbo].[NenMau] ([maNen])
+--GO
+--ALTER TABLE [dbo].[KetQua] CHECK CONSTRAINT [fk_KetQua_NenMau]
 GO
 ALTER TABLE [dbo].[KetQua]  WITH CHECK ADD  CONSTRAINT [fk_KetQua_NhanVien] FOREIGN KEY([nhanVienNhap])
 REFERENCES [dbo].[NhanVien] ([maNV])
 GO
 ALTER TABLE [dbo].[KetQua] CHECK CONSTRAINT [fk_KetQua_NhanVien]
 GO
-ALTER TABLE [dbo].[KetQua]  WITH CHECK ADD  CONSTRAINT [fk_KetQua_ThongSoMoiTruong] FOREIGN KEY([maTS])
-REFERENCES [dbo].[ThongSoMoiTruong] ([maTS])
-GO
-ALTER TABLE [dbo].[KetQua] CHECK CONSTRAINT [fk_KetQua_ThongSoMoiTruong]
+--ALTER TABLE [dbo].[KetQua]  WITH CHECK ADD  CONSTRAINT [fk_KetQua_ThongSoMoiTruong] FOREIGN KEY([maTS])
+--REFERENCES [dbo].[ThongSoMoiTruong] ([maTS])
+--GO
+--ALTER TABLE [dbo].[KetQua] CHECK CONSTRAINT [fk_KetQua_ThongSoMoiTruong]
 GO
 ALTER TABLE [dbo].[NhanVien]  WITH CHECK ADD  CONSTRAINT [fk_NhanVien_PhongBan] FOREIGN KEY([maPhong])
 REFERENCES [dbo].[PhongBan] ([maPhong])
@@ -1209,7 +1200,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE OR ALTER  PROCEDURE [dbo].[sp_HoanTatKeHoachQuanTrac]
+CREATE PROCEDURE [dbo].[sp_HoanTatKeHoachQuanTrac]
     @maDot VARCHAR(15),
     @maHD VARCHAR(15),
     @noiDung NVARCHAR(MAX) = NULL,
@@ -1831,7 +1822,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE OR ALTER PROCEDURE [dbo].[sp_SuaNhanVien]
+CREATE PROCEDURE [dbo].[sp_SuaNhanVien]
     @maNV VARCHAR(15),
     @maPhong VARCHAR(15),
     @hoTen NVARCHAR(60),
@@ -2344,7 +2335,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 --2/11/2025 proc xóa nhân viên :
-CREATE OR ALTER PROCEDURE [dbo].[sp_XoaNhanVien] 
+CREATE PROCEDURE [dbo].[sp_XoaNhanVien] 
     @maNV VARCHAR(15) 
 AS 
 BEGIN 
@@ -2420,13 +2411,7 @@ BEGIN
             ROLLBACK TRAN;
             RETURN;
         END
-        
-        IF EXISTS (SELECT 1 FROM KetQua WHERE maTS = @maTS)
-        BEGIN
-            SET @ketQua = N'Không thể xóa! Thông số này đã có kết quả quan trắc.';
-            ROLLBACK TRAN;
-            RETURN;
-        END
+      
         
         -- Xóa thông số
         DELETE FROM ThongSoMoiTruong WHERE maTS = @maTS;
@@ -2881,71 +2866,70 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE OR ALTER PROCEDURE [dbo].[ThemHopDong]
-    @maKH       VARCHAR(15),
-    @ngayKy     DATE,
-    @ngayDuKien DATE
+CREATE   PROCEDURE [dbo].[ThemHopDong]
+    @maKH              VARCHAR(15),
+    @soHD              VARCHAR(15),
+    @tanSuatQuanTrac   VARCHAR(15),
+    @ngayKy            DATE,
+    @ngayKetThucHD     DATE,
+    @trangThai         VARCHAR(15)
 AS
 BEGIN
     SET NOCOUNT ON;
-    -- Nếu thích an toàn hơn với các lỗi runtime:
-    -- SET XACT_ABORT ON;
+    SET XACT_ABORT ON;
 
     DECLARE @maHD   VARCHAR(15);
     DECLARE @so     INT;
-    DECLARE @day    VARCHAR(10);
+    DECLARE @dayKy  VARCHAR(10) = CONVERT(VARCHAR(10), @ngayKy, 103); -- dd/MM/yyyy
+    DECLARE @today  DATE = CAST(GETDATE() AS DATE);
     DECLARE @tenDN  NVARCHAR(100);
 
     BEGIN TRY
-        -- Các VALIDATION có thể làm TRƯỚC khi mở TRAN
-        IF (@ngayKy >= @ngayDuKien)
-        BEGIN
-            RAISERROR(N'Ngày trả kết quả phải sau ngày ký.', 16, 1);
-        END
+        IF (@ngayKy >= @ngayKetThucHD)
+            RAISERROR(N'Ngày kết thúc phải sau ngày ký.', 16, 1);
+        IF NOT EXISTS (SELECT 1 FROM dbo.KhachHang WHERE maKH = @maKH)
+            RAISERROR(N'Mã khách hàng không tồn tại.', 16, 1);
+        IF NOT EXISTS (SELECT 1 FROM dbo.tanSuatQT WHERE maTSQT = @tanSuatQuanTrac)
+            RAISERROR(N'Mã tần suất quan trắc không tồn tại.', 16, 1);
+        IF EXISTS (SELECT 1 FROM dbo.HopDong WHERE maKH = @maKH AND ngayKy = @ngayKy)
+            RAISERROR(N'Đã có hợp đồng của khách hàng này vào ngày %s.', 16, 1, @dayKy);
+        IF EXISTS (SELECT 1 FROM dbo.HopDong WHERE soHD = @soHD AND maKH = @maKH)
+            RAISERROR(N'Số hợp đồng đã tồn tại cho khách hàng này.', 16, 1);
+        IF (@trangThai = 'TT01' AND NOT (@ngayKy <= @today AND @today <= @ngayKetThucHD))
+            RAISERROR(N'Đang hiệu lực yêu cầu ngày hiện tại nằm trong khoảng ngày ký đến ngày kết thúc.', 16, 1);
+        IF (@trangThai = 'TT02' AND NOT (@today > @ngayKetThucHD))
+            RAISERROR(N'Hết hạn yêu cầu ngày hiện tại đã sau ngày kết thúc.', 16, 1);
+        IF (@trangThai = 'TT03')
+            RAISERROR(N'Hoàn thành yêu cầu ngày hiện tại đã sau ngày kết thúc..', 16, 1);
+        IF (@trangThai = 'TT04' AND NOT (@ngayKy <= @today AND @today <= @ngayKetThucHD))
+            RAISERROR(N'Chấm dứt trước thời hạn yêu cầu hợp đồng đang trong thời gian hiệu lực.', 16, 1);
 
-        SELECT @tenDN = tenDoanhNghiep
-        FROM KhachHang
-        WHERE maKH = @maKH;
-
-        -- ngày hiển thị trong message
-        SET @day = CONVERT(varchar(10), @ngayKy, 103); -- dd/MM/yyyy
-
-        IF EXISTS (SELECT 1 FROM HopDong WHERE ngayKy = @ngayKy AND maKH = @maKH)
-        BEGIN
-            RAISERROR(N'Đã có hợp đồng của %s vào ngày %s.', 16, 1, @tenDN, @day);
-        END
-
+        SELECT @tenDN = tenDoanhNghiep FROM dbo.KhachHang WHERE maKH = @maKH;
         BEGIN TRAN;
-
-        SELECT @so = CAST(SUBSTRING(maHD, 3, LEN(maHD)) AS INT)
-        FROM HopDong
-        WHERE maHD = (SELECT MAX(maHD) FROM HopDong);
+        SELECT @so = MAX(CAST(SUBSTRING(maHD, 3, 10) AS INT))
+        FROM dbo.HopDong WITH (UPDLOCK, HOLDLOCK);
 
         IF @so IS NULL SET @so = 0;
         SET @so = @so + 1;
-        SET @maHD = 'HD' + RIGHT('000' + CAST(@so AS VARCHAR(3)), 3);
+        SET @maHD = 'HD' + RIGHT('000' + CAST(@so AS VARCHAR(10)), 3); 
 
-        INSERT INTO HopDong (maHD, maKH, ngayKy, ngayKetThucHD)
-        VALUES (@maHD, @maKH, @ngayKy, @ngayDuKien);
+        INSERT INTO dbo.HopDong (maHD, maKH, soHD, tanSuatQuanTrac, ngayKy, ngayKetThucHD, trangThai)
+        VALUES (@maHD, @maKH, @soHD, @tanSuatQuanTrac, @ngayKy, @ngayKetThucHD, @trangThai);
 
         COMMIT TRAN;
     END TRY
     BEGIN CATCH
-        IF @@TRANCOUNT > 0
-            ROLLBACK TRAN;
+        IF @@TRANCOUNT > 0 ROLLBACK TRAN;
 
         DECLARE @ErrMsg NVARCHAR(4000) = ERROR_MESSAGE();
         DECLARE @ErrNum INT = ERROR_NUMBER();
         DECLARE @ErrState INT = ERROR_STATE();
-
-        -- dùng THROW để giữ nguyên số lỗi, gọn và không tạo thêm thông báo phụ
         THROW @ErrNum, @ErrMsg, @ErrState;
-        -- hoặc: RAISERROR(@ErrMsg, 16, 1);
     END CATCH
 END
 GO
  --Sửa mô tả nền mẫu 
-CREATE OR ALTER PROCEDURE [dbo].[sp_SuaMoTaNenMau]
+CREATE PROCEDURE [dbo].[sp_SuaMoTaNenMau]
     @maNen VARCHAR(15),
     @moTa NVARCHAR(MAX)
 AS
@@ -3214,19 +3198,22 @@ CREATE OR ALTER PROCEDURE [dbo].[LayDotQuanTrac_PhanTrang]
 AS
 BEGIN
     SET NOCOUNT ON;
-
+    
     SELECT 
         d.MaDot,
         d.MaHD,
+        kh.tenDoanhNghiep AS TenKhachHang,  -- ✅ Thêm tên khách hàng
         d.NoiDung,
         d.DotQuanTrac,
         d.NgayBatDau,
         d.NgayDuKien,
         d.NgayTraKQ,
-        d.TrangThai AS MaTrangThai,   -- Giữ mã trạng thái
-        t.tenTrangThai AS TrangThai   -- Hiển thị tên trạng thái
+        d.TrangThai AS MaTrangThai,
+        t.tenTrangThai AS TrangThai
     FROM DotQuanTrac d
     LEFT JOIN TrangThai_Dot t ON d.TrangThai = t.maTrangThai
+    LEFT JOIN HopDong hd ON d.MaHD = hd.maHD          -- ✅ Join HopDong
+    LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH       -- ✅ Join KhachHang
     ORDER BY d.MaDot DESC
     OFFSET (@PageNumber - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
@@ -3625,6 +3612,311 @@ BEGIN
 END
 GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE    procedure [dbo].[layDanhSachTSQT]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+		tsqt.maTSQT,
+		tsqt.tenTSQT
+    FROM tanSuatQT tsqt
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE    procedure [dbo].[layDanhSachTrangThaiHD]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+		tt.maTT,
+		tt.tenTT
+    FROM trangThaiHD tt
+END
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE   PROCEDURE [dbo].[layDotQuanTracNhapLieu_PhanTrang]
+    @pageNumber INT,
+    @pageSize   INT,
+    @maPhong    VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    ;WITH Dot AS (
+        SELECT
+            d.maDot,
+            d.maHD,
+            d.ngayBatDau,
+            d.ngayDuKien,
+            ngayConLai = DATEDIFF(DAY, CAST(GETDATE() AS date), CAST(d.ngayDuKien AS date)),
+
+            -- Hoàn thành nếu KHÔNG còn bất kỳ TS nào (thuộc phòng này) chưa có giá trị đo
+            hoanThanh = CASE
+                WHEN NOT EXISTS (
+                    SELECT 1
+                    FROM Dot_Nen dn
+                    JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
+                    LEFT JOIN KetQua k  ON k.maDNTS = ts.maDNTS
+                    WHERE dn.maDot = d.maDot
+                      AND ts.maPhong = @maPhong
+                      AND (k.maDNTS IS NULL OR k.giaTriDoDuoc IS NULL)
+                )
+                THEN 1 ELSE 0
+            END
+        FROM DotQuanTrac d
+        -- 🔒 Chỉ những đợt có ÍT NHẤT 1 công việc giao cho phòng @maPhong
+        WHERE EXISTS (
+            SELECT 1
+            FROM Dot_Nen dn
+            JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
+            WHERE dn.maDot = d.maDot
+              AND ts.maPhong = @maPhong
+        )
+    ),
+    Base AS (
+        SELECT
+            maDot, maHD, ngayBatDau, ngayDuKien, ngayConLai,
+            trangThai =
+                CASE
+                    WHEN hoanThanh = 1             THEN N'Hoàn thành'
+                    WHEN ngayConLai < 0            THEN N'Hết hạn'
+                    WHEN ngayConLai BETWEEN 0 AND 7 THEN N'Gần hết hạn'
+                    ELSE                              N'Còn hạn'
+                END
+        FROM Dot
+    )
+    -- Phân trang
+    SELECT  maDot, maHD, ngayBatDau, ngayDuKien, ngayConLai, trangThai
+    FROM    Base
+    ORDER BY ngayConLai DESC, maDot
+    OFFSET (@pageNumber - 1) * @pageSize ROWS
+    FETCH NEXT @pageSize ROWS ONLY;
+
+    -- Trả thêm tổng bản ghi cho UI
+    SELECT TotalRecords = COUNT(*) FROM Base;
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE   PROCEDURE [dbo].[LayDanhSachNenMauNhapLieu]
+    @maPhong VARCHAR(15),
+    @maDot   VARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        dn.maDN,  -- Mã Dot_Nen
+        tenDayDu =
+            CONCAT(
+                nm.tenNenMau, 
+                N' - ', 
+                ISNULL(dn.tenViTri, N''), 
+                N' - ',
+                CASE 
+                    WHEN COUNT(ts.maDNTS) > 0
+                     AND COUNT(ts.maDNTS) = SUM(CASE WHEN k.giaTriDoDuoc IS NOT NULL THEN 1 ELSE 0 END)
+                    THEN N'Hoàn thành'
+                    ELSE N'Chưa hoàn thành'
+                END
+            )
+    FROM Dot_Nen dn
+    JOIN NenMau nm     ON nm.maNen = dn.maNen
+    JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN AND ts.maPhong = @maPhong
+    LEFT JOIN KetQua k ON k.maDNTS = ts.maDNTS
+    WHERE dn.maDot = @maDot
+    GROUP BY dn.maDN, nm.tenNenMau, dn.tenViTri
+    ORDER BY nm.tenNenMau, dn.tenViTri;
+END
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE   PROCEDURE [dbo].[LayThongTinDotNen]
+    @maDN VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT                      
+        dn.tenViTri as viTri,              
+        dn.toaDo as toaDo,
+        dn.ghiChu as ghiChu,                        
+        nm.tenNenMau as tenNenMau
+    FROM Dot_Nen dn
+    JOIN NenMau nm ON nm.maNen = dn.maNen
+    WHERE dn.maDN = @maDN;
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE   PROCEDURE [dbo].[LayDanhSachThongSoTheoDotNenVaPhong]
+    @maDN     VARCHAR(20),
+    @maPhong  VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        ts.maDNTS as maDNTS,            
+        ts.maDN,                  
+        ts.maPhong,                   
+        ts.maTS as maTS,              
+        ts.tenTS as tenTS,        
+		ts.phuongPhap as phuongPhap,
+        ts.donVi as donVi,                
+        ts.giaTriToiDa as giaTriToiDa,             
+        ts.giaTriToiThieu as giaTriToiThieu,            
+        k.giaTriDoDuoc,               
+        trangThai = CASE 
+                        WHEN k.giaTriDoDuoc IS NOT NULL THEN N'Đã nhập'
+                        ELSE N'Chưa nhập'
+                    END
+    FROM Dot_Nen_TS ts
+    JOIN ThongSoMoiTruong t ON t.maTS = ts.maTS
+    LEFT JOIN KetQua k ON k.maDNTS = ts.maDNTS
+    WHERE ts.maDN = @maDN
+      AND ts.maPhong = @maPhong
+    ORDER BY 
+        CASE 
+            WHEN k.giaTriDoDuoc IS NULL THEN 0
+            ELSE 1
+        END,
+        t.tenTS;
+END
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE   PROCEDURE [dbo].[LayThongSoTheoMaDotNenTS]
+    @maDNTS  NVARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT TOP (1)
+           tenTS,
+           donVi,
+           giaTriToiThieu,
+           giaTriToiDa
+    FROM dbo.Dot_Nen_TS
+    WHERE maDNTS = @maDNTS
+END
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE   PROCEDURE [dbo].[LayNhanVienTheoTenDN]
+    @Email NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT TOP (1) maNV
+    FROM dbo.NhanVien
+    WHERE email = @Email;
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE   PROCEDURE [dbo].[ThemKetQua]
+    @maDNTS        VARCHAR(15),
+    @maNV          VARCHAR(15),
+    @ngayDo        DATE,
+    @giaTriDoDuoc  DECIMAL(18,2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        -- Kiểm tra giá trị NULL hoặc rỗng
+        IF (@maDNTS IS NULL OR LTRIM(RTRIM(@maDNTS)) = '')
+        BEGIN
+            RAISERROR(N'Mã đợt nền thông số không được để trống.', 16, 1);
+            RETURN;
+        END
+
+        IF (@maNV IS NULL OR LTRIM(RTRIM(@maNV)) = '')
+        BEGIN
+            RAISERROR(N'Mã nhân viên không được để trống.', 16, 1);
+            RETURN;
+        END
+
+        IF (@ngayDo IS NULL)
+        BEGIN
+            RAISERROR(N'Ngày đo không được để trống.', 16, 1);
+            RETURN;
+        END
+
+        IF (@giaTriDoDuoc IS NULL)
+        BEGIN
+            RAISERROR(N'Giá trị đo được không được để trống.', 16, 1);
+            RETURN;
+        END
+
+        -- Bắt đầu giao dịch
+        BEGIN TRAN;
+
+        DECLARE @maKQ VARCHAR(15);
+        DECLARE @so INT;
+
+        -- Sinh mã tự động dạng KQ001, KQ002,...
+        SELECT @so = CAST(SUBSTRING(maKQ, 3, LEN(maKQ)) AS INT)
+        FROM KetQua
+        WHERE maKQ = (SELECT MAX(maKQ) FROM KetQua);
+
+        IF @so IS NULL SET @so = 0;
+        SET @so = @so + 1;
+
+        SET @maKQ = 'KQ' + RIGHT('000' + CAST(@so AS VARCHAR(3)), 3);
+
+        INSERT INTO dbo.KetQua (maKQ, maDNTS, nhanVienNhap, ngayDo, giaTriDoDuoc)
+        VALUES (@maKQ, @maDNTS, @maNV, @ngayDo, @giaTriDoDuoc);
+
+        COMMIT TRAN;
+        PRINT N'Thêm kết quả thành công với mã: ' + @maKQ;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRAN;
+
+        DECLARE @ErrMsg NVARCHAR(4000) = ERROR_MESSAGE();
+        RAISERROR(@ErrMsg, 16, 1);
+    END CATCH
+END
+GO
 PRINT N'========================================';
 PRINT N'✅ HOÀN THÀNH KHỞI TẠO DATABASE';
 PRINT N'- Đã tạo 7 functions';
@@ -4081,3 +4373,334 @@ INSERT INTO [KetQuaChiTiet] VALUES
 ('KQCT0213', 'KQNM0069', 'TS0006', N'mg/L', N'TCVN 6625:2000', 12.3, N'KPH (LOD=4)', N'100'),
 ('KQCT0214', 'KQNM0069', 'TS0007', N'mg/L', N'TCVN 6202:2008', 0.38, N'', N'6');
 GO
+
+-----THÁI SỬA 11/11
+CREATE TABLE dbo.ThongBao (
+    maTB        VARCHAR(15)     NOT NULL,       -- Mã thông báo
+    loaiTB      NVARCHAR(50)    NOT NULL,       -- Loại thông báo (VD: QUA_HAN_DOT, QUA_HAN_HD)
+    maDot       VARCHAR(15)     NULL,           -- FK -> DotQuanTrac
+    maHD        VARCHAR(15)     NULL,           -- FK -> HopDong
+    tieuDe      NVARCHAR(255)   NOT NULL,       -- Tiêu đề thông báo
+    noiDung     NVARCHAR(MAX)   NULL,           -- Nội dung chi tiết
+    ngayTao     DATETIME        NOT NULL DEFAULT GETDATE(),  -- Ngày tạo thông báo
+    daGuiEmail  BIT             NOT NULL DEFAULT(0),         -- Đã gửi email hay chưa (0 = chưa, 1 = đã gửi)
+
+    CONSTRAINT PK_ThongBao PRIMARY KEY (maTB),
+
+    -- Ràng buộc FK nhưng KHÔNG CASCADE để tránh lỗi multiple path
+    CONSTRAINT FK_ThongBao_DotQuanTrac
+        FOREIGN KEY (maDot) REFERENCES dbo.DotQuanTrac(maDot)
+        ON DELETE SET NULL
+        ON UPDATE NO ACTION,
+
+    CONSTRAINT FK_ThongBao_HopDong
+        FOREIGN KEY (maHD) REFERENCES dbo.HopDong(maHD)
+        ON DELETE SET NULL
+        ON UPDATE NO ACTION
+);
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[sp_LayChiTietDotQuanTrac] --Mục đích là sửa đợt quan trắc 
+    @maDot VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Bảng 1: Thông tin đợt quan trắc
+    SELECT 
+        dt.maDot,
+        dt.maHD,
+        dt.noiDung,
+        dt.dotQuanTrac,
+        dt.ngayBatDau,
+        dt.ngayDuKien,
+        dt.ngayTraKQ,
+        dt.trangThai
+    FROM DotQuanTrac dt
+    WHERE dt.maDot = @maDot;
+    
+    -- Bảng 2: Danh sách nền mẫu của đợt
+    SELECT 
+        dn.maDN,
+        dn.maNen,
+        dn.tenViTri,
+        dn.toaDo,
+        dn.ghiChu,
+        nm.tenNenMau,
+        nm.moTa
+    FROM Dot_Nen dn
+    INNER JOIN NenMau nm ON dn.maNen = nm.maNen
+    WHERE dn.maDot = @maDot;
+    
+    -- Bảng 3: Chi tiết thông số của từng nền mẫu
+    SELECT 
+        dnts.maDNTS,
+        dnts.maDN,
+        dnts.maTS,
+        dnts.tenTS,
+        dnts.donVi,
+        dnts.giaTriToiThieu,
+        dnts.giaTriToiDa,
+        dnts.phuongPhap,
+        dnts.maPhong,
+        pb.tenPhong
+    FROM Dot_Nen_Ts dnts
+    INNER JOIN Dot_Nen dn ON dnts.maDN = dn.maDN
+    LEFT JOIN PhongBan pb ON dnts.maPhong = pb.maPhong
+    WHERE dn.maDot = @maDot
+    ORDER BY dnts.maDN, dnts.maDNTS;
+END
+GO
+
+
+------- Kiểm tra quá hạn đợt quan trắc và insert vào bảng thông báo 
+CREATE OR ALTER PROCEDURE sp_KiemTraQuaHanDotQuanTrac
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @NgayHienTai DATE = CAST(GETDATE() AS DATE);
+    DECLARE @NewMaTB VARCHAR(15);
+
+    DECLARE cur CURSOR FOR
+    SELECT dq.maDot, dq.maHD, kh.tenDoanhNghiep, dq.ngayDuKien
+    FROM DotQuanTrac dq
+    JOIN HopDong hd ON dq.maHD = hd.maHD
+    JOIN KhachHang kh ON hd.maKH = kh.maKH
+    WHERE dq.trangThai <> 6
+      AND dq.ngayDuKien < @NgayHienTai
+      AND EXISTS (
+            SELECT 1
+            FROM Dot_Nen_TS dnts
+            JOIN Dot_Nen dn ON dnts.maDN = dn.maDN
+            WHERE dn.maDot = dq.maDot
+              AND NOT EXISTS (
+                    SELECT 1 FROM KetQua kq WHERE kq.maDNTS = dnts.maDNTS
+              )
+        )
+      AND NOT EXISTS (
+            SELECT 1 FROM ThongBao tb 
+            WHERE tb.maDot = dq.maDot AND tb.loaiTB = 'QUA_HAN_DOT'
+      );
+
+    DECLARE @maDot VARCHAR(15), @maHD VARCHAR(15), @tenKH NVARCHAR(255), @ngayDuKien DATE, @soNgayTre INT;
+
+    OPEN cur;
+    FETCH NEXT FROM cur INTO @maDot, @maHD, @tenKH, @ngayDuKien;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        SET @soNgayTre = DATEDIFF(DAY, @ngayDuKien, @NgayHienTai);
+
+        SELECT @NewMaTB = 'TB' + RIGHT('000000' + CAST(ISNULL(CAST(SUBSTRING(MAX(maTB), 3, 6) AS INT), 0) + 1 AS VARCHAR(6)), 6)
+        FROM ThongBao;
+
+        INSERT INTO ThongBao(maTB, loaiTB, maDot, maHD, tieuDe, noiDung, ngayTao)
+        VALUES (
+            @NewMaTB,
+            'QUA_HAN_DOT',
+            @maDot,
+            @maHD,
+            N'Đợt quan trắc ' + @maDot + N' đã quá hạn trả kết quả',
+            N'Khách hàng: ' + @tenKH + 
+            N'. Ngày dự kiến: ' + CONVERT(VARCHAR(10), @ngayDuKien, 103) +
+            N'. Ngày hiện tại: ' + CONVERT(VARCHAR(10), @NgayHienTai, 103) +
+            N'. Số ngày trễ: ' + CAST(@soNgayTre AS NVARCHAR(10)),
+            GETDATE()
+        );
+
+        FETCH NEXT FROM cur INTO @maDot, @maHD, @tenKH, @ngayDuKien;
+    END;
+
+    CLOSE cur;
+    DEALLOCATE cur;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_layDanhSachThongBaoQuaHan
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @NgayHienTai DATE = CAST(GETDATE() AS DATE);
+
+    SELECT 
+        tb.maTB,
+        tb.maDot,
+        tb.maHD,
+        tb.tieuDe,
+        tb.noiDung,
+        tb.ngayTao,
+        tb.loaiTB,
+        kh.tenDoanhNghiep AS tenKhachHang,
+        dq.ngayDuKien
+    FROM ThongBao tb
+    INNER JOIN DotQuanTrac dq ON tb.maDot = dq.maDot
+    INNER JOIN HopDong hd ON dq.maHD = hd.maHD
+    INNER JOIN KhachHang kh ON hd.maKH = kh.maKH
+    WHERE tb.loaiTB = 'QUA_HAN_DOT'
+    ORDER BY tb.ngayTao DESC;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_LayThongBaoTheoDot --phục vụ gửi mail 
+    @maDot VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @NgayHienTai DATE = CAST(GETDATE() AS DATE);
+
+    SELECT 
+        tb.maTB,
+        tb.maDot,
+        tb.maHD,
+        tb.tieuDe,
+        tb.noiDung,
+        tb.ngayTao,
+        tb.loaiTB,
+        kh.tenDoanhNghiep AS tenKhachHang,
+        dq.ngayDuKien
+    FROM ThongBao tb
+    INNER JOIN DotQuanTrac dq ON tb.maDot = dq.maDot
+    INNER JOIN HopDong hd ON dq.maHD = hd.maHD
+    INNER JOIN KhachHang kh ON hd.maKH = kh.maKH
+    WHERE tb.loaiTB = 'QUA_HAN_DOT'
+      AND ISNULL(tb.daGuiEmail, 0) = 0  
+      AND tb.maDot = @maDot      -- ✅ thêm điều kiện này
+    ORDER BY tb.ngayTao DESC;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_LayEmailTruongPhong
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        pb.maPhong,
+        pb.tenPhong,
+        nv.hoTen AS tenTruongPhong,
+        nv.email
+    FROM PhongBan pb
+    INNER JOIN NhanVien nv ON pb.truongPhong = nv.maNV
+    WHERE nv.email IS NOT NULL AND nv.email <> '';
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_CapNhatTrangThaiEmail
+    @maDot VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE ThongBao
+    SET daGuiEmail = 1
+    WHERE maDot = @maDot
+      AND loaiTB = 'QUA_HAN_DOT'; -- chỉ cập nhật cho loại cảnh báo quá hạn
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_CapNhatThongTinCaNhan
+    @MaNV        VARCHAR(15),
+    @HoTen       NVARCHAR(60),
+    @NgaySinh    DATE           = NULL,
+    @GioiTinh    BIT            = NULL,    -- 1: Nam, 0: Nữ
+    @DiaChi      NVARCHAR(150)  = NULL,
+    @SoDienThoai VARCHAR(20),
+    @Email       VARCHAR(50)    = NULL,
+    @AnhDaiDien  NVARCHAR(255)  = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRAN;
+
+        -- 1️⃣ Kiểm tra nhân viên tồn tại
+        IF NOT EXISTS (SELECT 1 FROM NhanVien WHERE maNV = @MaNV AND daXoa = 0)
+        BEGIN
+            RAISERROR(N'Không tìm thấy nhân viên cần cập nhật!', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        -- 2️⃣ Kiểm tra họ tên hợp lệ
+        IF LTRIM(RTRIM(@HoTen)) = ''
+        BEGIN
+            RAISERROR(N'Họ tên không được để trống!', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        IF PATINDEX('%[^a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵýỷỹ ]%', @HoTen) > 0
+        BEGIN
+            RAISERROR(N'Họ tên không hợp lệ! Chỉ được chứa chữ cái và khoảng trắng.', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        -- 3️⃣ Kiểm tra tuổi hợp lệ (16–65)
+        IF @NgaySinh IS NOT NULL
+        BEGIN
+            DECLARE @Tuoi INT = DATEDIFF(YEAR, @NgaySinh, GETDATE());
+            IF (DATEADD(YEAR, @Tuoi, @NgaySinh) > GETDATE()) SET @Tuoi -= 1;
+            IF @Tuoi < 16 OR @Tuoi > 65
+            BEGIN
+                RAISERROR(N'Tuổi không hợp lệ! Nhân viên phải từ 16 đến 65 tuổi.', 16, 1);
+                ROLLBACK TRAN; RETURN;
+            END;
+        END;
+
+        -- 4️⃣ Kiểm tra số điện thoại hợp lệ (10 chữ số, bắt đầu bằng 0)
+        DECLARE @soDienThoaiTrimmed VARCHAR(20) = LTRIM(RTRIM(@SoDienThoai));
+        IF LEN(@soDienThoaiTrimmed) <> 10 
+           OR LEFT(@soDienThoaiTrimmed, 1) <> '0' 
+           OR PATINDEX('%[^0-9]%', @soDienThoaiTrimmed) > 0
+        BEGIN
+            RAISERROR(N'Số điện thoại không hợp lệ! Phải bắt đầu bằng 0, đúng 10 chữ số, không chứa ký tự khác.', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        -- 5️⃣ Kiểm tra email hợp lệ
+        IF @Email IS NULL OR LTRIM(RTRIM(@Email)) = ''
+        BEGIN
+            RAISERROR(N'Email không được để trống!', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        IF @Email NOT LIKE '%_@_%._%' 
+           OR @Email LIKE '%..%' 
+           OR @Email LIKE '%.@%' 
+           OR RIGHT(@Email, 4) NOT IN ('.com', '.net', '.org', '.edu', '.gov', '.vn')
+        BEGIN
+            RAISERROR(N'Email không hợp lệ! Vui lòng nhập đúng định dạng (vd: abc@gmail.com).', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        -- 6️⃣ Kiểm tra trùng email
+        IF EXISTS (SELECT 1 FROM NhanVien WHERE email = @Email AND maNV <> @MaNV AND daXoa = 0)
+        BEGIN
+            RAISERROR(N'Email này đã tồn tại cho nhân viên khác!', 16, 1);
+            ROLLBACK TRAN; RETURN;
+        END;
+
+        -- 7️⃣ Cập nhật thông tin cá nhân
+        UPDATE NhanVien
+        SET hoTen       = @HoTen,
+            ngaySinh    = @NgaySinh,
+            gioiTinh    = @GioiTinh,
+            diaChi      = @DiaChi,
+            soDienThoai = @SoDienThoai,
+            email       = @Email,
+            anhDaiDien  = @AnhDaiDien
+        WHERE maNV = @MaNV AND daXoa = 0;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        DECLARE @ErrMsg NVARCHAR(4000) = ERROR_MESSAGE();
+        RAISERROR(@ErrMsg, 16, 1);
+    END CATCH;
+END;
+GO
+
+

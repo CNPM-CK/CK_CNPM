@@ -18,7 +18,7 @@ namespace DTO
         public string email { get; set; }
         public string tenPhong { get; set; }
         public int trangThai { get; set; }
-
+        public string anhDaiDien { get; set; }
         public bool isTruongPhong { get; set; }
         public string tenTrangThai
         {
