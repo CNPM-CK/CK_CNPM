@@ -1,5 +1,6 @@
 ﻿using BLL;
 using DTO;
+using GUI.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +17,7 @@ namespace GUI.Forms
 {
     public partial class DanhSachKetQuaUC : UserControl
     {
+        private readonly bool _isPhongKetQua = SessionStore.Current.MaPhong == "P005";
         #region Fields
         private readonly KetQuaBLL ketQuaBLL = new KetQuaBLL();
 
@@ -365,6 +367,7 @@ namespace GUI.Forms
         #region Events - DoubleClick, Paint, ContentClick
         private void dgvDanhsachketqua_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (!_isPhongKetQua) return;
             if (e.RowIndex >= 0)
             {
                 try
