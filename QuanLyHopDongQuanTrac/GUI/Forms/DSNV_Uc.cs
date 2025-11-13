@@ -876,5 +876,10 @@ namespace GUI.Forms
         {
 
         }
+
+        private void btnSau_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

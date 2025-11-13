@@ -75,7 +75,7 @@ namespace GUI.Forms
         private void LoadData()
         {
             totalRecords = 0;
-            LoadKeHoachPage();
+            taiTrangKeHoach();
         }
 
         private void InitializeDataGridView()
@@ -198,7 +198,7 @@ namespace GUI.Forms
             // Register events - QUAN TRỌNG
             dgvDsdotquantrac.CellPainting += DgvDsdotquantrac_CellPainting;
             dgvDsdotquantrac.CellClick += DgvDsdotquantrac_CellClick;
-            LoadKeHoachPage();
+            taiTrangKeHoach();
         }
 
         private void InitializeCustomSearchBox()
@@ -484,27 +484,73 @@ namespace GUI.Forms
             }
 
             string maDot = row.Cells["maDot"].Value?.ToString();
-            string noiDung = row.Cells["noiDung"].Value?.ToString();
-
-            MessageBox.Show($"Chức năng sửa đợt quan trắc '{noiDung}' (Mã: {maDot}) đang được phát triển.",
-                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            /* Khi có form SuaDotQuanTrac:
-            DTO_DotQuanTrac dot = new DTO_DotQuanTrac
+            if (string.IsNullOrEmpty(maDot))
             {
-                MaDot = maDot,
-                MaHD = row.Cells["maHD"].Value?.ToString(),
-                NoiDung = noiDung,
-                // ... các trường khác
-            };
+                MessageBox.Show("Không tìm thấy mã đợt quan trắc!",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            SuaDotQuanTrac frmSua = new SuaDotQuanTrac(dot);
-            currentOpenForm = frmSua;
-            CenterFormOnParent(frmSua);
-            frmSua.FormClosed += (s, ev) => { currentOpenForm = null; };
-            frmSua.SuccesfullyUpdated += (s, ev) => RefreshData();
-            frmSua.Show(this.FindForm());
-            */
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+
+                // ✅ Tạo form và SET FLAG TRƯỚC
+                KeHoachQuanTrac frmEdit = new KeHoachQuanTrac();
+                frmEdit.dangChinhSua = true; // ✅ SET TRƯỚC KHI SHOW
+                frmEdit.MaDotHienTai = maDot; // ✅ SET MÃ ĐỢT
+
+                currentOpenForm = frmEdit;
+                CenterFormOnParent(frmEdit);
+
+                frmEdit.FormClosed += (s, ev) =>
+                {
+                    currentOpenForm = null;
+                    Cursor = Cursors.Default;
+                };
+
+                // ✅ Load dữ liệu SAU KHI form.Load hoàn tất
+                bool dataLoaded = false;
+                frmEdit.Shown += (s, ev) => // ✅ Dùng Shown thay vì Load
+                {
+                    if (!dataLoaded)
+                    {
+                        dataLoaded = true;
+                        try
+                        {
+                            frmEdit.taiDuLieuChinhsua(maDot);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Lỗi load dữ liệu:\n{ex.Message}",
+                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            frmEdit.Close();
+                        }
+                    }
+                };
+
+                Cursor = Cursors.Default;
+
+                // ✅ Hiển thị form
+                DialogResult result = frmEdit.ShowDialog(this.FindForm());
+
+                if (result == DialogResult.OK)
+                {
+                    LoadData(); // ✅ Refresh danh sách
+                    MessageBox.Show("Cập nhật kế hoạch quan trắc thành công!",
+                        "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở form chỉnh sửa:\n{ex.Message}\n\n{ex.StackTrace}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                currentOpenForm = null;
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
         }
 
         private void HandleDelete(DataGridViewRow row)
@@ -726,7 +772,7 @@ namespace GUI.Forms
         int pageSize = 15;
         int totalRecords = 0;
         int totalPages = 0;
-        private void LoadKeHoachPage()
+        private void taiTrangKeHoach()
         {
             var bll = new BLL_DotQuanTrac();
 
@@ -738,7 +784,9 @@ namespace GUI.Forms
             }
 
             var data = bll.layDanhSachDotQuanTrac_PhanTrang(currentPage, pageSize);
-            dgvDsdotquantrac.DataSource = data;
+            dsDotQuanTrac = new BindingList<DTO_DotQuanTrac>(data.ToList());
+
+            dgvDsdotquantrac.DataSource = dsDotQuanTrac;
 
             soTrang.Text = $"Trang {currentPage}/{totalPages}";
 
@@ -751,14 +799,14 @@ namespace GUI.Forms
             if (currentPage > 1)
             {
                 currentPage--;
-                LoadKeHoachPage();
+                taiTrangKeHoach();
             }
         }
 
         private void btnSau_Click(object sender, EventArgs e)
         {
             currentPage++;
-            LoadKeHoachPage();
+            taiTrangKeHoach();
         }
 
         private void dgvDsdotquantrac_Paint(object sender, PaintEventArgs e)

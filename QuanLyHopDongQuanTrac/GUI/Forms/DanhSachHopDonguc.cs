@@ -130,7 +130,7 @@ namespace GUI.Forms
 
             dgvdanhsachHopDong.DataSource = dsHopDong;
             dgvdanhsachHopDong.ReadOnly = true;
-            dgvdanhsachHopDong.Columns["ThaoTac"].ReadOnly = false;
+            //dgvdanhsachHopDong.Columns["ThaoTac"].ReadOnly = false;
 
             taiTrangKhachHang();
         }

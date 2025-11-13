@@ -47,9 +47,7 @@
     <Compile Update="Forms\DanhSachKetQuaUC.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Forms\TrangChu.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Forms\TrangChu.cs" />
     <Compile Update="Forms\NenMauNhapLieuUC.cs">
       <SubType>UserControl</SubType>
     </Compile>

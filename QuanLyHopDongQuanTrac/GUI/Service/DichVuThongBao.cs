@@ -10,7 +10,7 @@ namespace GUI.Service
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
-        // khoảng thời gian kiểm tra (1 phút để test, có thể đổi thành TimeSpan.FromHours(24))
+        // 1 phút để test – khi triển khai thật nên đổi thành TimeSpan.FromHours(24)
         private readonly TimeSpan _interval = TimeSpan.FromMinutes(1);
 
         public void Start()
@@ -23,49 +23,60 @@ namespace GUI.Service
                     {
                         var bll = new ThongBaoBLL();
 
-                        // B1. Kiểm tra và sinh thông báo quá hạn mới vào DB
+                        Console.WriteLine("=== KIỂM TRA THÔNG BÁO TỰ ĐỘNG ===");
+
+                        // ======================================================
+                        // 1) XỬ LÝ ĐỢT QUAN TRẮC QUÁ HẠN
+                        // ======================================================
+                        Console.WriteLine("→ Kiểm tra đợt quan trắc quá hạn...");
                         bll.kiemTraVaSinhThongBaoQuaHan();
 
-                        // B2. Lấy danh sách thông báo quá hạn
                         DataTable dsThongBao = bll.layDanhSachThongBao();
-                        var ngayHomNay = DateTime.Today;
-
-                        // B3. Duyệt qua các thông báo để gửi email cảnh báo
                         foreach (DataRow row in dsThongBao.Rows)
                         {
-                            string maDot = row["maDot"].ToString();
-                            string tenKH = row["tenKhachHang"].ToString();
-                            // Lấy ngày dự kiến từ DB (phải thêm cột ngayDuKien trong truy vấn sp)
+                            string maDot = row["maDot"]?.ToString();
+                            string tenKH = row["tenKhachHang"]?.ToString();
+
+                            if (string.IsNullOrEmpty(maDot))
+                                continue;
+
                             DateTime ngayDuKien = Convert.ToDateTime(row["ngayDuKien"]);
                             int soNgayTre = (DateTime.Today - ngayDuKien.Date).Days;
 
-
-                            //// chỉ gửi nếu là thông báo mới tạo (ngayTao = hôm nay)
-                            //if (ngayTao.Date != ngayHomNay)
-                            //    continue;
-
                             bll.guiEmailCanhBao(maDot, tenKH, soNgayTre);
-                            Console.WriteLine($"Gửi email cảnh báo cho đợt {maDot} ({tenKH}) thành công.");
                             bll.capNhatTrangThaiEmail(maDot);
+
+                            Console.WriteLine($"✔ Đã gửi email cảnh báo đợt {maDot}");
                         }
 
-                        Console.WriteLine($"[{DateTime.Now}] Đã kiểm tra & gửi cảnh báo quá hạn xong.");
+
+                        // ======================================================
+                        // 2) XỬ LÝ HỢP ĐỒNG QUÁ HẠN
+                        // ======================================================
+                        Console.WriteLine("→ Kiểm tra hợp đồng quá hạn...");
+                        bll.kiemTraHopDongQuaHan();
+                        Console.WriteLine("✔ Kiểm tra hợp đồng quá hạn xong.");
+
+
+
+                        Console.WriteLine($"[{DateTime.Now}] ✓ Chu kỳ kiểm tra hoàn tất.");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Lỗi BackgroundService: {ex.Message}");
+                        Console.WriteLine($"❌ Lỗi dịch vụ thông báo: {ex.Message}");
                     }
 
-                    // Chờ đến lần kiểm tra tiếp theo
+                    // chờ tới lần chạy tiếp theo
                     await Task.Delay(_interval, _cts.Token);
                 }
+
             }, _cts.Token);
         }
 
         public void Stop()
         {
             _cts.Cancel();
-            Console.WriteLine("Dịch vụ thông báo đã dừng.");
+            Console.WriteLine("⛔ Dịch vụ thông báo đã dừng.");
         }
     }
 }

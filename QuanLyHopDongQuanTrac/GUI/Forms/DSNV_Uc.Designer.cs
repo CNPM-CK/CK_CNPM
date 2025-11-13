@@ -182,6 +182,7 @@
             dgvDanhsachnhanvien.RowHeadersWidth = 51;
             dgvDanhsachnhanvien.Size = new Size(828, 356);
             dgvDanhsachnhanvien.TabIndex = 1;
+            dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
             // 
             // panel1
             // 
@@ -210,6 +211,7 @@
             btnSau.TabIndex = 1;
             btnSau.Text = "Trang sau";
             btnSau.UseVisualStyleBackColor = false;
+            btnSau.Click += btnSau_Click_1;
             // 
             // soTrang
             // 

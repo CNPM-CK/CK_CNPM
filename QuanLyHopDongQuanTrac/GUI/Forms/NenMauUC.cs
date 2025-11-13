@@ -254,6 +254,59 @@ namespace GUI.Forms
             });
         }
 
+        private void AutoResizeGrid()
+        {
+            //int rowHeight = dgvThongso.RowTemplate.Height;
+            //int headerHeight = dgvThongso.ColumnHeadersHeight;
+            //int totalHeight = headerHeight + (dgvThongso.Rows.Count * rowHeight);
+
+            //dgvThongso.Height = totalHeight + 2;
+
+            //// Đồng thời thu nhỏ lại UserControl cho gọn đẹp
+            //this.Height = dgvThongso.Bottom + 20;
+            // Tính chiều cao cần thiết
+            int rowHeight = dgvThongso.RowTemplate.Height;
+            int headerHeight = dgvThongso.ColumnHeadersHeight;
+            int rowCount = dgvThongso.Rows.Count;
+
+            // Giới hạn số dòng hiển thị tối đa (ví dụ: 5 dòng)
+            int maxVisibleRows = Math.Min(rowCount, 5);
+            int totalHeight = headerHeight + (maxVisibleRows * rowHeight) + 2;
+
+            // ✅ CHỈ SET HEIGHT CHO DATAGRIDVIEW
+            dgvThongso.Height = totalHeight;
+
+            // ✅ KHÔNG SET HEIGHT CHO USERCONTROL NỮA
+            // Để UserControl tự động resize theo nội dung
+            // this.Height = dgvThongso.Bottom + 20; // ❌ BỎ DÒNG NÀY
+
+            // Enable scroll nếu có nhiều dòng
+            dgvThongso.ScrollBars = rowCount > maxVisibleRows
+                ? ScrollBars.Vertical
+                : ScrollBars.None;
+        }
+
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            // Tính toán chiều cao tổng thể
+            int totalHeight = 0;
+            foreach (Control ctrl in this.Controls)
+            {
+                if (ctrl.Visible)
+                {
+                    totalHeight = Math.Max(totalHeight, ctrl.Bottom);
+                }
+            }
+
+            // Set MinimumSize và Height cho UserControl
+            this.MinimumSize = new Size(this.Width, totalHeight + 20);
+            this.Height = totalHeight + 20;
+        }
+
+
         public List<ChiTietQuanTracView> GetDanhSachThongSo()
         {
             return dsThongSo?.ToList() ?? new List<ChiTietQuanTracView>();
@@ -264,7 +317,7 @@ namespace GUI.Forms
             return txtMota.Text;
         }
 
-        public void LoadNenMau(string maDN, string maNen, string tenNenMau, string moTaNen, List<ChiTietQuanTracView> chiTiet, string viTri = "", string toaDo = "", string ghiChu = "")
+        public void taiNenMau(string maDN, string maNen, string tenNenMau, string moTaNen, List<ChiTietQuanTracView> chiTiet, string viTri = "", string toaDo = "", string ghiChu = "")
         {
             InitializeButtonStyles();
             try
@@ -275,8 +328,10 @@ namespace GUI.Forms
                 this.TenViTri = viTri;
                 this.ToaDo = toaDo;
                 this.GhiChu = ghiChu;
+
                 txtTennenmau.Text = tenNenMau ?? string.Empty;
                 txtMota.Text = moTaNen ?? string.Empty;
+                txtVitri.Text = viTri ?? string.Empty;
 
                 if (chiTiet == null || chiTiet.Count == 0)
                 {
@@ -286,7 +341,25 @@ namespace GUI.Forms
                 dsThongSo = new BindingList<ChiTietQuanTracView>(chiTiet);
                 dgvThongso.DataSource = null;
                 dgvThongso.DataSource = dsThongSo;
-                dgvThongso.Refresh();
+
+                AutoResizeGrid();
+                //    dgvThongso.Refresh();
+
+                //    this.Refresh();
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show($"Lỗi LoadNenMau: {ex.Message}");
+                //}
+                int totalHeight = 0;
+                foreach (Control ctrl in this.Controls)
+                {
+                    if (ctrl.Visible)
+                    {
+                        totalHeight = Math.Max(totalHeight, ctrl.Bottom);
+                    }
+                }
+                this.Height = totalHeight + 20;
 
                 this.Refresh();
             }

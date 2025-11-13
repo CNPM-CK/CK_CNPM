@@ -1,4 +1,4 @@
-using GUI.Forms;
+﻿using GUI.Forms;
 using GUI.Service;
 using Vosk;
 namespace GUI
@@ -16,14 +16,15 @@ namespace GUI
             var service = new DichVuThongBao();
             service.Start();
             ApplicationConfiguration.Initialize();
-<<<<<<< HEAD
-            //Application.Run(new TrangChu());
-=======
->>>>>>> cd17a623a8328c280f450baacb3f17b3562ce493
             Application.Run(new TrangGioiThieu());
             //Application.Run(new DanhSachNhanVien());
             //Application.Run(new DanhSachKeHoach());
 
         }
+
+
+        // Thêm hàm này để hiển thị console
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        private static extern bool AllocConsole();
     }
 }

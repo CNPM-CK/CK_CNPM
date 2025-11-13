@@ -31,6 +31,7 @@ namespace GUI.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TrangChu));
             panel2 = new Panel();
+            lblSoluongtb = new Label();
             pictureBox2 = new PictureBox();
             pictureBoxSetting = new PictureBox();
             pictureBox1 = new PictureBox();
@@ -63,35 +64,49 @@ namespace GUI.Forms
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(0, 152, 70);
+            panel2.Controls.Add(lblSoluongtb);
             panel2.Controls.Add(pictureBox2);
             panel2.Controls.Add(pictureBoxSetting);
             panel2.Controls.Add(pictureBox1);
             panel2.Dock = DockStyle.Top;
+            panel2.ForeColor = Color.White;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
             panel2.Size = new Size(1204, 64);
             panel2.TabIndex = 0;
+            // 
+            // lblSoluongtb
+            // 
+            lblSoluongtb.Anchor = AnchorStyles.None;
+            lblSoluongtb.AutoSize = true;
+            lblSoluongtb.Location = new Point(1088, 9);
+            lblSoluongtb.Name = "lblSoluongtb";
+            lblSoluongtb.Size = new Size(17, 20);
+            lblSoluongtb.TabIndex = 4;
+            lblSoluongtb.Text = "1";
+            lblSoluongtb.Click += lblSoluongtb_Click;
             // 
             // pictureBox2
             // 
             pictureBox2.Anchor = AnchorStyles.Right;
             pictureBox2.Cursor = Cursors.Hand;
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(1063, 12);
+            pictureBox2.Location = new Point(1050, 6);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(41, 38);
+            pictureBox2.Size = new Size(55, 55);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.TabIndex = 3;
             pictureBox2.TabStop = false;
+            pictureBox2.Click += pictureBox2_Click;
             // 
             // pictureBoxSetting
             // 
             pictureBoxSetting.Anchor = AnchorStyles.Right;
             pictureBoxSetting.Cursor = Cursors.Hand;
             pictureBoxSetting.Image = Properties.Resources.settingicon_2;
-            pictureBoxSetting.Location = new Point(1126, 12);
+            pictureBoxSetting.Location = new Point(1128, 6);
             pictureBoxSetting.Name = "pictureBoxSetting";
-            pictureBoxSetting.Size = new Size(44, 38);
+            pictureBoxSetting.Size = new Size(55, 55);
             pictureBoxSetting.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxSetting.TabIndex = 2;
             pictureBoxSetting.TabStop = false;
@@ -341,6 +356,7 @@ namespace GUI.Forms
             Load += DanhSachNhanVien_Load;
             Click += DanhSachNhanVien_Click;
             panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxSetting).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -375,5 +391,6 @@ namespace GUI.Forms
         private Button btnDanhSachNenMau;
         private Button btnDanhSachNhapLieu;
         private Button btnDanhSachKetQua;
+        private Label lblSoluongtb;
     }
 }

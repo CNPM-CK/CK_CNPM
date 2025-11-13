@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel5 = new Panel();
             panel7 = new Panel();
             panel1 = new Panel();
@@ -98,6 +98,7 @@
             btnSau.TabIndex = 1;
             btnSau.Text = "Trang sau";
             btnSau.UseVisualStyleBackColor = false;
+            btnSau.Click += btnSau_Click;
             // 
             // soTrang
             // 
@@ -111,6 +112,7 @@
             soTrang.TabIndex = 2;
             soTrang.Text = "Trang 1";
             soTrang.TextAlign = ContentAlignment.MiddleCenter;
+            soTrang.Click += soTrang_Click;
             // 
             // btnTruoc
             // 
@@ -126,35 +128,36 @@
             btnTruoc.TabIndex = 0;
             btnTruoc.Text = "Trang trước";
             btnTruoc.UseVisualStyleBackColor = false;
+            btnTruoc.Click += btnTruoc_Click;
             // 
             // dgvdsThongbao
             // 
             dgvdsThongbao.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvdsThongbao.BackgroundColor = Color.White;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
-            dgvdsThongbao.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dgvdsThongbao.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             dgvdsThongbao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvdsThongbao.Dock = DockStyle.Fill;
             dgvdsThongbao.Location = new Point(0, 0);
             dgvdsThongbao.Name = "dgvdsThongbao";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            dgvdsThongbao.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle6.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dgvdsThongbao.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dgvdsThongbao.RowHeadersWidth = 51;
             dgvdsThongbao.Size = new Size(820, 411);
             dgvdsThongbao.TabIndex = 1;
-            dgvdsThongbao.CellContentClick += dgvdsThongbao_CellContentClick;
+            dgvdsThongbao.Paint += dgvdsThongbao_Paint;
             // 
             // panel6
             // 

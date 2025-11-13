@@ -65,7 +65,7 @@
             panel1.Location = new Point(0, 0);
             panel1.Margin = new Padding(4);
             panel1.Name = "panel1";
-            panel1.Size = new Size(998, 53);
+            panel1.Size = new Size(1277, 53);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint_1;
             // 
@@ -83,7 +83,7 @@
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(998, 53);
+            tableLayoutPanel1.Size = new Size(1277, 53);
             tableLayoutPanel1.TabIndex = 0;
             tableLayoutPanel1.Paint += tableLayoutPanel1_Paint;
             // 
@@ -94,7 +94,7 @@
             btnSua.FlatStyle = FlatStyle.Flat;
             btnSua.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSua.ForeColor = Color.White;
-            btnSua.Location = new Point(864, 11);
+            btnSua.Location = new Point(1123, 11);
             btnSua.Name = "btnSua";
             btnSua.Size = new Size(60, 30);
             btnSua.TabIndex = 4;
@@ -109,7 +109,7 @@
             btnXoa.FlatStyle = FlatStyle.Flat;
             btnXoa.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnXoa.ForeColor = Color.White;
-            btnXoa.Location = new Point(935, 11);
+            btnXoa.Location = new Point(1214, 11);
             btnXoa.Name = "btnXoa";
             btnXoa.Size = new Size(60, 30);
             btnXoa.TabIndex = 2;
@@ -126,14 +126,14 @@
             panel4.Dock = DockStyle.Fill;
             panel4.Location = new Point(3, 3);
             panel4.Name = "panel4";
-            panel4.Size = new Size(692, 47);
+            panel4.Size = new Size(887, 47);
             panel4.TabIndex = 5;
             // 
             // label2
             // 
             label2.Anchor = AnchorStyles.Left;
             label2.AutoSize = true;
-            label2.Location = new Point(358, 9);
+            label2.Location = new Point(441, 13);
             label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
             label2.Size = new Size(63, 25);
@@ -143,9 +143,9 @@
             // panelVitri
             // 
             panelVitri.Controls.Add(txtVitri);
-            panelVitri.Location = new Point(439, 3);
+            panelVitri.Location = new Point(511, 5);
             panelVitri.Name = "panelVitri";
-            panelVitri.Size = new Size(250, 39);
+            panelVitri.Size = new Size(312, 39);
             panelVitri.TabIndex = 5;
             // 
             // txtVitri
@@ -154,16 +154,16 @@
             txtVitri.Location = new Point(3, 5);
             txtVitri.Multiline = true;
             txtVitri.Name = "txtVitri";
-            txtVitri.Size = new Size(244, 31);
+            txtVitri.Size = new Size(306, 31);
             txtVitri.TabIndex = 0;
             // 
             // panelTennenmau
             // 
             panelTennenmau.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             panelTennenmau.Controls.Add(txtTennenmau);
-            panelTennenmau.Location = new Point(132, 3);
+            panelTennenmau.Location = new Point(136, 3);
             panelTennenmau.Name = "panelTennenmau";
-            panelTennenmau.Size = new Size(202, 38);
+            panelTennenmau.Size = new Size(298, 38);
             panelTennenmau.TabIndex = 4;
             // 
             // txtTennenmau
@@ -174,7 +174,7 @@
             txtTennenmau.Location = new Point(3, 6);
             txtTennenmau.Multiline = true;
             txtTennenmau.Name = "txtTennenmau";
-            txtTennenmau.Size = new Size(196, 29);
+            txtTennenmau.Size = new Size(292, 29);
             txtTennenmau.TabIndex = 3;
             txtTennenmau.TextChanged += txtTennenmau_TextChanged;
             // 
@@ -196,9 +196,9 @@
             label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.Location = new Point(0, 0);
             label1.Name = "label1";
-            label1.Size = new Size(110, 20);
+            label1.Size = new Size(70, 20);
             label1.TabIndex = 0;
-            label1.Text = "Mô tả chi tiết :";
+            label1.Text = "Ghi chú :";
             // 
             // txtMota
             // 
@@ -208,7 +208,7 @@
             txtMota.Location = new Point(4, 13);
             txtMota.Multiline = true;
             txtMota.Name = "txtMota";
-            txtMota.Size = new Size(991, 32);
+            txtMota.Size = new Size(1270, 32);
             txtMota.TabIndex = 1;
             txtMota.TextChanged += textBox1_TextChanged;
             // 
@@ -221,7 +221,7 @@
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 53);
             panel2.Name = "panel2";
-            panel2.Size = new Size(998, 375);
+            panel2.Size = new Size(1277, 362);
             panel2.TabIndex = 1;
             panel2.Paint += panel2_Paint;
             // 
@@ -231,7 +231,7 @@
             panel3.Dock = DockStyle.Fill;
             panel3.Location = new Point(0, 68);
             panel3.Name = "panel3";
-            panel3.Size = new Size(998, 307);
+            panel3.Size = new Size(1277, 294);
             panel3.TabIndex = 5;
             // 
             // dgvThongso
@@ -256,7 +256,7 @@
             dgvThongso.ReadOnly = true;
             dgvThongso.RowHeadersWidth = 51;
             dgvThongso.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvThongso.Size = new Size(998, 307);
+            dgvThongso.Size = new Size(1277, 294);
             dgvThongso.TabIndex = 5;
             dgvThongso.CellContentClick += dgvThongso_CellContentClick;
             // 
@@ -266,7 +266,7 @@
             panelMota.Dock = DockStyle.Top;
             panelMota.Location = new Point(0, 20);
             panelMota.Name = "panelMota";
-            panelMota.Size = new Size(998, 48);
+            panelMota.Size = new Size(1277, 48);
             panelMota.TabIndex = 4;
             // 
             // NenMauConTrol
@@ -281,7 +281,7 @@
             ForeColor = Color.FromArgb(0, 152, 70);
             Margin = new Padding(4);
             Name = "NenMauConTrol";
-            Size = new Size(998, 428);
+            Size = new Size(1277, 415);
             Load += NenMauConTrol_Load;
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);

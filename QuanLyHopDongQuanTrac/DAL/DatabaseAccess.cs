@@ -20,12 +20,12 @@ namespace DAL
         public static SqlConnection Connect()
         {
 
-            //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-            string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
             SqlConnection conn = new SqlConnection(connectionStr);
             return conn;
@@ -2430,6 +2430,170 @@ namespace DAL
                     return (success, message);
                 }
             }
+        }
+
+
+        // Lấy theo nhân viên
+        public DataTable layThongBaoTheoNhanVien(string maNV)
+        {
+            using (var conn = SqlConnectionData.Connect())
+            using (var cmd = new SqlCommand("sp_LayThongBaoTheoNhanVien", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@maNV", maNV);
+                conn.Open();
+                var dt = new DataTable();
+                dt.Load(cmd.ExecuteReader());
+                return dt;
+            }
+        }
+
+        // Đánh dấu đã đọc
+        public void danhDauThongBaoDaDoc(string maTB, string maNV)
+        {
+            using (var conn = SqlConnectionData.Connect())
+            using (var cmd = new SqlCommand("sp_DanhDauThongBaoDaDoc", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@maTB", maTB);
+                cmd.Parameters.AddWithValue("@maNV", maNV);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        // Xóa thông báo cho người dùng
+        public void xoaThongBaoNguoiDung(string maTB, string maNV)
+        {
+            using (var conn = SqlConnectionData.Connect())
+            using (var cmd = new SqlCommand("sp_XoaThongBaoNguoiDung", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@maTB", maTB);
+                cmd.Parameters.AddWithValue("@maNV", maNV);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        // Đếm chưa đọc
+        public int demThongBaoChuaDoc(string maNV)
+        {
+            using (var conn = SqlConnectionData.Connect())
+            using (var cmd = new SqlCommand("sp_DemThongBaoChuaDoc", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@maNV", maNV);
+                conn.Open();
+                var result = cmd.ExecuteScalar();
+                return (result == null || result == DBNull.Value) ? 0 : Convert.ToInt32(result);
+            }
+        }
+
+        public void kiemTraHopDongQuaHan()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_KiemTraHopDongQuaHan", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Lỗi khi kiểm tra hợp đồng quá hạn: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+
+        public DataTable layDanhSachThongBaoHopDongQuaHan()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_LayDanhSachThongBaoHopDongQuaHan", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    try
+                    {
+                        DataTable dt = new DataTable();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            dt.Load(reader);
+                        }
+                        return dt;
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Lỗi khi lấy danh sách thông báo hợp đồng quá hạn: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+
+        public void capNhatTrangThaiEmailHopDong(string maTB)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_CapNhatTrangThaiEmailHopDong", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@maTB", maTB);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public DataTable layThongBaoTheoNhanVien_PhanTrang(string maNV, int pageNumber, int pageSize)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_LayThongBaoTheoNhanVien_PhanTrang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@maNV", maNV);
+                    cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
+
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+            }
+            return dt;
+        }
+
+        public int demTongSoThongBao(string maNV)
+        {
+            int tongSo = 0;
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_DemTongSoThongBao", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@maNV", maNV);
+
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        tongSo = Convert.ToInt32(result);
+                    }
+                }
+            }
+            return tongSo;
         }
     }
 }

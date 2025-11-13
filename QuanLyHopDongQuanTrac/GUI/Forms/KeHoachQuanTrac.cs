@@ -198,6 +198,7 @@ namespace GUI.Forms
                 btnLuu.Text = "Cập nhật";
                 label.Text = "Chỉnh sửa kế hoạch";
                 dtmEnd.Enabled = true;
+                dtmEnd.Visible = true;
 
             }
         }
@@ -247,7 +248,7 @@ namespace GUI.Forms
                     {
                         var uc = new NenMauConTrol();
 
-                        uc.LoadNenMau(
+                        uc.taiNenMau(
                             maDN: nenMau.MaDN,
                             maNen: nenMau.MaNen,
                             tenNenMau: nenMau.TenNenMau,
@@ -257,12 +258,13 @@ namespace GUI.Forms
                             toaDo: nenMau.ToaDo,
                             ghiChu: nenMau.GhiChu
                         );
-
+                        //uc.Invoke((MethodInvoker)(() => uc.Refresh()));
                         uc.nhanXoaNenMau += nhanXoaNenMauUC;
                         uc.nhanSuaNenMau += nhanSuaNenMauUC;
                         uc.Width = flowNenmau.Width - 20;
 
                         flowNenmau.Controls.Add(uc);
+                        uc.Refresh();
                     }
 
                     capNhatSoThuTuNenMau();
@@ -383,7 +385,7 @@ namespace GUI.Forms
                 if (frmChiTiet.ShowDialog(this) == DialogResult.OK)
                 {
                     // ✅ Reload lại UserControl - THÊM PARAMETER MaDN
-                    uc.LoadNenMau(
+                    uc.taiNenMau(
                         maDN: uc.MaDN,              // ✅ THÊM PARAMETER NÀY
                         maNen: uc.MaNen,
                         tenNenMau: frmChiTiet.TenNenMauDaChon,
@@ -393,7 +395,7 @@ namespace GUI.Forms
                         toaDo: frmChiTiet.ToaDo,
                         ghiChu: frmChiTiet.GhiChu
                     );
-
+                    uc.Invoke((MethodInvoker)(() => uc.Refresh()));
                     MessageBox.Show("Cập nhật nền mẫu thành công!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -619,7 +621,7 @@ namespace GUI.Forms
 
                         // ✅ Hiển thị lên UI
                         var uc = new NenMauConTrol();
-                        uc.LoadNenMau(dn.MaDN, dn.MaNen, nenChon.tenNenMau, f.MoTaNen, f.ChiTietDaChon, f.TenViTri, f.ToaDo, f.GhiChu);
+                        uc.taiNenMau(dn.MaDN, dn.MaNen, nenChon.tenNenMau, f.MoTaNen, f.ChiTietDaChon, f.TenViTri, f.ToaDo, f.GhiChu);
                         uc.nhanXoaNenMau += nhanXoaNenMauUC;
                         uc.nhanSuaNenMau += nhanSuaNenMauUC;
                         uc.Width = flowNenmau.Width - 20;

@@ -34,10 +34,17 @@ namespace BLL
             if (truongPhongEmails.Count == 0)
                 return;
 
+
+
             // 🔹 Lấy toàn bộ nội dung thông báo chi tiết của đợt
             DataTable dtThongBao = dal.layThongBaoTheoDot(maDot);
             if (dtThongBao.Rows.Count == 0)
                 return;
+
+            if (dtThongBao.Rows.Count == 0)
+            {
+                return;
+            }
 
             DataRow tb = dtThongBao.Rows[0];
             string maTB = tb["maTB"].ToString();
@@ -106,6 +113,7 @@ namespace BLL
             {
                 guiEmail(email, subject, body);
             }
+            Console.WriteLine($"✅ HOÀN TẤT gửi email cho đợt {maDot}");
         }
 
 
@@ -145,6 +153,88 @@ namespace BLL
             dal.capNhatTrangThaiEmail(maDot);
         }
 
+        public DataTable layThongBaoTheoNhanVien(string maNV)
+        => dal.layThongBaoTheoNhanVien(maNV);
 
+        public void danhDauThongBaoDaDoc(string maTB, string maNV)
+            => dal.danhDauThongBaoDaDoc(maTB, maNV);
+
+        public void xoaThongBaoNguoiDung(string maTB, string maNV)
+            => dal.xoaThongBaoNguoiDung(maTB, maNV);
+
+        public int demThongBaoChuaDoc(string maNV)
+            => dal.demThongBaoChuaDoc(maNV);
+
+
+        public void kiemTraHopDongQuaHan()
+        {
+            dal.kiemTraHopDongQuaHan();
+
+            DataTable ds = dal.layDanhSachThongBaoHopDongQuaHan();
+            foreach (DataRow r in ds.Rows)
+            {
+                string maTB = r["maTB"].ToString();
+                string maHD = r["maHD"].ToString();
+                string tenKH = r["tenKhachHang"].ToString();
+
+                guiEmailCanhBaoHopDong(maHD, tenKH);
+
+                // 🔥 Quan trọng: đánh dấu đã gửi email
+                dal.capNhatTrangThaiEmailHopDong(maTB);
+            }
+        }
+
+
+        public void guiEmailCanhBaoHopDong(string maHD, string tenKH)
+        {
+            List<string> truongPhongEmails = dal.layEmailTruongPhong();
+            if (truongPhongEmails.Count == 0) return;
+
+            string subject = $"⚠️ Hợp đồng {maHD} đã quá hạn!";
+            string body = $"Hợp đồng của khách hàng {tenKH} đã quá hạn và chưa được cập nhật trạng thái.";
+
+            foreach (var email in truongPhongEmails)
+            {
+                guiEmail(email, subject, body);
+            }
+        }
+
+        public DataTable layThongBaoTheoNhanVien_PhanTrang(string maNV, int pageNumber, int pageSize)
+        {
+            DataTable dt = dal.layThongBaoTheoNhanVien_PhanTrang(maNV, pageNumber, pageSize);
+            chuyenDoiLoaiThongBao(dt);
+
+            return dt;
+        }
+
+        public int demTongSoThongBao(string maNV)
+        {
+            return dal.demTongSoThongBao(maNV);
+        }
+
+        private void chuyenDoiLoaiThongBao(DataTable dt)
+        {
+            if (dt == null || !dt.Columns.Contains("loaiTB")) return;
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string loaiTB = row["loaiTB"]?.ToString();
+
+                switch (loaiTB)
+                {
+                    case "QUA_HAN_DOT":
+                        row["loaiTB"] = "Trễ hạn quan trắc";
+                        break;
+                    case "HOP_DONG_QUA_HAN":
+                        row["loaiTB"] = "Hợp đồng quá hạn";
+                        break;
+                    // Thêm các loại khác nếu cần
+                    case "THONG_BAO_CHUNG":
+                        row["loaiTB"] = "Thông báo chung";
+                        break;
+                        // ... các loại khác
+                }
+            }
+        }
     }
 }
