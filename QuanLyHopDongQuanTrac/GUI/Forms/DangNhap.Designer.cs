@@ -35,9 +35,9 @@
             tableLayoutPanel3 = new TableLayoutPanel();
             panel4 = new Panel();
             panelMatkhau = new Panel();
+            button4 = new Button();
             textBoxmatkhau = new TextBox();
             panelTentk = new Panel();
-            button4 = new Button();
             txtTentk = new TextBox();
             button3 = new Button();
             label8 = new Label();
@@ -147,6 +147,15 @@
             panelMatkhau.Size = new Size(353, 64);
             panelMatkhau.TabIndex = 14;
             // 
+            // button4
+            // 
+            button4.BackgroundImageLayout = ImageLayout.Zoom;
+            button4.Location = new Point(283, 6);
+            button4.Name = "button4";
+            button4.Size = new Size(51, 51);
+            button4.TabIndex = 15;
+            button4.UseVisualStyleBackColor = true;
+            // 
             // textBoxmatkhau
             // 
             textBoxmatkhau.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -164,16 +173,6 @@
             panelTentk.Name = "panelTentk";
             panelTentk.Size = new Size(353, 64);
             panelTentk.TabIndex = 13;
-            // 
-            // button4
-            // 
-            button4.BackgroundImage = (Image)resources.GetObject("button4.BackgroundImage");
-            button4.BackgroundImageLayout = ImageLayout.Zoom;
-            button4.Location = new Point(283, 6);
-            button4.Name = "button4";
-            button4.Size = new Size(51, 51);
-            button4.TabIndex = 15;
-            button4.UseVisualStyleBackColor = true;
             // 
             // txtTentk
             // 
@@ -345,7 +344,7 @@
             MaximizeBox = false;
             Name = "DangNhap";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Form1";
+            Text = "Đăng nhập";
             Load += Form1_Load;
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);

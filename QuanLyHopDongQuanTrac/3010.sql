@@ -5206,8 +5206,8 @@ CREATE TABLE dbo.ThongBao_NguoiDung (
 CREATE INDEX IX_TB_ND_maNV_trangThaiDoc ON dbo.ThongBao_NguoiDung(maNV, trangThaiDoc);
 CREATE INDEX IX_TB_ND_maNV ON dbo.ThongBao_NguoiDung(maNV);
 
-
-CREATE OR ALTER PROCEDURE dbo.sp_LayThongBaoTheoNhanVien
+GO
+CREATE PROCEDURE dbo.sp_LayThongBaoTheoNhanVien
     @maNV VARCHAR(15)
 AS
 BEGIN
@@ -5231,9 +5231,9 @@ BEGIN
     WHERE nd.maNV = @maNV
     ORDER BY tb.ngayTao DESC, tb.maTB DESC;
 END;
-
+GO
 ----Đánh dấu thông báo là đã đọc 
-CREATE OR ALTER PROCEDURE dbo.sp_DanhDauThongBaoDaDoc
+CREATE PROCEDURE dbo.sp_DanhDauThongBaoDaDoc
     @maTB VARCHAR(15),
     @maNV VARCHAR(15)
 AS
@@ -5244,8 +5244,9 @@ BEGIN
         ngayDoc      = ISNULL(ngayDoc, GETDATE())
     WHERE maTB = @maTB AND maNV = @maNV;
 END
+GO
 -----xóa thông báo cho người dùng 
-CREATE OR ALTER PROCEDURE dbo.sp_XoaThongBaoNguoiDung
+CREATE PROCEDURE dbo.sp_XoaThongBaoNguoiDung
     @maTB VARCHAR(15),
     @maNV VARCHAR(15)
 AS
@@ -5254,8 +5255,9 @@ BEGIN
     DELETE FROM dbo.ThongBao_NguoiDung
     WHERE maTB = @maTB AND maNV = @maNV;
 END
+GO
 ----đếm thông báo chưa đọc 
-CREATE OR ALTER PROCEDURE dbo.sp_DemThongBaoChuaDoc
+CREATE PROCEDURE dbo.sp_DemThongBaoChuaDoc
     @maNV VARCHAR(15)
 AS
 BEGIN
@@ -5264,8 +5266,8 @@ BEGIN
     FROM dbo.ThongBao_NguoiDung
     WHERE maNV = @maNV AND trangThaiDoc = 0;
 END
-
-CREATE OR ALTER PROCEDURE sp_KiemTraHopDongQuaHan
+GO
+CREATE PROCEDURE sp_KiemTraHopDongQuaHan
 AS
 BEGIN
     SET NOCOUNT ON;

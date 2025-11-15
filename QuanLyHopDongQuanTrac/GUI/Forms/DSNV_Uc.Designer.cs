@@ -123,7 +123,7 @@
             // picturemicro
             // 
             picturemicro.Cursor = Cursors.Hand;
-            picturemicro.Image = (Image)resources.GetObject("picturemicro.Image");
+            picturemicro.Image = Properties.Resources.microphone;
             picturemicro.Location = new Point(325, 11);
             picturemicro.Name = "picturemicro";
             picturemicro.Size = new Size(39, 34);
@@ -183,7 +183,6 @@
             dgvDanhsachnhanvien.RowHeadersWidth = 51;
             dgvDanhsachnhanvien.Size = new Size(828, 356);
             dgvDanhsachnhanvien.TabIndex = 1;
-            dgvDanhsachnhanvien.Paint += dgvDanhsachnhanvien_Paint;
             // 
             // panel1
             // 
@@ -212,7 +211,6 @@
             btnSau.TabIndex = 1;
             btnSau.Text = "Trang sau";
             btnSau.UseVisualStyleBackColor = false;
-            btnSau.Click += btnSau_Click_1;
             // 
             // soTrang
             // 

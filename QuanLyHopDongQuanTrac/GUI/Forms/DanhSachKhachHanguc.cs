@@ -1,6 +1,8 @@
 ﻿using BLL;
+using BLL.Speech;
 using DTO;
 using GUI.Common;
+using GUI.Helper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +20,10 @@ namespace GUI.Forms
 {
     public partial class DanhSachKhachHanguc : UserControl
     {
+        private VoiceRecorder _recorder;
+        private WhisperService _whisper;
+        private string _wavPath;
+        private bool _ready = false;
         private readonly bool _isPhongKinhDoanh = SessionStore.Current.MaPhong == "P001";
 
         #region Fields
@@ -64,8 +70,39 @@ namespace GUI.Forms
         #endregion
 
         #region UserControl Load
-        private void DanhSachKhachHanguc_Load(object sender, EventArgs e)
+        private async void DanhSachKhachHanguc_Load(object sender, EventArgs e)
         {
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string modelPath = Path.Combine(baseDir, "Model", "ggml-tiny.bin");
+            _wavPath = Path.Combine(baseDir, "TempAudio", "search.wav");
+
+            _recorder = new VoiceRecorder(_wavPath);
+            string appId = "ga825cbd";
+            string apiKey = "55774f42c55202232e1b4d8ebfc314c5";
+            string apiSecret = "c1cb5fc788d78ec4b808e8cc4beb4a3d";
+
+            var iatService = new IATService(appId, apiKey, apiSecret);
+
+            _whisper = new WhisperService(modelPath, iatService);
+
+            picturemicro.Enabled = false;
+            picturemicro.Text = "Đang tải model...";
+
+            try
+            {
+                await _whisper.InitAsync();
+                _ready = true;
+                picturemicro.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Lỗi khởi tạo Whisper:\n\n" + ex.ToString(),
+                    "Whisper Init Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
             InitializeButtonIcons();
             InitializeButtonStyles();
             InitializeCustomSearchBox();
@@ -674,8 +711,74 @@ namespace GUI.Forms
 
         }
 
-        private void picturemicro_Click(object sender, EventArgs e)
+        private async void BtnMic_Click(object sender, EventArgs e)
         {
+            if (!_ready) return;
+
+            if (!_recorder.IsRecording)
+            {
+                try
+                {
+                    _recorder.Start();
+                    picturemicro.Image = Properties.Resources.microphone_hoatdong;
+                    searchtextbox.ForeColor = Color.Silver;
+                    searchtextbox.Text = "Đang nghe...";
+                    isPlaceholder = true;
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Không thể ghi âm: " + ex.Message);
+                }
+            }
+
+            else
+            {
+                picturemicro.Enabled = false;
+                picturemicro.Image = Properties.Resources.microphone;
+
+                _recorder.Stop();
+                await Task.Delay(300);
+
+                try
+                {
+                    string text;
+                    try
+                    {
+                        text = await _whisper.TranscribeIFlytekAsync(_wavPath);
+
+                    }
+                    catch
+                    {
+                        text = await _whisper.TranscribeAsync(_wavPath);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        MessageBox.Show("Không nghe được nội dung");
+                        return;
+                    }
+
+                    // Đảm bảo bỏ trạng thái placeholder
+                    isPlaceholder = false;
+                    searchtextbox.ForeColor = Color.FromArgb(64, 64, 64);
+
+                    searchtextbox.Text = text.Trim();
+                    searchtextbox.SelectionStart = searchtextbox.Text.Length;
+
+                    // Cho tự động lọc luôn nếu muốn
+                    PerformSearch();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi nhận dạng giọng nói: " + ex.Message);
+                }
+                finally
+                {
+                    picturemicro.Enabled = true;
+                }
+
+            }
 
         }
 
