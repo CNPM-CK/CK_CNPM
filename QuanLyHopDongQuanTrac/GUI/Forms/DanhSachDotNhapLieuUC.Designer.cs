@@ -196,6 +196,7 @@
             picturemicro.SizeMode = PictureBoxSizeMode.Zoom;
             picturemicro.TabIndex = 6;
             picturemicro.TabStop = false;
+            picturemicro.Click += BtnMic_Click;
             // 
             // pictureFilter
             // 

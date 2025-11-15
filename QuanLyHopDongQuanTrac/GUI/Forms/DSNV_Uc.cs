@@ -14,12 +14,21 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BLL.Speech;
+using GUI.Helper;
+using System.Diagnostics;
 
 
 namespace GUI.Forms
 {
     public partial class DSNV_Uc : UserControl
     {
+        //giong noi
+        private VoiceRecorder _recorder;
+        private WhisperService _whisper;
+        private string _wavPath;
+        private bool _ready = false;
+
         private readonly bool _isAdmin = (SessionStore.Current?.VaiTro ?? 0) == 1;
 
         private bool HasThaoTacColumn() =>
@@ -52,8 +61,11 @@ namespace GUI.Forms
         {
             InitializeComponent();
             this.DoubleBuffered = true;
-            //string modelPath = Path.Combine(Application.StartupPath, "Model", "vosk-model-vn-0.4");
-            //voiceSearch = new TimKiemGiongNoi(modelPath);
+            if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
+            {
+                this.Load += DSNV_Uc_Load;
+                picturemicro.Click += BtnMic_Click;
+            }
         }
 
         [DllImport("gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
@@ -650,33 +662,40 @@ namespace GUI.Forms
 
 
 
-        private void TestVoskModel()
-        {
-            //try
-            //{
-            //    string modelPath = Path.Combine(Application.StartupPath, "Model", "vosk-model-vn-0.4");
-
-            //    MessageBox.Show($"Testing model at: {modelPath}");
-
-            //    Vosk.Vosk.SetLogLevel(0); // Enable logging để debug
-            //    using (var testModel = new Model(modelPath))
-            //    {
-            //        using (var testRecognizer = new VoskRecognizer(testModel, 16000.0f))
-            //        {
-            //            MessageBox.Show("✅ Model test SUCCESS!");
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"❌ Model test FAILED:\n\n{ex.GetType().Name}\n{ex.Message}\n\n{ex.StackTrace}");
-            //}
-        }
 
         private async void DSNV_Uc_Load(object sender, EventArgs e)
         {
-            //TestVoskModel();
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string modelPath = Path.Combine(baseDir, "Model", "ggml-tiny.bin");
+            _wavPath = Path.Combine(baseDir, "TempAudio", "search.wav");
 
+            _recorder = new VoiceRecorder(_wavPath);
+            string appId = "ga825cbd";          
+            string apiKey = "55774f42c55202232e1b4d8ebfc314c5";        
+            string apiSecret = "c1cb5fc788d78ec4b808e8cc4beb4a3d";  
+
+            var iatService = new IATService(appId, apiKey, apiSecret);
+
+            _whisper = new WhisperService(modelPath, iatService);
+
+            picturemicro.Enabled = false;
+            picturemicro.Text = "Đang tải model...";
+
+            try
+            {
+                await _whisper.InitAsync();
+                _ready = true;
+                picturemicro.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Lỗi khởi tạo Whisper:\n\n" + ex.ToString(),
+                    "Whisper Init Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
             NhanVienBLL nvBLL = new NhanVienBLL();
             dsNhanVien = new BindingList<NhanVien>(nvBLL.layDanhSachNhanVien_PhanTrang(trangHientai, kichthuocTrang));
             InitializeContextMenu();
@@ -865,8 +884,74 @@ namespace GUI.Forms
 
         }
 
-        private void btnSau_Click_1(object sender, EventArgs e)
+        private async void BtnMic_Click(object sender, EventArgs e)
         {
+            if (!_ready) return;
+
+            if (!_recorder.IsRecording)
+            {
+                try
+                {
+                    _recorder.Start();
+                    picturemicro.Image = Properties.Resources.microphone_hoatdong;
+                    searchtextbox.ForeColor = Color.Silver;
+                    searchtextbox.Text = "Đang nghe...";
+                    isPlaceholder = true;
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Không thể ghi âm: " + ex.Message);
+                }
+            }
+
+            else
+            {
+                picturemicro.Enabled = false;
+                picturemicro.Image = Properties.Resources.microphone;
+
+                _recorder.Stop();
+                await Task.Delay(300);
+
+                try
+                {
+                    string text;
+                    try
+                    {
+                        text = await _whisper.TranscribeIFlytekAsync(_wavPath);
+
+                    }
+                    catch
+                    {
+                        text = await _whisper.TranscribeAsync(_wavPath);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        MessageBox.Show("Không nghe được nội dung");
+                        return;
+                    }
+
+                    // Đảm bảo bỏ trạng thái placeholder
+                    isPlaceholder = false;
+                    searchtextbox.ForeColor = Color.FromArgb(64, 64, 64);
+
+                    searchtextbox.Text = text.Trim();
+                    searchtextbox.SelectionStart = searchtextbox.Text.Length;
+
+                    // Cho tự động lọc luôn nếu muốn
+                    PerformSearch();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi nhận dạng giọng nói: " + ex.Message);
+                }
+                finally
+                {
+                    picturemicro.Enabled = true;
+                }
+
+            }
 
         }
 

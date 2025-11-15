@@ -29,7 +29,6 @@
     <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.26" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.10" />
     <PackageReference Include="NAudio" Version="2.2.1" />
-    <PackageReference Include="Vosk" Version="0.3.38" />
   </ItemGroup>
 
   <ItemGroup>
