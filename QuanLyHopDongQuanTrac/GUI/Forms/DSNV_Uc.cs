@@ -20,7 +20,6 @@ namespace GUI.Forms
 {
     public partial class DSNV_Uc : UserControl
     {
-        // Fields
         private readonly bool _isAdmin = (SessionStore.Current?.VaiTro ?? 0) == 1;
 
         private bool HasThaoTacColumn() =>
@@ -29,17 +28,6 @@ namespace GUI.Forms
         private int ThaoTacIndex() =>
             HasThaoTacColumn() ? dgvDanhsachnhanvien.Columns["ThaoTac"].Index : -1;
         #region Fields
-
-        //private TimKiemGiongNoi voiceSearch;
-        //private bool isVoiceSearchReady = false;
-        //private System.Threading.Timer initTimer;
-        //private readonly object _voiceSearchLock = new object();
-        //private readonly string MODEL_PATH = Path.Combine(
-        //    Application.StartupPath,  // thư mục chứa .exe
-        //    "Model",
-        //    "vosk-model-vi-0.4"
-        //);
-
 
         private Color borderColor = Color.Black;
         private int borderRadius = 12;
@@ -881,5 +869,35 @@ namespace GUI.Forms
         {
 
         }
+
+        private void pictureFilter_Click(object sender, EventArgs e)
+        {
+            LocTimKiemNhanVien filter = new LocTimKiemNhanVien();
+            if (filter.ShowDialog() == DialogResult.OK)
+            {
+                apDungBoLoc(filter.SelectedPhongBan, filter.SelectedGioiTinh, filter.SelectedTrangThai);
+            }
+        }
+        private void apDungBoLoc(string maPhong, string gioiTinh, string trangThai)
+        {
+            // Bắt đầu từ danh sách đầy đủ
+            var result = dsNhanVien.AsEnumerable();
+
+            // 1) Lọc phòng ban
+            if (!string.IsNullOrEmpty(maPhong))
+                result = result.Where(nv => nv.maPhong == maPhong);
+
+            // 2) Lọc giới tính
+            if (!string.IsNullOrEmpty(gioiTinh))
+                result = result.Where(nv => nv.gioiTinh == gioiTinh);
+
+            // 3) Lọc trạng thái
+            if (!string.IsNullOrEmpty(trangThai))
+                result = result.Where(nv => nv.trangThai.ToString() == trangThai);
+
+            // Kết quả cuối
+            dgvDanhsachnhanvien.DataSource = result.ToList();
+        }
+
     }
 }

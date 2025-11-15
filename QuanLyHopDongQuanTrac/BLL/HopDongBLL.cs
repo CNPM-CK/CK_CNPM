@@ -2,6 +2,7 @@
 using DTO;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,5 +64,30 @@ namespace BLL
             bool daThayDoi = log.Length > 0;
             return (daThayDoi, log.ToString());
         }
+
+        public DataTable layTrangThaiHopDong()
+        {
+            try
+            {
+                return dal.layTrangThaiHopDong();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi BLL.layTrangThaiHopDong: " + ex.Message);
+            }
+        }
+
+
+        public List<HopDongDTO> layDanhSachHopDong_PhanTrang(int pageNumber, int pageSize)
+        {
+            return dal.layDanhSachHopDong_PhanTrang(pageNumber, pageSize);
+        }
+
+        public int demSoLuongHopDong()
+        {
+            return dal.demSoLuongHopDong();
+        }
+
+
     }
 }

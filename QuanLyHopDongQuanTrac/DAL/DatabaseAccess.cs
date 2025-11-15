@@ -2595,5 +2595,177 @@ namespace DAL
             }
             return tongSo;
         }
+
+
+        public DataTable layTrangThaiHopDong()
+        {
+            DataTable dt = new DataTable();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("layTrangthaihopdong", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+            }
+
+            return dt;
+        }
+
+        public List<ThongSo> layDanhSachThongSo_PhanTrang(int pageNumber, int pageSize)
+        {
+            List<ThongSo> list = new List<ThongSo>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_layDanhSachThongSo_PhanTrang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new ThongSo
+                            {
+                                MaTS = reader["maTS"].ToString(),
+                                TenTS = reader["tenTS"].ToString(),
+                                DonVi = reader["donVi"].ToString(),
+                                GiaTriToiThieu = reader["giaTriToiThieu"] as double?,
+                                GiaTriToiDa = reader["giaTriToiDa"] as double?,
+                                phuongPhap = reader["phuongPhap"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
+
+        public List<NenMau> layDanhSachNenMau_PhanTrang(int pageNumber, int pageSize, string keyword = "")
+        {
+            List<NenMau> list = new List<NenMau>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_layDanhSachNenMau_PhanTrang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
+                    cmd.Parameters.AddWithValue("@keyword", string.IsNullOrEmpty(keyword) ? (object)DBNull.Value : keyword);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new NenMau
+                            {
+                                maNen = reader["maNen"].ToString(),
+                                tenNenMau = reader["tenNenMau"].ToString(),
+                                moTa = reader["moTa"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        public int demSoLuongThongSo()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("demSoLuongThongSo", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    object result = cmd.ExecuteScalar();
+                    return Convert.ToInt32(result);
+                }
+            }
+        }
+
+
+        public int demSoLuongNenMau()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("demSoLuongNenMau", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    object result = cmd.ExecuteScalar();
+                    return Convert.ToInt32(result);
+                }
+            }
+        }
+
+
+        public List<HopDongDTO> layDanhSachHopDong_PhanTrang(int pageNumber, int pageSize)
+        {
+            List<HopDongDTO> list = new List<HopDongDTO>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("layDanhSachHopDong_PhanTrang", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new HopDongDTO
+                            {
+                                maHD = reader["maHD"].ToString(),
+                                maKH = reader["maKH"].ToString(),
+                                ngayKy = Convert.ToDateTime(reader["ngayKy"]),
+                                ngayKetThucHD = Convert.ToDateTime(reader["ngayKetThucHD"]),
+                                trangThai = reader["trangThai"]?.ToString(),
+                                tanSuatQuanTrac = reader["tanSuatQuanTrac"]?.ToString(),
+                                soHD = reader["soHD"]?.ToString()
+                            });
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
+
+        public int demSoLuongHopDong()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("demSoLuongHopDong", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    object result = cmd.ExecuteScalar();
+                    return Convert.ToInt32(result);
+                }
+            }
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace GUI.Forms
     public partial class DanhSachNenMau : UserControl
     {
         private readonly bool _isPhongKeHoach = SessionStore.Current.MaPhong == "P002";
+
         #region Fields
         // Search box styling
         private Color borderColor = Color.Black;
@@ -24,7 +25,7 @@ namespace GUI.Forms
         private const int SEARCH_HEIGHT = 50;
         private const string PLACEHOLDER_TEXT = "Tìm kiếm nền mẫu...";
 
-        // Layout constants (giống DanhSachNhanVien)
+        // Layout constants
         private const int MARGIN = 15;
         private const int SPACING = 10;
         private const int MIN_SEARCH_WIDTH = 200;
@@ -36,7 +37,11 @@ namespace GUI.Forms
         private string lastSearchKeyword = "";
         private Form currentOpenForm = null;
 
-        // Cell action rectangles
+        // Phân trang
+        int trangHientai = 1;
+        int kichthuocTrang = 15;
+        int tongSoBanGhi = 0;
+        int tongSoTrang = 0;
         #endregion
 
         #region Constructor
@@ -44,7 +49,7 @@ namespace GUI.Forms
         {
             InitializeComponent();
             this.Load += DanhSachThongSo_Load;
-            this.Resize += DanhSachThongSo_Resize; // ✅ Thêm resize handler
+            this.Resize += DanhSachThongSo_Resize;
         }
         #endregion
 
@@ -53,13 +58,15 @@ namespace GUI.Forms
         {
             try
             {
-                LoadData();
                 InitializeDataGridView();
                 InitializeCustomSearchBox();
                 InitializeContextMenu();
                 InitializeButtonIcons();
                 InitializeButtonStyles();
                 CalculateLayout();
+
+                // Load dữ liệu phân trang
+                taiDanhSachNenMau();
             }
             catch (Exception ex)
             {
@@ -68,11 +75,33 @@ namespace GUI.Forms
             }
         }
 
-        private void LoadData()
+        private void taiDanhSachNenMau()
+        {
+            tongSoBanGhi = 0;
+            taiTrangNenMau();
+        }
+
+        private void taiTrangNenMau()
         {
             var bll = new NenMauBLL();
-            var list = bll.layDSNenMau();
-            dsNenmau = new BindingList<NenMau>(list);
+
+            // Tính tổng số trang
+            if (tongSoBanGhi == 0)
+            {
+                tongSoBanGhi = bll.demSoLuongNenMau();
+                tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / kichthuocTrang);
+            }
+
+            var data = bll.layDanhSachNenMau_PhanTrang(trangHientai, kichthuocTrang);
+            dsNenmau = new BindingList<NenMau>(data);
+            dgvDSTS.DataSource = dsNenmau;
+
+            // Cập nhật label trang
+            soTrang.Text = $"Trang {trangHientai}/{tongSoTrang}";
+
+            // Disable nút nếu đang ở biên
+            btnTruoc.Enabled = trangHientai > 1;
+            btnSau.Enabled = trangHientai < tongSoTrang;
         }
 
         private void InitializeDataGridView()
@@ -85,23 +114,21 @@ namespace GUI.Forms
             dgvDSTS.MultiSelect = false;
             dgvDSTS.RowTemplate.Height = 50;
 
-            dgvDSTS.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular); // Font chữ
-            dgvDSTS.DefaultCellStyle.Font = new Font("Segoe UI", 9.75F); // Font cells
-            dgvDSTS.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold); // Font header
-            dgvDSTS.RowHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.75F); // Font row header
+            dgvDSTS.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular);
+            dgvDSTS.DefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
+            dgvDSTS.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            dgvDSTS.RowHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.75F);
 
-            dgvDSTS.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 152, 70); // Màu nền
-            dgvDSTS.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;                // Màu chữ
-            dgvDSTS.EnableHeadersVisualStyles = false; // Bắt buộc để header nhận màu tùy chỉnh
+            dgvDSTS.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 152, 70);
+            dgvDSTS.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvDSTS.EnableHeadersVisualStyles = false;
 
-
-            dgvDSTS.DefaultCellStyle.BackColor = Color.White;          // Màu nền bình thường
-            dgvDSTS.DefaultCellStyle.ForeColor = Color.Black;          // Màu chữ
-            dgvDSTS.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151); // Màu nền khi chọn
-            dgvDSTS.DefaultCellStyle.SelectionForeColor = Color.Black; // Màu chữ khi chọn
+            dgvDSTS.DefaultCellStyle.BackColor = Color.White;
+            dgvDSTS.DefaultCellStyle.ForeColor = Color.Black;
+            dgvDSTS.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dgvDSTS.DefaultCellStyle.SelectionForeColor = Color.Black;
             dgvDSTS.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvDSTS.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
 
             // Define columns
             dgvDSTS.Columns.AddRange(new DataGridViewColumn[]
@@ -109,25 +136,22 @@ namespace GUI.Forms
                 new DataGridViewTextBoxColumn
                 {
                     DataPropertyName = "maNen",
-                    HeaderText = "Mã nền ",
-                    Name = "maNen",
-                    Width = 120
+                    HeaderText = "MÃ NỀN",
+                    Name = "maNen"
                 },
                 new DataGridViewTextBoxColumn
                 {
                     DataPropertyName = "tenNenMau",
-                    HeaderText = "Tên nền mẫu ",
-                    Name = "tenNenMau",
-                    Width = 250
+                    HeaderText = "TÊN NỀN MẪU",
+                    Name = "tenNenMau"
                 },
                 new DataGridViewTextBoxColumn
                 {
                     DataPropertyName = "moTa",
-                    HeaderText = "Mô Tả",
+                    HeaderText = "MÔ TẢ",
                     Name = "moTa",
-                    Width = 100
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
                 }
-
             });
 
             // Add action column
@@ -142,13 +166,14 @@ namespace GUI.Forms
                 dgvDSTS.Columns.Add(thaoTacCol);
             }
 
-            // Bind data
-            dgvDSTS.DataSource = dsNenmau;
-
             // Register events
             dgvDSTS.CellFormatting += DgvDSTS_CellFormatting;
-            dgvDSTS.CellPainting += DgvDSTS_CellPainting;
-            dgvDSTS.CellClick += DgvDSTS_CellClick;
+
+            if (_isPhongKeHoach)
+            {
+                dgvDSTS.CellPainting += DgvDSTS_CellPainting;
+                dgvDSTS.CellClick += DgvDSTS_CellClick;
+            }
         }
 
         private void InitializeCustomSearchBox()
@@ -156,7 +181,7 @@ namespace GUI.Forms
             if (containersearch == null || searchtextbox == null) return;
 
             containersearch.BackColor = Color.Transparent;
-            containersearch.Size = new Size(400, SEARCH_HEIGHT); // Sẽ được điều chỉnh trong CalculateLayout
+            containersearch.Size = new Size(400, SEARCH_HEIGHT);
             containersearch.BringToFront();
 
             searchtextbox.BorderStyle = BorderStyle.None;
@@ -201,7 +226,6 @@ namespace GUI.Forms
 
         private void InitializeButtonIcons()
         {
-            // ✅ Resize icons giống DanhSachNhanVien
             if (btnThemNenMau != null && btnThemNenMau.Image != null)
             {
                 btnThemNenMau.Image = new Bitmap(btnThemNenMau.Image, new Size(24, 24));
@@ -217,12 +241,11 @@ namespace GUI.Forms
         {
             btnThemNenMau.Visible = _isPhongKeHoach;
             btnXuatfile.Visible = _isPhongKeHoach;
-            // ✅ Set initial button size và bo góc
+
             if (btnThemNenMau != null)
             {
                 btnThemNenMau.Size = new Size(66, 40);
                 BoGocButton(btnThemNenMau, 20);
-                //btnThemNenMau.Click += btnThemNenMau_Click;
             }
 
             if (btnXuatfile != null)
@@ -230,10 +253,20 @@ namespace GUI.Forms
                 btnXuatfile.Size = new Size(66, 40);
                 BoGocButton(btnXuatfile, 20);
             }
+
+            if (btnTruoc != null)
+            {
+                BoGocButton(btnTruoc, 20);
+            }
+
+            if (btnSau != null)
+            {
+                BoGocButton(btnSau, 20);
+            }
         }
         #endregion
 
-        #region Layout & Resize (✅ COPY TỪ DanhSachNhanVien)
+        #region Layout & Resize
         private void DanhSachThongSo_Resize(object sender, EventArgs e)
         {
             if (this.Width < 100) return;
@@ -242,12 +275,9 @@ namespace GUI.Forms
 
         private void CalculateLayout()
         {
-            // Kiểm tra các controls tồn tại
             if (btnXuatfile == null || btnThemNenMau == null || containersearch == null) return;
 
             int formWidth = this.Width;
-
-            // Kiểm tra parent form có maximize không
             Form parentForm = this.FindForm();
             bool isMaximized = parentForm != null && parentForm.WindowState == FormWindowState.Maximized;
 
@@ -255,17 +285,24 @@ namespace GUI.Forms
             int btnHeight = isMaximized ? 50 : 40;
             int btnRadius = isMaximized ? 25 : 20;
 
-            // Resize và reposition buttons
             btnXuatfile.Size = new Size(btnWidth, btnHeight);
             btnThemNenMau.Size = new Size(btnWidth, btnHeight);
             BoGocButton(btnXuatfile, btnRadius);
             BoGocButton(btnThemNenMau, btnRadius);
 
-            // Position buttons from right
-            btnXuatfile.Left = formWidth - btnWidth - MARGIN;
-            btnThemNenMau.Left = btnXuatfile.Left - btnWidth - SPACING;
+            Control btnParent = btnXuatfile.Parent;
+            if (btnParent != null && btnParent != this)
+            {
+                int parentWidth = btnParent.Width;
+                btnXuatfile.Left = parentWidth - btnWidth - MARGIN;
+                btnThemNenMau.Left = btnXuatfile.Left - btnWidth - SPACING;
+            }
+            else
+            {
+                btnXuatfile.Left = formWidth - btnWidth - MARGIN;
+                btnThemNenMau.Left = btnXuatfile.Left - btnWidth - SPACING;
+            }
 
-            // Calculate search box width dynamically
             int leftBoundary = pictureFilter != null ? pictureFilter.Right + SPACING : MARGIN;
             int rightBoundary = btnThemNenMau.Left - SPACING;
 
@@ -275,14 +312,12 @@ namespace GUI.Forms
             }
 
             int availableWidth = rightBoundary - leftBoundary;
-
             int searchWidth = Math.Max(MIN_SEARCH_WIDTH, Math.Min(availableWidth, MAX_SEARCH_WIDTH));
             if (searchWidth < MIN_SEARCH_WIDTH)
             {
                 searchWidth = Math.Max(150, availableWidth);
             }
 
-            // Apply search box sizing
             if (pictureFilter != null)
             {
                 pictureFilter.Left = MARGIN;
@@ -300,7 +335,6 @@ namespace GUI.Forms
                 picturemicro.Left = containersearch.Right + SPACING;
             }
 
-            // Adjust button padding based on maximize state
             if (isMaximized)
             {
                 btnThemNenMau.Padding = new Padding(10, 5, 10, 5);
@@ -316,7 +350,7 @@ namespace GUI.Forms
         }
         #endregion
 
-        #region Button Styling (✅ COPY TỪ DanhSachNhanVien)
+        #region Button Styling
         private void BoGocButton(Button btn, int radius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -336,127 +370,58 @@ namespace GUI.Forms
         #region DataGridView Events
         private void DgvDSTS_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            // Highlight min/max values that are null
-            if ((dgvDSTS.Columns[e.ColumnIndex].Name == "GiaTriToiThieu" ||
-                 dgvDSTS.Columns[e.ColumnIndex].Name == "GiaTriToiDa") &&
-                (e.Value == null || e.Value == DBNull.Value))
-            {
-                e.CellStyle.BackColor = Color.LightYellow;
-                e.CellStyle.ForeColor = Color.Gray;
-                e.Value = "N/A";
-                e.FormattingApplied = true;
-            }
+            // Custom formatting nếu cần
         }
 
         private void DgvDSTS_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (!_isPhongKeHoach) return;
-            if (e.RowIndex >= 0 && e.ColumnIndex == dgvDSTS.Columns["ThaoTac"].Index)
-            {
-                e.PaintBackground(e.ClipBounds, true);
+            if (e.RowIndex < 0) return;
+            if (e.ColumnIndex != dgvDSTS.Columns["ThaoTac"].Index) return;
 
-                int iconWidth = 24;
-                int iconHeight = 24;
-                int spacing = 10;
-                int totalWidth = (iconWidth * 2) + spacing;
+            e.PaintBackground(e.ClipBounds, true);
 
-                int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
-                int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
+            int iconWidth = 24, iconHeight = 24, spacing = 10;
+            int totalWidth = (iconWidth * 2) + spacing;
+            int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
+            int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
 
-                // ✅ Chỉ vẽ, KHÔNG lưu Rectangle
-                Rectangle editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
-                if (Properties.Resources.edit != null)
-                {
-                    e.Graphics.DrawImage(Properties.Resources.edit, editRect);
-                }
+            Rectangle editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
+            Rectangle deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
 
-                Rectangle deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
-                if (Properties.Resources.trash_can != null)
-                {
-                    e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
-                }
+            if (Properties.Resources.edit != null)
+                e.Graphics.DrawImage(Properties.Resources.edit, editRect);
+            if (Properties.Resources.trash_can != null)
+                e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
 
-                e.Handled = true;
-            }
+            e.Handled = true;
         }
-
 
         private void DgvDSTS_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (!_isPhongKeHoach) return;
-            try
-            {
-                // Validate indices
-                if (e.RowIndex < 0 || e.ColumnIndex < 0)
-                    return;
+            if (e.RowIndex < 0 || e.RowIndex >= dgvDSTS.Rows.Count) return;
+            if (e.ColumnIndex != dgvDSTS.Columns["ThaoTac"].Index) return;
 
-                // Validate ThaoTac column exists
-                if (!dgvDSTS.Columns.Contains("ThaoTac"))
-                {
-                    MessageBox.Show("Cột 'Thao tác' không tồn tại!", "Lỗi");
-                    return;
-                }
+            DataGridViewRow row = dgvDSTS.Rows[e.RowIndex];
+            if (row?.Cells["maNen"]?.Value == null) return;
 
-                // Check if clicked column is ThaoTac
-                if (e.ColumnIndex != dgvDSTS.Columns["ThaoTac"].Index)
-                    return;
+            Rectangle cellBounds = dgvDSTS.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+            if (cellBounds.IsEmpty) return;
 
-                // Validate row index
-                if (e.RowIndex >= dgvDSTS.Rows.Count)
-                    return;
+            int iconWidth = 24, iconHeight = 24, spacing = 10;
+            int totalWidth = (iconWidth * 2) + spacing;
+            int startX = cellBounds.Left + (cellBounds.Width - totalWidth) / 2;
+            int startY = cellBounds.Top + (cellBounds.Height - iconHeight) / 2;
 
-                DataGridViewRow row = dgvDSTS.Rows[e.RowIndex];
+            Rectangle editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
+            Rectangle deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
 
-                // Validate maNen cell
-                if (row?.DataGridView?.Columns["maNen"] == null) return;
-                var value = row.Cells["maNen"]?.Value;
-                if (value == null || string.IsNullOrWhiteSpace(value.ToString())) return;
+            Point clickPoint = dgvDSTS.PointToClient(Cursor.Position);
 
-
-                // Get cell bounds
-                Rectangle cellBounds = dgvDSTS.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
-
-                if (cellBounds.IsEmpty || cellBounds.Width == 0 || cellBounds.Height == 0)
-                    return;
-
-                // Calculate icon positions
-                int iconWidth = 24;
-                int iconHeight = 24;
-                int spacing = 10;
-                int totalWidth = (iconWidth * 2) + spacing;
-
-                int startX = cellBounds.Left + (cellBounds.Width - totalWidth) / 2;
-                int startY = cellBounds.Top + (cellBounds.Height - iconHeight) / 2;
-
-                Rectangle editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
-                Rectangle deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
-
-                // Get click point
-                Point clickPoint = dgvDSTS.PointToClient(Cursor.Position);
-
-                // Check which icon was clicked
-                if (editRect.Contains(clickPoint))
-                {
-                    HandleEdit(row);
-                }
-                else if (deleteRect.Contains(clickPoint))
-                {
-                    HandleDelete(row);
-                }
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                MessageBox.Show($"Lỗi index: {ex.Message}\n\nRow: {e.RowIndex}, Col: {e.ColumnIndex}",
-                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi không xác định: {ex.Message}",
-                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            if (editRect.Contains(clickPoint)) HandleEdit(row);
+            else if (deleteRect.Contains(clickPoint)) HandleDelete(row);
         }
-
-
         #endregion
 
         #region CRUD Operations
@@ -471,45 +436,34 @@ namespace GUI.Forms
                 return;
             }
 
-            // Lấy dữ liệu từ dòng được chọn
-            string maNen = row.Cells["maNen"].Value?.ToString();
-            string tenNenmau = row.Cells["tenNenMau"].Value?.ToString();
-            string moTa = row.Cells["moTa"].Value?.ToString();
+            NenMau nmSource = row.DataBoundItem as NenMau;
 
-            // Tạo đối tượng NenMau với đầy đủ thông tin
-            NenMau nm = new NenMau
+            if (nmSource == null)
             {
-                maNen = maNen,
-                tenNenMau = tenNenmau,
-                moTa = moTa
-            };
+                MessageBox.Show("Không thể lấy thông tin nền mẫu!", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            // Khởi tạo form sửa
             ThemNenMau1 frmSua = new ThemNenMau1();
             frmSua.isEditMode = true;
-            frmSua.NenMauHienTai = nm;  // Truyền dữ liệu vào form
+            frmSua.NenMauHienTai = nmSource;
 
             currentOpenForm = frmSua;
-
-            // Căn giữa form trên parent
             CenterFormOnParent(frmSua);
 
-            // Khi form đóng thì reset
             frmSua.FormClosed += (s, ev) => { currentOpenForm = null; };
+            frmSua.SuccessfullyUpdated += (s, ev) => taiDanhSachNenMau();
 
-            // Khi form sửa thành công, load lại danh sách
-            frmSua.SuccessfullyUpdated += (s, ev) => RefreshDanhSachNenMau();
-
-            // Hiển thị form
             frmSua.Show(this.FindForm());
-
         }
 
         private void HandleDelete(DataGridViewRow row)
         {
-            string maNen = row.Cells["maNen"].Value.ToString();
-            string tenNenMau = row.Cells["tenNenMau"].Value.ToString();
+            string maNen = row.Cells["maNen"].Value?.ToString();
+            string tenNenMau = row.Cells["tenNenMau"].Value?.ToString();
 
+            if (string.IsNullOrEmpty(maNen)) return;
 
             DialogResult result = MessageBox.Show(
                 $"Bạn có chắc chắn muốn xóa nền mẫu '{tenNenMau}' (Mã: {maNen}) không?",
@@ -522,17 +476,20 @@ namespace GUI.Forms
             {
                 try
                 {
-                    NenMauBLL nvBLL = new NenMauBLL();
-                    nvBLL.xoaNenMau(maNen);
+                    NenMauBLL bll = new NenMauBLL();
+                    bll.xoaNenMau(maNen);
 
-                    MessageBox.Show("Xóa nền mẫu thành công !", "Thông báo",
+                    MessageBox.Show("Xóa nền mẫu thành công!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    RefreshDanhSachNenMau();
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        taiDanhSachNenMau();
+                    }));
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Có lỗi xảy ra khi xóa nền mẫu : " + ex.Message,
+                    MessageBox.Show($"Có lỗi xảy ra khi xóa nền mẫu: {ex.Message}",
                         "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -557,7 +514,11 @@ namespace GUI.Forms
                 isPlaceholder = true;
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
-                dgvDSTS.DataSource = dsNenmau;
+
+                // Reset về phân trang
+                trangHientai = 1;
+                tongSoBanGhi = 0;
+                taiDanhSachNenMau();
                 lastSearchKeyword = "";
             }
         }
@@ -578,7 +539,11 @@ namespace GUI.Forms
             else if (e.KeyCode == Keys.Escape)
             {
                 searchtextbox.Clear();
-                dgvDSTS.DataSource = dsNenmau;
+
+                // Reset về phân trang
+                trangHientai = 1;
+                tongSoBanGhi = 0;
+                taiDanhSachNenMau();
                 lastSearchKeyword = "";
             }
         }
@@ -600,20 +565,42 @@ namespace GUI.Forms
 
             if (string.IsNullOrEmpty(keyword))
             {
-                dgvDSTS.DataSource = dsNenmau;
+                // Reset về phân trang
+                trangHientai = 1;
+                tongSoBanGhi = 0;
+                taiDanhSachNenMau();
                 return;
             }
 
-            var filtered = dsNenmau
-                .Where(ts =>
-                    (ts.maNen ?? "").ToLower().Contains(keyword) ||
-                    (ts.tenNenMau ?? "").ToLower().Contains(keyword) ||
-                    (ts.moTa ?? "").ToLower().Contains(keyword)
+            // ✅ TÌM KIẾM TRÊN TOÀN BỘ DATABASE
+            try
+            {
+                NenMauBLL bll = new NenMauBLL();
+                var allData = bll.layDSNenMau(); // Lấy tất cả nền mẫu
 
-                )
-                .ToList();
+                var filtered = allData
+                    .Where(nm =>
+                        (nm.maNen ?? "").ToLower().Contains(keyword) ||
+                        (nm.tenNenMau ?? "").ToLower().Contains(keyword) ||
+                        (nm.moTa ?? "").ToLower().Contains(keyword)
+                    )
+                    .ToList();
 
-            dgvDSTS.DataSource = new BindingList<NenMau>(filtered);
+                dgvDSTS.DataSource = new BindingList<NenMau>(filtered);
+
+                // Hiển thị số kết quả
+                if (soTrang != null)
+                    soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+
+                // Disable nút phân trang khi search
+                if (btnTruoc != null) btnTruoc.Enabled = false;
+                if (btnSau != null) btnSau.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi tìm kiếm: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         #endregion
 
@@ -661,7 +648,49 @@ namespace GUI.Forms
         }
         #endregion
 
+        #region Pagination Events
+        private void btnTruoc_Click(object sender, EventArgs e)
+        {
+            if (trangHientai > 1)
+            {
+                trangHientai--;
+                taiTrangNenMau();
+            }
+        }
+
+        private void btnSau_Click(object sender, EventArgs e)
+        {
+            if (trangHientai < tongSoTrang)
+            {
+                trangHientai++;
+                taiTrangNenMau();
+            }
+        }
+        #endregion
+
         #region Button Events
+        private void btnThemuser_Click_1(object sender, EventArgs e)
+        {
+            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
+            {
+                currentOpenForm.BringToFront();
+                currentOpenForm.Focus();
+                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            ThemNenMau1 themNenMau1 = new ThemNenMau1();
+            currentOpenForm = themNenMau1;
+            CenterFormOnParent(themNenMau1);
+
+            themNenMau1.FormClosed += (s, ev) => { currentOpenForm = null; };
+
+            if (themNenMau1.ShowDialog(this.FindForm()) == DialogResult.OK)
+            {
+                taiDanhSachNenMau();
+            }
+        }
 
         private void ExportToPDF()
         {
@@ -692,26 +721,7 @@ namespace GUI.Forms
 
         private void dgvDSKH_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Legacy method - kept for compatibility
-        }
-        #endregion
-
-        private void btnThemuser_Click_1(object sender, EventArgs e)
-        {
-            ThemNenMau1 themNenMau1 = new ThemNenMau1();
-            themNenMau1.StartPosition = FormStartPosition.CenterParent;
-            var result = themNenMau1.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                RefreshDanhSachNenMau();
-            }
-        }
-        private void RefreshDanhSachNenMau()
-        {
-            NenMauBLL tsBLL = new NenMauBLL();
-            dsNenmau.Clear();
-            foreach (var nm in tsBLL.layDSNenMau())
-                dsNenmau.Add(nm);
+            // Legacy method
         }
 
         private void dgvDSTS_Paint(object sender, PaintEventArgs e)
@@ -736,5 +746,6 @@ namespace GUI.Forms
                 GraphicsUnit.Pixel,
                 attributes);
         }
+        #endregion
     }
 }

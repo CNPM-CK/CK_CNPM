@@ -31,6 +31,11 @@ namespace BLL
             return dal.layDanhSachNenMau();
         }
 
+        public List<NenMau> layDanhSachNenMau_PhanTrang(int pageNumber, int pageSize, string keyword = "")
+        {
+            return dal.layDanhSachNenMau_PhanTrang(pageNumber, pageSize, keyword);
+        }
+
         public bool suaNenMau(string maNen, string moTa)
         {
             return dal.suaNenMau(maNen, moTa);
@@ -46,6 +51,11 @@ namespace BLL
             {
                 throw new Exception("Có lỗi xảy ra khi xóa nhân viên: " + ex.Message);
             }
+        }
+
+        public int demSoLuongNenMau()
+        {
+            return dal.demSoLuongNenMau();
         }
     }
 }

@@ -657,6 +657,8 @@ INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [di
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV003', N'P002', N'Nguyễn Hoàng Sơn', CAST(N'1988-12-26' AS Date), 1, N'Xã An Đồng, Huyện An Dương, Hải Phòng', N'5555500000', N'hoangson@gmail.com', CAST(N'2025-10-12' AS Date), 1)
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV006', N'P002', N'Nguyễn Tiến Phú', CAST(N'1990-01-30' AS Date), 0, N'Xã Vạn Ninh, Huyện Quảng Ninh, Quảng Bình', N'2225552222', N'tienphu@gmail.com', CAST(N'2025-10-14' AS Date), 1)
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV007', N'P001', N'Phan Trí Tâm', CAST(N'1998-12-28' AS Date), 0, N'Thị trấn Long Phú, Huyện Long Phú, Sóc Trăng', N'4567891230', N'ptt@gmail.com', CAST(N'2025-10-15' AS Date), 1)
+INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV008', N'P001', N'ADMINISTRATOR', CAST(N'2005-09-17' AS Date), 0, N'Xã Tuyên Thạnh, Tây NInh', N'0099887766', N'admin@gmail.com', CAST(N'2025-10-15' AS Date), 1)
+
 GO
 SET IDENTITY_INSERT [dbo].[OTPVerification] ON 
 
@@ -3145,7 +3147,6 @@ END
 GO
 
 --Thêm bảng trạng thái của khách hàng :
-
 --Proc tải trạng thái khách hàng lên combobox 
 CREATE PROCEDURE dbo.sp_LayTrangThaiKhachHang
 AS
@@ -5231,7 +5232,6 @@ BEGIN
     ORDER BY tb.ngayTao DESC, tb.maTB DESC;
 END;
 
-
 ----Đánh dấu thông báo là đã đọc 
 CREATE OR ALTER PROCEDURE dbo.sp_DanhDauThongBaoDaDoc
     @maTB VARCHAR(15),
@@ -5323,7 +5323,6 @@ BEGIN
 END;
 GO
 
-
 CREATE OR ALTER PROCEDURE sp_LayDanhSachThongBaoHopDongQuaHan
 AS
 BEGIN
@@ -5392,3 +5391,113 @@ BEGIN
     WHERE nd.maNV = @maNV;
 END;
 GO
+
+create proc layTrangthaihopdong
+as
+begin
+	select * from trangThaiHD
+end
+go
+
+CREATE OR ALTER PROC sp_layDanhSachThongSo_PhanTrang
+    @PageNumber INT,
+    @PageSize INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        maTS,
+        tenTS,
+        giaTriToiDa,
+        giaTriToiThieu,
+        donVi,
+        phuongPhap
+    FROM ThongSoMoiTruong
+    ORDER BY tenTS
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+END
+GO
+
+CREATE OR ALTER PROC sp_layDanhSachNenMau_PhanTrang
+    @PageNumber INT,
+    @PageSize INT,
+    @keyword NVARCHAR(200) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        maNen,
+        tenNenMau,
+        moTa
+    FROM NenMau
+    WHERE 
+        @keyword IS NULL
+        OR @keyword = ''
+        OR maNen LIKE '%' + @keyword + '%'
+        OR tenNenMau LIKE '%' + @keyword + '%'
+        OR moTa LIKE '%' + @keyword + '%'
+    ORDER BY maNen
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+END
+GO
+
+CREATE OR ALTER PROC demSoLuongThongSo
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS TotalRecords
+    FROM ThongSoMoiTruong;
+END
+GO
+
+CREATE OR ALTER PROC demSoLuongNenMau
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS TotalRecords
+    FROM NenMau;
+END
+GO
+
+CREATE OR ALTER PROCEDURE layDanhSachHopDong_PhanTrang
+    @PageNumber INT,
+    @PageSize INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        hd.maHD,
+        hd.maKH,
+        hd.ngayKy,
+        hd.ngayKetThucHD,
+        tt.tenTT AS trangThai,
+        tsqt.tenTSQT AS tanSuatQuanTrac,
+        hd.soHD
+    FROM HopDong AS hd
+        LEFT JOIN tanSuatQT tsqt 
+            ON hd.tanSuatQuanTrac = tsqt.maTSQT
+        LEFT JOIN dbo.trangThaiHD AS tt  
+            ON tt.maTT = hd.trangThai
+    ORDER BY hd.maHD
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+END
+GO
+
+CREATE OR ALTER PROCEDURE demSoLuongHopDong
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS TotalRecords
+    FROM HopDong;
+END
+GO
+

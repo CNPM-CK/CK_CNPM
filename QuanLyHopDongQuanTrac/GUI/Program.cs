@@ -17,7 +17,7 @@ namespace GUI
             service.Start();
             ApplicationConfiguration.Initialize();
             Application.Run(new TrangGioiThieu());
-            //Application.Run(new DanhSachNhanVien());
+            //Application.Run(new TrangChu());
             //Application.Run(new DanhSachKeHoach());
 
         }

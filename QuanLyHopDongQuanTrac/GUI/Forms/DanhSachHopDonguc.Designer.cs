@@ -30,7 +30,7 @@
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachKhachHanguc));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachHopDonguc));
             panel5 = new Panel();
             panel7 = new Panel();
             panel1 = new Panel();
@@ -250,13 +250,14 @@
             pictureFilter.SizeMode = PictureBoxSizeMode.Zoom;
             pictureFilter.TabIndex = 0;
             pictureFilter.TabStop = false;
+            pictureFilter.Click += pictureFilter_Click;
             // 
-            // DanhSachKhachHanguc
+            // DanhSachHopDonguc
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(panel5);
-            Name = "DanhSachKhachHanguc";
+            Name = "DanhSachHopDonguc";
             Size = new Size(810, 472);
             panel5.ResumeLayout(false);
             panel7.ResumeLayout(false);

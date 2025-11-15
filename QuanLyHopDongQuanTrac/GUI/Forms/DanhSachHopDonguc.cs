@@ -41,6 +41,12 @@ namespace GUI.Forms
         private Rectangle editRect;
         private Rectangle deleteRect;
 
+        // Phân trang
+        int currentPage = 1;
+        int pageSize = 15;
+        int totalRecords = 0;
+        int totalPages = 0;
+
         [DllImport("gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern IntPtr CreateRoundRectRgn(
             int nLeftRect,
@@ -57,8 +63,6 @@ namespace GUI.Forms
         {
             InitializeComponent();
             this.DoubleBuffered = true;
-
-            // Load dữ liệu khi UserControl được khởi tạo
             this.Load += DanhSachKhachHanguc_Load;
         }
         #endregion
@@ -111,8 +115,8 @@ namespace GUI.Forms
                 new DataGridViewTextBoxColumn { DataPropertyName = "trangThai", HeaderText = "Trạng thái", Name = "trangThai" },
                 new DataGridViewTextBoxColumn { DataPropertyName = "tanSuatQuanTrac", HeaderText = "Tần suất quan trắc", Name = "tanSuatQuanTrac" },
                 new DataGridViewTextBoxColumn { DataPropertyName = "soHD", HeaderText = "Số hợp đồng", Name = "soHD" }
-
             });
+
             if (_isPhongKinhDoanh)
             {
                 DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
@@ -123,16 +127,19 @@ namespace GUI.Forms
                 };
                 dgvdanhsachHopDong.Columns.Add(thaoTacCol);
             }
+
             dgvdanhsachHopDong.CellFormatting += dgvdanhsachHopDong_CellFormatting;
-            dgvdanhsachHopDong.CellPainting += dgvdanhsachHopDong_CellPainting;
-            dgvdanhsachHopDong.CellClick += dgvdanhsachHopDong_CellClick;
+
+            if (_isPhongKinhDoanh)
+            {
+                dgvdanhsachHopDong.CellPainting += dgvdanhsachHopDong_CellPainting;
+                dgvdanhsachHopDong.CellClick += dgvdanhsachHopDong_CellClick;
+            }
+
             dgvdanhsachHopDong.Paint += dgvdanhsachHopDong_Paint;
 
-            dgvdanhsachHopDong.DataSource = dsHopDong;
-            dgvdanhsachHopDong.ReadOnly = true;
-            //dgvdanhsachHopDong.Columns["ThaoTac"].ReadOnly = false;
-
-            taiTrangKhachHang();
+            // Load dữ liệu phân trang
+            lamMoiDanhSachKhachHang();
         }
 
         private void lamMoiDanhSachKhachHang()
@@ -146,65 +153,69 @@ namespace GUI.Forms
         private void dgvdanhsachHopDong_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (!_isPhongKinhDoanh) return;
-            if (e.RowIndex >= 0 && e.ColumnIndex == dgvdanhsachHopDong.Columns["ThaoTac"].Index)
-            {
-                e.PaintBackground(e.ClipBounds, true);
+            if (e.RowIndex < 0) return;
+            if (e.ColumnIndex != dgvdanhsachHopDong.Columns["ThaoTac"].Index) return;
 
-                int iconWidth = 24;
-                int iconHeight = 24;
-                int spacing = 10;
-                int totalWidth = (iconWidth * 2) + spacing;
+            e.PaintBackground(e.ClipBounds, true);
 
-                int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
-                int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
+            int iconWidth = 24, iconHeight = 24, spacing = 10;
+            int totalWidth = (iconWidth * 2) + spacing;
+            int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
+            int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
 
-                editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
+            editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
+            if (Properties.Resources.edit != null)
                 e.Graphics.DrawImage(Properties.Resources.edit, editRect);
 
-                deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
+            deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
+            if (Properties.Resources.trash_can != null)
                 e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
 
-                e.Handled = true;
-            }
+            e.Handled = true;
         }
 
         private void dgvdanhsachHopDong_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (!_isPhongKinhDoanh) return;
-            if (e.RowIndex < 0 || e.ColumnIndex != dgvdanhsachHopDong.Columns["ThaoTac"].Index)
-                return;
+            if (e.RowIndex < 0 || e.RowIndex >= dgvdanhsachHopDong.Rows.Count) return;
+            if (e.ColumnIndex != dgvdanhsachHopDong.Columns["ThaoTac"].Index) return;
 
             var clickPoint = dgvdanhsachHopDong.PointToClient(Cursor.Position);
             DataGridViewRow row = dgvdanhsachHopDong.Rows[e.RowIndex];
 
-            if (row.Cells["maHD"].Value == null) return;
+            if (row?.Cells["maHD"]?.Value == null) return;
 
-            if (editRect.Contains(clickPoint))
-            {
-                HandleEdit(row);
-            }
-            else if (deleteRect.Contains(clickPoint))
-            {
-                HandleDelete(row);
-            }
+            if (editRect.Contains(clickPoint)) HandleEdit(row);
+            else if (deleteRect.Contains(clickPoint)) HandleDelete(row);
         }
 
         private void HandleEdit(DataGridViewRow row)
         {
-            HopDongDTO hd = new HopDongDTO
+            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
             {
-                maHD = row.Cells["maHD"].Value.ToString(),
-                maKH = row.Cells["maKH"].Value?.ToString(),
-                ngayKy = row.Cells["ngayKy"].Value != null ? Convert.ToDateTime(row.Cells["ngayKy"].Value) : DateTime.MinValue,
-                ngayKetThucHD = row.Cells["ngayKetThucHD"].Value != null ? Convert.ToDateTime(row.Cells["ngayKetThucHD"].Value) : DateTime.MinValue,
-                trangThai = row.Cells["trangThai"].Value?.ToString(),
-                tanSuatQuanTrac = row.Cells["tanSuatQuanTrac"].Value?.ToString(),
-                soHD = row.Cells["soHD"].Value?.ToString(),
-            };
+                currentOpenForm.BringToFront();
+                currentOpenForm.Focus();
+                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
-            SuaHopDongForm frmSua = new SuaHopDongForm(hd);
+            HopDongDTO hdSource = row.DataBoundItem as HopDongDTO;
+
+            if (hdSource == null)
+            {
+                MessageBox.Show("Không thể lấy thông tin hợp đồng!", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            SuaHopDongForm frmSua = new SuaHopDongForm(hdSource);
+            currentOpenForm = frmSua;
             CenterFormOnParent(frmSua);
+
+            frmSua.FormClosed += (s, ev) => { currentOpenForm = null; };
             frmSua.SuccesfullyUpdated += (s, ev) => lamMoiDanhSachKhachHang();
+
             frmSua.Show(this);
         }
 
@@ -219,7 +230,9 @@ namespace GUI.Forms
                 return;
             }
 
-            string maHD = row.Cells["maHD"].Value.ToString();
+            string maHD = row.Cells["maHD"].Value?.ToString();
+
+            if (string.IsNullOrEmpty(maHD)) return;
 
             DialogResult result = MessageBox.Show(
                 $"Bạn có chắc chắn muốn xóa hợp đồng (Mã: {maHD}) không?",
@@ -230,27 +243,30 @@ namespace GUI.Forms
 
             if (result == DialogResult.Yes)
             {
-                //try
-                //{
-                //    KhachHangBLL khBLL = new KhachHangBLL();
-                //    khBLL.xoaKhachHang(maKH);
+                try
+                {
+                    HopDongBLL hdBLL = new HopDongBLL();
+                    // Thêm method xóa trong HopDongBLL nếu chưa có
+                    // hdBLL.xoaHopDong(maHD);
 
-                //    MessageBox.Show("Đã xóa khách hàng thành công!", "Thông báo",
-                //        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Đã xóa hợp đồng thành công!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                //    lamMoiDanhSachKhachHang();
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show("Có lỗi xảy ra khi xóa khách hàng: " + ex.Message,
-                //        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //}
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        lamMoiDanhSachKhachHang();
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Có lỗi xảy ra khi xóa hợp đồng: {ex.Message}",
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
         private void CenterFormOnParent(Form childForm)
         {
-            // Lấy parent form của UserControl
             Form parentForm = this.FindForm();
             if (parentForm != null)
             {
@@ -291,6 +307,7 @@ namespace GUI.Forms
 
         private void dgvdanhsachHopDong_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+            // Custom formatting nếu cần
         }
         #endregion
 
@@ -323,7 +340,6 @@ namespace GUI.Forms
         #region Button Initialization
         private void InitializeButtonIcons()
         {
-
             if (btnThemuser.Image != null)
             {
                 btnThemuser.Image = new Bitmap(btnThemuser.Image, new Size(24, 24));
@@ -361,8 +377,6 @@ namespace GUI.Forms
         private void CalculateLayout()
         {
             int formWidth = this.Width;
-
-            // Kiểm tra xem parent form có đang maximized không
             Form parentForm = this.FindForm();
             bool isMaximized = parentForm != null && parentForm.WindowState == FormWindowState.Maximized;
 
@@ -375,7 +389,7 @@ namespace GUI.Forms
             BoGocButton(btnXuatfile, btnRadius);
             BoGocButton(btnThemuser, btnRadius);
 
-            Control btnParent = btnXuatfile.Parent; // panel6
+            Control btnParent = btnXuatfile.Parent;
 
             if (btnParent != null && btnParent != this)
             {
@@ -389,7 +403,6 @@ namespace GUI.Forms
                 btnThemuser.Left = btnXuatfile.Left - btnWidth - SPACING;
             }
 
-            // Đặt vị trí dọc của button trong panel6
             int topPosition = 10;
             btnXuatfile.Top = topPosition;
             btnThemuser.Top = topPosition;
@@ -514,7 +527,11 @@ namespace GUI.Forms
                 isPlaceholder = true;
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
-                dgvdanhsachHopDong.DataSource = dsHopDong;
+
+                // Reset về phân trang
+                currentPage = 1;
+                totalRecords = 0;
+                lamMoiDanhSachKhachHang();
                 lastSearchKeyword = "";
             }
         }
@@ -535,19 +552,21 @@ namespace GUI.Forms
             else if (e.KeyCode == Keys.Escape)
             {
                 searchtextbox.Clear();
-                dgvdanhsachHopDong.DataSource = dsHopDong;
+
+                // Reset về phân trang
+                currentPage = 1;
+                totalRecords = 0;
+                lamMoiDanhSachKhachHang();
                 lastSearchKeyword = "";
             }
         }
 
         private void searchtextbox_TextChanged_1(object sender, EventArgs e)
         {
-            if (isPlaceholder)
-                return;
+            if (isPlaceholder) return;
 
             string currentKeyword = searchtextbox.Text.Trim().ToLower();
-            if (currentKeyword == lastSearchKeyword)
-                return;
+            if (currentKeyword == lastSearchKeyword) return;
 
             lastSearchKeyword = currentKeyword;
             PerformSearch();
@@ -555,25 +574,94 @@ namespace GUI.Forms
 
         private void PerformSearch()
         {
-            //string keyword = searchtextbox.Text?.Trim().ToLower() ?? "";
-            //if (string.IsNullOrEmpty(keyword))
-            //{
-            //    dgvdanhsachHopDong.DataSource = dsHopDong;
-            //    return;
-            //}
+            string keyword = searchtextbox.Text.Trim().ToLower();
 
-            //var filtered = dsHopDong
-            //    .Where(kh =>
-            //        (kh.tenDoanhNghiep ?? "").ToLower().Contains(keyword) ||
-            //        (kh.nguoiDaiDien ?? "").ToLower().Contains(keyword) ||
-            //        (kh.kyHieuDN ?? "").ToLower().Contains(keyword) ||
-            //        (kh.soDienThoaiKH ?? "").Contains(keyword) ||
-            //        (kh.diaChi ?? "").ToLower().Contains(keyword) ||
-            //        kh.maKH.ToString().ToLower().Contains(keyword)
-            //    )
-            //    .ToList();
+            if (string.IsNullOrEmpty(keyword))
+            {
+                // Reset về phân trang
+                currentPage = 1;
+                totalRecords = 0;
+                lamMoiDanhSachKhachHang();
+                return;
+            }
 
-            //dgvdanhsachHopDong.DataSource = new BindingList<HopDongDTO>(filtered);
+            // ✅ TÌM KIẾM TRÊN TOÀN BỘ DATABASE
+            try
+            {
+                HopDongBLL bll = new HopDongBLL();
+                var allData = bll.LayDanhSachHD(); // Lấy tất cả hợp đồng
+
+                var filtered = allData
+                    .Where(hd =>
+                        (hd.maHD ?? "").ToLower().Contains(keyword) ||
+                        (hd.maKH ?? "").ToLower().Contains(keyword) ||
+                        (hd.trangThai ?? "").ToLower().Contains(keyword) ||
+                        (hd.tanSuatQuanTrac ?? "").ToLower().Contains(keyword) ||
+                        (hd.soHD ?? "").ToLower().Contains(keyword) ||
+                        hd.ngayKy.ToString("dd/MM/yyyy").Contains(keyword) ||
+                        hd.ngayKetThucHD.ToString("dd/MM/yyyy").Contains(keyword)
+                    )
+                    .ToList();
+
+                dgvdanhsachHopDong.DataSource = new BindingList<HopDongDTO>(filtered);
+
+                // Hiển thị số kết quả
+                if (soTrang != null)
+                    soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+
+                // Disable nút phân trang khi search
+                if (btnTruoc != null) btnTruoc.Enabled = false;
+                if (btnSau != null) btnSau.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi tìm kiếm: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        #endregion
+
+        #region Pagination
+        private void taiTrangKhachHang()
+        {
+            HopDongBLL hdBLL = new HopDongBLL();
+
+            // ✅ Tính tổng số trang
+            if (totalRecords == 0)
+            {
+                totalRecords = hdBLL.demSoLuongHopDong(); // Cần thêm method này vào HopDongBLL
+                totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+            }
+
+            // ✅ Lấy dữ liệu theo trang (CẦN THÊM METHOD PHÂN TRANG VÀO HopDongBLL)
+            var data = hdBLL.layDanhSachHopDong_PhanTrang(currentPage, pageSize);
+            dsHopDong = new BindingList<HopDongDTO>(data);
+            dgvdanhsachHopDong.DataSource = dsHopDong;
+
+            // ✅ Cập nhật label trang
+            soTrang.Text = $"Trang {currentPage}/{totalPages}";
+
+            // ✅ Disable nút nếu đang ở biên
+            btnTruoc.Enabled = currentPage > 1;
+            btnSau.Enabled = currentPage < totalPages;
+        }
+
+        private void btnTruoc_Click(object sender, EventArgs e)
+        {
+            if (currentPage > 1)
+            {
+                currentPage--;
+                taiTrangKhachHang();
+            }
+        }
+
+        private void btnSau_Click(object sender, EventArgs e)
+        {
+            if (currentPage < totalPages)
+            {
+                currentPage++;
+                taiTrangKhachHang();
+            }
         }
         #endregion
 
@@ -591,77 +679,75 @@ namespace GUI.Forms
 
             ThemHopDongForm frmThem = new ThemHopDongForm();
             currentOpenForm = frmThem;
-
             CenterFormOnParent(frmThem);
 
-            frmThem.FormClosed += (s, ev) =>
-            {
-                currentOpenForm = null;
-            };
-
+            frmThem.FormClosed += (s, ev) => { currentOpenForm = null; };
             frmThem.SuccesfullyUpdated += (s, ev) => lamMoiDanhSachKhachHang();
+
             frmThem.Show();
         }
         #endregion
 
+        #region Filter
+        private void pictureFilter_Click(object sender, EventArgs e)
+        {
+            LocHopDongvaDQT filterForm = new LocHopDongvaDQT();
+
+            if (filterForm.ShowDialog() == DialogResult.OK)
+            {
+                ApplyFilter(
+                    filterForm.SelectedNgayBatDau,
+                    filterForm.SelectedNgayKetThuc,
+                    filterForm.SelectedTrangThai
+                );
+            }
+        }
+
+        private void ApplyFilter(string ngayBD, string ngayKT, string trangThai)
+        {
+            if (dsHopDong == null || dsHopDong.Count == 0)
+            {
+                return;
+            }
+
+            var query = dsHopDong.AsEnumerable();
+
+            // Lọc trạng thái
+            if (!string.IsNullOrEmpty(trangThai))
+                query = query.Where(hd => hd.trangThai == trangThai);
+
+            // Lọc ngày bắt đầu
+            if (!string.IsNullOrEmpty(ngayBD))
+            {
+                DateTime dateBD = DateTime.Parse(ngayBD);
+                query = query.Where(hd => hd.ngayKy >= dateBD);
+            }
+
+            // Lọc ngày kết thúc
+            if (!string.IsNullOrEmpty(ngayKT))
+            {
+                DateTime dateKT = DateTime.Parse(ngayKT);
+                query = query.Where(hd => hd.ngayKetThucHD <= dateKT);
+            }
+
+            var filtered = query.ToList();
+            dgvdanhsachHopDong.DataSource = new BindingList<HopDongDTO>(filtered);
+
+            // Hiển thị số kết quả lọc
+            if (soTrang != null)
+                soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+
+            // Disable nút phân trang khi lọc
+            if (btnTruoc != null) btnTruoc.Enabled = false;
+            if (btnSau != null) btnSau.Enabled = false;
+        }
+        #endregion
+
+        #region Unused Events
         private void panel6_Paint(object sender, PaintEventArgs e) { }
-
         private void dgvdanhsachHopDong_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
-
-        int currentPage = 1;
-        int pageSize = 15;
-        int totalRecords = 0;
-        int totalPages = 0;
-        private void taiTrangKhachHang()
-        {
-            var bll = new KhachHangBLL();
-
-            // 🔹 Tính tổng số trang (chỉ cần 1 lần khi load form)
-            if (totalRecords == 0)
-            {
-                totalRecords = bll.demTongSoKhachHang();
-                totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-            }
-
-            HopDongBLL hdBLL = new HopDongBLL();
-            var data = hdBLL.LayDanhSachHD();
-            
-            dsHopDong = new BindingList<HopDongDTO>(data);
-
-            dgvdanhsachHopDong.DataSource = dsHopDong;
-            //dgvdanhsachHopDong.DataSource = data;
-
-            // 🔹 Cập nhật label trang
-            soTrang.Text = $"Trang {currentPage}/{totalPages}";
-
-            // 🔹 Disable nút nếu đang ở biên
-            btnTruoc.Enabled = currentPage > 1;
-            btnSau.Enabled = currentPage < totalPages;
-        }
-
-        private void btnTruoc_Click(object sender, EventArgs e)
-        {
-            if (currentPage > 1)
-            {
-                currentPage--;
-                taiTrangKhachHang();
-            }
-        }
-
-        private void btnSau_Click(object sender, EventArgs e)
-        {
-            currentPage++;
-            taiTrangKhachHang();
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void picturemicro_Click(object sender, EventArgs e)
-        {
-
-        }
+        private void panel1_Paint(object sender, PaintEventArgs e) { }
+        private void picturemicro_Click(object sender, EventArgs e) { }
+        #endregion
     }
 }

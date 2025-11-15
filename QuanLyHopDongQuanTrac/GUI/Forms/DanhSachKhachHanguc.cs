@@ -678,5 +678,26 @@ namespace GUI.Forms
         {
 
         }
+
+        private void pictureFilter_Click(object sender, EventArgs e)
+        {
+            LocTrangThaiKhachHang filter = new LocTrangThaiKhachHang();
+            if (filter.ShowDialog() == DialogResult.OK)
+            {
+                apDungBoLoc(filter.SelectedTrangThai);
+            }
+        }
+        private void apDungBoLoc(string trangThai)
+        {
+            // Bắt đầu từ danh sách đầy đủ
+            var result = dsKhachhang.AsEnumerable();
+
+            // 3) Lọc trạng thái
+            if (!string.IsNullOrEmpty(trangThai))
+                result = result.Where(nv => nv.trangThai.ToString() == trangThai);
+
+            // Kết quả cuối
+            dgvDanhsachnhanvien.DataSource = result.ToList();
+        }
     }
 }

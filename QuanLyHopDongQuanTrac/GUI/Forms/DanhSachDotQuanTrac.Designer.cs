@@ -245,6 +245,7 @@
             pictureFilter.SizeMode = PictureBoxSizeMode.Zoom;
             pictureFilter.TabIndex = 0;
             pictureFilter.TabStop = false;
+            pictureFilter.Click += pictureFilter_Click;
             // 
             // DanhSachDotQuanTrac
             // 

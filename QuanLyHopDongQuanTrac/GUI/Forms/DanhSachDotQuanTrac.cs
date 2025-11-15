@@ -117,7 +117,7 @@ namespace GUI.Forms
                     Name = "maDot",
                     Visible = false
                 },
-                new DataGridViewTextBoxColumn 
+                new DataGridViewTextBoxColumn
                 {
                     DataPropertyName = "TenKhachHang",
                     HeaderText = "KHÁCH HÀNG",
@@ -733,7 +733,7 @@ namespace GUI.Forms
                 if (kh.ShowDialog(this) == DialogResult.OK)
                     LoadData();
                 else
-                    bll.xoaDotQuanTrac(maDotHienTai); 
+                    bll.xoaDotQuanTrac(maDotHienTai);
             }
         }
 
@@ -831,5 +831,43 @@ namespace GUI.Forms
                 GraphicsUnit.Pixel,
                 attributes);
         }
+
+        private void pictureFilter_Click(object sender, EventArgs e)
+        {
+            LocHopDongvaDQT frmFilter = new LocHopDongvaDQT();
+            frmFilter.Mode = LocHopDongvaDQT.FilterMode.DotQuanTrac;
+
+            if (frmFilter.ShowDialog() == DialogResult.OK)
+            {
+                apDungBoLoc(
+                    frmFilter.SelectedNgayBatDau,
+                    frmFilter.SelectedNgayKetThuc,
+                    frmFilter.SelectedTrangThai
+                );
+            }
+        }
+
+        private void apDungBoLoc(string ngayBD, string ngayKT, string trangThai)
+        {
+            var query = dsDotQuanTrac.AsEnumerable();
+
+            if (!string.IsNullOrEmpty(trangThai))
+                query = query.Where(d => d.TrangThai == trangThai);
+
+            if (!string.IsNullOrEmpty(ngayBD))
+            {
+                DateTime dateBD = DateTime.Parse(ngayBD);
+                query = query.Where(d => d.NgayBatDau >= dateBD);
+            }
+
+            if (!string.IsNullOrEmpty(ngayKT))
+            {
+                DateTime dateKT = DateTime.Parse(ngayKT);
+                query = query.Where(d => d.NgayDuKien <= dateKT);
+            }
+
+            dgvDsdotquantrac.DataSource = query.ToList();
+        }
+
     }
 }
