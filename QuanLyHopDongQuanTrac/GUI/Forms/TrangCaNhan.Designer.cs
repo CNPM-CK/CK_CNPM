@@ -238,6 +238,7 @@
             // 
             // txtEmail
             // 
+            txtEmail.Enabled = false;
             txtEmail.Location = new Point(3, 3);
             txtEmail.Multiline = true;
             txtEmail.Name = "txtEmail";

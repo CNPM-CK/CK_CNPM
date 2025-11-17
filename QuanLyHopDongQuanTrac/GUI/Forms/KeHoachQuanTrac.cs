@@ -313,38 +313,38 @@ namespace GUI.Forms
 
         private void taiDanhSachNenMau()
         {
-            //taiNenMau = true;
-            //try
-            //{
-            //    List<NenMau> dsNenmau = bllNenMau.layDSNenMau();
+            taiNenMau = true;
+            try
+            {
+                List<NenMau> dsNenmau = bllNenMau.layDSNenMau();
 
-            //    if (dsNenmau == null || dsNenmau.Count == 0)
-            //    {
-            //        MessageBox.Show("Không có hợp đồng nào để lập kế hoạch quan trắc!\n" +
-            //            "Vui lòng tạo hợp đồng trước.",
-            //            "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (dsNenmau == null || dsNenmau.Count == 0)
+                {
+                    MessageBox.Show("Không có hợp đồng nào để lập kế hoạch quan trắc!\n" +
+                        "Vui lòng tạo hợp đồng trước.",
+                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            //        cboHopdong.Enabled = false;
-            //        btnLuu.Enabled = false;
-            //        btnThemnenmau.Enabled = false;
-            //        return;
-            //    }
+                    cboHopdong.Enabled = false;
+                    btnLuu.Enabled = false;
+                    btnThemnenmau.Enabled = false;
+                    return;
+                }
 
-            //    cboNenmau.DataSource = dsNenmau;
-            //    cboNenmau.DropDownStyle = ComboBoxStyle.DropDownList;
-            //    cboNenmau.DisplayMember = "DisplayText";
-            //    cboNenmau.ValueMember = "tenNenMau";
-            //    cboNenmau.SelectedIndex = -1;
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Lỗi khi load danh sách nền mẫu :\n" + ex.Message,
-            //        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-            //finally
-            //{
-            //    taiNenMau = false;
-            //}
+                cboNenmau.DataSource = dsNenmau;
+                cboNenmau.DropDownStyle = ComboBoxStyle.DropDownList;
+                cboNenmau.DisplayMember = "DisplayText";
+                cboNenmau.ValueMember = "tenNenMau";
+                cboNenmau.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi load danh sách nền mẫu :\n" + ex.Message,
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                taiNenMau = false;
+            }
         }
 
 

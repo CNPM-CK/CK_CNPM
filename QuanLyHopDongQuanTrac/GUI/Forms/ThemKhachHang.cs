@@ -227,7 +227,7 @@ namespace GUI.Forms
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(textBoxTenDD.Text))
+            if (string.IsNullOrWhiteSpace(textBoxKHDN.Text))
             {
                 MessageBox.Show("Vui lòng nhập kí hiệu doanh nghiệp !", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 textBoxKHDN.Focus();
@@ -248,21 +248,21 @@ namespace GUI.Forms
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(txtDiachi.Text))
+            if (string.IsNullOrWhiteSpace(txtEmaildn.Text))
             {
                 MessageBox.Show("Vui lòng nhập email doanh nghiệp  !", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtEmaildn.Focus();
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(textBoxTenDD.Text))
+            if (string.IsNullOrWhiteSpace(txtMsthue.Text))
             {
                 MessageBox.Show("Vui lòng nhập mã số thuế !", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtMsthue.Focus();
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(textBoxTenDD.Text))
+            if (string.IsNullOrWhiteSpace(txtMaildd.Text))
             {
                 MessageBox.Show("Vui lòng nhập email người đại diện !", "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtMaildd.Focus();

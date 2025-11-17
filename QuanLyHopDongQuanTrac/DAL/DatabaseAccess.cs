@@ -28,9 +28,9 @@ namespace DAL
             //    "Encrypt=True;" +
             //    "TrustServerCertificate=False;" +
             //    "Connection Timeout=30;";
-            //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-            string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
             SqlConnection conn = new SqlConnection(connectionStr);
             return conn;
@@ -2772,5 +2772,49 @@ namespace DAL
                 }
             }
         }
+
+
+        public void kiemTraVaSinhThongBaoNhacKyHopDong()
+        {
+            using (var conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("sp_KiemTraVaSinhThongBaoNhacKyHopDong", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public DataTable layDSNhacKyHopDong()
+        {
+            using (var conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("sp_LayDSNhacKyHopDong", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    DataTable dt = new DataTable();
+                    dt.Load(cmd.ExecuteReader());
+                    return dt;
+                }
+            }
+        }
+
+        public void capNhatTrangThaiEmailNhacHD(string maTB)
+        {
+            using (var conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("sp_CapNhatTrangThaiEmail_NhacHD", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@maTB", maTB);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }

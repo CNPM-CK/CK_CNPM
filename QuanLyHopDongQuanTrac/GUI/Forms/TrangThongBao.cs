@@ -120,7 +120,7 @@ namespace GUI.Forms
             dgvdsThongbao.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvdsThongbao.EnableHeadersVisualStyles = false;
 
-            dgvdsThongbao.DefaultCellStyle.BackColor = Color.White;
+            //dgvdsThongbao.DefaultCellStyle.BackColor = Color.White;
             dgvdsThongbao.DefaultCellStyle.ForeColor = Color.Black;
             dgvdsThongbao.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151);
             dgvdsThongbao.DefaultCellStyle.SelectionForeColor = Color.Black;
@@ -193,8 +193,14 @@ namespace GUI.Forms
             // --- Sự kiện ---
             dgvdsThongbao.CellPainting += dgvdsThongbao_CellPainting;
             dgvdsThongbao.CellClick += dgvdsThongbao_CellClick;
+            dgvdsThongbao.DataBindingComplete += dgvdsThongbao_DataBindingComplete;
         }
 
+        private void dgvdsThongbao_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            // ✅ Tô màu sau khi binding hoàn tất
+            ToMauTheoTrangThai();
+        }
         private void BoGocButton(Button btn, int radius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -225,26 +231,37 @@ namespace GUI.Forms
                 {
                     // 🟢 1. Đánh dấu đã đọc trong DATABASE
                     bllThongBao.danhDauThongBaoDaDoc(maTB, maNV);
+                    System.Diagnostics.Debug.WriteLine($"🔔 Đã đánh dấu {maTB} là đã đọc");
 
-                    // ✅ 2. CẬP NHẬT NGAY TRONG DATATABLE (dtThongBao - trang hiện tại)
+                    // ✅ 2. CẬP NHẬT NGAY TRONG DATATABLE
                     DataRowView drv = row.DataBoundItem as DataRowView;
                     if (drv != null)
                     {
                         drv["trangThaiDoc"] = true;
+                        System.Diagnostics.Debug.WriteLine($"✅ Đã update dtThongBao: trangThaiDoc = {drv["trangThaiDoc"]}");
                     }
 
-                    // ✅ 3. CẬP NHẬT TRONG dtThongBaoFull (để search không bị sai)
+                    // ✅ 3. CẬP NHẬT TRONG dtThongBaoFull
                     if (dtThongBaoFull != null)
                     {
                         DataRow[] rows = dtThongBaoFull.Select($"maTB = '{maTB}'");
                         foreach (DataRow dr in rows)
                         {
                             dr["trangThaiDoc"] = true;
+                            System.Diagnostics.Debug.WriteLine($"✅ Đã update dtThongBaoFull: trangThaiDoc = {dr["trangThaiDoc"]}");
                         }
                     }
 
-                    // ✅ 4. TÔ MÀU NGAY DÒNG ĐÓ (không cần reload)
-                    row.DefaultCellStyle.BackColor = Color.FromArgb(255, 250, 200);
+                    // ✅ 4. TÔ MÀU NGAY DÒNG ĐÓ - ĐÃ ĐỌC = TRẮNG
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        // Không tô màu cột thao tác
+                        if (cell.OwningColumn.Name != "colThaoTac")
+                        {
+                            cell.Style.BackColor = Color.White;
+                        }
+                    }
+                    System.Diagnostics.Debug.WriteLine($"🎨 Đã tô màu TRẮNG cho dòng {row.Index}");
 
                     // ✅ 5. Refresh badge thông báo
                     lamMoiChuongThongBao();
@@ -652,23 +669,50 @@ namespace GUI.Forms
 
         private void ToMauTheoTrangThai()
         {
+            System.Diagnostics.Debug.WriteLine($"🎨 ToMauTheoTrangThai() - Số dòng: {dgvdsThongbao.Rows.Count}");
+
             foreach (DataGridViewRow row in dgvdsThongbao.Rows)
             {
                 try
                 {
-                    var cellValue = row.Cells["trangThaiDoc"].Value;
+                    DataRowView drv = row.DataBoundItem as DataRowView;
+                    if (drv == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"⚠️ Dòng {row.Index}: DataBoundItem null");
+                        continue;
+                    }
+
+                    if (!drv.Row.Table.Columns.Contains("trangThaiDoc"))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ DataTable không có cột 'trangThaiDoc'");
+                        continue;
+                    }
+
+                    var cellValue = drv["trangThaiDoc"];
                     bool daDoc = cellValue != null &&
                                  cellValue != DBNull.Value &&
                                  Convert.ToBoolean(cellValue);
 
-                    // ✅ ĐÃ ĐỌC = VÀNG, CHƯA ĐỌC = TRẮNG
-                    row.DefaultCellStyle.BackColor = daDoc
-                        ? Color.FromArgb(255, 250, 200)  // Vàng nhạt - ĐÃ đọc
-                        : Color.White;                    // Trắng - CHƯA đọc
+                    string maTB = drv["maTB"]?.ToString() ?? "NULL";
+                    System.Diagnostics.Debug.WriteLine($"   Dòng {row.Index} - maTB: {maTB} - trangThaiDoc: {cellValue} - daDoc: {daDoc}");
+
+                    // ✅ TÔ MÀU TẤT CẢ CÁC CELL TRONG DÒNG (trừ cột thao tác)
+                    Color mauNen = daDoc ? Color.White : Color.FromArgb(255, 250, 200);
+
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        // Không tô màu cột thao tác
+                        if (cell.OwningColumn.Name != "colThaoTac")
+                        {
+                            cell.Style.BackColor = mauNen;
+                        }
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"      → Màu: {(daDoc ? "TRẮNG (đã đọc)" : "VÀNG (chưa đọc)")}");
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Lỗi tô màu dòng {row.Index}: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"❌ Lỗi tô màu dòng {row.Index}: {ex.Message}");
                 }
             }
         }

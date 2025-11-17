@@ -236,5 +236,69 @@ namespace BLL
                 }
             }
         }
+
+        public void sinhThongBaoNhoKyHopDong()
+        {
+            dal.kiemTraVaSinhThongBaoNhacKyHopDong();
+        }
+
+        public DataTable layDanhSachNhacKyHopDong()
+        {
+            return dal.layDSNhacKyHopDong();
+        }
+
+        public void capNhatEmailDaGui_NhacHD(string maTB)
+        {
+            dal.capNhatTrangThaiEmailNhacHD(maTB);
+        }
+
+        public void guiEmailNhacHopDong(string to, string tenKH, string maHD, DateTime ngayBatDau, string tanSuat)
+        {
+            // Xác định chu kỳ
+            string chuKy = "";
+
+            if (tanSuat == "TSQT03") // Quý
+            {
+                int quy = (ngayBatDau.Month - 1) / 3 + 1;
+                chuKy = $"Quý {quy}";
+            }
+            else if (tanSuat == "TSQT02") // 6 tháng
+            {
+                chuKy = ngayBatDau.Month <= 6 ? "Kỳ 1 (6 tháng đầu năm)" : "Kỳ 2 (6 tháng cuối năm)";
+            }
+            else
+            {
+                chuKy = "chu kỳ quan trắc";
+            }
+
+            string subject = $"📢 Nhắc lịch ký hợp đồng quan trắc mới ";
+
+            string body = $@"
+<div style='font-family:Segoe UI,Arial,sans-serif; color:#333; line-height:1.6;'>
+    <h2 style='color:#00796b;'>🌿 Nhắc lịch ký hợp đồng quan trắc môi trường</h2>
+
+    <p>Kính gửi <b>{tenKH}</b>,</p>
+
+    <p>Đợt quan trắc môi trường của Quý khách trong <b>{chuKy}</b> đã hoàn tất.</p>
+
+    <p>
+        Để đảm bảo việc tuân thủ quy định về quan trắc môi trường và không bị gián đoạn 
+        trong chu kỳ tiếp theo, kính mong Quý khách vui lòng liên hệ lại với 
+        <b>Phòng Kinh Doanh</b> để tiến hành ký hợp đồng mới.
+    </p>
+
+    <p>Chúng tôi luôn sẵn sàng hỗ trợ Quý khách trong mọi thắc mắc.</p>
+
+    <p>Trân trọng,</p>
+
+    <p><b>Hệ thống Quan trắc môi trường ECOS</b></p>
+    <hr/>
+    <p style='font-size:12px;color:#777;'>Email được gửi tự động. Vui lòng không phản hồi email này.</p>
+</div>";
+
+            guiEmail(to, subject, body);
+        }
+
+
     }
 }

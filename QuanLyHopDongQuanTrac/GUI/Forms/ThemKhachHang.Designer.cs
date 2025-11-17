@@ -187,7 +187,7 @@
             panelDiachi.Controls.Add(txtDiachi);
             panelDiachi.Location = new Point(41, 35);
             panelDiachi.Name = "panelDiachi";
-            panelDiachi.Size = new Size(320, 45);
+            panelDiachi.Size = new Size(320, 54);
             panelDiachi.TabIndex = 7;
             // 
             // txtDiachi

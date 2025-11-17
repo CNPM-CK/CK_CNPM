@@ -470,11 +470,11 @@ namespace GUI.Forms
                     e.Graphics.DrawImage(Properties.Resources.edit, editRect);
                 }
 
-                deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
-                if (Properties.Resources.trash_can != null)
-                {
-                    e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
-                }
+                //deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
+                //if (Properties.Resources.trash_can != null)
+                //{
+                //    e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
+                //}
 
                 e.Handled = true;
             }
@@ -503,8 +503,8 @@ namespace GUI.Forms
 
             if (editRect.Contains(clickPoint))
                 HandleEdit(row);
-            else if (deleteRect.Contains(clickPoint))
-                HandleDelete(row);
+            //else if (deleteRect.Contains(clickPoint))
+            //    HandleDelete(row);
         }
         #endregion
 

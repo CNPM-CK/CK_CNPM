@@ -49,17 +49,34 @@ namespace GUI.Service
                             Console.WriteLine($"✔ Đã gửi email cảnh báo đợt {maDot}");
                         }
 
-
-                        // ======================================================
-                        // 2) XỬ LÝ HỢP ĐỒNG QUÁ HẠN
-                        // ======================================================
                         Console.WriteLine("→ Kiểm tra hợp đồng quá hạn...");
                         bll.kiemTraHopDongQuaHan();
                         Console.WriteLine("✔ Kiểm tra hợp đồng quá hạn xong.");
-
-
-
                         Console.WriteLine($"[{DateTime.Now}] ✓ Chu kỳ kiểm tra hoàn tất.");
+                        Console.WriteLine("→ Kiểm tra nhắc ký hợp đồng...");
+                        bll.sinhThongBaoNhoKyHopDong();
+
+                        DataTable dsNhacHD = bll.layDanhSachNhacKyHopDong();
+
+                        foreach (DataRow row in dsNhacHD.Rows)
+                        {
+                            string email = row["email"].ToString();
+                            string tenKH = row["tenDoanhNghiep"].ToString();
+                            DateTime ngayBatDau = Convert.ToDateTime(row["ngayBatDau"]);
+                            string tanSuat = row["tanSuatQuanTrac"].ToString();
+                            string maHD = row["maHD"].ToString();
+                            string maTB = row["maTB"].ToString();
+
+                            bll.guiEmailNhacHopDong(email, tenKH, maHD, ngayBatDau, tanSuat);
+
+                            bll.capNhatEmailDaGui_NhacHD(maTB);
+                        }
+
+                        Console.WriteLine("✔ Đã gửi mail nhắc ký hợp đồng.");
+
+
+
+                       
                     }
                     catch (Exception ex)
                     {

@@ -5503,3 +5503,120 @@ BEGIN
 END
 GO
 
+CREATE OR ALTER PROCEDURE sp_KiemTraVaSinhThongBaoNhacKyHopDong
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @NewMaTB VARCHAR(15);
+    DECLARE @maDot VARCHAR(15), @maHD VARCHAR(15);
+    DECLARE @maKH VARCHAR(15), @tenKH NVARCHAR(255);
+    DECLARE @ngayBatDau DATE, @tanSuat VARCHAR(15), @ngayNhac DATE;
+    DECLARE @ngayTraKQ DATE;
+
+    DECLARE cur CURSOR FOR
+    SELECT 
+        d.maDot,
+        d.maHD,
+        kh.maKH,
+        kh.tenDoanhNghiep,
+        d.ngayBatDau,
+        d.ngayTraKQ,
+        hd.tanSuatQuanTrac,
+        CASE 
+            WHEN hd.tanSuatQuanTrac = 'TSQT03' 
+                THEN DATEADD(DAY, 75, d.ngayBatDau)      -- 2 tháng 15 ngày
+            WHEN hd.tanSuatQuanTrac = 'TSQT02' 
+                THEN DATEADD(DAY, 165, d.ngayBatDau)     -- 5 tháng 15 ngày
+        END AS ngayNhac
+    FROM DotQuanTrac d
+    JOIN HopDong hd ON d.maHD = hd.maHD
+    JOIN KhachHang kh ON hd.maKH = kh.maKH
+    WHERE 
+        d.ngayTraKQ IS NOT NULL                           -- đã hoàn thành đợt
+        AND NOT EXISTS (                                   -- chưa từng gửi TB này
+            SELECT 1 
+            FROM ThongBao tb 
+            WHERE tb.maDot = d.maDot 
+              AND tb.loaiTB = 'NHAC_KY_HOP_DONG'
+        );
+
+    OPEN cur;
+    FETCH NEXT FROM cur INTO @maDot, @maHD, @maKH, @tenKH, @ngayBatDau, @ngayTraKQ, @tanSuat, @ngayNhac;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Chỉ gửi khi đúng ngày nhắc hoặc đã quá ngày nhắc
+        IF @ngayNhac <= CAST(GETDATE() AS DATE)
+        BEGIN
+            -- Sinh mã TB giống format cũ
+            SELECT @NewMaTB =
+                'TB' + RIGHT('000000'+ CAST(ISNULL(MAX(CAST(SUBSTRING(maTB,3,6) AS INT)),0)+1 AS VARCHAR(6)),6)
+            FROM ThongBao;
+
+            -- Thêm vào ThongBao
+            INSERT INTO ThongBao(maTB, loaiTB, maDot, maHD, tieuDe, noiDung, ngayTao)
+            VALUES (
+                @NewMaTB,
+                'NHAC_KY_HOP_DONG',
+                @maDot,
+                @maHD,
+                N'Nhắc ký hợp đồng mới cho khách hàng ' + @tenKH,
+                N'Đã hoàn thành đợt quan trắc. Cần nhắc khách hàng ký hợp đồng mới.',
+                GETDATE()
+            );
+        END
+
+        FETCH NEXT FROM cur INTO @maDot, @maHD, @maKH, @tenKH, @ngayBatDau, @ngayTraKQ, @tanSuat, @ngayNhac;
+    END;
+
+    CLOSE cur;
+    DEALLOCATE cur;
+
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_LayDSNhacKyHopDong
+AS
+BEGIN
+    SELECT 
+        tb.maTB,
+        tb.maDot,
+        tb.maHD,
+        hd.maKH,
+        kh.tenDoanhNghiep,
+        kh.emailDoanhNghiep AS email,
+
+        d.ngayBatDau,                     -- 📌 để tính Quý
+        d.ngayTraKQ,                      -- (optional)
+        hd.tanSuatQuanTrac,               -- 📌 Quý / 6 tháng
+
+        tb.tieuDe,
+        tb.noiDung,
+        tb.ngayTao
+
+    FROM ThongBao tb
+    JOIN HopDong hd ON tb.maHD = hd.maHD
+    JOIN KhachHang kh ON hd.maKH = kh.maKH
+    JOIN DotQuanTrac d ON d.maDot = tb.maDot   -- 📌 JOIN để lấy ngày bắt đầu
+
+    WHERE 
+        tb.loaiTB = 'NHAC_KY_HOP_DONG'
+        AND ISNULL(tb.daGuiEmail, 0) = 0;
+END
+GO
+
+
+
+CREATE PROCEDURE sp_CapNhatTrangThaiEmail_NhacHD
+    @maTB VARCHAR(15)
+AS
+BEGIN
+    UPDATE ThongBao 
+    SET daGuiEmail = 1
+    WHERE maTB = @maTB
+	AND loaiTB = 'NHAC_KY_HOP_DONG';
+END
+GO
+
+
