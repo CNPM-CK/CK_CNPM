@@ -41,8 +41,37 @@ namespace GUI.Forms
 
         public string ToaDo
         {
-            get { return txtToado.Text; }
-            set { txtToado.Text = value; }
+            get
+            {
+                // ✅ Ghép X,Y khi get
+                string x = txtToado.Text.Trim();
+                string y = txtToadoy.Text.Trim();
+
+                if (!string.IsNullOrEmpty(x) && !string.IsNullOrEmpty(y))
+                    return $"{x},{y}";
+                else if (!string.IsNullOrEmpty(x))
+                    return x;
+                else
+                    return "";
+            }
+            set
+            {
+                // ✅ Tách X,Y khi set
+                if (!string.IsNullOrEmpty(value))
+                {
+                    string[] parts = value.Split(',');
+                    if (parts.Length >= 2)
+                    {
+                        txtToado.Text = parts[0].Trim();
+                        txtToadoy.Text = parts[1].Trim();
+                    }
+                    else
+                    {
+                        txtToado.Text = value;
+                        txtToadoy.Text = "";
+                    }
+                }
+            }
         }
 
         public string GhiChu
@@ -235,6 +264,8 @@ namespace GUI.Forms
             ApplyRoundedInput(panelVitri, txtTenvitri, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelGhichu, txtGhichu, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelToado, txtToado, 12, 2, Color.FromArgb(0, 152, 70));
+            ApplyRoundedInput(panelToadoy, txtToadoy, 12, 2, Color.FromArgb(0, 152, 70));
+
             InitializeButtonStyles();
             cboPhongpt.Enabled = false;
 
@@ -396,8 +427,37 @@ namespace GUI.Forms
             dgvThongso.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvThongso.MultiSelect = false;
 
+            txtToado.KeyPress += TxtToaDo_KeyPress;
+            txtToadoy.KeyPress += TxtToaDo_KeyPress;
+
         }
 
+        private void TxtToaDo_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Cho phép: số, dấu thập phân, dấu âm, phím điều khiển (Backspace, Delete...)
+            if (!char.IsControl(e.KeyChar) &&
+                !char.IsDigit(e.KeyChar) &&
+                e.KeyChar != '.' &&
+                e.KeyChar != '-' &&
+                e.KeyChar != ',')
+            {
+                e.Handled = true;
+            }
+
+            // Chỉ cho phép 1 dấu thập phân
+            TextBox txt = sender as TextBox;
+            if ((e.KeyChar == '.' || e.KeyChar == ',') &&
+                (txt.Text.Contains(".") || txt.Text.Contains(",")))
+            {
+                e.Handled = true;
+            }
+
+            // Dấu âm chỉ ở đầu
+            if (e.KeyChar == '-' && txt.SelectionStart != 0)
+            {
+                e.Handled = true;
+            }
+        }
 
         private void btnThemts_Click(object sender, EventArgs e)
         {
@@ -420,7 +480,28 @@ namespace GUI.Forms
         public void LoadDataForEdit(string tenViTri, string toaDo, string ghiChu, List<ChiTietQuanTracView> danhSach)
         {
             txtTenvitri.Text = tenViTri;
-            txtToado.Text = toaDo;
+
+            if (!string.IsNullOrEmpty(toaDo))
+            {
+                string[] parts = toaDo.Split(',');
+
+                if (parts.Length >= 2)
+                {
+                    txtToado.Text = parts[0].Trim();   // X
+                    txtToadoy.Text = parts[1].Trim();  // Y
+                }
+                else
+                {
+                    MessageBox.Show("toaDo không có dấu phẩy!", "Cảnh báo");
+                    txtToado.Text = toaDo;
+                    txtToadoy.Text = "";
+                }
+            }
+            else
+            {
+                MessageBox.Show("toaDo là NULL hoặc rỗng!", "Cảnh báo");
+            }
+
             txtGhichu.Text = ghiChu;
 
             if (danhSach != null && danhSach.Count > 0)
@@ -430,7 +511,7 @@ namespace GUI.Forms
                 {
                     danhSachChiTiet.Add(new ChiTietQuanTracView
                     {
-                        MaDNTS = item.MaDNTS,  // BẮT BUỘC KHI SỬA
+                        MaDNTS = item.MaDNTS,
                         MaTS = item.MaTS,
                         TenTS = item.TenTS,
                         DonVi = item.DonVi,
@@ -440,7 +521,6 @@ namespace GUI.Forms
                         MaPhong = item.MaPhong,
                         TenPhong = item.TenPhong
                     });
-                    //danhSachChiTiet.Add(item);
                 }
             }
         }
@@ -484,6 +564,7 @@ namespace GUI.Forms
         {
             try
             {
+                
                 // VALIDATION FORM
                 if (string.IsNullOrWhiteSpace(txtTennenmau.Text))
                 {
@@ -501,6 +582,11 @@ namespace GUI.Forms
                     return;
                 }
 
+                string toaDoHopLe = layToaDoHopLe();
+                if (string.IsNullOrEmpty(toaDoHopLe))
+                {
+                    return; // Dừng lại nếu tọa độ không hợp lệ
+                }
                 if (danhSachChiTiet.Count == 0)
                 {
                     MessageBox.Show("Vui lòng thêm ít nhất một thông số!", "Thông báo",
@@ -525,7 +611,7 @@ namespace GUI.Forms
                     ketQua = bll.suaChiTietNenMau(
                         maDN: MaDN,
                         tenViTri: txtTenvitri.Text.Trim(),
-                        toaDo: txtToado.Text.Trim(),
+                        toaDo: toaDoHopLe ,
                         ghiChu: txtGhichu.Text.Trim(),
                         danhSachThongSo: danhSachChiTiet.ToList()
                     );
@@ -537,7 +623,7 @@ namespace GUI.Forms
                     ketQua = bll.luuChiTietNenMau(
                         maDN: MaDN,
                         tenViTri: txtTenvitri.Text.Trim(),
-                        toaDo: txtToado.Text.Trim(),
+                        toaDo: toaDoHopLe,
                         ghiChu: txtGhichu.Text.Trim(),
                         danhSachThongSo: danhSachChiTiet.ToList()
                     );
@@ -576,6 +662,49 @@ namespace GUI.Forms
                 MessageBox.Show($"Lỗi khi lưu chi tiết nền mẫu:\n{ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+
+        private string layToaDoHopLe()
+        {
+            string x = txtToado.Text.Trim();
+            string y = txtToadoy.Text.Trim();
+
+            // 1) Kiểm tra rỗng
+            if (string.IsNullOrEmpty(x) || string.IsNullOrEmpty(y))
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ tọa độ X và Y!",
+                    "Thiếu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                // Focus vào ô trống
+                if (string.IsNullOrEmpty(x)) txtToado.Focus();
+                else txtToadoy.Focus();
+
+                return null;
+            }
+
+            // 2) Kiểm tra phải là số
+            if (!double.TryParse(x, out double xVal))
+            {
+                MessageBox.Show("Tọa độ X phải là số!", "Sai định dạng",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtToado.Focus();
+                txtToado.SelectAll();
+                return null;
+            }
+
+            if (!double.TryParse(y, out double yVal))
+            {
+                MessageBox.Show("Tọa độ Y phải là số!", "Sai định dạng",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtToadoy.Focus();
+                txtToadoy.SelectAll();
+                return null;
+            }
+
+            // 3) Ghép thành chuỗi (có thể dùng format chuẩn nếu cần)
+            string ketQua = $"{xVal},{yVal}";
+            return ketQua;
         }
 
 
@@ -740,15 +869,30 @@ namespace GUI.Forms
 
         private void ChiTietNenMau_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Nếu KHÔNG lưu (Cancel/Close bằng X) và đã cấp MaDN trước đó
-            if (! camKet && !string.IsNullOrWhiteSpace(MaDN))
+            // ✅ CHECK 1: Nếu đang CHỈNH SỬA → KHÔNG XÓA GÌ CẢ
+            if (chinhSua)
+                return;
+
+            // ✅ CHECK 2: Nếu đã LƯU (camKet = true) → KHÔNG XÓA
+            if (camKet)
+                return;
+
+            // ✅ Chỉ xóa khi:
+            // - Là THÊM MỚI (chinhSua = false)
+            // - User CANCEL (camKet = false)
+            // - Có MaDN hợp lệ (đã tạo Dot_Nen trong DB)
+            if (!string.IsNullOrWhiteSpace(MaDN))
             {
                 try
                 {
                     var bll = new BLL_DotQuanTrac();
-                    bll.xoaNenMauKhoiDot(MaDN); // ✅ xóa Dot_Nen + Dot_Nen_Ts
+                    bll.xoaNenMauKhoiDot(MaDN);
+                    System.Diagnostics.Debug.WriteLine($"[Cleanup] Xóa nền mẫu nháp: {MaDN}");
                 }
-                catch { /* log nếu cần, nhưng đừng throw ở đây */ }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Error] Lỗi xóa nền mẫu nháp: {ex.Message}");
+                }
             }
         }
     }

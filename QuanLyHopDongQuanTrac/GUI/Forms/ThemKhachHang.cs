@@ -68,8 +68,8 @@ namespace GUI.Forms
             else if (ctrl is ComboBox cbo)
             {
                 cbo.FlatStyle = FlatStyle.Flat;
-                if (cbo.DropDownStyle != ComboBoxStyle.DropDown)
-                    cbo.DropDownStyle = ComboBoxStyle.DropDown;
+                //if (cbo.DropDownStyle != ComboBoxStyle.DropDown)
+                //    cbo.DropDownStyle = ComboBoxStyle.DropDown;
             }
 
             ctrl.Location = new Point(borderSize + 5, (panel.Height - ctrl.Height) / 2);

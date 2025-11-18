@@ -205,6 +205,7 @@ namespace GUI.Forms
             {
                 currentOpenForm.BringToFront();
                 currentOpenForm.Focus();
+                return;
             }
 
             // Lấy trực tiếp từ DataBoundItem
@@ -230,7 +231,10 @@ namespace GUI.Forms
             };
 
             frmSua.SuccesfullyUpdated += (s, ev) => taiDanhSachNhanVien();
-            frmSua.Show(this);
+            if (frmSua.ShowDialog(this) == DialogResult.OK)
+            {
+                taiDanhSachNhanVien(); // ✅ Refresh lại sau khi đóng form
+            }
         }
 
         private void HandleDelete(DataGridViewRow row)
@@ -557,19 +561,49 @@ namespace GUI.Forms
 
         private void searchtextbox_Leave(object sender, EventArgs e)
         {
+            //if (string.IsNullOrWhiteSpace(searchtextbox.Text))
+            //{
+            //    isPlaceholder = true;
+            //    searchtextbox.Text = PLACEHOLDER_TEXT;
+            //    searchtextbox.ForeColor = Color.Silver;
+            //    dgvDanhsachnhanvien.DataSource = dsNhanVien;
+            //    tuKhoacuoicung = "";
+
+            //}
             if (string.IsNullOrWhiteSpace(searchtextbox.Text))
             {
                 isPlaceholder = true;
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
-                dgvDanhsachnhanvien.DataSource = dsNhanVien;
-                tuKhoacuoicung = "";
 
+                // ✅ Reset về phân trang với DTO gốc (NhanVien)
+                trangHientai = 1;
+                tongSoBanGhi = 0;
+                taiTrangkhachhang();
+
+                tuKhoacuoicung = "";
             }
         }
 
         private void searchtextbox_KeyDown(object sender, KeyEventArgs e)
         {
+            //if (e.KeyCode == Keys.Enter)
+            //{
+            //    e.SuppressKeyPress = true;
+
+            //    if (dgvDanhsachnhanvien.Rows.Count > 0)
+            //    {
+            //        dgvDanhsachnhanvien.ClearSelection();
+            //        dgvDanhsachnhanvien.Rows[0].Selected = true;
+            //        dgvDanhsachnhanvien.FirstDisplayedScrollingRowIndex = 0;
+            //    }
+            //}
+            //else if (e.KeyCode == Keys.Escape)
+            //{
+            //    searchtextbox.Clear();
+            //    dgvDanhsachnhanvien.DataSource = dsNhanVien;
+            //    tuKhoacuoicung = "";
+            //}
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
@@ -584,7 +618,12 @@ namespace GUI.Forms
             else if (e.KeyCode == Keys.Escape)
             {
                 searchtextbox.Clear();
-                dgvDanhsachnhanvien.DataSource = dsNhanVien;
+
+                // ✅ Reset về phân trang
+                trangHientai = 1;
+                tongSoBanGhi = 0;
+                taiTrangkhachhang();
+
                 tuKhoacuoicung = "";
             }
         }
@@ -601,34 +640,82 @@ namespace GUI.Forms
             PerformSearch();
         }
 
+        //private void PerformSearch()
+        //{
+        //    // Kiểm tra null
+        //    if (dsNhanVien == null || dsNhanVien.Count == 0)
+        //    {
+        //        return;
+        //    }
+
+        //    string keyword = searchtextbox.Text.Trim().ToLower();
+
+        //    if (string.IsNullOrEmpty(keyword))
+        //    {
+        //        dgvDanhsachnhanvien.DataSource = dsNhanVien;
+        //        return;
+        //    }
+
+        //    var filtered = dsNhanVien
+        //        .Where(nv =>
+        //            (nv.hoTen ?? "").ToLower().Contains(keyword) ||
+        //            (nv.email ?? "").ToLower().Contains(keyword) ||
+        //            (nv.tenPhong ?? "").ToLower().Contains(keyword) ||
+        //            (nv.soDienThoai ?? "").Contains(keyword) ||
+        //            (nv.diaChi ?? "").ToLower().Contains(keyword) ||
+        //            nv.maNV.ToString().ToLower().Contains(keyword)
+        //        )
+        //        .ToList();
+
+        //    dgvDanhsachnhanvien.DataSource = new BindingList<NhanVien>(filtered);
+        //}
+
+
         private void PerformSearch()
         {
-            // Kiểm tra null
-            if (dsNhanVien == null || dsNhanVien.Count == 0)
-            {
-                return;
-            }
-
             string keyword = searchtextbox.Text.Trim().ToLower();
 
             if (string.IsNullOrEmpty(keyword))
             {
-                dgvDanhsachnhanvien.DataSource = dsNhanVien;
+                // Reset về phân trang
+                trangHientai = 1;
+                tongSoBanGhi = 0;
+                taiTrangkhachhang();
                 return;
             }
 
-            var filtered = dsNhanVien
-                .Where(nv =>
-                    (nv.hoTen ?? "").ToLower().Contains(keyword) ||
-                    (nv.email ?? "").ToLower().Contains(keyword) ||
-                    (nv.tenPhong ?? "").ToLower().Contains(keyword) ||
-                    (nv.soDienThoai ?? "").Contains(keyword) ||
-                    (nv.diaChi ?? "").ToLower().Contains(keyword) ||
-                    nv.maNV.ToString().ToLower().Contains(keyword)
-                )
-                .ToList();
+            // ✅ TÌM KIẾM DÙNG DTO MỚI
+            try
+            {
+                NhanVienBLL bll = new NhanVienBLL();
+                var allData = bll.layDanhSachNhanVien_TimKiem(); // ✅ Dùng method mới
 
-            dgvDanhsachnhanvien.DataSource = new BindingList<NhanVien>(filtered);
+                var filtered = allData
+                    .Where(nv =>
+                        (nv.hoTen ?? "").ToLower().Contains(keyword) ||
+                        (nv.email ?? "").ToLower().Contains(keyword) ||
+                        (nv.tenPhong ?? "").ToLower().Contains(keyword) ||
+                        (nv.soDienThoai ?? "").Contains(keyword) ||
+                        (nv.diaChi ?? "").ToLower().Contains(keyword) ||
+                        nv.maNV.ToString().ToLower().Contains(keyword)
+                    )
+                    .ToList();
+
+                // ✅ Bind vào DataGridView với DTO mới
+                dgvDanhsachnhanvien.DataSource = new BindingList<NhanVienSearch>(filtered);
+
+                // Hiển thị số kết quả
+                soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+
+                // Disable nút phân trang khi search
+                btnTruoc.Enabled = false;
+                btnSau.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi tìm kiếm: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         #endregion
@@ -708,78 +795,8 @@ namespace GUI.Forms
             dgvDanhsachnhanvien.DataSource = dsNhanVien;
             dgvDanhsachnhanvien.ReadOnly = true;
             taiTrangkhachhang();
-            //InitializeVoiceSearch();
 
         }
-        //private void InitializeVoiceSearch()
-        //{
-        //    lock (_voiceSearchLock)
-        //    {
-        //        // ✅ Dispose instance cũ nếu có
-        //        if (voiceSearch != null)
-        //        {
-        //            try
-        //            {
-        //                voiceSearch.Dispose();
-        //                voiceSearch = null;
-        //            }
-        //            catch { }
-        //        }
-
-        //        picturemicro.Enabled = false;
-        //        picturemicro.BackColor = Color.Gray;
-
-        //        try
-        //        {
-        //            string modelPath = Path.Combine(Application.StartupPath, "Model", "vosk-model-vi-0.4");
-
-        //            if (!Directory.Exists(modelPath))
-        //            {
-        //                MessageBox.Show($"Không tìm thấy model tại:\n{modelPath}\n\n" +
-        //                    "Vui lòng đảm bảo folder 'Model/vosk-model-vi-0.4' tồn tại trong thư mục ứng dụng!",
-        //                    "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //                return;
-        //            }
-
-        //            // ✅ Kiểm tra file model
-        //            string[] requiredFiles = new[]
-        //            {
-        //            Path.Combine(modelPath, "am", "final.mdl"),
-        //            Path.Combine(modelPath, "graph", "HCLG.fst"),
-        //            Path.Combine(modelPath, "graph", "words.txt")
-        //        };
-
-        //            foreach (var file in requiredFiles)
-        //            {
-        //                if (!File.Exists(file))
-        //                {
-        //                    MessageBox.Show($"Thiếu file model quan trọng:\n{file}\n\n" +
-        //                        "Vui lòng tải lại model đầy đủ!",
-        //                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //                    return;
-        //                }
-        //            }
-
-        //            // ✅ Khởi tạo voice search
-        //            voiceSearch = new TimKiemGiongNoi(modelPath);
-        //            isVoiceSearchReady = true;
-
-        //            picturemicro.Enabled = true;
-        //            picturemicro.BackColor = Color.Transparent;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show($"Không thể khởi tạo nhận diện giọng nói:\n\n{ex.Message}\n\n" +
-        //                "Chi tiết: {ex.GetType().Name}\n\n" +
-        //                "Giải pháp:\n" +
-        //                "1. Kiểm tra model folder\n" +
-        //                "2. Tải lại Vosk model\n" +
-        //                "3. Khởi động lại ứng dụng",
-        //                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            isVoiceSearchReady = false;
-        //        }
-        //    }
-        //}
 
 
         private Task<string> _currentVoiceTask;
@@ -809,24 +826,6 @@ namespace GUI.Forms
             frmThem.SuccesfullyUpdated += (s, ev) => taiDanhSachNhanVien();
             frmThem.Show(this);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (!_isDisposed)
-            {
-                _isDisposed = true;
-
-                if (disposing)
-                {
-                    // ✅ Cleanup voice search trước
-                    //voiceSearch?.Dispose();
-                    //voiceSearch = null;
-                }
-            }
-
-            base.Dispose(disposing);
-        }
-
 
 
         int trangHientai = 1;

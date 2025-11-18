@@ -17,6 +17,11 @@ namespace BLL
             return dal.layDanhSachNhanVien();
         }
 
+        public List<NhanVienSearch> layDanhSachNhanVien_TimKiem()
+        {
+            return dal.layDanhSachNhanVien_TimKiem();
+        }
+
         public void themNhanVien(NhanVien nv,bool truongPhong)
         {
             dal.themNhanVien(nv, truongPhong);

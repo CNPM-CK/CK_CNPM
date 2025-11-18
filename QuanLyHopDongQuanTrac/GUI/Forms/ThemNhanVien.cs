@@ -71,8 +71,8 @@ namespace GUI.Forms
             else if (ctrl is ComboBox cbo)
             {
                 cbo.FlatStyle = FlatStyle.Flat;
-                if (cbo.DropDownStyle != ComboBoxStyle.DropDown)
-                    cbo.DropDownStyle = ComboBoxStyle.DropDown;
+                //if (cbo.DropDownStyle != ComboBoxStyle.DropDown)
+                //    cbo.DropDownStyle = ComboBoxStyle.DropDown;
             }
 
             // Căn chỉnh vị trí & kích thước control con trong panel

@@ -173,6 +173,15 @@ namespace GUI.Forms
         private void lamMoiDanhSachKhachHang()
         {
             totalRecords = 0;
+
+            // Reset search box về trạng thái placeholder
+            if (!string.IsNullOrWhiteSpace(searchtextbox.Text) && searchtextbox.Text != PLACEHOLDER_TEXT)
+            {
+                isPlaceholder = true;
+                searchtextbox.Text = PLACEHOLDER_TEXT;
+                searchtextbox.ForeColor = Color.Silver;
+                lastSearchKeyword = "";
+            }
             taiTrangKhachHang();
         }
         #endregion
@@ -606,28 +615,53 @@ namespace GUI.Forms
             PerformSearch();
         }
 
+
         private void PerformSearch()
         {
             string keyword = searchtextbox.Text?.Trim().ToLower() ?? "";
+
             if (string.IsNullOrEmpty(keyword))
             {
-                dgvDanhsachnhanvien.DataSource = dsKhachhang;
+                // Reset về phân trang
+                currentPage = 1;
+                totalRecords = 0;
+                taiTrangKhachHang();
                 return;
             }
 
-            var filtered = dsKhachhang
-                .Where(kh =>
-                    (kh.tenDoanhNghiep ?? "").ToLower().Contains(keyword) ||
-                    (kh.nguoiDaiDien ?? "").ToLower().Contains(keyword) ||
-                    (kh.kyHieuDN ?? "").ToLower().Contains(keyword) ||
-                    (kh.soDienThoaiKH ?? "").Contains(keyword) ||
-                    (kh.diaChi ?? "").ToLower().Contains(keyword) ||
-                    kh.maKH.ToString().ToLower().Contains(keyword)
-                )
-                .ToList();
+            // ✅ TÌM KIẾM TRÊN TOÀN BỘ DATABASE
+            try
+            {
+                KhachHangBLL bll = new KhachHangBLL();
+                var allData = bll.layDanhSachKH(); // ✅ Cần thêm method này vào BLL
 
-            dgvDanhsachnhanvien.DataSource = new BindingList<KhachHang>(filtered);
+                var filtered = allData
+                    .Where(kh =>
+                        (kh.tenDoanhNghiep ?? "").ToLower().Contains(keyword) ||
+                        (kh.nguoiDaiDien ?? "").ToLower().Contains(keyword) ||
+                        (kh.kyHieuDN ?? "").ToLower().Contains(keyword) ||
+                        (kh.soDienThoaiKH ?? "").Contains(keyword) ||
+                        (kh.diaChi ?? "").ToLower().Contains(keyword) ||
+                        kh.maKH.ToString().ToLower().Contains(keyword)
+                    )
+                    .ToList();
+
+                dgvDanhsachnhanvien.DataSource = new BindingList<KhachHang>(filtered);
+
+                // Hiển thị số kết quả
+                soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+
+                // Disable nút phân trang khi search
+                btnTruoc.Enabled = false;
+                btnSau.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi tìm kiếm: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
         #endregion
 
         #region Button Events

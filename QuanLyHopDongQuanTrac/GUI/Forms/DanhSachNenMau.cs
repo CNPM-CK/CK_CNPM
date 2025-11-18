@@ -174,22 +174,29 @@ namespace GUI.Forms
                 {
                     DataPropertyName = "maNen",
                     HeaderText = "MÃ NỀN",
-                    Name = "maNen"
+                    Name = "maNen",
+                    Visible = false 
+
                 },
                 new DataGridViewTextBoxColumn
                 {
                     DataPropertyName = "tenNenMau",
                     HeaderText = "TÊN NỀN MẪU",
-                    Name = "tenNenMau"
+                    Name = "tenNenMau",
+                    Width= 200
                 },
                 new DataGridViewTextBoxColumn
                 {
                     DataPropertyName = "moTa",
                     HeaderText = "MÔ TẢ",
                     Name = "moTa",
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
                 }
             });
+
+            dgvDSTS.Columns["tenNenMau"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgvDSTS.Columns["tenNenMau"].Width = 300;
+
+            dgvDSTS.Columns["moTa"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             // Add action column
             if (_isPhongKeHoach)

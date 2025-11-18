@@ -670,7 +670,6 @@ INSERT [dbo].[PhongBan] ([maPhong], [tenPhong], [truongPhong]) VALUES (N'P002', 
 INSERT [dbo].[PhongBan] ([maPhong], [tenPhong], [truongPhong]) VALUES (N'P003', N'Phòng hiện trường ', NULL)
 INSERT [dbo].[PhongBan] ([maPhong], [tenPhong], [truongPhong]) VALUES (N'P004', N'Phòng thí nghiệm  ', NULL)
 INSERT [dbo].[PhongBan] ([maPhong], [tenPhong], [truongPhong]) VALUES (N'P005', N'Phòng kết quả ', NULL)
-INSERT [dbo].[PhongBan] ([maPhong], [tenPhong], [truongPhong]) VALUES (N'P006', N'Phòng quan trắc', NULL)
 GO
 INSERT [dbo].[TaiKhoan] ([tenTK], [matKhau], [vaiTro]) VALUES (N'admin@gmail.com', N'$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 1)
 INSERT [dbo].[TaiKhoan] ([tenTK], [matKhau], [vaiTro]) VALUES (N'hoangson@gmail.com', N'$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0)
@@ -709,14 +708,12 @@ INSERT INTO [ThongSoMoiTruong] VALUES
 ('TS0014', N'Chì Pb', 0.01, 0, N'mg/L', N'TCVN 6193:1996'),
 ('TS0015', N'Thủy ngân Hg', 0.005, 0, N'mg/L', N'TCVN 6193:1996');
 GO
-INSERT [dbo].[TrangThai_Dot] ([maTrangThai], [tenTrangThai]) VALUES (0, N'Nháp')
 INSERT [dbo].[TrangThai_Dot] ([maTrangThai], [tenTrangThai]) VALUES (1, N'Đã lập kế hoạch đơn hàng')
 INSERT [dbo].[TrangThai_Dot] ([maTrangThai], [tenTrangThai]) VALUES (2, N'Đang thực hiện đơn hàng')
 INSERT [dbo].[TrangThai_Dot] ([maTrangThai], [tenTrangThai]) VALUES (3, N'Chờ xác nhận')
 INSERT [dbo].[TrangThai_Dot] ([maTrangThai], [tenTrangThai]) VALUES (4, N'Quá hạn')
 INSERT [dbo].[TrangThai_Dot] ([maTrangThai], [tenTrangThai]) VALUES (5, N'Đã xác nhận')
 INSERT [dbo].[TrangThai_Dot] ([maTrangThai], [tenTrangThai]) VALUES (6, N'Đã báo cáo')
-INSERT [dbo].[TrangThai_Dot] ([maTrangThai], [tenTrangThai]) VALUES (7, N'Cần làm lại')
 GO
 
 INSERT INTO [dbo].[TrangThai_NhanVien] (tenTrangThai)
@@ -1994,7 +1991,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE   PROCEDURE [dbo].[sp_TaoDotQuanTracDraft]
+CREATE OR ALTER PROCEDURE [dbo].[sp_TaoDotQuanTracDraft]
     @maDot VARCHAR(15) OUTPUT
 AS
 BEGIN
@@ -2019,11 +2016,11 @@ BEGIN
             @maDot,
             NULL,
             NULL,
-            N'Nháp',
+            N'Đã lập kế hoạch đơn hàng ',
             GETDATE(),
             GETDATE(),
             NULL,
-            0
+            1
         );
 
         COMMIT TRANSACTION;
@@ -5619,4 +5616,33 @@ BEGIN
 END
 GO
 
-
+CREATE OR ALTER PROCEDURE [dbo].[layDanhSachNhanVien_TimKiem]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        nv.maNV,
+        nv.maPhong,
+        nv.hoTen,
+        nv.ngaySinh,
+        CASE nv.gioiTinh WHEN 0 THEN N'Nam' ELSE N'Nữ' END AS gioiTinh,
+        nv.diaChi,
+        nv.soDienThoai,
+        nv.email,
+        nv.trangThai,
+        pb.tenPhong,
+        CASE nv.trangThai 
+            WHEN 1 THEN N'Đang hoạt động'
+            WHEN 2 THEN N'Nghỉ phép'
+            WHEN 4 THEN N'Nghỉ thai sản'
+            WHEN 5 THEN N'Công tác'
+            WHEN 6 THEN N'Ngưng hoạt động'
+            ELSE N'Không xác định'
+        END AS tenTrangThai
+    FROM NhanVien nv
+    LEFT JOIN PhongBan pb ON nv.maPhong = pb.maPhong
+    WHERE nv.trangThai != 7  -- Loại bỏ nhân viên đã xóa
+    ORDER BY nv.maNV;
+END
+GO

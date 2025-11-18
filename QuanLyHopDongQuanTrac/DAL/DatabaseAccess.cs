@@ -2816,5 +2816,62 @@ namespace DAL
             }
         }
 
+        public List<NhanVienSearch> layDanhSachNhanVien_TimKiem()
+        {
+            List<NhanVienSearch> dsNhanvien = new List<NhanVienSearch>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("layDanhSachNhanVien_TimKiem", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            // Xử lý giới tính
+                            string gioiTinh = "0";
+                            if (reader["gioiTinh"] != DBNull.Value)
+                            {
+                                var gioiTinhValue = reader["gioiTinh"];
+                                if (gioiTinhValue is bool boolValue)
+                                {
+                                    gioiTinh = boolValue ? "1" : "0";
+                                }
+                                else
+                                {
+                                    string strValue = gioiTinhValue.ToString().Trim().ToLower();
+                                    if (strValue == "1" || strValue == "true" || strValue == "nữ" || strValue == "nu")
+                                        gioiTinh = "1";
+                                    else
+                                        gioiTinh = "0";
+                                }
+                            }
+
+                            var nv = new NhanVienSearch
+                            {
+                                maNV = reader["maNV"].ToString(),
+                                maPhong = reader["maPhong"].ToString(),
+                                tenPhong = reader["tenPhong"].ToString(),
+                                hoTen = reader["hoTen"].ToString(),
+                                ngaySinh = Convert.ToDateTime(reader["ngaySinh"]),
+                                gioiTinh = gioiTinh,
+                                diaChi = reader["diaChi"].ToString(),
+                                email = reader["email"].ToString(),
+                                soDienThoai = reader["soDienThoai"].ToString(),
+                                trangThai = Convert.ToInt32(reader["trangThai"])
+                            };
+
+                            dsNhanvien.Add(nv);
+                        }
+                    }
+                }
+            }
+
+            return dsNhanvien;
+        }
+
     }
 }

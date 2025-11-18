@@ -659,33 +659,30 @@ namespace GUI.Forms
 
         private void KeHoachQuanTrac_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //if (!daTaoDot) return;
-
-            //// Nếu chưa lưu hoàn tất thì xóa nháp
-            //if (this.DialogResult != DialogResult.OK)
-            //{
-            //    bllDotQuanTrac.xoaDotQuanTrac(MaDotHienTai);
-            //}
-            // ✅ CHỈ XÓA nếu là THÊM MỚI và chưa lưu
-            if (!daTaoDot)
-                return; // Chưa tạo gì cả
-
-            // ✅ Nếu đang CHỈNH SỬA → KHÔNG BAO GIỜ XÓA
+            // ✅ CHECK 1: Nếu đang chỉnh sửa → KHÔNG XÓA
             if (dangChinhSua)
                 return;
 
-            // ✅ Nếu là THÊM MỚI và user hủy → Xóa nháp
-            if (this.DialogResult != DialogResult.OK && !string.IsNullOrEmpty(MaDotHienTai))
+            // ✅ CHECK 2: Nếu chưa tạo đợt nào → KHÔNG XÓA
+            if (string.IsNullOrEmpty(MaDotHienTai))
+                return;
+
+            // ✅ CHECK 3: Nếu user ĐÃ LƯU (OK) → KHÔNG XÓA
+            if (this.DialogResult == DialogResult.OK)
+                return;
+
+            // ✅ Chỉ xóa khi:
+            // - Là THÊM MỚI (dangChinhSua = false)
+            // - User HỦY (DialogResult != OK)
+            // - Có mã đợt hợp lệ
+            try
             {
-                try
-                {
-                    bllDotQuanTrac.xoaDotQuanTrac(MaDotHienTai);
-                }
-                catch (Exception ex)
-                {
-                    // Log lỗi nhưng không hiện MessageBox (form đang đóng)
-                    System.Diagnostics.Debug.WriteLine($"Lỗi xóa nháp: {ex.Message}");
-                }
+                bllDotQuanTrac.xoaDotQuanTrac(MaDotHienTai);
+                System.Diagnostics.Debug.WriteLine($"[Cleanup] Xóa nháp: {MaDotHienTai}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Error] Lỗi xóa nháp: {ex.Message}");
             }
         }
 

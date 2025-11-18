@@ -70,6 +70,8 @@
             btnThemts = new Button();
             btnHuy = new Button();
             btnLuu = new Button();
+            panelToadoy = new Panel();
+            txtToadoy = new TextBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel2.SuspendLayout();
@@ -95,6 +97,7 @@
             panel10.SuspendLayout();
             panelTennenmau.SuspendLayout();
             panel4.SuspendLayout();
+            panelToadoy.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -395,6 +398,7 @@
             // 
             // panel13
             // 
+            panel13.Controls.Add(panelToadoy);
             panel13.Controls.Add(label6);
             panel13.Controls.Add(panelToado);
             panel13.Dock = DockStyle.Fill;
@@ -418,7 +422,7 @@
             panelToado.Controls.Add(txtToado);
             panelToado.Location = new Point(134, 18);
             panelToado.Name = "panelToado";
-            panelToado.Size = new Size(316, 35);
+            panelToado.Size = new Size(155, 35);
             panelToado.TabIndex = 0;
             // 
             // txtToado
@@ -427,7 +431,7 @@
             txtToado.Location = new Point(3, 4);
             txtToado.Multiline = true;
             txtToado.Name = "txtToado";
-            txtToado.Size = new Size(310, 28);
+            txtToado.Size = new Size(149, 28);
             txtToado.TabIndex = 0;
             // 
             // panel11
@@ -560,6 +564,23 @@
             btnLuu.UseVisualStyleBackColor = false;
             btnLuu.Click += btnLuu_Click;
             // 
+            // panelToadoy
+            // 
+            panelToadoy.Controls.Add(txtToadoy);
+            panelToadoy.Location = new Point(295, 18);
+            panelToadoy.Name = "panelToadoy";
+            panelToadoy.Size = new Size(155, 35);
+            panelToadoy.TabIndex = 2;
+            // 
+            // txtToadoy
+            // 
+            txtToadoy.BorderStyle = BorderStyle.FixedSingle;
+            txtToadoy.Location = new Point(3, 4);
+            txtToadoy.Multiline = true;
+            txtToadoy.Name = "txtToadoy";
+            txtToadoy.Size = new Size(149, 28);
+            txtToadoy.TabIndex = 0;
+            // 
             // ChiTietNenMau
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -607,6 +628,8 @@
             panelTennenmau.ResumeLayout(false);
             panelTennenmau.PerformLayout();
             panel4.ResumeLayout(false);
+            panelToadoy.ResumeLayout(false);
+            panelToadoy.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -654,5 +677,7 @@
         private Panel panel6;
         private Button btnThemthongso;
         private PictureBox pictureBox1;
+        private Panel panelToadoy;
+        private TextBox txtToadoy;
     }
 }
