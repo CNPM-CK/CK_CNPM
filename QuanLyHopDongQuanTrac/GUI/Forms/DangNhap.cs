@@ -1,43 +1,317 @@
 using BLL;
-using GUI.Common;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
-using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using System.IO;
+using System.Text;
+
 namespace GUI.Forms
 {
     public partial class DangNhap : Form
     {
-
         private readonly TaiKhoanBLL taiKhoanBLL = new TaiKhoanBLL();
-        private bool isPasswordVisible = false; // THÊM DÒNG NÀY
+        private readonly NhanDienKhuonMatBLL nhanDienKhuonMatBLL = new NhanDienKhuonMatBLL();
+        private bool isPasswordVisible = false;
+
+        private readonly string rememberFilePath = Path.Combine(Application.StartupPath, "remember.txt");
+
+        private System.ComponentModel.ComponentResourceManager formResources;
 
         public DangNhap()
         {
             InitializeComponent();
+
+            formResources = new System.ComponentModel.ComponentResourceManager(typeof(DangNhap));
+
             this.AcceptButton = button1;
             textBoxmatkhau.KeyDown += textBoxMatKhau_KeyDown;
-            button4.Click += button4_Click; // THÊM DÒNG NÀY
         }
 
-        // THÊM HÀM NÀY
-        private void button4_Click(object sender, EventArgs e)
+        private void LuuThongTinDangNhap(string username, string password)
         {
-            isPasswordVisible = !isPasswordVisible;
-
-            if (isPasswordVisible)
+            try
             {
-                // Hiện mật khẩu
-                textBoxmatkhau.PasswordChar = '\0';
-                button4.BackgroundImage = (Image)Properties.Resources.ResourceManager.GetObject("openeye");
+                // Mã hóa đơn giản bằng Base64
+                string encodedUsername = Convert.ToBase64String(Encoding.UTF8.GetBytes(username));
+                string encodedPassword = Convert.ToBase64String(Encoding.UTF8.GetBytes(password));
+
+                string content = $"{encodedUsername}|{encodedPassword}";
+                File.WriteAllText(rememberFilePath, content);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi lưu thông tin: {ex.Message}", "Lỗi");
+            }
+        }
+
+        private void TaiThongTinDangNhap()
+        {
+            try
+            {
+                if (File.Exists(rememberFilePath))
+                {
+                    string content = File.ReadAllText(rememberFilePath);
+                    string[] parts = content.Split('|');
+
+                    if (parts.Length == 2)
+                    {
+                        // Giải mã Base64
+                        string username = Encoding.UTF8.GetString(Convert.FromBase64String(parts[0]));
+                        string password = Encoding.UTF8.GetString(Convert.FromBase64String(parts[1]));
+
+                        txtTentk.Text = username;
+                        textBoxmatkhau.Text = password;
+                        checkBox1.Checked = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Nếu file bị lỗi, xóa file và bỏ qua
+                if (File.Exists(rememberFilePath))
+                {
+                    File.Delete(rememberFilePath);
+                }
+            }
+        }
+
+        private void XoaThongTinDangNhap()
+        {
+            try
+            {
+                if (File.Exists(rememberFilePath))
+                {
+                    File.Delete(rememberFilePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi xóa thông tin: {ex.Message}", "Lỗi");
+            }
+        }
+
+        // ===== SỬA LỖI 2: Thêm // trước comment block =====
+        // ===== FACE ID LOGIN =====
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string tenTaiKhoan = txtTentk.Text.Trim();
+
+                if (string.IsNullOrEmpty(tenTaiKhoan))
+                {
+                    MessageBox.Show(
+                        "Vui lòng nhập tên tài khoản trước khi sử dụng Face ID!",
+                        "Cảnh báo",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    txtTentk.Focus();
+                    return;
+                }
+
+                var account = taiKhoanBLL.layThongTinTaiKhoan(tenTaiKhoan);
+                if (account == null)
+                {
+                    MessageBox.Show(
+                        "Tài khoản không tồn tại!",
+                        "Lỗi",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (!nhanDienKhuonMatBLL.KiemTraKhuonMatDaTonTai(tenTaiKhoan))
+                {
+                    MessageBox.Show(
+                        "Tài khoản này chưa đăng ký Face ID!\n\n" +
+                        "Vui lòng sử dụng mật khẩu để đăng nhập hoặc đăng ký Face ID trước.",
+                        "Thông báo",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    return;
+                }
+
+                using (NhanDienKhuonMat faceLoginForm = new NhanDienKhuonMat(tenTaiKhoan))
+                {
+                    DialogResult result = faceLoginForm.ShowDialog();
+
+                    if (result == DialogResult.OK && faceLoginForm.NhanDienThanhCong)
+                    {
+                        DieuHuongTheoVaiTro(account);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Lỗi khi đăng nhập bằng Face ID: {ex.Message}",
+                    "Lỗi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void DieuHuongTheoVaiTro(dynamic account)
+        {
+            if (account.vaiTro == 1 || account.vaiTro == 2)
+            {
+                DanhSachNhanVien listEmployees = new DanhSachNhanVien();
+                listEmployees.Show();
+                this.Hide();
             }
             else
             {
-                // Ẩn mật khẩu
-                textBoxmatkhau.PasswordChar = '*';
-                button4.BackgroundImage = (Image)Properties.Resources.ResourceManager.GetObject("closeeye");
+                var nvBLL = new NhanVienBLL();
+                string maPhong = nvBLL.layPhongBanTheoTaiKhoan(account.tenTK);
+
+                if (string.IsNullOrEmpty(maPhong))
+                {
+                    MessageBox.Show(
+                        "Không tìm thấy phòng ban cho nhân viên này!",
+                        "Lỗi dữ liệu",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                Form formPhong = null;
+
+                switch (maPhong)
+                {
+                    case "P001":
+                        formPhong = new DanhSachKhachHang();
+                        break;
+                    //case "P002":
+                    //    formPhong = new DanhSachKeHoach();
+                    //    break;
+                    default:
+                        MessageBox.Show(
+                            "Phòng ban chưa được hỗ trợ!",
+                            "Thông báo",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return;
+                }
+
+                if (formPhong != null)
+                {
+                    formPhong.Show();
+                    this.Hide();
+                }
             }
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                // Đổi trạng thái
+                isPasswordVisible = !isPasswordVisible;
+
+                if (isPasswordVisible)
+                {
+                    // HIỂN THỊ mật khẩu
+                    textBoxmatkhau.PasswordChar = '\0';
+
+                    // Lấy ảnh từ DangNhap.resx
+                    var img = formResources.GetObject("openeye");
+                    if (img != null)
+                    {
+                        button4.BackgroundImage = (Image)img;
+                    }
+                }
+                else
+                {
+                    // ẨN mật khẩu
+                    textBoxmatkhau.PasswordChar = '*';
+
+                    // Lấy ảnh từ DangNhap.resx
+                    var img = formResources.GetObject("closeeye");
+                    if (img != null)
+                    {
+                        button4.BackgroundImage = (Image)img;
+                    }
+                }
+
+                // Force refresh button
+                button4.Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi");
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string username = txtTentk.Text.Trim();
+            string password = textBoxmatkhau.Text.Trim();
+
+            if (string.IsNullOrEmpty(username))
+            {
+                MessageBox.Show(
+                    "Vui lòng nhập tên tài khoản!",
+                    "Cảnh báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                txtTentk.Focus();
+                return;
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show(
+                    "Vui lòng nhập mật khẩu!",
+                    "Cảnh báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                textBoxmatkhau.Focus();
+                return;
+            }
+
+            var result = taiKhoanBLL.dangNhap(username, password);
+
+            if (!result.success)
+            {
+                MessageBox.Show(
+                    result.message,
+                    "Đăng nhập thất bại",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            // XỬ LÝ GHI NHỚ ĐĂNG NHẬP
+            if (checkBox1.Checked)
+            {
+                LuuThongTinDangNhap(username, password);
+            }
+            else
+            {
+                XoaThongTinDangNhap();
+            }
+
+            DieuHuongTheoVaiTro(result.account);
+        }
+
+        private void textBoxMatKhau_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                button1.PerformClick();
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            QuenMatKhau1 quenMKForm = new QuenMatKhau1();
+            quenMKForm.Show();
+            this.Hide();
         }
 
         private void BoGocButton(Button btn, int radius)
@@ -72,11 +346,9 @@ namespace GUI.Forms
 
         private void ApplyRoundedInput(Panel panel, Control ctrl, int borderRadius, int borderSize, Color borderColor)
         {
-            // Gỡ event cũ (tránh vẽ chồng)
             panel.Paint -= Panel_Paint;
             panel.Resize -= Panel_Resize;
 
-            // Cài đặt nền và kiểu cho control
             panel.BackColor = Color.White;
             ctrl.BackColor = Color.White;
 
@@ -91,12 +363,10 @@ namespace GUI.Forms
                     cbo.DropDownStyle = ComboBoxStyle.DropDown;
             }
 
-            // Căn chỉnh vị trí & kích thước control con trong panel
             ctrl.Location = new Point(borderSize + 5, (panel.Height - ctrl.Height) / 2);
             ctrl.Width = panel.Width - (borderSize + 5) * 2;
             ctrl.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
 
-            // Hàm vẽ bo tròn
             void Panel_Paint(object s, PaintEventArgs e)
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -138,7 +408,6 @@ namespace GUI.Forms
                     panel.Region = new Region(path);
                 }
                 panel.Invalidate();
-
             }
 
             panel.Paint += Panel_Paint;
@@ -150,7 +419,6 @@ namespace GUI.Forms
             panel.Invalidate();
         }
 
-
         private GraphicsPath CreateRoundedPath(Rectangle rect, int radius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -158,190 +426,75 @@ namespace GUI.Forms
             if (rect.Width <= 0 || rect.Height <= 0)
                 return path;
 
-            //int diameter = radius * 2;
             int diameter = Math.Min(radius * 2, Math.Min(rect.Width, rect.Height));
-            // Đảm bảo radius không lớn hơn kích thước
-            diameter = Math.Min(diameter, Math.Min(rect.Width, rect.Height));
-
             Rectangle arc = new Rectangle(rect.Location, new Size(diameter, diameter));
 
-            // Top left
             path.AddArc(arc, 180, 90);
-
-            // Top right
             arc.X = rect.Right - diameter;
             path.AddArc(arc, 270, 90);
-
-            // Bottom right
             arc.Y = rect.Bottom - diameter;
             path.AddArc(arc, 0, 90);
-
-            // Bottom left
             arc.X = rect.Left;
             path.AddArc(arc, 90, 90);
-
             path.CloseFigure();
+
             return path;
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e) // ô nhập tài khoản
-        {
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e) // ô nhập mật khẩu
-        {
-        }
-
-        private void button1_Click(object sender, EventArgs e) // nút đăng nhập
-        {
-            string username = txtTentk.Text.Trim();
-            string password = textBoxmatkhau.Text.Trim();
-
-            var result = taiKhoanBLL.dangNhap(username, password);
-            if (!result.success)
-            {
-                MessageBox.Show(result.message, "Đăng nhập thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            SessionStore.Current.SignIn(
-                result.account!.tenTK,
-                result.account!.vaiTro
-            );
-            Debug.WriteLine(result.account.vaiTro);
-            if (result.account!.vaiTro != 1 && result.account!.vaiTro != 2)
-            {
-                var nvBLL = new NhanVienBLL();
-                string maPhong = nvBLL.layPhongBanTheoTaiKhoan(result.account.tenTK);
-                if (string.IsNullOrEmpty(maPhong))
-                {
-                    MessageBox.Show("Không tìm thấy phòng ban cho nhân viên này!",
-                                    "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                SessionStore.Current.MaPhong = maPhong;
-            }
-            //Form next = CreateNextFormFromSession();
-            //next.FormClosed += (s, _) => this.Close();
-            //next.Show();
-            //this.Hide();
-            TrangChu trangChu = new TrangChu();
-            trangChu.FormClosed += (s, _) => this.Close();
-            trangChu.Show();
-            this.Hide();
-
-        }
-
-        //private Form CreateNextFormFromSession()
-        //{
-        //    var ss = SessionStore.Current;
-
-        //    Form next = new TrangChu();
-        //    next.FormClosed += (s, _) => this.Close();
-        //    next.Show();
-        //    this.Hide();
-        //}
-
-        //private Form CreateNextFormFromSession()
-        //{
-        //    var ss = SessionStore.Current;
-
-        //    if (ss.VaiTro == 1 || ss.VaiTro == 2)
-        //        return new DanhSachNhanVien();
-
-        //    switch (ss.MaPhong)
-        //    {
-        //        case "P001": return new DanhSachKhachHang();
-        //        case "P002": return new DanhSachKeHoach();
-        //        case "P003": return new DanhSachNhapLieu();
-        //        case "P004": return new DanhSachNhapLieu();
-        //        // case "P005": return new PhongKetQuaForm();
-        //        // case "P006": return new PhongQuanTracForm();
-        //        default:
-        //            MessageBox.Show("Phòng ban chưa được hỗ trợ!", "Thông báo",
-        //                MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //            return new DanhSachKhachHang();
-        //    }
-        //}
-
-        private void textBoxMatKhau_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-                button1.PerformClick();
-            }
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label8_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Bo góc button đăng nhập
             BoGocButton(button1, 25);
-
-            // Áp dụng bo góc cho input tài khoản và mật khẩu
             ApplyRoundedInput(panelTentk, txtTentk, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelMatkhau, textBoxmatkhau, 12, 2, Color.FromArgb(0, 152, 70));
 
-            // Ẩn mật khẩu thành dấu *
             textBoxmatkhau.PasswordChar = '*';
 
-            // Bo góc panel bên phải (trắng)
             BoGocPanel(panel2, 30);
-
-            // Bo góc panel bên trái (xanh) - panel3
             BoGocPanel(panel3, 30);
 
             button3.FlatStyle = FlatStyle.Flat;
             button3.FlatAppearance.BorderSize = 0;
             button3.BackColor = Color.Transparent;
-            button3.ForeColor = Color.Green; // Màu chữ xanh
+            button3.ForeColor = Color.Green;
             button3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             button3.Cursor = Cursors.Hand;
             button3.TextAlign = ContentAlignment.MiddleCenter;
 
-            // THÊM PHẦN NÀY - Cấu hình button4
+            // Cấu hình button4 - Nút hiện/ẩn mật khẩu
             button4.FlatStyle = FlatStyle.Flat;
             button4.FlatAppearance.BorderSize = 0;
             button4.BackColor = Color.Transparent;
             button4.Cursor = Cursors.Hand;
-            button4.BackgroundImage = (Image)Properties.Resources.ResourceManager.GetObject("closeeye");
             button4.BackgroundImageLayout = ImageLayout.Zoom;
+
+            // Load ảnh ban đầu từ DangNhap.resx
+            try
+            {
+                var img = formResources.GetObject("closeeye");
+                if (img != null)
+                {
+                    button4.BackgroundImage = (Image)img;
+                }
+                else
+                {
+                    MessageBox.Show("Không tìm thấy ảnh 'closeeye' trong DangNhap.resx!\n\nVui lòng kiểm tra lại tên ảnh.", "Cảnh báo");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi load ảnh closeeye: {ex.Message}", "Lỗi");
+            }
+
+            // TẢI THÔNG TIN ĐĂNG NHẬP ĐÃ LƯU (NẾU CÓ)
+            TaiThongTinDangNhap();
         }
 
-        private void button3_Click(object sender, EventArgs e) // nút quên mật khẩu
-        {
-            QuenMatKhau1 quenMKForm = new QuenMatKhau1();
-            quenMKForm.Show();
-            this.Hide();
-        }
+        private void textBox1_TextChanged(object sender, EventArgs e) { }
+        private void textBox2_TextChanged(object sender, EventArgs e) { }
+        private void label2_Click(object sender, EventArgs e) { }
+        private void label6_Click(object sender, EventArgs e) { }
+        private void label8_Click(object sender, EventArgs e) { }
+        private void label5_Click(object sender, EventArgs e) { }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel3_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

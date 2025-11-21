@@ -95,5 +95,14 @@ namespace BLL
             var result = dal.doiMatKhau(tenTK, newHash);
             return (result.Success, result.Message);
         }
+
+        public TaiKhoan? layThongTinTaiKhoan(string tenTK)
+        {
+            if (string.IsNullOrWhiteSpace(tenTK))
+                return null;
+
+            var account = dal.kiemTraDangNhap(tenTK);
+            return account;
+        }
     }
 }

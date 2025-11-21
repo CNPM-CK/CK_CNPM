@@ -31,10 +31,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DatLaiMatKhau));
             panel1 = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
-            panel2 = new Panel();
-            pictureBox7 = new PictureBox();
-            label1 = new Label();
             panel3 = new Panel();
+            button3 = new Button();
+            button2 = new Button();
             textBox2 = new TextBox();
             label8 = new Label();
             textBox1 = new TextBox();
@@ -51,10 +50,11 @@
             pictureBox2 = new PictureBox();
             pictureBox3 = new PictureBox();
             pictureBox4 = new PictureBox();
+            panel2 = new Panel();
+            pictureBox7 = new PictureBox();
+            label1 = new Label();
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
-            panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             panel3.SuspendLayout();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
@@ -62,6 +62,8 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
+            panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -79,8 +81,8 @@
             // 
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.Controls.Add(panel2, 0, 0);
             tableLayoutPanel1.Controls.Add(panel3, 0, 1);
+            tableLayoutPanel1.Controls.Add(panel2, 0, 0);
             tableLayoutPanel1.Location = new Point(346, 29);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 2;
@@ -89,41 +91,12 @@
             tableLayoutPanel1.Size = new Size(616, 664);
             tableLayoutPanel1.TabIndex = 2;
             // 
-            // panel2
-            // 
-            panel2.BackColor = Color.FromArgb(125, 199, 84);
-            panel2.Controls.Add(pictureBox7);
-            panel2.Controls.Add(label1);
-            panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(3, 3);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(610, 115);
-            panel2.TabIndex = 0;
-            // 
-            // pictureBox7
-            // 
-            pictureBox7.Image = (Image)resources.GetObject("pictureBox7.Image");
-            pictureBox7.Location = new Point(2, 3);
-            pictureBox7.Name = "pictureBox7";
-            pictureBox7.Size = new Size(111, 109);
-            pictureBox7.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox7.TabIndex = 2;
-            pictureBox7.TabStop = false;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            label1.Location = new Point(155, 27);
-            label1.Name = "label1";
-            label1.Size = new Size(335, 54);
-            label1.TabIndex = 0;
-            label1.Text = "Đặt lại mật khẩu";
-            // 
             // panel3
             // 
             panel3.BackColor = SystemColors.Window;
             panel3.BorderStyle = BorderStyle.FixedSingle;
+            panel3.Controls.Add(button3);
+            panel3.Controls.Add(button2);
             panel3.Controls.Add(textBox2);
             panel3.Controls.Add(label8);
             panel3.Controls.Add(textBox1);
@@ -139,9 +112,28 @@
             panel3.Size = new Size(610, 537);
             panel3.TabIndex = 1;
             // 
+            // button3
+            // 
+            button3.Location = new Point(435, 307);
+            button3.Name = "button3";
+            button3.Size = new Size(45, 36);
+            button3.TabIndex = 19;
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(435, 191);
+            button2.Name = "button2";
+            button2.Size = new Size(45, 36);
+            button2.TabIndex = 18;
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // textBox2
             // 
             textBox2.BorderStyle = BorderStyle.FixedSingle;
+            textBox2.ForeColor = SystemColors.WindowText;
             textBox2.Location = new Point(128, 296);
             textBox2.Multiline = true;
             textBox2.Name = "textBox2";
@@ -161,6 +153,7 @@
             // textBox1
             // 
             textBox1.BorderStyle = BorderStyle.FixedSingle;
+            textBox1.ForeColor = SystemColors.WindowText;
             textBox1.Location = new Point(128, 179);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
@@ -191,9 +184,9 @@
             // 
             // button1
             // 
-            button1.BackColor = Color.FromArgb(125, 199, 84);
+            button1.BackColor = Color.FromArgb(0, 152, 70);
             button1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            button1.ForeColor = Color.DarkGreen;
+            button1.ForeColor = Color.FromArgb(0, 77, 0);
             button1.Location = new Point(128, 383);
             button1.Name = "button1";
             button1.Size = new Size(369, 63);
@@ -252,7 +245,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.BackColor = Color.FromArgb(125, 199, 84);
+            label7.BackColor = Color.FromArgb(0, 152, 70);
             label7.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 163);
             label7.ForeColor = SystemColors.Window;
             label7.Location = new Point(448, 19);
@@ -264,7 +257,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.BackColor = Color.FromArgb(125, 199, 84);
+            label4.BackColor = Color.FromArgb(0, 152, 70);
             label4.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 163);
             label4.ForeColor = SystemColors.Window;
             label4.Location = new Point(282, 18);
@@ -276,7 +269,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.BackColor = Color.FromArgb(125, 199, 84);
+            label3.BackColor = Color.FromArgb(0, 152, 70);
             label3.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 163);
             label3.ForeColor = SystemColors.Window;
             label3.Location = new Point(111, 18);
@@ -288,9 +281,9 @@
             // pictureBox2
             // 
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(80, 0);
+            pictureBox2.Location = new Point(78, 0);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(103, 87);
+            pictureBox2.Size = new Size(101, 87);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
@@ -298,7 +291,7 @@
             // pictureBox3
             // 
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(250, 0);
+            pictureBox3.Location = new Point(247, 0);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(103, 87);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
@@ -308,12 +301,44 @@
             // pictureBox4
             // 
             pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
-            pictureBox4.Location = new Point(418, 0);
+            pictureBox4.Location = new Point(413, 0);
             pictureBox4.Name = "pictureBox4";
             pictureBox4.Size = new Size(103, 87);
             pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox4.TabIndex = 21;
             pictureBox4.TabStop = false;
+            // 
+            // panel2
+            // 
+            panel2.BackColor = Color.FromArgb(0, 152, 70);
+            panel2.Controls.Add(pictureBox7);
+            panel2.Controls.Add(label1);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(3, 3);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(610, 115);
+            panel2.TabIndex = 2;
+            panel2.Paint += panel2_Paint;
+            // 
+            // pictureBox7
+            // 
+            pictureBox7.Image = (Image)resources.GetObject("pictureBox7.Image");
+            pictureBox7.Location = new Point(3, 0);
+            pictureBox7.Name = "pictureBox7";
+            pictureBox7.Size = new Size(111, 109);
+            pictureBox7.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox7.TabIndex = 2;
+            pictureBox7.TabStop = false;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label1.Location = new Point(156, 26);
+            label1.Name = "label1";
+            label1.Size = new Size(335, 54);
+            label1.TabIndex = 0;
+            label1.Text = "Đặt lại mật khẩu";
             // 
             // DatLaiMatKhau
             // 
@@ -328,9 +353,6 @@
             Load += DatLaiMatKhau_Load;
             panel1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             panel4.ResumeLayout(false);
@@ -340,6 +362,9 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             ResumeLayout(false);
         }
 
@@ -347,7 +372,6 @@
 
         private Panel panel1;
         private TableLayoutPanel tableLayoutPanel1;
-        private Panel panel2;
         private Label label1;
         private Panel panel3;
         private TextBox textBox1;
@@ -367,5 +391,8 @@
         private TextBox textBox2;
         private Label label8;
         private PictureBox pictureBox7;
+        private Panel panel2;
+        private Button button3;
+        private Button button2;
     }
 }

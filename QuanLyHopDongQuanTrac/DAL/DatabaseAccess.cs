@@ -28,8 +28,8 @@ namespace DAL
             //    "Encrypt=True;" +
             //    "TrustServerCertificate=False;" +
             //    "Connection Timeout=30;";
-            string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-            //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
             SqlConnection conn = new SqlConnection(connectionStr);
@@ -1531,15 +1531,17 @@ namespace DAL
                                         ? Convert.ToDateTime(reader["ngayTraKQ"])
                                         : (DateTime?)null,
                                     TenNhanVien = reader["NguoiNhap"].ToString(),
-
-                                    // ✅ FIX: Đọc từ cột TrangThai (TEXT) và chuyển sang bool
                                     TrangThaiXacNhan = reader["TrangThai"].ToString().Trim()
                                         .Equals("Đã xác nhận", StringComparison.OrdinalIgnoreCase),
-
                                     GhiChu = reader["ghiChu"] != DBNull.Value ? reader["ghiChu"].ToString() : "",
                                     DotQuanTrac = reader["dotQuanTrac"] != DBNull.Value ? reader["dotQuanTrac"].ToString() : "",
                                     MaDot = reader["maDot"] != DBNull.Value ? reader["maDot"].ToString() : "",
-                                    SoNenMau = Convert.ToInt32(reader["SoNenMau"])
+                                    SoNenMau = Convert.ToInt32(reader["SoNenMau"]),
+
+                                    // ✅ THÊM MỚI - Đọc thông tin khách hàng
+                                    TenKhachHang = reader["TenKhachHang"] != DBNull.Value ? reader["TenKhachHang"].ToString() : "",
+                                    EmailKhachHang = reader["EmailKhachHang"] != DBNull.Value ? reader["EmailKhachHang"].ToString() : "",
+                                    DiaChiKhachHang = reader["DiaChiKhachHang"] != DBNull.Value ? reader["DiaChiKhachHang"].ToString() : ""
                                 };
 
                                 list.Add(header);
@@ -1589,12 +1591,19 @@ namespace DAL
                                     TenNhanVien = reader["NguoiNhap"].ToString(),
                                     TrangThaiXacNhan = Convert.ToBoolean(reader["trangThaiXacNhan"]),
                                     GhiChu = reader["ghiChu"] == DBNull.Value ? "" : reader["ghiChu"].ToString(),
-                                    DotQuanTrac = reader["dotQuanTrac"] == DBNull.Value ? "" : reader["dotQuanTrac"].ToString()
+                                    DotQuanTrac = reader["dotQuanTrac"] == DBNull.Value ? "" : reader["dotQuanTrac"].ToString(),
+                                    MaDot = reader["maDot"] == DBNull.Value ? "" : reader["maDot"].ToString(),
+
+                                    // ✅ THÊM MỚI - Đọc thông tin khách hàng
+                                    TenKhachHang = reader["TenKhachHang"] == DBNull.Value ? "" : reader["TenKhachHang"].ToString(),
+                                    EmailKhachHang = reader["EmailKhachHang"] == DBNull.Value ? "" : reader["EmailKhachHang"].ToString(),
+                                    DiaChiKhachHang = reader["DiaChiKhachHang"] == DBNull.Value ? "" : reader["DiaChiKhachHang"].ToString(),
+                                    DiaDiemQuanTrac = reader["DiaDiemQuanTrac"] == DBNull.Value ? "" : reader["DiaDiemQuanTrac"].ToString()
                                 };
                                 headerLoaded = true;
                             }
 
-                            // Load nền mẫu
+                            // Load nền mẫu (giữ nguyên phần này)
                             string maKQNen = reader["maKQNen"] == DBNull.Value ? "" : reader["maKQNen"].ToString();
 
                             if (!string.IsNullOrEmpty(maKQNen))
@@ -1612,7 +1621,6 @@ namespace DAL
                                     };
                                 }
 
-                                // Load chi tiết thông số
                                 string maKQCT = reader["maKQCT"] == DBNull.Value ? "" : reader["maKQCT"].ToString();
                                 if (!string.IsNullOrEmpty(maKQCT))
                                 {
@@ -1636,7 +1644,6 @@ namespace DAL
                 }
             }
 
-            // Chuyển dictionary thành list
             result.DanhSachNenMau = new List<DTO_KetQuaNenMau>(dictNenMau.Values);
             return result;
         }

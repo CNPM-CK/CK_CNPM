@@ -31,6 +31,31 @@ namespace GUI.Forms
 
             SetupDataGridView();
             LoadDanhSachKetQua();
+
+            // ✅ FORCE SET KÍCH THƯỚC SAU KHI LOAD - QUAN TRỌNG!
+            dgvDanhsachketqua.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+
+            // ✅ FORCE SET LẠI WIDTH TỪNG CỘT
+            if (dgvDanhsachketqua.Columns["STT"] != null)
+                dgvDanhsachketqua.Columns["STT"].Width = 60;
+
+            if (dgvDanhsachketqua.Columns["TenCongTy"] != null)
+                dgvDanhsachketqua.Columns["TenCongTy"].Width = 280;
+
+            if (dgvDanhsachketqua.Columns["DotQuanTrac"] != null)
+                dgvDanhsachketqua.Columns["DotQuanTrac"].Width = 280;
+
+            if (dgvDanhsachketqua.Columns["NgayTao"] != null)
+                dgvDanhsachketqua.Columns["NgayTao"].Width = 125;
+
+            if (dgvDanhsachketqua.Columns["NgayTraKQ"] != null)
+                dgvDanhsachketqua.Columns["NgayTraKQ"].Width = 125;
+
+            if (dgvDanhsachketqua.Columns["TenNhanVien"] != null)
+                dgvDanhsachketqua.Columns["TenNhanVien"].Width = 200;
+
+            if (dgvDanhsachketqua.Columns["TrangThai"] != null)
+                dgvDanhsachketqua.Columns["TrangThai"].Width = 140;
         }
 
         private void SetupDataGridView()
@@ -49,32 +74,35 @@ namespace GUI.Forms
             dgvDanhsachketqua.BorderStyle = BorderStyle.None;
             dgvDanhsachketqua.EnableHeadersVisualStyles = false;
 
+            // ✅ TẮT AUTO SIZE COLUMNS
+            dgvDanhsachketqua.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+
             // Thiết lập chiều cao
             int headerHeight = 40;
             int rowHeight = 45;
             dgvDanhsachketqua.ColumnHeadersHeight = headerHeight;
             dgvDanhsachketqua.RowTemplate.Height = rowHeight;
 
-            // Style cho header
+            // Style cho header - CHỮ ĐEN IN ĐẬM, NỀN XÁM
             dgvDanhsachketqua.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
-                BackColor = Color.FromArgb(0, 152, 70),
-                ForeColor = Color.White,
+                BackColor = Color.FromArgb(200, 200, 200),
+                ForeColor = Color.Black,
                 Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
                 Alignment = DataGridViewContentAlignment.MiddleCenter,
-                SelectionBackColor = Color.FromArgb(0, 152, 70),
+                SelectionBackColor = Color.FromArgb(200, 200, 200),
                 Padding = new Padding(5),
                 WrapMode = DataGridViewTriState.False
             };
 
-            // Style cho cells
+            // Style cho cells - CHỮ ĐEN THƯỜNG
             dgvDanhsachketqua.DefaultCellStyle = new DataGridViewCellStyle
             {
-                Font = new Font("Segoe UI", 9.5F),
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
                 BackColor = Color.White,
-                ForeColor = Color.FromArgb(33, 37, 41),
-                SelectionBackColor = Color.FromArgb(111, 207, 151),
-                SelectionForeColor = Color.White,
+                ForeColor = Color.Black,
+                SelectionBackColor = Color.FromArgb(200, 200, 200),
+                SelectionForeColor = Color.Black,
                 Padding = new Padding(8, 0, 8, 0),
                 WrapMode = DataGridViewTriState.False
             };
@@ -82,39 +110,40 @@ namespace GUI.Forms
             dgvDanhsachketqua.AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = Color.FromArgb(248, 249, 250),
-                SelectionBackColor = Color.FromArgb(111, 207, 151),
-                SelectionForeColor = Color.White
+                SelectionBackColor = Color.FromArgb(200, 200, 200),
+                SelectionForeColor = Color.Black,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                ForeColor = Color.Black
             };
 
-            // ✅ THÊM CÁC CỘT
+            // ✅ THÊM CÁC CỘT VỚI CHIỀU RỘNG PHÂN BỔ HỢP LÝ
 
-            // 1. STT
+            // 1. STT - Thu nhỏ
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "STT",
                 HeaderText = "STT",
-                Width = 60,
+                Width = 50,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                    ForeColor = Color.FromArgb(0, 102, 204)
+                    Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                    ForeColor = Color.Black
                 }
             });
 
-            // 2. Mã Đợt Quan Trắc
+            // 2. Tên Công Ty - THÊM MỚI
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "MaDot",
-                HeaderText = "Mã Đợt",
-                DataPropertyName = "MaDot",
-                Width = 100,
+                Name = "TenCongTy",
+                HeaderText = "Tên Công Ty",
+                DataPropertyName = "TenKhachHang",
+                Width = 280,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
-                    Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                    ForeColor = Color.FromArgb(0, 102, 204),
-                    BackColor = Color.FromArgb(230, 245, 255)
+                    Alignment = DataGridViewContentAlignment.MiddleLeft,
+                    Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                    ForeColor = Color.Black
                 }
             });
 
@@ -124,11 +153,12 @@ namespace GUI.Forms
                 Name = "DotQuanTrac",
                 HeaderText = "Tên Đợt Quan Trắc",
                 DataPropertyName = "DotQuanTrac",
-                Width = 240,
+                Width = 300,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Alignment = DataGridViewContentAlignment.MiddleLeft,
-                    Font = new Font("Segoe UI", 9.5F, FontStyle.Regular)
+                    Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                    ForeColor = Color.Black
                 }
             });
 
@@ -138,13 +168,14 @@ namespace GUI.Forms
                 Name = "NgayTao",
                 HeaderText = "Ngày Tạo",
                 DataPropertyName = "NgayTao",
-                Width = 120,
+                Width = 110,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Format = "dd/MM/yyyy",
                     Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    BackColor = Color.FromArgb(245, 250, 255),
-                    Font = new Font("Segoe UI", 9.5F)
+                    BackColor = Color.White,
+                    Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                    ForeColor = Color.Black
                 }
             });
 
@@ -154,13 +185,14 @@ namespace GUI.Forms
                 Name = "NgayTraKQ",
                 HeaderText = "Ngày Trả KQ",
                 DataPropertyName = "NgayTraKQ",
-                Width = 120,
+                Width = 110,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Format = "dd/MM/yyyy",
                     Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    BackColor = Color.FromArgb(255, 250, 245),
-                    Font = new Font("Segoe UI", 9.5F)
+                    BackColor = Color.White,
+                    Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                    ForeColor = Color.Black
                 }
             });
 
@@ -174,47 +206,35 @@ namespace GUI.Forms
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Alignment = DataGridViewContentAlignment.MiddleLeft,
-                    Font = new Font("Segoe UI", 9.5F)
+                    Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                    ForeColor = Color.Black
                 }
             });
 
-            // 7. Số Nền Mẫu
-            dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "SoNenMau",
-                HeaderText = "Số Nền",
-                DataPropertyName = "SoNenMau",
-                Width = 100,
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    Font = new Font("Segoe UI", 10.5F, FontStyle.Bold)
-                }
-            });
-
-            // 8. Trạng Thái
+            // 7. Trạng Thái
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "TrangThai",
                 HeaderText = "Trạng Thái",
                 DataPropertyName = "TrangThai",
-                Width = 160,
+                Width = 140,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                    Padding = new Padding(8, 0, 8, 0)
+                    Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                    Padding = new Padding(8, 0, 8, 0),
+                    ForeColor = Color.Black
                 }
             });
 
-            // 9. Ghi Chú
+            // 8. Ghi Chú - TỰ ĐỘNG FILL
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "GhiChu",
                 HeaderText = "Ghi Chú",
                 DataPropertyName = "GhiChu",
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                MinimumWidth = 220,
+                MinimumWidth = 150,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Alignment = DataGridViewContentAlignment.MiddleLeft,
@@ -243,12 +263,11 @@ namespace GUI.Forms
 
                     // Gán dữ liệu
                     row.Cells["STT"].Value = stt;
-                    row.Cells["MaDot"].Value = item.MaDot ?? "";
+                    row.Cells["TenCongTy"].Value = item.TenKhachHang ?? "";
                     row.Cells["DotQuanTrac"].Value = item.DotQuanTrac ?? "";
                     row.Cells["NgayTao"].Value = item.NgayTao;
                     row.Cells["NgayTraKQ"].Value = item.NgayTraKQ;
                     row.Cells["TenNhanVien"].Value = item.TenNhanVien ?? "";
-                    row.Cells["SoNenMau"].Value = item.SoNenMau;
                     row.Cells["TrangThai"].Value = item.TrangThai;
                     row.Cells["GhiChu"].Value = item.GhiChu ?? "";
 
@@ -258,6 +277,23 @@ namespace GUI.Forms
 
                 FormatDataGridView();
 
+                // ✅ FORCE SET LẠI WIDTH SAU KHI LOAD DATA
+                dgvDanhsachketqua.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+                dgvDanhsachketqua.Columns["STT"].Width = 60;
+                dgvDanhsachketqua.Columns["TenCongTy"].Width = 280;
+                dgvDanhsachketqua.Columns["DotQuanTrac"].Width = 280;
+                dgvDanhsachketqua.Columns["NgayTao"].Width = 125;
+                dgvDanhsachketqua.Columns["NgayTraKQ"].Width = 125;
+                dgvDanhsachketqua.Columns["TenNhanVien"].Width = 200;
+                dgvDanhsachketqua.Columns["TrangThai"].Width = 140;
+
+                // ✅ DEBUG: In ra console để kiểm tra
+                System.Diagnostics.Debug.WriteLine($"=== DEBUG COLUMN WIDTH ===");
+                System.Diagnostics.Debug.WriteLine($"STT Width: {dgvDanhsachketqua.Columns["STT"].Width}");
+                System.Diagnostics.Debug.WriteLine($"TenCongTy Width: {dgvDanhsachketqua.Columns["TenCongTy"].Width}");
+                System.Diagnostics.Debug.WriteLine($"NgayTao Width: {dgvDanhsachketqua.Columns["NgayTao"].Width}");
+                System.Diagnostics.Debug.WriteLine($"AutoSizeColumnsMode: {dgvDanhsachketqua.AutoSizeColumnsMode}");
+
                 // Cập nhật title
                 if (panel6 != null)
                 {
@@ -266,7 +302,7 @@ namespace GUI.Forms
                     {
                         Text = $"📊 DANH SÁCH KẾT QUẢ QUAN TRẮC ({list.Count} kết quả)",
                         Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                        ForeColor = Color.FromArgb(0, 152, 70),
+                        ForeColor = Color.Black,
                         Dock = DockStyle.Fill,
                         TextAlign = ContentAlignment.MiddleCenter
                     };
@@ -292,7 +328,7 @@ namespace GUI.Forms
         {
             foreach (DataGridViewRow row in dgvDanhsachketqua.Rows)
             {
-                // ✅ FORMAT TRẠNG THÁI
+                // ✅ FORMAT TRẠNG THÁI (chỉ dùng in đậm, không màu)
                 if (row.Cells["TrangThai"].Value != null)
                 {
                     string trangThai = row.Cells["TrangThai"].Value.ToString().Trim();
@@ -300,21 +336,23 @@ namespace GUI.Forms
                     // Kiểm tra cả hai trường hợp
                     if (trangThai.Equals("Đã xác nhận", StringComparison.OrdinalIgnoreCase))
                     {
-                        row.Cells["TrangThai"].Value = "Đã xác nhận";
-                        row.Cells["TrangThai"].Style.BackColor = Color.FromArgb(200, 255, 200);
-                        row.Cells["TrangThai"].Style.ForeColor = Color.FromArgb(0, 128, 0);
+                        row.Cells["TrangThai"].Value = "✓ Đã xác nhận";
+                        row.Cells["TrangThai"].Style.BackColor = Color.White;
+                        row.Cells["TrangThai"].Style.ForeColor = Color.Black;
+                        row.Cells["TrangThai"].Style.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
                     }
                     else
                     {
-                        row.Cells["TrangThai"].Value = "Chờ xác nhận";
-                        row.Cells["TrangThai"].Style.BackColor = Color.FromArgb(255, 245, 200);
-                        row.Cells["TrangThai"].Style.ForeColor = Color.FromArgb(204, 136, 0);
+                        row.Cells["TrangThai"].Value = "○ Chờ xác nhận";
+                        row.Cells["TrangThai"].Style.BackColor = Color.White;
+                        row.Cells["TrangThai"].Style.ForeColor = Color.Black;
+                        row.Cells["TrangThai"].Style.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
                     }
                 }
 
                 // ✅ HIGHLIGHT DÒNG HOVER
-                row.DefaultCellStyle.SelectionBackColor = Color.FromArgb(111, 207, 151);
-                row.DefaultCellStyle.SelectionForeColor = Color.White;
+                row.DefaultCellStyle.SelectionBackColor = Color.LightGray;
+                row.DefaultCellStyle.SelectionForeColor = Color.Black;
             }
         }
 
@@ -434,6 +472,11 @@ namespace GUI.Forms
                 0, 0, watermark.Width, watermark.Height,
                 GraphicsUnit.Pixel,
                 attributes);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

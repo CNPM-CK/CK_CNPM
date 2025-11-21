@@ -2,14 +2,9 @@
 {
     partial class DanhSachKetQua
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
+  
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
@@ -181,6 +176,7 @@
             button2.TabIndex = 0;
             button2.Text = "button2";
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // panel3
             // 
@@ -278,7 +274,6 @@
         private Panel panel8;
         private PictureBox pictureBox1;
 
-        // Add this event handler method to your partial class (in DanhSachKetQua.cs or here if needed)
         private void Form2_Load(object sender, EventArgs e)
         {
             // You can leave this empty or add initialization code here
