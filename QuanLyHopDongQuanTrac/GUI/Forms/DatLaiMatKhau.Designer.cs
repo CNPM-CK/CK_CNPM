@@ -42,8 +42,6 @@
             button1 = new Button();
             label2 = new Label();
             panel4 = new Panel();
-            pictureBox6 = new PictureBox();
-            pictureBox5 = new PictureBox();
             label7 = new Label();
             label4 = new Label();
             label3 = new Label();
@@ -51,18 +49,20 @@
             pictureBox3 = new PictureBox();
             pictureBox4 = new PictureBox();
             panel2 = new Panel();
-            pictureBox7 = new PictureBox();
             label1 = new Label();
+            pictureBox1 = new PictureBox();
+            pictureBox5 = new PictureBox();
+            pictureBox7 = new PictureBox();
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             panel3.SuspendLayout();
             panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             SuspendLayout();
             // 
@@ -209,8 +209,8 @@
             // 
             // panel4
             // 
-            panel4.Controls.Add(pictureBox6);
             panel4.Controls.Add(pictureBox5);
+            panel4.Controls.Add(pictureBox1);
             panel4.Controls.Add(label7);
             panel4.Controls.Add(label4);
             panel4.Controls.Add(label3);
@@ -221,26 +221,6 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(598, 87);
             panel4.TabIndex = 0;
-            // 
-            // pictureBox6
-            // 
-            pictureBox6.Image = (Image)resources.GetObject("pictureBox6.Image");
-            pictureBox6.Location = new Point(352, 0);
-            pictureBox6.Name = "pictureBox6";
-            pictureBox6.Size = new Size(70, 87);
-            pictureBox6.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox6.TabIndex = 19;
-            pictureBox6.TabStop = false;
-            // 
-            // pictureBox5
-            // 
-            pictureBox5.Image = (Image)resources.GetObject("pictureBox5.Image");
-            pictureBox5.Location = new Point(182, 0);
-            pictureBox5.Name = "pictureBox5";
-            pictureBox5.Size = new Size(70, 87);
-            pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox5.TabIndex = 18;
-            pictureBox5.TabStop = false;
             // 
             // label7
             // 
@@ -301,6 +281,7 @@
             // pictureBox4
             // 
             pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
+            pictureBox4.InitialImage = null;
             pictureBox4.Location = new Point(413, 0);
             pictureBox4.Name = "pictureBox4";
             pictureBox4.Size = new Size(103, 87);
@@ -320,16 +301,6 @@
             panel2.TabIndex = 2;
             panel2.Paint += panel2_Paint;
             // 
-            // pictureBox7
-            // 
-            pictureBox7.Image = (Image)resources.GetObject("pictureBox7.Image");
-            pictureBox7.Location = new Point(3, 0);
-            pictureBox7.Name = "pictureBox7";
-            pictureBox7.Size = new Size(111, 109);
-            pictureBox7.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox7.TabIndex = 2;
-            pictureBox7.TabStop = false;
-            // 
             // label1
             // 
             label1.AutoSize = true;
@@ -339,6 +310,36 @@
             label1.Size = new Size(335, 54);
             label1.TabIndex = 0;
             label1.Text = "Đặt lại mật khẩu";
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(181, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(70, 87);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 22;
+            pictureBox1.TabStop = false;
+            // 
+            // pictureBox5
+            // 
+            pictureBox5.Image = (Image)resources.GetObject("pictureBox5.Image");
+            pictureBox5.Location = new Point(347, 0);
+            pictureBox5.Name = "pictureBox5";
+            pictureBox5.Size = new Size(70, 87);
+            pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox5.TabIndex = 23;
+            pictureBox5.TabStop = false;
+            // 
+            // pictureBox7
+            // 
+            pictureBox7.Image = (Image)resources.GetObject("pictureBox7.Image");
+            pictureBox7.Location = new Point(3, 3);
+            pictureBox7.Name = "pictureBox7";
+            pictureBox7.Size = new Size(111, 109);
+            pictureBox7.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox7.TabIndex = 3;
+            pictureBox7.TabStop = false;
             // 
             // DatLaiMatKhau
             // 
@@ -357,13 +358,13 @@
             panel3.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             ResumeLayout(false);
         }
@@ -380,8 +381,6 @@
         private Button button1;
         private Label label2;
         private Panel panel4;
-        private PictureBox pictureBox6;
-        private PictureBox pictureBox5;
         private Label label7;
         private Label label4;
         private Label label3;
@@ -390,9 +389,11 @@
         private PictureBox pictureBox4;
         private TextBox textBox2;
         private Label label8;
-        private PictureBox pictureBox7;
         private Panel panel2;
         private Button button3;
         private Button button2;
+        private PictureBox pictureBox5;
+        private PictureBox pictureBox1;
+        private PictureBox pictureBox7;
     }
 }

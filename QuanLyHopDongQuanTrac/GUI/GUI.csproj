@@ -31,6 +31,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
     <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.26" />
     <PackageReference Include="ScottPlot.WinForms" Version="5.1.57" />
+    <PackageReference Include="Select.HtmlToPdf" Version="25.2.0" />
+    <PackageReference Include="Select.HtmlToPdf.NetCore" Version="25.2.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.10" />
