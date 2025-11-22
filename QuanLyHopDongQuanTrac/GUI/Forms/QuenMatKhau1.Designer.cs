@@ -90,7 +90,7 @@
             // 
             // panel2
             // 
-            panel2.BackColor = Color.FromArgb(125, 199, 84);
+            panel2.BackColor = Color.FromArgb(0, 152, 70);
             panel2.Controls.Add(pictureBox1);
             panel2.Controls.Add(label1);
             panel2.Dock = DockStyle.Fill;
@@ -98,6 +98,7 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(610, 115);
             panel2.TabIndex = 0;
+            panel2.Paint += panel2_Paint;
             // 
             // pictureBox1
             // 
@@ -168,11 +169,10 @@
             button2.TabIndex = 12;
             button2.Text = "Quay lại đăng nhập";
             button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
             // 
             // button1
             // 
-            button1.BackColor = Color.FromArgb(125, 199, 84);
+            button1.BackColor = Color.FromArgb(0, 152, 70);
             button1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
             button1.ForeColor = Color.DarkGreen;
             button1.Location = new Point(127, 300);
@@ -181,7 +181,6 @@
             button1.TabIndex = 11;
             button1.Text = "Gửi mã xác nhận";
             button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click_1;
             // 
             // label2
             // 
@@ -239,7 +238,6 @@
             pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox5.TabIndex = 18;
             pictureBox5.TabStop = false;
-            pictureBox5.Click += pictureBox5_Click;
             // 
             // label7
             // 
@@ -268,7 +266,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.BackColor = Color.FromArgb(125, 199, 84);
+            label3.BackColor = Color.FromArgb(0, 152, 70);
             label3.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 163);
             label3.ForeColor = SystemColors.Window;
             label3.Location = new Point(111, 18);
@@ -301,7 +299,7 @@
             // pictureBox2
             // 
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(80, 0);
+            pictureBox2.Location = new Point(77, -1);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(103, 87);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;

@@ -222,7 +222,6 @@
             btnXuatFile.TabIndex = 3;
             btnXuatFile.Text = "Xuất file";
             btnXuatFile.UseVisualStyleBackColor = true;
-            btnXuatFile.Click += btnXuatFile_Click_1;
             // 
             // btnXacNhan
             // 
@@ -249,7 +248,7 @@
             // dgvChiTiet
             // 
             dgvChiTiet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvChiTiet.Location = new Point(-3, 268);
+            dgvChiTiet.Location = new Point(-3, -262);
             dgvChiTiet.Name = "dgvChiTiet";
             dgvChiTiet.RowHeadersWidth = 51;
             dgvChiTiet.Size = new Size(1286, 388);

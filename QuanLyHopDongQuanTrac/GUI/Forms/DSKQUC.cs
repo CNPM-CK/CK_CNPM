@@ -4,38 +4,31 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace GUI.Forms
 {
-    public partial class DanhSachKetQua : Form
+    public partial class DSKQUC : UserControl
     {
         private KetQuaBLL ketQuaBLL = new KetQuaBLL();
 
-        public DanhSachKetQua()
+        public DSKQUC()
         {
             InitializeComponent();
-            this.Load += DanhSachKetQua_Load;
-            this.Resize += DanhSachKetQua_Resize;
+            this.Load += DSKQUC_Load;
+            this.Resize += DSKQUC_Resize;
             dgvDanhsachketqua.CellDoubleClick += dgvDanhsachketqua_CellDoubleClick;
         }
 
-        private void DanhSachKetQua_Load(object sender, EventArgs e)
+        private void DSKQUC_Load(object sender, EventArgs e)
         {
-            this.MinimumSize = new Size(1400, 750);
-            this.StartPosition = FormStartPosition.CenterScreen;
-
-            if (pictureBox1 != null)
-                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-
             SetupDataGridView();
             LoadDanhSachKetQua();
 
-            // ✅ FORCE SET KÍCH THƯỚC SAU KHI LOAD - QUAN TRỌNG!
+            // FORCE SET KÍCH THƯỚC SAU KHI LOAD
             dgvDanhsachketqua.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
 
-            // ✅ FORCE SET LẠI WIDTH TỪNG CỘT
+            // FORCE SET LẠI WIDTH TỪNG CỘT
             if (dgvDanhsachketqua.Columns["STT"] != null)
                 dgvDanhsachketqua.Columns["STT"].Width = 60;
 
@@ -74,7 +67,7 @@ namespace GUI.Forms
             dgvDanhsachketqua.BorderStyle = BorderStyle.None;
             dgvDanhsachketqua.EnableHeadersVisualStyles = false;
 
-            // ✅ TẮT AUTO SIZE COLUMNS
+            // TẮT AUTO SIZE COLUMNS
             dgvDanhsachketqua.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
 
             // Thiết lập chiều cao
@@ -116,8 +109,6 @@ namespace GUI.Forms
                 ForeColor = Color.Black
             };
 
-            // ✅ THÊM CÁC CỘT VỚI CHIỀU RỘNG PHÂN BỔ HỢP LÝ
-
             // 1. STT - Thu nhỏ
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
@@ -132,7 +123,7 @@ namespace GUI.Forms
                 }
             });
 
-            // 2. Tên Công Ty - THÊM MỚI
+            // 2. Tên Công Ty
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "TenCongTy",
@@ -246,7 +237,7 @@ namespace GUI.Forms
             });
         }
 
-        private void LoadDanhSachKetQua()
+        public void LoadDanhSachKetQua()
         {
             try
             {
@@ -271,43 +262,31 @@ namespace GUI.Forms
                     row.Cells["TrangThai"].Value = item.TrangThai;
                     row.Cells["GhiChu"].Value = item.GhiChu ?? "";
 
-                    // ✅ Tag để lưu MaKQ cho việc mở chi tiết
+                    // Tag để lưu MaKQ cho việc mở chi tiết
                     row.Tag = item.MaKQ;
                 }
 
                 FormatDataGridView();
 
-                // ✅ FORCE SET LẠI WIDTH SAU KHI LOAD DATA
+                // FORCE SET LẠI WIDTH SAU KHI LOAD DATA
                 dgvDanhsachketqua.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-                dgvDanhsachketqua.Columns["STT"].Width = 60;
-                dgvDanhsachketqua.Columns["TenCongTy"].Width = 280;
-                dgvDanhsachketqua.Columns["DotQuanTrac"].Width = 280;
-                dgvDanhsachketqua.Columns["NgayTao"].Width = 125;
-                dgvDanhsachketqua.Columns["NgayTraKQ"].Width = 125;
-                dgvDanhsachketqua.Columns["TenNhanVien"].Width = 200;
-                dgvDanhsachketqua.Columns["TrangThai"].Width = 140;
-
-                // ✅ DEBUG: In ra console để kiểm tra
-                System.Diagnostics.Debug.WriteLine($"=== DEBUG COLUMN WIDTH ===");
-                System.Diagnostics.Debug.WriteLine($"STT Width: {dgvDanhsachketqua.Columns["STT"].Width}");
-                System.Diagnostics.Debug.WriteLine($"TenCongTy Width: {dgvDanhsachketqua.Columns["TenCongTy"].Width}");
-                System.Diagnostics.Debug.WriteLine($"NgayTao Width: {dgvDanhsachketqua.Columns["NgayTao"].Width}");
-                System.Diagnostics.Debug.WriteLine($"AutoSizeColumnsMode: {dgvDanhsachketqua.AutoSizeColumnsMode}");
+                if (dgvDanhsachketqua.Columns["STT"] != null)
+                    dgvDanhsachketqua.Columns["STT"].Width = 60;
+                if (dgvDanhsachketqua.Columns["TenCongTy"] != null)
+                    dgvDanhsachketqua.Columns["TenCongTy"].Width = 280;
+                if (dgvDanhsachketqua.Columns["DotQuanTrac"] != null)
+                    dgvDanhsachketqua.Columns["DotQuanTrac"].Width = 280;
+                if (dgvDanhsachketqua.Columns["NgayTao"] != null)
+                    dgvDanhsachketqua.Columns["NgayTao"].Width = 125;
+                if (dgvDanhsachketqua.Columns["NgayTraKQ"] != null)
+                    dgvDanhsachketqua.Columns["NgayTraKQ"].Width = 125;
+                if (dgvDanhsachketqua.Columns["TenNhanVien"] != null)
+                    dgvDanhsachketqua.Columns["TenNhanVien"].Width = 200;
+                if (dgvDanhsachketqua.Columns["TrangThai"] != null)
+                    dgvDanhsachketqua.Columns["TrangThai"].Width = 140;
 
                 // Cập nhật title
-                if (panel6 != null)
-                {
-                    panel6.Controls.Clear();
-                    Label lblTitle = new Label
-                    {
-                        Text = $"📊 DANH SÁCH KẾT QUẢ QUAN TRẮC ({list.Count} kết quả)",
-                        Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                        ForeColor = Color.Black,
-                        Dock = DockStyle.Fill,
-                        TextAlign = ContentAlignment.MiddleCenter
-                    };
-                    panel6.Controls.Add(lblTitle);
-                }
+                UpdateTitle(list.Count);
 
                 // Thông báo
                 if (list.Count == 0)
@@ -323,17 +302,32 @@ namespace GUI.Forms
             }
         }
 
-        // ✅ FORMAT TRẠNG THÁI - FIXED
+        private void UpdateTitle(int count)
+        {
+            if (panel6 != null)
+            {
+                panel6.Controls.Clear();
+                Label lblTitle = new Label
+                {
+                    Text = $"📊 DANH SÁCH KẾT QUẢ QUAN TRẮC ({count} kết quả)",
+                    Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                    ForeColor = Color.Black,
+                    Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                panel6.Controls.Add(lblTitle);
+            }
+        }
+
         private void FormatDataGridView()
         {
             foreach (DataGridViewRow row in dgvDanhsachketqua.Rows)
             {
-                // ✅ FORMAT TRẠNG THÁI (chỉ dùng in đậm, không màu)
+                // FORMAT TRẠNG THÁI
                 if (row.Cells["TrangThai"].Value != null)
                 {
                     string trangThai = row.Cells["TrangThai"].Value.ToString().Trim();
 
-                    // Kiểm tra cả hai trường hợp
                     if (trangThai.Equals("Đã xác nhận", StringComparison.OrdinalIgnoreCase))
                     {
                         row.Cells["TrangThai"].Value = "✓ Đã xác nhận";
@@ -350,13 +344,12 @@ namespace GUI.Forms
                     }
                 }
 
-                // ✅ HIGHLIGHT DÒNG HOVER
+                // HIGHLIGHT DÒNG HOVER
                 row.DefaultCellStyle.SelectionBackColor = Color.LightGray;
                 row.DefaultCellStyle.SelectionForeColor = Color.Black;
             }
         }
 
-        // ✅ XỬ LÝ DOUBLE CLICK - FIXED
         private void dgvDanhsachketqua_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -376,7 +369,7 @@ namespace GUI.Forms
                     ChiTietKetQua formChiTiet = new ChiTietKetQua(maKQ);
                     DialogResult result = formChiTiet.ShowDialog();
 
-                    // ✅ CHỈ REFRESH KHI CÓ THAY ĐỔI
+                    // CHỈ REFRESH KHI CÓ THAY ĐỔI
                     if (result == DialogResult.OK)
                     {
                         LoadDanhSachKetQua();
@@ -390,98 +383,42 @@ namespace GUI.Forms
             }
         }
 
-        private void DanhSachKetQua_Resize(object sender, EventArgs e)
+        private void DSKQUC_Resize(object sender, EventArgs e)
         {
-            try
-            {
-                float scaleX = (float)this.ClientSize.Width / 1400;
-                float scaleY = (float)this.ClientSize.Height / 750;
-
-                // Sidebar
-                if (sidebar != null)
-                {
-                    int newSidebarWidth = (int)(200 * scaleX);
-                    sidebar.Width = Math.Max(180, Math.Min(300, newSidebarWidth));
-                }
-
-                // Panel header
-                if (panel8 != null)
-                {
-                    int newPanel8Height = (int)(70 * scaleY);
-                    panel8.Height = Math.Max(50, Math.Min(90, newPanel8Height));
-                }
-
-                // Panel title
-                if (panel6 != null)
-                {
-                    int newPanel6Height = (int)(75 * scaleY);
-                    panel6.Height = Math.Max(65, Math.Min(90, newPanel6Height));
-                }
-
-                // PictureBox
-                if (pictureBox1 != null && sidebar != null && panel8 != null)
-                {
-                    pictureBox1.Width = sidebar.Width;
-                    pictureBox1.Height = panel8.Height;
-                    pictureBox1.Location = new Point(0, 0);
-                }
-
-                ResizeButtonsInSidebar(Math.Min(scaleX, scaleY));
-            }
-            catch { }
-        }
-
-        private void ResizeButtonsInSidebar(float scale)
-        {
-            if (sidebar == null) return;
-
-            foreach (Control control in sidebar.Controls)
-            {
-                if (control is Button btn)
-                {
-                    int margin = 5;
-                    btn.Width = sidebar.Width - (margin * 2);
-                    btn.Height = Math.Max(38, Math.Min(65, (int)(45 * scale)));
-                    btn.Left = margin;
-                    btn.Font = new Font(btn.Font.FontFamily,
-                        Math.Max(9.5f, Math.Min(14f, 11f * scale)), btn.Font.Style);
-                }
-            }
+            // Có thể thêm logic resize nếu cần
         }
 
         private void dgvDanhsachketqua_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 
         private void dgvDanhsachketqua_Paint(object sender, PaintEventArgs e)
         {
-            if (Properties.Resources.greenlogo == null) return;
+            try
+            {
+                if (Properties.Resources.greenlogo == null) return;
 
-            int dgvWidth = dgvDanhsachketqua.Width;
-            int dgvHeight = dgvDanhsachketqua.Height;
-            Image watermark = Properties.Resources.greenlogo;
+                int dgvWidth = dgvDanhsachketqua.Width;
+                int dgvHeight = dgvDanhsachketqua.Height;
+                Image watermark = Properties.Resources.greenlogo;
 
-            int x = (dgvWidth - watermark.Width) / 2;
-            int y = (dgvHeight - watermark.Height) / 2;
+                int x = (dgvWidth - watermark.Width) / 2;
+                int y = (dgvHeight - watermark.Height) / 2;
 
-            ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f;
-            ImageAttributes attributes = new ImageAttributes();
-            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                ColorMatrix matrix = new ColorMatrix();
+                matrix.Matrix33 = 0.3f;
+                ImageAttributes attributes = new ImageAttributes();
+                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
-            e.Graphics.DrawImage(watermark,
-                new Rectangle(x, y, watermark.Width, watermark.Height),
-                0, 0, watermark.Width, watermark.Height,
-                GraphicsUnit.Pixel,
-                attributes);
+                e.Graphics.DrawImage(watermark,
+                    new Rectangle(x, y, watermark.Width, watermark.Height),
+                    0, 0, watermark.Width, watermark.Height,
+                    GraphicsUnit.Pixel,
+                    attributes);
+            }
+            catch { }
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
+        private void panel6_Paint(object sender, PaintEventArgs e) { }
 
-        }
-
-        private void panel6_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
+        private void panel6_Paint_1(object sender, PaintEventArgs e) { }
     }
 }

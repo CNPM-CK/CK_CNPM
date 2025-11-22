@@ -175,7 +175,7 @@ namespace GUI.Forms
                     DataPropertyName = "maNen",
                     HeaderText = "MÃ NỀN",
                     Name = "maNen",
-                    Visible = false 
+                    Visible = false
 
                 },
                 new DataGridViewTextBoxColumn
@@ -860,6 +860,11 @@ namespace GUI.Forms
                 }
 
             }
+
+        }
+
+        private void panel6_Paint(object sender, PaintEventArgs e)
+        {
 
         }
     }

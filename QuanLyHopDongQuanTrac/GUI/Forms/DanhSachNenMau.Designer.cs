@@ -176,6 +176,7 @@
             panel6.Name = "panel6";
             panel6.Size = new Size(820, 61);
             panel6.TabIndex = 0;
+            panel6.Paint += panel6_Paint;
             // 
             // btnXuatfile
             // 

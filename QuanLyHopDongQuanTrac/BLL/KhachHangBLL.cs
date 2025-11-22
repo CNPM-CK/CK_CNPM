@@ -90,6 +90,26 @@ namespace BLL
         {
             return dal.demTongSoKhachHang();
         }
+        /// Lấy email khách hàng theo tên doanh nghiệp
+        public string layEmailKhachHang(string tenDoanhNghiep)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(tenDoanhNghiep))
+                    return null;
+
+                var danhSach = dal.layDanhSachKH();
+                var khachHang = danhSach.FirstOrDefault(kh =>
+                    kh.tenDoanhNghiep != null &&
+                    kh.tenDoanhNghiep.Trim().Equals(tenDoanhNghiep.Trim(), StringComparison.OrdinalIgnoreCase));
+
+                return khachHang?.emailDoanhNghiep;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy email khách hàng: " + ex.Message);
+            }
+        }
 
 
     }

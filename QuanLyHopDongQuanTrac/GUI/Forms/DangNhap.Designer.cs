@@ -77,9 +77,9 @@
             // 
             tableLayoutPanel1.BackColor = Color.Transparent;
             tableLayoutPanel1.ColumnCount = 5;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 18.0904522F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 81.9095459F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 15F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 12.1510677F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 87.84893F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 38F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 515F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92F));
             tableLayoutPanel1.Controls.Add(panel2, 3, 1);
@@ -155,6 +155,7 @@
             button4.Size = new Size(51, 51);
             button4.TabIndex = 15;
             button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click_1;
             // 
             // textBoxmatkhau
             // 
@@ -250,6 +251,7 @@
             button2.Size = new Size(54, 55);
             button2.TabIndex = 6;
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // button1
             // 
@@ -303,20 +305,20 @@
             // 
             // panel3
             // 
-            panel3.BackColor = Color.Green;
+            panel3.BackColor = Color.AntiqueWhite;
             panel3.Controls.Add(label5);
             panel3.Controls.Add(pictureBox1);
             panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(117, 60);
+            panel3.Location = new Point(77, 60);
             panel3.Name = "panel3";
-            panel3.Size = new Size(512, 562);
+            panel3.Size = new Size(529, 562);
             panel3.TabIndex = 1;
             // 
             // label5
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 163);
-            label5.ForeColor = Color.FromArgb(0, 77, 0);
+            label5.ForeColor = Color.Green;
             label5.Location = new Point(84, 448);
             label5.Name = "label5";
             label5.Size = new Size(345, 62);
@@ -328,9 +330,9 @@
             // pictureBox1
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(0, 62);
+            pictureBox1.Location = new Point(-31, 62);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(512, 332);
+            pictureBox1.Size = new Size(563, 332);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;
@@ -367,7 +369,6 @@
         private Panel panel1;
         private TableLayoutPanel tableLayoutPanel1;
         private Panel panel2;
-        private Panel panel3;
         private TableLayoutPanel tableLayoutPanel3;
         private Label label2;
         private Panel panel4;
@@ -384,8 +385,9 @@
         private Button button3;
         private Panel panelMatkhau;
         private Panel panelTentk;
-        private PictureBox pictureBox1;
         private Label label5;
         private Button button4;
+        private Panel panel3;
+        private PictureBox pictureBox1;
     }
 }

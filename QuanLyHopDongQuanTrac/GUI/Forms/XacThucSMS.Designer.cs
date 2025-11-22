@@ -96,7 +96,7 @@
             // 
             // panel2
             // 
-            panel2.BackColor = Color.FromArgb(125, 199, 84);
+            panel2.BackColor = Color.FromArgb(0, 152, 70);
             panel2.Controls.Add(pictureBox7);
             panel2.Controls.Add(label1);
             panel2.Dock = DockStyle.Fill;
@@ -240,7 +240,7 @@
             // 
             // button1
             // 
-            button1.BackColor = Color.FromArgb(125, 199, 84);
+            button1.BackColor = Color.FromArgb(0, 152, 70);
             button1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
             button1.ForeColor = Color.DarkGreen;
             button1.Location = new Point(127, 306);
@@ -313,7 +313,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.BackColor = Color.FromArgb(125, 199, 84);
+            label4.BackColor = Color.FromArgb(0, 152, 70);
             label4.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 163);
             label4.ForeColor = SystemColors.Window;
             label4.Location = new Point(282, 18);
@@ -325,7 +325,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.BackColor = Color.FromArgb(125, 199, 84);
+            label3.BackColor = Color.FromArgb(0, 152, 70);
             label3.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 163);
             label3.ForeColor = SystemColors.Window;
             label3.Location = new Point(111, 18);
@@ -347,7 +347,7 @@
             // pictureBox2
             // 
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(80, 0);
+            pictureBox2.Location = new Point(78, 0);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(103, 87);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
@@ -357,7 +357,7 @@
             // pictureBox3
             // 
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(250, 0);
+            pictureBox3.Location = new Point(248, 0);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(103, 87);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;

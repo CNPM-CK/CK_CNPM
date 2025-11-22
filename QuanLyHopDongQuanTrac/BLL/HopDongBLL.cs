@@ -12,21 +12,53 @@ namespace BLL
     public class HopDongBLL
     {
         private readonly DatabaseAccess dal = new DatabaseAccess();
+
         public List<HopDongDTO> LayDanhSachHD()
         {
             return dal.layDanhSachHD();
         }
+
+        /// <summary>
+        /// Lấy danh sách hợp đồng dạng DTO_HopDong cho form QuanLyHopDongChuKy
+        /// </summary>
+        public List<DTO_HopDong> LayDanhSachHopDong()
+        {
+            try
+            {
+                // Lấy danh sách HopDongDTO và chuyển đổi sang DTO_HopDong
+                var danhSachDTO = dal.layDanhSachHD();
+
+                if (danhSachDTO == null)
+                    return new List<DTO_HopDong>();
+
+                return danhSachDTO.Select(hd => new DTO_HopDong
+                {
+                    MaHD = hd.maHD,
+                    MaKH = hd.maKH,
+                    TenKhachHang = hd.TenKhachHang,
+                    DiaChiKhachHang = hd.DiaChiKhachHang,
+                    NgayKy = hd.ngayKy,
+                    NgayKetThuc = hd.ngayKetThucHD,
+                    TrangThai = hd.trangThai,
+                    TanSuatQuanTrac = hd.tanSuatQuanTrac,
+                    SoHD = hd.soHD
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi BLL.LayDanhSachHopDong: " + ex.Message);
+            }
+        }
+
         public void ThemHopDong(HopDongDTO hd)
         {
             dal.ThemHopDong(hd);
         }
 
-
         public void suaHopDong(HopDongDTO hd)
         {
             dal.suaHopDong(hd);
         }
-
 
         public void XoaNhanVien(string maNV)
         {
@@ -61,6 +93,7 @@ namespace BLL
 
             if (hdMoi.soHD?.Trim() != hdCu.soHD?.Trim())
                 log.AppendLine($"Số hợp đồng khác: '{hdCu.soHD}' → '{hdMoi.soHD}'");
+
             bool daThayDoi = log.Length > 0;
             return (daThayDoi, log.ToString());
         }
@@ -77,7 +110,6 @@ namespace BLL
             }
         }
 
-
         public List<HopDongDTO> layDanhSachHopDong_PhanTrang(int pageNumber, int pageSize)
         {
             return dal.layDanhSachHopDong_PhanTrang(pageNumber, pageSize);
@@ -87,7 +119,5 @@ namespace BLL
         {
             return dal.demSoLuongHopDong();
         }
-
-
     }
 }

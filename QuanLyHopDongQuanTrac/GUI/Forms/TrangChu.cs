@@ -293,7 +293,7 @@ namespace GUI.Forms
         private void btnDanhSachKetQua_Click(object sender, EventArgs e)
         {   SetActiveButton(btnDanhSachKetQua);
             panel5.Controls.Clear();
-            DanhSachKetQuaUC DSDNLuc = new DanhSachKetQuaUC();
+            DSKQUC DSDNLuc = new DSKQUC();
             DSDNLuc.Dock = DockStyle.Fill;
             panel5.Controls.Add(DSDNLuc);
             DSDNLuc.BringToFront();

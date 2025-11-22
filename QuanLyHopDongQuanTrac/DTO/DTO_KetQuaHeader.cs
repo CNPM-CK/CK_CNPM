@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Cập nhật file DTO_KetQuaHeader.cs
+
+using System;
 using System.Collections.Generic;
 
 namespace DTO
@@ -24,6 +26,14 @@ namespace DTO
         public string MaDot { get; set; }
         public int SoNenMau { get; set; }
 
+        // ✅ THÊM THÔNG TIN KHÁCH HÀNG
+        public string TenKhachHang { get; set; }
+        public string DiaChiKhachHang { get; set; }
+
+        // ✅ THÊM PROPERTY NÀY VÀO DTO_KetQuaHeader
+        public string EmailKhachHang { get; set; }
+        public string DiaDiemQuanTrac { get; set; }
+
         public DTO_KetQuaHeader()
         {
             MaKQ = string.Empty;
@@ -34,10 +44,13 @@ namespace DTO
             DotQuanTrac = string.Empty;
             MaDot = string.Empty;
             SoNenMau = 0;
+            TenKhachHang = string.Empty;
+            DiaChiKhachHang = string.Empty;
+            DiaDiemQuanTrac = string.Empty;
         }
     }
 
-    // DTO cho nền mẫu trong kết quả
+    // Các DTO khác giữ nguyên...
     public class DTO_KetQuaNenMau
     {
         public string MaKQNen { get; set; }
@@ -60,7 +73,6 @@ namespace DTO
         }
     }
 
-    // DTO cho chi tiết thông số trong kết quả
     public class DTO_KetQuaChiTiet
     {
         public string MaKQCT { get; set; }
@@ -89,7 +101,6 @@ namespace DTO
         }
     }
 
-    // DTO tổng hợp đầy đủ thông tin kết quả
     public class DTO_KetQuaFull
     {
         public DTO_KetQuaHeader Header { get; set; }
@@ -102,7 +113,6 @@ namespace DTO
         }
     }
 
-    // DTO cho báo cáo (giữ lại để tương thích)
     public class DTO_BaoCao
     {
         public string MaBC { get; set; }

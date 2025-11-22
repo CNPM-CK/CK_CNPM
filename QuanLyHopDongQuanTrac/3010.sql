@@ -635,28 +635,28 @@ INSERT [dbo].[HopDong] VALUES (N'HD022', N'KH015', CAST(N'2025-07-20' AS Date), 
 
 
 GO
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH001', N'Công ty ABC', N'ABC', N'Hà Nội', N'Nguyễn Văn A', N'0987654321', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH002', N'Công ty heo', N'CTB', N'Xã Định Hưng, Huyện Yên Định, Thanh Hóa', N'Trần Quang Thái', N'0910737726', NULL, NULL, NULL, 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH001', N'Công ty ABC', N'ABC', N'Hà Nội', N'Nguyễn Văn A', N'0987654321', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH002', N'Công ty heo', N'CTB', N'Xã Định Hưng, Huyện Yên Định, Thanh Hóa', N'Trần Quang Thái', N'0910737726', NULL, NULL, 'pttha2005@gmail.com', 1)
 INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH003', N'Công ty bò con', NULL, N'Xã Mường Bang, Huyện Phù Yên, Sơn La', N'Nguyễn Hoàng Sơn', N'0022332200', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH004', N'Công ty TNHH Môi Trường Xanh', N'MTXANH', N'Số 15 Lê Lợi, Quận 1, TP. Hồ Chí Minh', N'Phạm Văn Hùng', N'0908123456', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH005', N'Công ty CP Công Nghiệp Thực Phẩm Việt Nam', N'CNTP', N'KCN Tân Bình, Huyện Bắc Tân Uyên, Bình Dương', N'Lê Thị Minh', N'0917234567', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH006', N'Công ty TNHH Dệt May Hòa Phát', N'DMHP', N'Số 234 Quốc lộ 1A, Thị xã Bình Minh, Vĩnh Long', N'Nguyễn Minh Tuấn', N'0926345678', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH007', N'Công ty CP Hóa Chất An Phước', N'HCAP', N'Khu công nghiệp Long Hậu, Huyện Cần Giuộc, Long An', N'Trần Quốc Anh', N'0935456789', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH008', N'Công ty TNHH Chế Biến Thủy Sản Minh Hải', N'TSMH', N'Xã Hòa Thạnh, Thị xã Tân Châu, An Giang', N'Võ Thị Lan', N'0944567890', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH009', N'Công ty CP Giấy Tân Mai', N'GTM', N'KCN Phố Nối A, Huyện Yên Mỹ, Hưng Yên', N'Đặng Văn Phong', N'0953678901', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH010', N'Công ty TNHH Nhựa Đông Á', N'NDA', N'Số 88 Tỉnh lộ 15, Huyện Bình Chánh, TP. Hồ Chí Minh', N'Hoàng Minh Đức', N'0962789012', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH011', N'Công ty CP Dược Phẩm Hà Tây', N'DPHT', N'Đường Lê Trọng Tấn, Quận Hà Đông, Hà Nội', N'Bùi Thị Hương', N'0971890123', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH012', N'Công ty TNHH Sản Xuất Đồ Gỗ Phú Thọ', N'GOPT', N'Xã Thanh Minh, Thành phố Việt Trì, Phú Thọ', N'Lương Văn Sơn', N'0980901234', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH013', N'Công ty CP Xi Măng Long Sơn', N'XMLS', N'Khu công nghiệp Hòa Lạc, Huyện Thạch Thất, Hà Nội', N'Đinh Công Tuấn', N'0989012345', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH014', N'Công ty TNHH Sản Xuất Giày Da Thăng Long', N'GDTL', N'Số 456 Nguyễn Văn Cừ, Quận Long Biên, Hà Nội', N'Trịnh Thị Mai', N'0998123456', NULL, NULL, NULL, 1)
-INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH015', N'Công ty CP In và Bao Bì Bình Dương', N'BBBD', N'KCN Mỹ Phước 3, Thị xã Bến Cát, Bình Dương', N'Phan Thanh Long', N'0901234567', NULL, NULL, NULL, 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH004', N'Công ty TNHH Môi Trường Xanh', N'MTXANH', N'Số 15 Lê Lợi, Quận 1, TP. Hồ Chí Minh', N'Phạm Văn Hùng', N'0908123456', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH005', N'Công ty CP Công Nghiệp Thực Phẩm Việt Nam', N'CNTP', N'KCN Tân Bình, Huyện Bắc Tân Uyên, Bình Dương', N'Lê Thị Minh', N'0917234567', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH006', N'Công ty TNHH Dệt May Hòa Phát', N'DMHP', N'Số 234 Quốc lộ 1A, Thị xã Bình Minh, Vĩnh Long', N'Nguyễn Minh Tuấn', N'0926345678', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH007', N'Công ty CP Hóa Chất An Phước', N'HCAP', N'Khu công nghiệp Long Hậu, Huyện Cần Giuộc, Long An', N'Trần Quốc Anh', N'0935456789', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH008', N'Công ty TNHH Chế Biến Thủy Sản Minh Hải', N'TSMH', N'Xã Hòa Thạnh, Thị xã Tân Châu, An Giang', N'Võ Thị Lan', N'0944567890', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH009', N'Công ty CP Giấy Tân Mai', N'GTM', N'KCN Phố Nối A, Huyện Yên Mỹ, Hưng Yên', N'Đặng Văn Phong', N'0953678901', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH010', N'Công ty TNHH Nhựa Đông Á', N'NDA', N'Số 88 Tỉnh lộ 15, Huyện Bình Chánh, TP. Hồ Chí Minh', N'Hoàng Minh Đức', N'0962789012', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH011', N'Công ty CP Dược Phẩm Hà Tây', N'DPHT', N'Đường Lê Trọng Tấn, Quận Hà Đông, Hà Nội', N'Bùi Thị Hương', N'0971890123', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH012', N'Công ty TNHH Sản Xuất Đồ Gỗ Phú Thọ', N'GOPT', N'Xã Thanh Minh, Thành phố Việt Trì, Phú Thọ', N'Lương Văn Sơn', N'0980901234', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH013', N'Công ty CP Xi Măng Long Sơn', N'XMLS', N'Khu công nghiệp Hòa Lạc, Huyện Thạch Thất, Hà Nội', N'Đinh Công Tuấn', N'0989012345', NULL, NULL, 'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH014', N'Công ty TNHH Sản Xuất Giày Da Thăng Long', N'GDTL', N'Số 456 Nguyễn Văn Cừ, Quận Long Biên, Hà Nội', N'Trịnh Thị Mai', N'0998123456', NULL, NULL,'pttha2005@gmail.com', 1)
+INSERT [dbo].[KhachHang] ([maKH], [tenDoanhNghiep], [kyHieuDN], [diaChi], [nguoiDaiDien], [soDienThoaiKH], [maSoThue], [emailNguoiDaiDien], [emailDoanhNghiep], [trangThai]) VALUES (N'KH015', N'Công ty CP In và Bao Bì Bình Dương', N'BBBD', N'KCN Mỹ Phước 3, Thị xã Bến Cát, Bình Dương', N'Phan Thanh Long', N'0901234567', NULL, NULL, 'pttha2005@gmail.com', 1)
 
 GO
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV001', N'P004', N'Trần Quang Thái', CAST(N'2005-09-17' AS Date), 1, N'62 Ấp Bắc Chan 1, Xã Tuyên Thạnh, Thị xã Kiến Tường, Long An', N'0854707222', N'thaideptrai@gmail.com', CAST(N'2025-10-12' AS Date), 1)
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV002', N'P004', N'Tôn Quốc Thái', CAST(N'2005-07-14' AS Date), 0, N'Xã Trung Hóa, Huyện Minh Hóa, Quảng Bình', N'0123456789', N'thaiton@gmail.com', CAST(N'2025-10-12' AS Date), 1)
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV003', N'P002', N'Nguyễn Hoàng Sơn', CAST(N'1988-12-26' AS Date), 1, N'Xã An Đồng, Huyện An Dương, Hải Phòng', N'5555500000', N'hoangson@gmail.com', CAST(N'2025-10-12' AS Date), 1)
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV006', N'P002', N'Nguyễn Tiến Phú', CAST(N'1990-01-30' AS Date), 0, N'Xã Vạn Ninh, Huyện Quảng Ninh, Quảng Bình', N'2225552222', N'tienphu@gmail.com', CAST(N'2025-10-14' AS Date), 1)
-INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV007', N'P001', N'Phan Trí Tâm', CAST(N'1998-12-28' AS Date), 0, N'Thị trấn Long Phú, Huyện Long Phú, Sóc Trăng', N'4567891230', N'ptt@gmail.com', CAST(N'2025-10-15' AS Date), 1)
+INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV007', N'P001', N'Phan Trí Tâm', CAST(N'1998-12-28' AS Date), 0, N'Thị trấn Long Phú, Huyện Long Phú, Sóc Trăng', N'0567891230', N'Phantritam009@gmail.com', CAST(N'2025-10-15' AS Date), 1)
 INSERT [dbo].[NhanVien] ([maNV], [maPhong], [hoTen], [ngaySinh], [gioiTinh], [diaChi], [soDienThoai], [email], [ngayTao], [trangThai]) VALUES (N'NV008', N'P001', N'ADMINISTRATOR', CAST(N'2005-09-17' AS Date), 0, N'Xã Tuyên Thạnh, Tây NInh', N'0099887766', N'admin@gmail.com', CAST(N'2025-10-15' AS Date), 1)
 
 GO
@@ -673,7 +673,7 @@ INSERT [dbo].[PhongBan] ([maPhong], [tenPhong], [truongPhong]) VALUES (N'P005', 
 GO
 INSERT [dbo].[TaiKhoan] ([tenTK], [matKhau], [vaiTro]) VALUES (N'admin@gmail.com', N'$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 1)
 INSERT [dbo].[TaiKhoan] ([tenTK], [matKhau], [vaiTro]) VALUES (N'hoangson@gmail.com', N'$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0)
-INSERT [dbo].[TaiKhoan] ([tenTK], [matKhau], [vaiTro]) VALUES (N'ptt@gmail.com', N'$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0)
+INSERT [dbo].[TaiKhoan] ([tenTK], [matKhau], [vaiTro]) VALUES (N'Phantritam009@gmail.com', N'$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0)
 INSERT [dbo].[TaiKhoan] ([tenTK], [matKhau], [vaiTro]) VALUES (N'superadmin@gmail.local', N'$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 1)
 INSERT [dbo].[TaiKhoan] ([tenTK], [matKhau], [vaiTro]) VALUES (N'thaideptrai@gmail.com', N'$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0)
 INSERT [dbo].[TaiKhoan] ([tenTK], [matKhau], [vaiTro]) VALUES (N'thaiton@gmail.com', N'$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0)
@@ -3305,28 +3305,28 @@ BEGIN
     SELECT 
         kqh.maKQ,
         kqh.ngayTao,
-        COUNT(DISTINCT kqn.maNen) AS SoNenMau,
         kqh.ngayTraKQ,
         nv.hoTen AS NguoiNhap,
-        CASE 
-            WHEN kqh.trangThaiXacNhan = 1 THEN N'Đã xác nhận'
-            ELSE N'Chưa xác nhận'
-        END AS TrangThai,
+        CASE WHEN kqh.trangThaiXacNhan = 1 THEN N'Đã xác nhận' ELSE N'Chờ xác nhận' END AS TrangThai,
         kqh.ghiChu,
         dqt.dotQuanTrac,
-        kqh.maDot
+        dqt.maDot,
+        kh.tenDoanhNghiep AS TenKhachHang,
+        kh.emailDoanhNghiep AS EmailKhachHang,
+        kh.diaChi AS DiaChiKhachHang,
+        (SELECT COUNT(*) FROM KetQuaNenMau WHERE maKQ = kqh.maKQ) AS SoNenMau
     FROM KetQuaHeader kqh
-    INNER JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
-    LEFT JOIN KetQuaNenMau kqn ON kqh.maKQ = kqn.maKQ
+    LEFT JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
     LEFT JOIN DotQuanTrac dqt ON kqh.maDot = dqt.maDot
-    GROUP BY kqh.maKQ, kqh.ngayTao, kqh.ngayTraKQ, nv.hoTen, 
-             kqh.trangThaiXacNhan, kqh.ghiChu, dqt.dotQuanTrac, kqh.maDot
+    LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
+    LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
     ORDER BY kqh.ngayTao DESC;
 END
+
 GO
 
 -- Lấy chi tiết kết quả theo mã KQ (cho dgvChiTiet)
-CREATE PROCEDURE [dbo].[sp_LayChiTietKetQuaTheoMaKQ]
+CREATE OR ALTER PROCEDURE [dbo].[sp_LayChiTietKetQuaTheoMaKQ]
     @maKQ VARCHAR(15)
 AS
 BEGIN
@@ -3340,6 +3340,12 @@ BEGIN
         kqh.trangThaiXacNhan,
         kqh.ghiChu,
         dqt.dotQuanTrac,
+        dqt.maDot,
+        -- ✅ THÊM THÔNG TIN KHÁCH HÀNG
+        kh.tenDoanhNghiep AS TenKhachHang,
+        kh.emailDoanhNghiep AS EmailKhachHang,
+        kh.diaChi AS DiaChiKhachHang,
+        dqt.noiDung AS DiaDiemQuanTrac,
         -- Thông tin nền mẫu
         kqn.maKQNen,
         kqn.maNen,
@@ -3362,8 +3368,10 @@ BEGIN
             ELSE N'Đạt chuẩn'
         END AS TinhTrang
     FROM KetQuaHeader kqh
-    INNER JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
+    LEFT JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
     LEFT JOIN DotQuanTrac dqt ON kqh.maDot = dqt.maDot
+    LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
+    LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
     LEFT JOIN KetQuaNenMau kqn ON kqh.maKQ = kqn.maKQ
     LEFT JOIN NenMau nm ON kqn.maNen = nm.maNen
     LEFT JOIN KetQuaChiTiet kqct ON kqn.maKQNen = kqct.maKQNen
@@ -5621,9 +5629,9 @@ BEGIN
         kh.tenDoanhNghiep,
         kh.emailDoanhNghiep AS email,
 
-        d.ngayBatDau,                     -- 📌 để tính Quý
-        d.ngayTraKQ,                      -- (optional)
-        hd.tanSuatQuanTrac,               -- 📌 Quý / 6 tháng
+        d.ngayBatDau,                   
+        d.ngayTraKQ,                    
+        hd.tanSuatQuanTrac,              
 
         tb.tieuDe,
         tb.noiDung,
@@ -5632,7 +5640,7 @@ BEGIN
     FROM ThongBao tb
     JOIN HopDong hd ON tb.maHD = hd.maHD
     JOIN KhachHang kh ON hd.maKH = kh.maKH
-    JOIN DotQuanTrac d ON d.maDot = tb.maDot   -- 📌 JOIN để lấy ngày bắt đầu
+    JOIN DotQuanTrac d ON d.maDot = tb.maDot   
 
     WHERE 
         tb.loaiTB = 'NHAC_KY_HOP_DONG'
@@ -5683,3 +5691,170 @@ BEGIN
     ORDER BY nv.maNV;
 END
 GO
+--THÊM PHẦN FACE ID 21/11/2025 PTT
+IF OBJECT_ID(N'[dbo].[FaceRecognition]', N'U') IS NOT NULL
+BEGIN
+    DROP TABLE [dbo].[FaceRecognition];
+END
+GO
+
+-- Tạo bảng FaceRecognition
+CREATE TABLE [dbo].[FaceRecognition](
+    [tenTK]       VARCHAR(50)    NOT NULL,         
+    [faceData]    VARBINARY(MAX) NOT NULL,           
+    [ngayTao]     DATETIME       NOT NULL DEFAULT GETDATE(),
+    [ngayCapNhat] DATETIME       NULL,
+    
+    CONSTRAINT [PK_FaceRecognition] PRIMARY KEY CLUSTERED ([tenTK] ASC),
+    
+    -- Khóa ngoại liên kết với bảng TaiKhoan
+    CONSTRAINT [FK_FaceRecognition_TaiKhoan] FOREIGN KEY([tenTK]) 
+        REFERENCES [dbo].[TaiKhoan]([tenTK]) ON DELETE CASCADE
+);
+GO
+
+-- Index tối ưu truy vấn
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes 
+    WHERE name = N'IX_FaceRecognition_TenTK' 
+      AND object_id = OBJECT_ID(N'[dbo].[FaceRecognition]')
+)
+BEGIN
+    CREATE NONCLUSTERED INDEX [IX_FaceRecognition_TenTK]
+        ON [dbo].[FaceRecognition]([tenTK]);
+END
+GO
+
+-- STORED PROCEDURE 1: Lưu/Cập nhật dữ liệu khuôn mặt
+
+CREATE OR ALTER PROCEDURE [dbo].[sp_LuuFaceData]
+    @tenTK    VARCHAR(50),
+    @faceData VARBINARY(MAX),
+    @Success  BIT OUTPUT,
+    @Message  NVARCHAR(200) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRAN;
+
+        -- Kiểm tra tài khoản tồn tại
+        IF NOT EXISTS (SELECT 1 FROM TaiKhoan WHERE tenTK = @tenTK)
+        BEGIN
+            SET @Success = 0;
+            SET @Message = N'Tài khoản không tồn tại!';
+            ROLLBACK TRAN;
+            RETURN;
+        END
+
+        -- Nếu đã có dữ liệu Face thì cập nhật, ngược lại thì thêm mới
+        IF EXISTS (SELECT 1 FROM FaceRecognition WHERE tenTK = @tenTK)
+        BEGIN
+            UPDATE FaceRecognition
+            SET faceData    = @faceData,
+                ngayCapNhat = GETDATE()
+            WHERE tenTK = @tenTK;
+
+            SET @Message = N'Cập nhật dữ liệu khuôn mặt thành công!';
+        END
+        ELSE
+        BEGIN
+            INSERT INTO FaceRecognition(tenTK, faceData, ngayTao)
+            VALUES(@tenTK, @faceData, GETDATE());
+
+            SET @Message = N'Lưu dữ liệu khuôn mặt thành công!';
+        END
+
+        SET @Success = 1;
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRAN;
+
+        SET @Success = 0;
+        SET @Message = ERROR_MESSAGE();
+    END CATCH
+END
+GO
+
+-- STORED PROCEDURE 2: Lấy dữ liệu Face theo tài khoản
+CREATE OR ALTER PROCEDURE [dbo].[sp_LayFaceDataTheoTK]
+    @tenTK VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        tenTK,
+        faceData,
+        ngayTao,
+        ngayCapNhat
+    FROM FaceRecognition
+    WHERE tenTK = @tenTK;
+END
+GO
+
+
+-- STORED PROCEDURE 3: Lấy tất cả dữ liệu khuôn mặt
+
+CREATE OR ALTER PROCEDURE [dbo].[sp_LayTatCaFaceData]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        tenTK,
+        faceData,
+        ngayTao,
+        ngayCapNhat
+    FROM FaceRecognition
+    ORDER BY ngayTao DESC;
+END
+GO
+
+-- STORED PROCEDURE 4: Xóa dữ liệu Face của tài khoản
+
+CREATE OR ALTER PROCEDURE [dbo].[sp_XoaFaceData]
+    @tenTK   VARCHAR(50),
+    @Success BIT OUTPUT,
+    @Message NVARCHAR(200) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM FaceRecognition WHERE tenTK = @tenTK)
+        BEGIN
+            SET @Success = 0;
+            SET @Message = N'Không tìm thấy dữ liệu khuôn mặt!';
+            RETURN;
+        END
+
+        DELETE FROM FaceRecognition WHERE tenTK = @tenTK;
+
+        SET @Success = 1;
+        SET @Message = N'Xóa dữ liệu khuôn mặt thành công!';
+    END TRY
+    BEGIN CATCH
+        SET @Success = 0;
+        SET @Message = ERROR_MESSAGE();
+    END CATCH
+END
+GO
+
+
+-- STORED PROCEDURE 5: Kiểm tra tài khoản đã đăng ký Face ID chưa
+CREATE OR ALTER PROCEDURE [dbo].[sp_KiemTraFaceDataTonTai]
+    @tenTK  VARCHAR(50),
+    @TonTai BIT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (SELECT 1 FROM FaceRecognition WHERE tenTK = @tenTK)
+        SET @TonTai = 1;
+    ELSE
+        SET @TonTai = 0;
+END

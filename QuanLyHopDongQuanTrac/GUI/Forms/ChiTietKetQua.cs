@@ -1,13 +1,19 @@
 ﻿using BLL;
 using DTO;
 using System;
+using SelectPdf;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Reporting.NETCore;
+
+// Alias để tránh xung đột namespace
+using DrawingPoint = System.Drawing.Point;
+using DrawingRectangle = System.Drawing.Rectangle;
 
 namespace GUI.Forms
 {
@@ -15,6 +21,7 @@ namespace GUI.Forms
     {
         private readonly string maKQ;
         private readonly KetQuaBLL ketQuaBLL = new KetQuaBLL();
+        private readonly EmailService emailService = new EmailService();
         private DTO_KetQuaFull ketQuaFull;
         private Panel panelNenMau;
         private bool daThayDoiTrangThai = false;
@@ -26,17 +33,14 @@ namespace GUI.Forms
             InitializeComponent();
             this.maKQ = maKQ;
 
-            // lifecycle
             this.Load += ChiTietKetQua_Load;
             this.Resize += ChiTietKetQua_Resize;
             this.FormClosing += ChiTietKetQua_FormClosing;
 
-            // CHỐT 1 handler cho nút Xuất file
             if (this.btnXuatFile != null)
             {
                 try { this.btnXuatFile.Click -= btnXuatFile_Click; } catch { }
-                try { this.btnXuatFile.Click -= btnXuatFile_Click_1; } catch { }
-                this.btnXuatFile.Click += btnXuatFile_Click;   // chỉ dùng 1
+                this.btnXuatFile.Click += btnXuatFile_Click;
             }
         }
 
@@ -73,7 +77,7 @@ namespace GUI.Forms
                 int buttonAreaHeight = 90;
                 int availableHeight = this.ClientSize.Height - headerHeight - buttonAreaHeight;
 
-                panelNenMau.Location = new Point(15, headerHeight);
+                panelNenMau.Location = new DrawingPoint(15, headerHeight);
                 panelNenMau.Size = new Size(this.ClientSize.Width - 30, availableHeight);
 
                 foreach (Control ctrl in panelNenMau.Controls)
@@ -139,9 +143,9 @@ namespace GUI.Forms
             if (txtMaKQ != null)
             {
                 txtMaKQ.Text = ketQuaFull.Header.MaKQ;
-                txtMaKQ.BackColor = Color.FromArgb(230, 240, 255);
+                txtMaKQ.BackColor = System.Drawing.Color.FromArgb(230, 240, 255);
                 txtMaKQ.Font = boldFont;
-                txtMaKQ.ForeColor = Color.FromArgb(0, 102, 204);
+                txtMaKQ.ForeColor = System.Drawing.Color.FromArgb(0, 102, 204);
                 txtMaKQ.TextAlign = HorizontalAlignment.Center;
                 txtMaKQ.BorderStyle = BorderStyle.FixedSingle;
                 txtMaKQ.ReadOnly = true;
@@ -159,7 +163,7 @@ namespace GUI.Forms
             if (txtNhanVienNhap != null)
             {
                 txtNhanVienNhap.Text = ketQuaFull.Header.TenNhanVien ?? "";
-                txtNhanVienNhap.BackColor = Color.FromArgb(245, 255, 250);
+                txtNhanVienNhap.BackColor = System.Drawing.Color.FromArgb(245, 255, 250);
                 txtNhanVienNhap.Font = textFont;
                 txtNhanVienNhap.ReadOnly = true;
             }
@@ -168,8 +172,8 @@ namespace GUI.Forms
             {
                 string trangThai = daXacNhan ? "✅ Đã xác nhận" : "⏳ Chờ xác nhận";
                 txtTrangThai.Text = trangThai;
-                txtTrangThai.BackColor = daXacNhan ? Color.FromArgb(200, 255, 200) : Color.FromArgb(255, 245, 200);
-                txtTrangThai.ForeColor = daXacNhan ? Color.FromArgb(0, 128, 0) : Color.FromArgb(204, 136, 0);
+                txtTrangThai.BackColor = daXacNhan ? System.Drawing.Color.FromArgb(200, 255, 200) : System.Drawing.Color.FromArgb(255, 245, 200);
+                txtTrangThai.ForeColor = daXacNhan ? System.Drawing.Color.FromArgb(0, 128, 0) : System.Drawing.Color.FromArgb(204, 136, 0);
                 txtTrangThai.Font = boldFont;
                 txtTrangThai.TextAlign = HorizontalAlignment.Center;
                 txtTrangThai.ReadOnly = true;
@@ -178,9 +182,9 @@ namespace GUI.Forms
             if (txtGhiChu != null)
             {
                 txtGhiChu.Text = ketQuaFull.Header.GhiChu ?? "";
-                txtGhiChu.BackColor = Color.FromArgb(255, 255, 240);
+                txtGhiChu.BackColor = System.Drawing.Color.FromArgb(255, 255, 240);
                 txtGhiChu.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
-                txtGhiChu.ForeColor = Color.FromArgb(108, 117, 125);
+                txtGhiChu.ForeColor = System.Drawing.Color.FromArgb(108, 117, 125);
                 txtGhiChu.ReadOnly = true;
             }
 
@@ -189,17 +193,17 @@ namespace GUI.Forms
                 int soNenMau = ketQuaFull.DanhSachNenMau.Count;
                 string dotText = ketQuaFull.Header.DotQuanTrac ?? "Chưa xác định";
                 txtNenMau.Text = $"📊 {dotText} ({soNenMau} nền mẫu)";
-                txtNenMau.BackColor = Color.FromArgb(240, 255, 245);
+                txtNenMau.BackColor = System.Drawing.Color.FromArgb(240, 255, 245);
                 txtNenMau.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
-                txtNenMau.ForeColor = Color.FromArgb(0, 152, 70);
+                txtNenMau.ForeColor = System.Drawing.Color.FromArgb(0, 152, 70);
                 txtNenMau.ReadOnly = true;
             }
 
             if (btnXacNhan != null)
             {
                 btnXacNhan.Enabled = !daXacNhan;
-                btnXacNhan.BackColor = !daXacNhan ? Color.FromArgb(0, 152, 70) : Color.Gray;
-                btnXacNhan.ForeColor = Color.White;
+                btnXacNhan.BackColor = !daXacNhan ? System.Drawing.Color.FromArgb(0, 152, 70) : System.Drawing.Color.Gray;
+                btnXacNhan.ForeColor = System.Drawing.Color.White;
                 btnXacNhan.FlatStyle = FlatStyle.Flat;
                 btnXacNhan.FlatAppearance.BorderSize = 0;
                 btnXacNhan.Cursor = !daXacNhan ? Cursors.Hand : Cursors.Default;
@@ -211,8 +215,8 @@ namespace GUI.Forms
             if (btnHuyXacNhan != null)
             {
                 btnHuyXacNhan.Enabled = daXacNhan;
-                btnHuyXacNhan.BackColor = daXacNhan ? Color.FromArgb(220, 53, 69) : Color.Gray;
-                btnHuyXacNhan.ForeColor = Color.White;
+                btnHuyXacNhan.BackColor = daXacNhan ? System.Drawing.Color.FromArgb(220, 53, 69) : System.Drawing.Color.Gray;
+                btnHuyXacNhan.ForeColor = System.Drawing.Color.White;
                 btnHuyXacNhan.FlatStyle = FlatStyle.Flat;
                 btnHuyXacNhan.FlatAppearance.BorderSize = 0;
                 btnHuyXacNhan.Cursor = daXacNhan ? Cursors.Hand : Cursors.Default;
@@ -223,8 +227,8 @@ namespace GUI.Forms
 
             if (btnXuatFile != null)
             {
-                btnXuatFile.BackColor = Color.FromArgb(0, 123, 255);
-                btnXuatFile.ForeColor = Color.White;
+                btnXuatFile.BackColor = System.Drawing.Color.FromArgb(0, 123, 255);
+                btnXuatFile.ForeColor = System.Drawing.Color.White;
                 btnXuatFile.FlatStyle = FlatStyle.Flat;
                 btnXuatFile.FlatAppearance.BorderSize = 0;
                 btnXuatFile.Cursor = Cursors.Hand;
@@ -253,9 +257,9 @@ namespace GUI.Forms
                 {
                     Name = "panelNenMau",
                     AutoScroll = true,
-                    Location = new Point(15, headerHeight),
+                    Location = new DrawingPoint(15, headerHeight),
                     Size = new Size(this.ClientSize.Width - 30, availableHeight),
-                    BackColor = Color.FromArgb(240, 242, 245)
+                    BackColor = System.Drawing.Color.FromArgb(240, 242, 245)
                 };
                 panel1.Controls.Add(panelNenMau);
                 panelNenMau.BringToFront();
@@ -273,11 +277,11 @@ namespace GUI.Forms
                 GroupBox grpNenMau = new GroupBox
                 {
                     Width = panelNenMau.ClientSize.Width - 30,
-                    Location = new Point(10, yPosition),
+                    Location = new DrawingPoint(10, yPosition),
                     Font = new Font("Segoe UI", 11F, FontStyle.Bold),
-                    ForeColor = Color.White,
+                    ForeColor = System.Drawing.Color.White,
                     Padding = new Padding(3),
-                    BackColor = Color.White,
+                    BackColor = System.Drawing.Color.White,
                     FlatStyle = FlatStyle.Flat
                 };
 
@@ -285,14 +289,14 @@ namespace GUI.Forms
                 {
                     Height = 60,
                     Dock = DockStyle.Top,
-                    BackColor = Color.FromArgb(0, 152, 70)
+                    BackColor = System.Drawing.Color.FromArgb(0, 152, 70)
                 };
 
                 var lblHeader = new Label
                 {
                     Text = $"   📋 NỀN MẪU {groupIndex}: {nenMau.TenNenMau?.ToUpper() ?? "N/A"} ({nenMau.MaNen})  •  Mã KQ Nền: {nenMau.MaKQNen}",
                     Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                    ForeColor = Color.White,
+                    ForeColor = System.Drawing.Color.White,
                     AutoSize = false,
                     Height = 60,
                     Dock = DockStyle.Fill,
@@ -305,7 +309,7 @@ namespace GUI.Forms
                 {
                     Height = 50,
                     Dock = DockStyle.Top,
-                    BackColor = Color.FromArgb(230, 245, 255),
+                    BackColor = System.Drawing.Color.FromArgb(230, 245, 255),
                     Padding = new Padding(15, 12, 15, 12)
                 };
 
@@ -317,7 +321,7 @@ namespace GUI.Forms
                 {
                     Text = $"📍 Vị trí: {viTriText}     •     🗺️ Tọa độ: {toaDoText}     •     📊 Số thông số: {soThongSo}",
                     Font = new Font("Segoe UI", 10.2F),
-                    ForeColor = Color.FromArgb(0, 102, 204),
+                    ForeColor = System.Drawing.Color.FromArgb(0, 102, 204),
                     AutoSize = false,
                     Dock = DockStyle.Fill,
                     TextAlign = ContentAlignment.MiddleLeft
@@ -331,7 +335,7 @@ namespace GUI.Forms
                     Name = "dgvContainer",
                     Dock = DockStyle.Fill,
                     Padding = new Padding(12),
-                    BackColor = Color.White
+                    BackColor = System.Drawing.Color.White
                 };
                 dgvContainer.Controls.Add(dgvThongSo);
 
@@ -367,8 +371,8 @@ namespace GUI.Forms
                 AllowUserToResizeRows = false,
                 AllowUserToResizeColumns = true,
                 RowTemplate = { Height = 42 },
-                ColumnHeadersHeight = 50,
-                BackgroundColor = Color.White,
+                ColumnHeadersHeight = 70,
+                BackgroundColor = System.Drawing.Color.White,
                 BorderStyle = BorderStyle.None,
                 EnableHeadersVisualStyles = false,
                 Dock = DockStyle.None,
@@ -381,155 +385,46 @@ namespace GUI.Forms
 
             dgv.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
-                BackColor = Color.FromArgb(52, 58, 64),
-                ForeColor = Color.White,
+                BackColor = System.Drawing.Color.FromArgb(200, 200, 200),
+                ForeColor = System.Drawing.Color.Black,
                 Font = new Font("Segoe UI", 10.2F, FontStyle.Bold),
                 Alignment = DataGridViewContentAlignment.MiddleCenter,
-                SelectionBackColor = Color.FromArgb(52, 58, 64),
+                SelectionBackColor = System.Drawing.Color.FromArgb(200, 200, 200),
                 Padding = new Padding(5),
                 WrapMode = DataGridViewTriState.True
             };
 
             dgv.DefaultCellStyle = new DataGridViewCellStyle
             {
-                Font = new Font("Segoe UI", 9.5F),
-                BackColor = Color.White,
-                ForeColor = Color.FromArgb(33, 37, 41),
-                SelectionBackColor = Color.FromArgb(111, 207, 151),
-                SelectionForeColor = Color.White,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                BackColor = System.Drawing.Color.White,
+                ForeColor = System.Drawing.Color.Black,
+                SelectionBackColor = System.Drawing.Color.FromArgb(200, 200, 200),
+                SelectionForeColor = System.Drawing.Color.Black,
                 Padding = new Padding(6),
                 WrapMode = DataGridViewTriState.False
             };
 
             dgv.AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle
             {
-                BackColor = Color.FromArgb(248, 249, 250),
-                SelectionBackColor = Color.FromArgb(111, 207, 151),
-                SelectionForeColor = Color.White
+                BackColor = System.Drawing.Color.FromArgb(248, 249, 250),
+                SelectionBackColor = System.Drawing.Color.FromArgb(200, 200, 200),
+                SelectionForeColor = System.Drawing.Color.Black,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                ForeColor = System.Drawing.Color.Black
             };
 
             int containerWidth = grpWidth - 50;
 
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "STT",
-                HeaderText = "STT",
-                Width = (int)(containerWidth * 0.04),
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    Font = new Font("Segoe UI", 9.8F, FontStyle.Bold),
-                    ForeColor = Color.FromArgb(0, 102, 204)
-                }
-            });
-
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "MaKQCT",
-                HeaderText = "Mã KQ",
-                DataPropertyName = "MaKQCT",
-                Width = (int)(containerWidth * 0.07),
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
-                    ForeColor = Color.FromArgb(220, 53, 69),
-                    BackColor = Color.FromArgb(255, 245, 245)
-                }
-            });
-
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "TenTS",
-                HeaderText = "Thông Số Phân Tích",
-                DataPropertyName = "TenTS",
-                Width = (int)(containerWidth * 0.15),
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Alignment = DataGridViewContentAlignment.MiddleLeft,
-                    Font = new Font("Segoe UI", 9.5F, FontStyle.Bold)
-                }
-            });
-
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "DonVi",
-                HeaderText = "Đơn Vị",
-                DataPropertyName = "DonVi",
-                Width = (int)(containerWidth * 0.06),
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Alignment = DataGridViewContentAlignment.MiddleCenter
-                }
-            });
-
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "PhuongPhapPhanTich",
-                HeaderText = "Phương Pháp Phân Tích",
-                DataPropertyName = "PhuongPhapPhanTich",
-                Width = (int)(containerWidth * 0.18),
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Alignment = DataGridViewContentAlignment.MiddleLeft,
-                    Font = new Font("Segoe UI", 9F)
-                }
-            });
-
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "KetQua",
-                HeaderText = "Kết Quả Đo",
-                DataPropertyName = "KetQua",
-                Width = (int)(containerWidth * 0.10),
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Alignment = DataGridViewContentAlignment.MiddleRight,
-                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                    ForeColor = Color.FromArgb(220, 53, 69),
-                    Format = "N2"
-                }
-            });
-
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "GioiHanPhatHien",
-                HeaderText = "Giới Hạn Phát Hiện",
-                DataPropertyName = "GioiHanPhatHien",
-                Width = (int)(containerWidth * 0.13),
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    Font = new Font("Segoe UI", 9F)
-                }
-            });
-
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "QCVN",
-                HeaderText = "QCVN 40:2011/BTNMT Cột B",
-                DataPropertyName = "QCVN",
-                Width = (int)(containerWidth * 0.13),
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                    ForeColor = Color.FromArgb(0, 102, 204)
-                }
-            });
-
-            dgv.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "TinhTrang",
-                HeaderText = "Đánh Giá",
-                DataPropertyName = "TinhTrang",
-                Width = (int)(containerWidth * 0.14),
-                DefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Alignment = DataGridViewContentAlignment.MiddleCenter,
-                    Font = new Font("Segoe UI", 9.5F, FontStyle.Bold)
-                }
-            });
+            // Columns
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "STT", HeaderText = "STT", Width = (int)(containerWidth * 0.04), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, ForeColor = System.Drawing.Color.Black } });
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenTS", HeaderText = "Thông Số Phân Tích", DataPropertyName = "TenTS", Width = (int)(containerWidth * 0.18), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleLeft, ForeColor = System.Drawing.Color.Black } });
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "DonVi", HeaderText = "Đơn Vị", DataPropertyName = "DonVi", Width = (int)(containerWidth * 0.07), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, ForeColor = System.Drawing.Color.Black } });
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "PhuongPhapPhanTich", HeaderText = "Phương Pháp Phân Tích", DataPropertyName = "PhuongPhapPhanTich", Width = (int)(containerWidth * 0.21), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleLeft, ForeColor = System.Drawing.Color.Black } });
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "KetQua", HeaderText = "Kết Quả Đo", DataPropertyName = "KetQua", Width = (int)(containerWidth * 0.11), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = new Font("Segoe UI", 9.5F, FontStyle.Bold), ForeColor = System.Drawing.Color.Black, Format = "N2" } });
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "GioiHanPhatHien", HeaderText = "Giới Hạn Phát Hiện", DataPropertyName = "GioiHanPhatHien", Width = (int)(containerWidth * 0.14), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, ForeColor = System.Drawing.Color.Black } });
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "QCVN", HeaderText = "QCVN 40:2011/BTNMT Cột B", DataPropertyName = "QCVN", Width = (int)(containerWidth * 0.12), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, ForeColor = System.Drawing.Color.Black } });
+            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "TinhTrang", HeaderText = "Đánh Giá", DataPropertyName = "TinhTrang", Width = (int)(containerWidth * 0.13), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, ForeColor = System.Drawing.Color.Black } });
 
             int stt = 0;
             if (nenMau.DanhSachThongSo != null)
@@ -541,7 +436,6 @@ namespace GUI.Forms
                     var row = dgv.Rows[rowIndex];
 
                     row.Cells["STT"].Value = stt;
-                    row.Cells["MaKQCT"].Value = thongSo.MaKQCT ?? "";
                     row.Cells["TenTS"].Value = thongSo.TenTS ?? "";
                     row.Cells["DonVi"].Value = thongSo.DonVi ?? "-";
                     row.Cells["PhuongPhapPhanTich"].Value = thongSo.PhuongPhapPhanTich ?? "";
@@ -550,24 +444,10 @@ namespace GUI.Forms
                     row.Cells["QCVN"].Value = thongSo.QCVN ?? "Không quy định";
                     row.Cells["TinhTrang"].Value = thongSo.TinhTrang ?? "";
 
-                    string tinhTrang = thongSo.TinhTrang ?? "";
-                    if (tinhTrang.Contains("Vượt") || tinhTrang.Contains("vượt"))
+                    foreach (DataGridViewCell cell in row.Cells)
                     {
-                        row.Cells["TinhTrang"].Value = "❌ " + tinhTrang;
-                        row.Cells["TinhTrang"].Style.BackColor = Color.FromArgb(255, 220, 220);
-                        row.Cells["TinhTrang"].Style.ForeColor = Color.FromArgb(139, 0, 0);
-                    }
-                    else if (tinhTrang.Contains("Dưới") || tinhTrang.Contains("dưới"))
-                    {
-                        row.Cells["TinhTrang"].Value = "⚠️ " + tinhTrang;
-                        row.Cells["TinhTrang"].Style.BackColor = Color.FromArgb(255, 245, 220);
-                        row.Cells["TinhTrang"].Style.ForeColor = Color.FromArgb(204, 102, 0);
-                    }
-                    else if (tinhTrang.Contains("Đạt") || tinhTrang.Contains("đạt"))
-                    {
-                        row.Cells["TinhTrang"].Value = "✅ " + tinhTrang;
-                        row.Cells["TinhTrang"].Style.BackColor = Color.FromArgb(220, 255, 220);
-                        row.Cells["TinhTrang"].Style.ForeColor = Color.FromArgb(0, 128, 0);
+                        cell.Style.ForeColor = System.Drawing.Color.Black;
+                        cell.Style.BackColor = System.Drawing.Color.White;
                     }
                 }
             }
@@ -589,21 +469,21 @@ namespace GUI.Forms
             int buttonHeight = 52;
             int totalWidth = this.ClientSize.Width;
 
-            btnHuyXacNhan.Location = new Point(100, buttonY);
+            btnHuyXacNhan.Location = new DrawingPoint(100, buttonY);
             btnHuyXacNhan.Size = new Size(190, buttonHeight);
 
             int centerX = (totalWidth - 190) / 2;
-            btnXacNhan.Location = new Point(centerX, buttonY);
+            btnXacNhan.Location = new DrawingPoint(centerX, buttonY);
             btnXacNhan.Size = new Size(190, buttonHeight);
 
-            btnXuatFile.Location = new Point(totalWidth - 290, buttonY);
+            btnXuatFile.Location = new DrawingPoint(totalWidth - 290, buttonY);
             btnXuatFile.Size = new Size(190, buttonHeight);
         }
 
         private void ApplyRoundedCorners(Button button, int radius)
         {
             GraphicsPath path = new GraphicsPath();
-            Rectangle rect = new Rectangle(0, 0, button.Width, button.Height);
+            DrawingRectangle rect = new DrawingRectangle(0, 0, button.Width, button.Height);
 
             path.AddArc(rect.X, rect.Y, radius, radius, 180, 90);
             path.AddArc(rect.Right - radius, rect.Y, radius, radius, 270, 90);
@@ -614,17 +494,13 @@ namespace GUI.Forms
             button.Region = new Region(path);
         }
 
-        // ================== XỬ LÝ TRẠNG THÁI ==================
-
         private void btnXacNhan_Click(object sender, EventArgs e)
         {
             var confirm = MessageBox.Show(
                 $"Bạn có chắc chắn muốn xác nhận kết quả {maKQ}?\n\n" +
                 $"✓ Sau khi xác nhận, kết quả sẽ không thể chỉnh sửa\n" +
                 $"✓ Dữ liệu sẽ được sử dụng để tạo báo cáo chính thức",
-                "⚠️ Xác nhận kết quả",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
+                "⚠️ Xác nhận kết quả", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (confirm == DialogResult.Yes)
             {
@@ -648,9 +524,7 @@ namespace GUI.Forms
                 $"Bạn có chắc chắn muốn hủy xác nhận kết quả {maKQ}?\n\n" +
                 $"• Kết quả sẽ chuyển về trạng thái chưa xác nhận\n" +
                 $"• Có thể chỉnh sửa lại dữ liệu",
-                "⚠️ Hủy xác nhận",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+                "⚠️ Hủy xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
             if (confirm == DialogResult.Yes)
             {
@@ -668,11 +542,110 @@ namespace GUI.Forms
             }
         }
 
-        // ================== XUẤT PDF ==================
+        // ================== MENU XUẤT FILE ==================
 
-        // Giữ 2 tên handler để tương thích Designer; cả 2 gọi chung
-        private void btnXuatFile_Click(object sender, EventArgs e) => ExportPdfReport();
-        private void btnXuatFile_Click_1(object sender, EventArgs e) => ExportPdfReport();
+        private void btnXuatFile_Click(object sender, EventArgs e)
+        {
+            ShowExportMenu();
+        }
+
+        private void ShowExportMenu()
+        {
+            try
+            {
+                using (var menuForm = new Form())
+                {
+                    menuForm.Text = "Chọn hành động";
+                    menuForm.Size = new Size(500, 300);
+                    menuForm.StartPosition = FormStartPosition.CenterParent;
+                    menuForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                    menuForm.MaximizeBox = false;
+                    menuForm.MinimizeBox = false;
+                    menuForm.BackColor = System.Drawing.Color.White;
+
+                    var lblTitle = new Label
+                    {
+                        Text = "📊 Xuất Báo Cáo Kết Quả",
+                        Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                        ForeColor = System.Drawing.Color.FromArgb(0, 102, 204),
+                        AutoSize = false,
+                        Size = new Size(460, 40),
+                        Location = new DrawingPoint(20, 20),
+                        TextAlign = ContentAlignment.MiddleCenter
+                    };
+                    menuForm.Controls.Add(lblTitle);
+
+                    var lblInfo = new Label
+                    {
+                        Text = $"Mã kết quả: {maKQ}\nVui lòng chọn hành động:",
+                        Font = new Font("Segoe UI", 10F),
+                        ForeColor = System.Drawing.Color.FromArgb(60, 60, 60),
+                        AutoSize = false,
+                        Size = new Size(460, 50),
+                        Location = new DrawingPoint(20, 70),
+                        TextAlign = ContentAlignment.TopLeft
+                    };
+                    menuForm.Controls.Add(lblInfo);
+
+                    var btnExportPDF = new Button
+                    {
+                        Text = "📄 Xuất File PDF",
+                        Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                        Size = new Size(460, 50),
+                        Location = new DrawingPoint(20, 130),
+                        BackColor = System.Drawing.Color.FromArgb(0, 123, 255),
+                        ForeColor = System.Drawing.Color.White,
+                        FlatStyle = FlatStyle.Flat,
+                        Cursor = Cursors.Hand,
+                        Tag = "export"
+                    };
+                    btnExportPDF.FlatAppearance.BorderSize = 0;
+                    btnExportPDF.Click += (s, ev) =>
+                    {
+                        menuForm.DialogResult = DialogResult.OK;
+                        menuForm.Tag = "export";
+                        menuForm.Close();
+                    };
+                    menuForm.Controls.Add(btnExportPDF);
+
+                    var btnExportAndEmail = new Button
+                    {
+                        Text = "📧 Xuất và Gửi Email cho Khách Hàng",
+                        Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                        Size = new Size(460, 50),
+                        Location = new DrawingPoint(20, 190),
+                        BackColor = System.Drawing.Color.FromArgb(40, 167, 69),
+                        ForeColor = System.Drawing.Color.White,
+                        FlatStyle = FlatStyle.Flat,
+                        Cursor = Cursors.Hand,
+                        Tag = "email"
+                    };
+                    btnExportAndEmail.FlatAppearance.BorderSize = 0;
+                    btnExportAndEmail.Click += (s, ev) =>
+                    {
+                        menuForm.DialogResult = DialogResult.OK;
+                        menuForm.Tag = "email";
+                        menuForm.Close();
+                    };
+                    menuForm.Controls.Add(btnExportAndEmail);
+
+                    if (menuForm.ShowDialog(this) == DialogResult.OK)
+                    {
+                        string action = menuForm.Tag?.ToString();
+                        if (action == "export")
+                            ExportPdfReport();
+                        else if (action == "email")
+                            ExportAndSendEmail();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ================== XUẤT PDF ==================
 
         private void ExportPdfReport()
         {
@@ -680,109 +653,545 @@ namespace GUI.Forms
             {
                 if (ketQuaFull == null || ketQuaFull.Header == null)
                 {
-                    MessageBox.Show("Chưa có dữ liệu để xuất.");
+                    MessageBox.Show("Chưa có dữ liệu để xuất.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // hỗ trợ tiếng Việt
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-                // RDLC path (thử 2 khả năng)
-                string rdlcPath = Path.Combine(Application.StartupPath, "GUI", "Report", "ChiTietKetQua.rdlc");
-                if (!File.Exists(rdlcPath))
-                    rdlcPath = Path.Combine(Application.StartupPath, "Report", "ChiTietKetQua.rdlc");
-
-                if (!File.Exists(rdlcPath))
-                {
-                    MessageBox.Show("Không tìm thấy RDLC: " + rdlcPath);
-                    return;
-                }
-
-                // 1) Chuẩn bị dữ liệu
-                var headerData = new[]
-                {
-                    new {
-                        ketQuaFull.Header.MaKQ,
-                        ketQuaFull.Header.NgayTao,
-                        ketQuaFull.Header.NgayTraKQ,
-                        ketQuaFull.Header.TenNhanVien,
-                        ketQuaFull.Header.TrangThai,
-                        ketQuaFull.Header.GhiChu,
-                        ketQuaFull.Header.DotQuanTrac,
-                        ketQuaFull.Header.MaDot,
-                        ketQuaFull.Header.SoNenMau
-                    }
-                };
-
-                var chiTietData = ketQuaFull.DanhSachNenMau
-                    .SelectMany(nm => nm.DanhSachThongSo.Select(ct => new {
-                        MaKQ = ketQuaFull.Header.MaKQ,
-                        MaKQNen = nm.MaKQNen,
-                        TenNenMau = nm.TenNenMau,
-                        ViTri = nm.ViTri,
-                        ToaDo = nm.ToaDo,
-                        TenTS = ct.TenTS,
-                        DonVi = ct.DonVi,
-                        PhuongPhapPhanTich = ct.PhuongPhapPhanTich,
-                        KetQua = ct.KetQua,
-                        GioiHanPhatHien = ct.GioiHanPhatHien,
-                        QCVN = ct.QCVN,
-                        TinhTrang = ct.TinhTrang
-                    }))
-                    .ToList();
-
-                // 2) Nạp RDLC
-                using var defStream = File.OpenRead(rdlcPath);
-                var report = new LocalReport();
-                report.LoadReportDefinition(defStream);
-
-                report.DataSources.Clear();
-                report.DataSources.Add(new ReportDataSource("dsHeader", headerData));
-                report.DataSources.Add(new ReportDataSource("dsChiTiet", chiTietData));
-
-                // 3) TRUYỀN THAM SỐ CHẮC CHẮN (mỗi cái 1 try; nếu RDLC không có thì bỏ qua)
-                try
-                {
-                    report.SetParameters(new ReportParameter("pNgayIn", DateTime.Now.ToString("dd/MM/yyyy")));
-                }
-                catch { /* RDLC không có pNgayIn */ }
-
-                try
-                {
-                    report.SetParameters(new ReportParameter("pTieuDe", $"PHIẾU KẾT QUẢ - {ketQuaFull.Header.MaKQ}"));
-                }
-                catch { /* RDLC không có pTieuDe */ }
-
-                // 4) Render PDF
-                string deviceInfo = @"<DeviceInfo>
-                    <EmbedFonts>True</EmbedFonts>
-                    <HumanReadablePDF>True</HumanReadablePDF>
-                </DeviceInfo>";
-
-                byte[] pdfBytes = report.Render("PDF", deviceInfo);
-
-                // 5) Save dialog
                 using var sfd = new SaveFileDialog
                 {
                     Title = "Lưu báo cáo PDF",
                     Filter = "PDF files (*.pdf)|*.pdf",
-                    FileName = $"KetQua_{ketQuaFull.Header.MaKQ}.pdf",
-                    AddExtension = true
+                    FilterIndex = 1,
+                    FileName = $"KetQua_{maKQ}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf",
+                    DefaultExt = "pdf",
+                    AddExtension = true,
+                    RestoreDirectory = true
                 };
 
                 if (sfd.ShowDialog(this) == DialogResult.OK)
                 {
-                    File.WriteAllBytes(sfd.FileName, pdfBytes);
-                    MessageBox.Show("Xuất PDF thành công!");
+                    CreatePdfFromHtml(sfd.FileName);
+
+                    var result = MessageBox.Show(
+                        $"✓ Xuất file PDF thành công!\n\nĐường dẫn: {sfd.FileName}\n\nBạn có muốn mở file ngay không?",
+                        "Thành công", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                            {
+                                FileName = sfd.FileName,
+                                UseShellExecute = true
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Không thể mở file:\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
-                var full = ex.ToString();
-                try { Clipboard.SetText(full); } catch { }
-                MessageBox.Show("Xuất PDF thất bại:\n\n" + full,
-                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi xuất file PDF:\n{ex.Message}\n\nChi tiết: {ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void CreatePdfFromHtml(string pdfPath)
+        {
+            try
+            {
+                string htmlContent = GenerateHtmlReport();
+
+                HtmlToPdf converter = new HtmlToPdf();
+                converter.Options.PdfPageSize = PdfPageSize.A4;
+                converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
+                converter.Options.MarginLeft = 15;
+                converter.Options.MarginRight = 15;
+                converter.Options.MarginTop = 15;
+                converter.Options.MarginBottom = 15;
+
+                PdfDocument doc = converter.ConvertHtmlString(htmlContent);
+                doc.Save(pdfPath);
+                doc.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tạo PDF: {ex.Message}", ex);
+            }
+        }
+
+        private string CreateTempPdf()
+        {
+            string tempPdfPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"KetQua_{maKQ}_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+            CreatePdfFromHtml(tempPdfPath);
+            return tempPdfPath;
+        }
+
+        // ================== XUẤT VÀ GỬI EMAIL ==================
+
+        private async void ExportAndSendEmail()
+        {
+            Form loadingForm = null;
+            string tempPdfPath = null;
+
+            try
+            {
+                if (ketQuaFull == null || ketQuaFull.Header == null)
+                {
+                    MessageBox.Show("Chưa có dữ liệu để xuất.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string emailKhachHang = await LayEmailKhachHangAsync();
+
+                if (string.IsNullOrEmpty(emailKhachHang))
+                {
+                    MessageBox.Show("⚠️ Không tìm thấy email khách hàng!\n\nVui lòng kiểm tra:\n• Thông tin khách hàng đã được cập nhật email chưa\n• Email khách hàng có đúng định dạng không",
+                        "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var confirm = MessageBox.Show(
+                    $"📧 Gửi báo cáo kết quả đến email khách hàng?\n\n📋 Mã kết quả: {maKQ}\n👤 Khách hàng: {ketQuaFull.Header.TenKhachHang ?? "N/A"}\n📧 Email: {emailKhachHang}\n📅 Đợt quan trắc: {ketQuaFull.Header.DotQuanTrac ?? "N/A"}\n\nFile báo cáo PDF sẽ được gửi kèm theo email.",
+                    "Xác nhận gửi email", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (confirm != DialogResult.Yes) return;
+
+                loadingForm = ShowLoadingForm();
+                tempPdfPath = CreateTempPdf();
+
+                bool emailSent = await emailService.GuiEmailBaoCaoPdfAsync(
+                    emailKhachHang,
+                    ketQuaFull.Header.TenKhachHang ?? "Quý khách hàng",
+                    maKQ,
+                    ketQuaFull.Header.DotQuanTrac ?? "Quan trắc môi trường",
+                    tempPdfPath);
+
+                loadingForm?.Close();
+                loadingForm = null;
+
+                if (emailSent)
+                {
+                    var result = MessageBox.Show(
+                        $"✅ Gửi email thành công!\n\n📧 Email đã được gửi đến: {emailKhachHang}\n📋 Mã kết quả: {maKQ}\n📎 File báo cáo PDF đã được đính kèm\n\nBạn có muốn lưu file báo cáo vào máy không?",
+                        "Thành công", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        using var sfd = new SaveFileDialog
+                        {
+                            Title = "Lưu báo cáo PDF",
+                            Filter = "PDF files (*.pdf)|*.pdf",
+                            FileName = $"KetQua_{maKQ}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf",
+                            DefaultExt = "pdf",
+                            RestoreDirectory = true
+                        };
+
+                        if (sfd.ShowDialog(this) == DialogResult.OK)
+                        {
+                            File.Copy(tempPdfPath, sfd.FileName, true);
+                            MessageBox.Show($"✓ Đã lưu file tại:\n{sfd.FileName}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("❌ Gửi email thất bại!\n\nVui lòng kiểm tra:\n• Kết nối internet\n• Cấu hình email server\n• Email khách hàng có đúng không",
+                        "Lỗi gửi email", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                loadingForm?.Close();
+                MessageBox.Show($"❌ Lỗi khi gửi email:\n\n{ex.Message}\n\nChi tiết: {ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                try { if (!string.IsNullOrEmpty(tempPdfPath) && File.Exists(tempPdfPath)) File.Delete(tempPdfPath); } catch { }
+            }
+        }
+
+        private async Task<string> LayEmailKhachHangAsync()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(ketQuaFull.Header.TenKhachHang))
+                {
+                    var khachHangBLL = new KhachHangBLL();
+                    string email = await Task.Run(() => khachHangBLL.layEmailKhachHang(ketQuaFull.Header.TenKhachHang));
+                    if (!string.IsNullOrEmpty(email)) return email;
+
+                    var danhSachKH = await Task.Run(() => khachHangBLL.layDanhSachKH());
+                    var khachHang = danhSachKH.FirstOrDefault(kh =>
+                        kh.tenDoanhNghiep != null &&
+                        kh.tenDoanhNghiep.Trim().Equals(ketQuaFull.Header.TenKhachHang.Trim(), StringComparison.OrdinalIgnoreCase));
+
+                    if (khachHang != null && !string.IsNullOrEmpty(khachHang.emailDoanhNghiep))
+                        return khachHang.emailDoanhNghiep;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi lấy email khách hàng: {ex.Message}");
+                return null;
+            }
+        }
+
+        private Form ShowLoadingForm()
+        {
+            var loadingForm = new Form
+            {
+                Size = new Size(400, 200),
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.None,
+                BackColor = System.Drawing.Color.White,
+                ShowInTaskbar = false,
+                TopMost = true
+            };
+
+            var panel = new Panel { Dock = DockStyle.Fill, BackColor = System.Drawing.Color.White, Padding = new Padding(20) };
+
+            var lblLoading = new Label
+            {
+                Text = "📧 Đang tạo PDF và gửi email...",
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                ForeColor = System.Drawing.Color.FromArgb(0, 123, 255),
+                AutoSize = false,
+                Size = new Size(360, 40),
+                Location = new DrawingPoint(20, 50),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            var lblDetail = new Label
+            {
+                Text = "Vui lòng đợi trong giây lát...",
+                Font = new Font("Segoe UI", 10F),
+                ForeColor = System.Drawing.Color.Gray,
+                AutoSize = false,
+                Size = new Size(360, 30),
+                Location = new DrawingPoint(20, 100),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            var progressBar = new ProgressBar
+            {
+                Style = ProgressBarStyle.Marquee,
+                MarqueeAnimationSpeed = 30,
+                Size = new Size(360, 25),
+                Location = new DrawingPoint(20, 140)
+            };
+
+            panel.Controls.Add(lblLoading);
+            panel.Controls.Add(lblDetail);
+            panel.Controls.Add(progressBar);
+            loadingForm.Controls.Add(panel);
+
+            loadingForm.Paint += (s, ev) =>
+            {
+                ev.Graphics.DrawRectangle(new Pen(System.Drawing.Color.FromArgb(0, 123, 255), 2), 0, 0, loadingForm.Width - 1, loadingForm.Height - 1);
+            };
+
+            loadingForm.Show(this);
+            Application.DoEvents();
+            return loadingForm;
+        }
+
+        private string GenerateHtmlReport()
+        {
+            var sb = new StringBuilder();
+
+            string logoBase64 = "";
+            try
+            {
+                string logoPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "logo.png");
+
+                if (!File.Exists(logoPath))
+                    logoPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logo.png");
+
+                if (File.Exists(logoPath))
+                {
+                    byte[] logoBytes = File.ReadAllBytes(logoPath);
+                    logoBase64 = Convert.ToBase64String(logoBytes);
+                }
+                else
+                {
+                    var resources = new System.ComponentModel.ComponentResourceManager(typeof(ChiTietKetQua));
+                    object logoObj = resources.GetObject("Logo");
+                    if (logoObj is Image logoImg)
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            logoImg.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            logoBase64 = Convert.ToBase64String(ms.ToArray());
+                        }
+                    }
+                }
+            }
+            catch { logoBase64 = ""; }
+
+            string logoDataUri = !string.IsNullOrEmpty(logoBase64) ? $"data:image/png;base64,{logoBase64}" : "";
+
+            sb.AppendLine("<!DOCTYPE html>");
+            sb.AppendLine("<html>");
+            sb.AppendLine("<head>");
+            sb.AppendLine("<meta charset='UTF-8'/>");
+            sb.AppendLine("<style>");
+            sb.AppendLine(@"
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body { 
+            font-family: Arial, sans-serif; 
+            font-size: 12pt; 
+            padding: 20px;
+            position: relative;
+            min-height: 100%;
+        }
+        
+        /* ========== WRAPPER ĐỂ CHỨA NỘI DUNG ========== */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ========== WATERMARK - OPACITY 12% - ĐÈ LÊN TẤT CẢ ========== */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 550px;
+            height: 550px;
+            opacity: 0.12;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        
+        /* ========== HEADER VỚI LOGO ========== */
+        .header { 
+            position: relative;
+            text-align: center; 
+            border-bottom: 2px solid #000; 
+            padding-bottom: 10px; 
+            margin-bottom: 15px;
+            min-height: 70px;
+            padding-left: 90px;
+        }
+        
+        .logo {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 75px;
+            height: 75px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .company { font-weight: bold; font-size: 11pt; }
+        .address { font-size: 10pt; font-style: italic; }
+        
+        h1 { 
+            text-align: center; 
+            font-size: 16pt; 
+            margin-bottom: 10px;
+        }
+        
+        h2 { 
+            font-size: 13pt; 
+            margin-top: 15px; 
+            margin-bottom: 8px; 
+            border-bottom: 1px solid #000;
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 10px 0; 
+            position: relative;
+        }
+        
+        th, td { 
+            border: 1px solid #000; 
+            padding: 5px; 
+            font-size: 10pt; 
+        }
+        
+        th { 
+            background-color: #e0e0e0; 
+            font-weight: bold; 
+            text-align: center; 
+        }
+        
+        /* ========== CẢI THIỆN HIỂN THỊ CỘT KẾT QUẢ ========== */
+        td.result-cell {
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .info-table td { 
+            border: none; 
+            padding: 3px 5px; 
+        }
+        
+        .info-table td:first-child { 
+            font-weight: bold; 
+            width: 150px; 
+        }
+        
+        .sample-title { 
+            background-color: #f0f0f0; 
+            font-weight: bold; 
+            padding: 8px; 
+            margin-top: 15px;
+        }
+        
+        .sample-info { 
+            font-size: 10pt; 
+            padding: 5px; 
+            background-color: #f8f8f8;
+        }
+        
+        .signature { 
+            margin-top: 30px;
+        }
+        
+        .sig-row { 
+            display: table; 
+            width: 100%; 
+        }
+        
+        .sig-box { 
+            display: table-cell; 
+            width: 50%; 
+            text-align: center; 
+            padding-top: 50px; 
+        }
+        
+        .footer { 
+            text-align: center; 
+            font-size: 9pt; 
+            margin-top: 20px; 
+            border-top: 1px solid #000; 
+            padding-top: 10px;
+        }
+    ");
+            sb.AppendLine("</style>");
+            sb.AppendLine("</head>");
+            sb.AppendLine("<body>");
+
+            // ========== WATERMARK IMAGE - POSITION FIXED, OPACITY 15% ==========
+            if (!string.IsNullOrEmpty(logoDataUri))
+            {
+                sb.AppendLine($"<img class='watermark' src='{logoDataUri}' alt=''/>");
+            }
+
+            // ========== NỘI DUNG CHÍNH ==========
+            sb.AppendLine("<div class='content-wrapper'>");
+
+            // ========== HEADER VỚI LOGO ==========
+            sb.AppendLine("<div class='header'>");
+            if (!string.IsNullOrEmpty(logoDataUri))
+            {
+                sb.AppendLine($"<div class='logo'><img src='{logoDataUri}' alt='Logo'/></div>");
+            }
+            sb.AppendLine("<div class='company'>CÔNG TY QUẢN LÝ HỢP ĐỒNG QUAN TRẮC MÔI TRƯỜNG ECOS</div>");
+            sb.AppendLine("<div class='address'>Địa chỉ: 19 Nguyễn Hữu Thọ, phường Tân Hưng, TPHCM</div>");
+            sb.AppendLine("<div class='address'>ĐT: 1900 1234 - Email: ecos@gmail.com</div>");
+            sb.AppendLine("</div>");
+
+            // ========== TITLE ==========
+            sb.AppendLine("<h1>PHIẾU KẾT QUẢ THỬ NGHIỆM</h1>");
+            sb.AppendLine($"<p style='text-align:center; font-style:italic;'>{Escape(ketQuaFull.Header.DotQuanTrac ?? "Kết quả quan trắc")}</p>");
+            sb.AppendLine($"<p style='text-align:center;'>Số: {Escape(ketQuaFull.Header.MaKQ)}/KQ-{DateTime.Now:yyyy}</p>");
+
+            // ========== THÔNG TIN CHUNG ==========
+            sb.AppendLine("<h2>I. THÔNG TIN CHUNG</h2>");
+            sb.AppendLine("<table class='info-table'>");
+            sb.AppendLine($"<tr><td>Tên khách hàng</td><td>: {Escape(ketQuaFull.Header.TenKhachHang ?? "[Chưa xác định]")}</td></tr>");
+            sb.AppendLine($"<tr><td>Địa chỉ</td><td>: {Escape(ketQuaFull.Header.DiaChiKhachHang ?? "[Chưa xác định]")}</td></tr>");
+            sb.AppendLine($"<tr><td>Địa điểm quan trắc</td><td>: {Escape(ketQuaFull.Header.DiaDiemQuanTrac ?? "[Chưa xác định]")}</td></tr>");
+            sb.AppendLine($"<tr><td>Mã kết quả</td><td>: <b>{Escape(ketQuaFull.Header.MaKQ)}</b></td></tr>");
+            sb.AppendLine($"<tr><td>Ngày quan trắc</td><td>: {ketQuaFull.Header.NgayTao:dd/MM/yyyy}</td></tr>");
+            sb.AppendLine($"<tr><td>Ngày trả kết quả</td><td>: {(ketQuaFull.Header.NgayTraKQ?.ToString("dd/MM/yyyy") ?? "Chưa xác định")}</td></tr>");
+            if (!string.IsNullOrEmpty(ketQuaFull.Header.GhiChu))
+                sb.AppendLine($"<tr><td>Ghi chú</td><td>: {Escape(ketQuaFull.Header.GhiChu)}</td></tr>");
+            sb.AppendLine("</table>");
+
+            // ========== KẾT QUẢ ==========
+            sb.AppendLine("<h2>II. KẾT QUẢ</h2>");
+
+            int idx = 0;
+            foreach (var nenMau in ketQuaFull.DanhSachNenMau)
+            {
+                idx++;
+                sb.AppendLine($"<div class='sample-title'>NỀN MẪU {idx}: {Escape(nenMau.TenNenMau?.ToUpper() ?? "N/A")} ({Escape(nenMau.MaNen)})</div>");
+                sb.AppendLine($"<div class='sample-info'>Vị trí: {Escape(nenMau.ViTri ?? "Chưa xác định")} | Tọa độ: {Escape(nenMau.ToaDo ?? "Chưa xác định")}</div>");
+
+                if (nenMau.DanhSachThongSo != null && nenMau.DanhSachThongSo.Count > 0)
+                {
+                    sb.AppendLine("<table>");
+                    sb.AppendLine("<tr><th>TT</th><th>Thông số</th><th>Đơn vị</th><th>Phương pháp</th><th>Kết quả</th><th>QCVN</th><th>Đánh giá</th></tr>");
+
+                    int stt = 0;
+                    foreach (var ts in nenMau.DanhSachThongSo)
+                    {
+                        stt++;
+                        string tinhTrang = Escape(ts.TinhTrang ?? "");
+                        if (tinhTrang.Contains("Vượt")) tinhTrang = $"<b>{tinhTrang}</b>";
+
+                        sb.AppendLine("<tr>");
+                        sb.AppendLine($"<td style='text-align:center;'>{stt}</td>");
+                        sb.AppendLine($"<td>{Escape(ts.TenTS ?? "")}</td>");
+                        sb.AppendLine($"<td style='text-align:center;'>{Escape(ts.DonVi ?? "-")}</td>");
+                        sb.AppendLine($"<td>{Escape(ts.PhuongPhapPhanTich ?? "")}</td>");
+                        // ========== SỬA CỘT KẾT QUẢ: CĂN GIỮA THAY VÌ CĂN PHẢI ==========
+                        sb.AppendLine($"<td class='result-cell'>{ts.KetQua:N2}</td>");
+                        sb.AppendLine($"<td style='text-align:center;'>{Escape(ts.QCVN ?? "KQĐ")}</td>");
+                        sb.AppendLine($"<td style='text-align:center;'>{tinhTrang}</td>");
+                        sb.AppendLine("</tr>");
+                    }
+                    sb.AppendLine("</table>");
+                }
+            }
+
+            // ========== GHI CHÚ ==========
+            sb.AppendLine("<p style='font-size:9pt; margin-top:15px;'><i>* Phương pháp phân tích: theo TCVN, SMEWW. Các giá trị in đậm là vượt quy chuẩn.</i></p>");
+
+            // ========== CHỮ KÝ ==========
+            sb.AppendLine("<div class='signature'>");
+            sb.AppendLine("<div class='sig-row'>");
+            sb.AppendLine($"<div class='sig-box'><b>NGƯỜI LẬP PHIẾU</b><br/><i>(Ký, họ tên)</i><br/><br/><br/>{Escape(ketQuaFull.Header.TenNhanVien ?? "")}</div>");
+            sb.AppendLine("<div class='sig-box'><b>TRƯỞNG PHÒNG THÍ NGHIỆM</b><br/><i>(Ký, đóng dấu)</i><br/><br/><br/></div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+
+            // ========== FOOTER ==========
+            sb.AppendLine($"<div class='footer'>Ngày in: {DateTime.Now:dd/MM/yyyy HH:mm:ss}</div>");
+
+            sb.AppendLine("</div>"); // Đóng content-wrapper
+
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+
+            return sb.ToString();
+        }
+
+        // Helper method để escape HTML (giữ nguyên)
+        private string Escape(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return "";
+            return System.Net.WebUtility.HtmlEncode(text);
         }
     }
 }
