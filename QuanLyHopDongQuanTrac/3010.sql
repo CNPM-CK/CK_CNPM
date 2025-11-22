@@ -919,41 +919,77 @@ BEGIN
     LEFT JOIN PhongBan pb ON nv.maPhong = pb.maPhong;
 END
 GO
-CREATE OR ALTER PROC LayDanhSachNhanVien_PhanTrang
-    @PageNumber INT,
-    @PageSize INT
-AS
-BEGIN
-    SET NOCOUNT ON;
+--CREATE OR ALTER PROC LayDanhSachNhanVien_PhanTrang
+  --  @PageNumber INT,
+    --@PageSize INT
+----AS
+------BEGIN
+    --SET NOCOUNT ON;
 
-    SELECT 
-        nv.maNV,
-        nv.maPhong,
-        nv.hoTen,
-        nv.ngaySinh,
-        CASE nv.gioiTinh 
-            WHEN 0 THEN N'Nam' 
-            ELSE N'Nữ' 
-        END AS gioiTinh,
-        nv.diaChi,
-        nv.soDienThoai,
-        nv.email,
-        nv.trangThai,
-        pb.tenPhong,
-		 CASE WHEN EXISTS (
-            SELECT 1 FROM PhongBan 
-            WHERE truongPhong = nv.maNV
-        ) THEN 1 ELSE 0 END AS isTruongPhong
+    ---SELECT 
+       -- nv.maNV,
+      --  nv.maPhong,
+        --nv.hoTen,
+       -- nv.ngaySinh,
+    --    CASE nv.gioiTinh 
+      --      WHEN 0 THEN N'Nam' 
+        --    ELSE N'Nữ' 
+    --    END AS gioiTinh,
+      --  nv.diaChi,
+       -- nv.soDienThoai,
+       -- nv.email,
+       -- nv.trangThai,
+       -- pb.tenPhong,
+		 --CASE WHEN EXISTS (
+           -- SELECT 1 FROM PhongBan 
+           -- WHERE truongPhong = nv.maNV
+       -- ) THEN 1 ELSE 0 END AS isTruongPhong
 
-    FROM NhanVien nv
-    LEFT JOIN PhongBan pb ON nv.maPhong = pb.maPhong
+  --  FROM NhanVien nv
+   -- LEFT JOIN PhongBan pb ON nv.maPhong = pb.maPhong
+   -- WHERE (nv.daXoa = 0) 
+--	ORDER BY nv.maNV
+  --  OFFSET (@PageNumber - 1) * @PageSize ROWS
+   -- FETCH NEXT @PageSize ROWS ONLY;
+--END
+--GO
+
+CREATE OR ALTER PROC LayDanhSachNhanVien_PhanTrang 
+    @PageNumber INT, 
+    @PageSize INT 
+AS 
+BEGIN 
+    SET NOCOUNT ON; 
+ 
+    SELECT  
+        nv.maNV, 
+        nv.maPhong, 
+        nv.hoTen, 
+        nv.ngaySinh, 
+        CASE nv.gioiTinh  
+            WHEN 0 THEN N'Nam'  
+            ELSE N'Nữ'  
+        END AS gioiTinh, 
+        nv.diaChi, 
+        nv.soDienThoai, 
+        nv.email, 
+        nv.trangThai, 
+        pb.tenPhong, 
+        CASE WHEN EXISTS ( 
+            SELECT 1 FROM PhongBan  
+            WHERE truongPhong = nv.maNV 
+        ) THEN 1 ELSE 0 END AS isTruongPhong 
+ 
+    FROM NhanVien nv 
+    LEFT JOIN PhongBan pb ON nv.maPhong = pb.maPhong 
+    INNER JOIN TaiKhoan tk ON nv.email = tk.tenTK  -- JOIN qua email
     WHERE (nv.daXoa = 0) 
-	ORDER BY nv.maNV
-    OFFSET (@PageNumber - 1) * @PageSize ROWS
-    FETCH NEXT @PageSize ROWS ONLY;
-END
+        AND (tk.vaiTro = 0)  -- Chỉ lấy nhân viên (vaiTro = 0)
+    ORDER BY nv.maNV 
+    OFFSET (@PageNumber - 1) * @PageSize ROWS 
+    FETCH NEXT @PageSize ROWS ONLY; 
+END 
 GO
-
 /****** Object:  StoredProcedure [dbo].[LayDSKH]    Script Date: 10/30/2025 12:14:41 AM ******/
 SET ANSI_NULLS ON
 GO
@@ -1010,7 +1046,8 @@ CREATE PROCEDURE [dbo].[LayPhongBanTheoTaiKhoan]
 AS
 BEGIN
     SELECT maPhong 
-    FROM NhanVien 
+    FROM 
+	
     WHERE email = @tenTK;
 END;
 GO
