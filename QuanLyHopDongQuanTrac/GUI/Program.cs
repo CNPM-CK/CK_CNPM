@@ -16,7 +16,7 @@ namespace GUI
             var service = new DichVuThongBao();
             service.Start();
             ApplicationConfiguration.Initialize();
-            Application.Run(new TrangChu());
+            Application.Run(new TrangGioiThieu());
             //Application.Run(new ());
 
         }

@@ -1,13 +1,15 @@
 using BLL;
-using Microsoft.VisualBasic.ApplicationServices;
-using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using GUI.Common;
+using Microsoft.VisualBasic.ApplicationServices;
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 namespace GUI.Forms
 {
@@ -246,56 +248,95 @@ namespace GUI.Forms
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    string username = txtTentk.Text.Trim();
+        //    string password = textBoxmatkhau.Text.Trim();
+
+        //    if (string.IsNullOrEmpty(username))
+        //    {
+        //        MessageBox.Show(
+        //            "Vui lòng nhập tên tài khoản!",
+        //            "Cảnh báo",
+        //            MessageBoxButtons.OK,
+        //            MessageBoxIcon.Warning);
+        //        txtTentk.Focus();
+        //        return;
+        //    }
+
+        //    if (string.IsNullOrEmpty(password))
+        //    {
+        //        MessageBox.Show(
+        //            "Vui lòng nhập mật khẩu!",
+        //            "Cảnh báo",
+        //            MessageBoxButtons.OK,
+        //            MessageBoxIcon.Warning);
+        //        textBoxmatkhau.Focus();
+        //        return;
+        //    }
+
+        //    var result = taiKhoanBLL.dangNhap(username, password);
+
+        //    if (!result.success)
+        //    {
+        //        MessageBox.Show(
+        //            result.message,
+        //            "Đăng nhập thất bại",
+        //            MessageBoxButtons.OK,
+        //            MessageBoxIcon.Error);
+        //        return;
+        //    }
+
+        //    // XỬ LÝ GHI NHỚ ĐĂNG NHẬP
+        //    if (checkBox1.Checked)
+        //    {
+        //        LuuThongTinDangNhap(username, password);
+        //    }
+        //    else
+        //    {
+        //        XoaThongTinDangNhap();
+        //    }
+
+        //    DieuHuongTheoVaiTro(result.account);
+        //}
+
+        private void button1_Click(object sender, EventArgs e) // nút đăng nhập
         {
             string username = txtTentk.Text.Trim();
             string password = textBoxmatkhau.Text.Trim();
 
-            if (string.IsNullOrEmpty(username))
-            {
-                MessageBox.Show(
-                    "Vui lòng nhập tên tài khoản!",
-                    "Cảnh báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                txtTentk.Focus();
-                return;
-            }
-
-            if (string.IsNullOrEmpty(password))
-            {
-                MessageBox.Show(
-                    "Vui lòng nhập mật khẩu!",
-                    "Cảnh báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                textBoxmatkhau.Focus();
-                return;
-            }
-
             var result = taiKhoanBLL.dangNhap(username, password);
-
             if (!result.success)
             {
-                MessageBox.Show(
-                    result.message,
-                    "Đăng nhập thất bại",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show(result.message, "Đăng nhập thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            // XỬ LÝ GHI NHỚ ĐĂNG NHẬP
-            if (checkBox1.Checked)
+            SessionStore.Current.SignIn(
+                result.account!.tenTK,
+                result.account!.vaiTro
+            );
+            Debug.WriteLine(result.account.vaiTro);
+            if (result.account!.vaiTro != 1 && result.account!.vaiTro != 2)
             {
-                LuuThongTinDangNhap(username, password);
+                var nvBLL = new NhanVienBLL();
+                string maPhong = nvBLL.layPhongBanTheoTaiKhoan(result.account.tenTK);
+                if (string.IsNullOrEmpty(maPhong))
+                {
+                    MessageBox.Show("Không tìm thấy phòng ban cho nhân viên này!",
+                                    "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                SessionStore.Current.MaPhong = maPhong;
             }
-            else
-            {
-                XoaThongTinDangNhap();
-            }
+            //Form next = CreateNextFormFromSession();
+            //next.FormClosed += (s, _) => this.Close();
+            //next.Show();
+            //this.Hide();
+            TrangChu trangChu = new TrangChu();
+            trangChu.FormClosed += (s, _) => this.Close();
+            trangChu.Show();
+            this.Hide();
 
-            DieuHuongTheoVaiTro(result.account);
         }
 
         private void textBoxMatKhau_KeyDown(object sender, KeyEventArgs e)
