@@ -76,7 +76,7 @@
             panel11 = new Panel();
             label8 = new Label();
             panel13 = new Panel();
-            button1 = new Button();
+            btnXacthuckhuonmat = new Button();
             btnQuenmk = new Button();
             btnLuu = new Button();
             panel2 = new Panel();
@@ -645,7 +645,7 @@
             // 
             // panel13
             // 
-            panel13.Controls.Add(button1);
+            panel13.Controls.Add(btnXacthuckhuonmat);
             panel13.Controls.Add(btnQuenmk);
             panel13.Controls.Add(btnLuu);
             panel13.Dock = DockStyle.Fill;
@@ -654,20 +654,21 @@
             panel13.Size = new Size(1041, 53);
             panel13.TabIndex = 2;
             // 
-            // button1
+            // btnXacthuckhuonmat
             // 
-            button1.Anchor = AnchorStyles.None;
-            button1.BackColor = Color.FromArgb(255, 128, 0);
-            button1.Cursor = Cursors.Hand;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.ForeColor = Color.White;
-            button1.Location = new Point(658, 5);
-            button1.Name = "button1";
-            button1.Size = new Size(164, 45);
-            button1.TabIndex = 2;
-            button1.Text = "Xác thực khuôn mặt";
-            button1.UseVisualStyleBackColor = false;
+            btnXacthuckhuonmat.Anchor = AnchorStyles.None;
+            btnXacthuckhuonmat.BackColor = Color.FromArgb(255, 128, 0);
+            btnXacthuckhuonmat.Cursor = Cursors.Hand;
+            btnXacthuckhuonmat.FlatStyle = FlatStyle.Flat;
+            btnXacthuckhuonmat.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnXacthuckhuonmat.ForeColor = Color.White;
+            btnXacthuckhuonmat.Location = new Point(658, 5);
+            btnXacthuckhuonmat.Name = "btnXacthuckhuonmat";
+            btnXacthuckhuonmat.Size = new Size(164, 45);
+            btnXacthuckhuonmat.TabIndex = 2;
+            btnXacthuckhuonmat.Text = "Xác thực khuôn mặt";
+            btnXacthuckhuonmat.UseVisualStyleBackColor = false;
+            btnXacthuckhuonmat.Click += btnXacthuckhuonmat_Click;
             // 
             // btnQuenmk
             // 
@@ -832,7 +833,7 @@
         private Panel panel13;
         private Button btnQuenmk;
         private Button btnLuu;
-        private Button button1;
+        private Button btnXacthuckhuonmat;
         private TableLayoutPanel tableLayoutPanel5;
         private Label chinhSuaAnh;
         private PictureBox ptbAnhcanhan;

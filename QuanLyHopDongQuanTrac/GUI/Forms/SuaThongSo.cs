@@ -54,17 +54,20 @@ namespace GUI.Forms
 
         private void ApplyRoundedInput(Panel panel, Control ctrl, int borderRadius, int borderSize, Color borderColor)
         {
-            // Gỡ event cũ (tránh vẽ chồng)
             panel.Paint -= Panel_Paint;
             panel.Resize -= Panel_Resize;
 
-            // Cài đặt nền và kiểu cho control
             panel.BackColor = Color.White;
             ctrl.BackColor = Color.White;
 
             if (ctrl is TextBox txt)
             {
                 txt.BorderStyle = BorderStyle.None;
+                txt.Multiline = true; // Cho phép căn giữa dọc
+
+                // Tính chiều cao phù hợp
+                int textHeight = TextRenderer.MeasureText("Ag", txt.Font).Height + 4;
+                txt.Height = textHeight;
             }
             else if (ctrl is ComboBox cbo)
             {
@@ -73,12 +76,12 @@ namespace GUI.Forms
                     cbo.DropDownStyle = ComboBoxStyle.DropDown;
             }
 
-            // Căn chỉnh vị trí & kích thước control con trong panel
-            ctrl.Location = new Point(borderSize + 5, (panel.Height - ctrl.Height) / 2);
+            // Căn giữa theo chiều dọc
+            int yPos = (panel.Height - ctrl.Height) / 2;
+            ctrl.Location = new Point(borderSize + 5, yPos);
             ctrl.Width = panel.Width - (borderSize + 5) * 2;
             ctrl.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
 
-            // Hàm vẽ bo tròn
             void Panel_Paint(object s, PaintEventArgs e)
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -113,14 +116,16 @@ namespace GUI.Forms
 
             void Panel_Resize(object s, EventArgs e)
             {
-                ctrl.Location = new Point(borderSize + 5, (panel.Height - ctrl.Height) / 2);
+                // Tính lại vị trí để căn giữa dọc khi resize
+                int yPos = (panel.Height - ctrl.Height) / 2;
+                ctrl.Location = new Point(borderSize + 5, yPos);
                 ctrl.Width = panel.Width - (borderSize + 5) * 2;
+
                 using (GraphicsPath path = CreateRoundedPath(panel.ClientRectangle, borderRadius))
                 {
                     panel.Region = new Region(path);
                 }
                 panel.Invalidate();
-
             }
 
             panel.Paint += Panel_Paint;
@@ -131,7 +136,6 @@ namespace GUI.Forms
 
             panel.Invalidate();
         }
-
 
 
         private GraphicsPath CreateRoundedPath(Rectangle rect, int radius)

@@ -144,7 +144,7 @@
             panelMatkhau.Controls.Add(textBoxmatkhau);
             panelMatkhau.Location = new Point(77, 282);
             panelMatkhau.Name = "panelMatkhau";
-            panelMatkhau.Size = new Size(353, 64);
+            panelMatkhau.Size = new Size(353, 63);
             panelMatkhau.TabIndex = 14;
             // 
             // button4
@@ -172,7 +172,7 @@
             panelTentk.Controls.Add(txtTentk);
             panelTentk.Location = new Point(77, 181);
             panelTentk.Name = "panelTentk";
-            panelTentk.Size = new Size(353, 64);
+            panelTentk.Size = new Size(353, 63);
             panelTentk.TabIndex = 13;
             // 
             // txtTentk

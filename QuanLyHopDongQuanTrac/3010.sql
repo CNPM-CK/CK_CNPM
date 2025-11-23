@@ -1041,16 +1041,16 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[LayPhongBanTheoTaiKhoan]
+CREATE or Alter  PROCEDURE [dbo].[LayPhongBanTheoTaiKhoan]
     @tenTK VARCHAR(50)
 AS
 BEGIN
     SELECT maPhong 
-    FROM 
-	
+    FROM NhanVien 
     WHERE email = @tenTK;
 END;
 GO
+
 /****** Object:  StoredProcedure [dbo].[layTaikhoan]    Script Date: 10/30/2025 12:14:41 AM ******/
 SET ANSI_NULLS ON
 GO
@@ -5858,3 +5858,15 @@ BEGIN
     ELSE
         SET @TonTai = 0;
 END
+
+
+-----23/11
+CREATE PROCEDURE [dbo].[LayPhongBanTheoTaiKhoan]
+    @tenTK VARCHAR(50)
+AS
+BEGIN
+    SELECT maPhong 
+    FROM NhanVien 
+    WHERE email = @tenTK;
+END;
+GO
