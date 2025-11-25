@@ -1,15 +1,10 @@
 ﻿using BLL;
-using DTO;
-using GUI.Common;
-using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,29 +12,13 @@ using System.Windows.Forms;
 
 namespace GUI.Forms
 {
-    public partial class NhapThongSo : Form
+    public partial class LocThongBao : Form
     {
-        private DTO_DotNenTs ds;
-        private NhanVien nv;
-        public event EventHandler SuccesfullyUpdated;
-        private string maDNTS;
-        public NhapThongSo(string maDNTS)
+        public string SelectedLoaiTB { get; private set; }
+
+        public LocThongBao()
         {
-            this.maDNTS = maDNTS;
             InitializeComponent();
-            var txt = numericUpDown1.Controls[1] as TextBox;
-            if (txt != null)
-                txt.TextChanged += NumericTextChanged;
-        }
-
-
-        #region Custom TextBox và Label cho Form Nhân viên
-        private void InitializeButtonStyles()
-        {
-
-            BoGocButton(buttonAddnew, 18);
-            BoGocButton(btnCancel, 18);
-
         }
 
         private void BoGocButton(Button btn, int radius)
@@ -74,7 +53,8 @@ namespace GUI.Forms
             else if (ctrl is ComboBox cbo)
             {
                 cbo.FlatStyle = FlatStyle.Flat;
-                cbo.DropDownStyle = ComboBoxStyle.DropDownList;
+                if (cbo.DropDownStyle != ComboBoxStyle.DropDown)
+                    cbo.DropDownStyle = ComboBoxStyle.DropDown;
             }
 
             // Căn chỉnh vị trí & kích thước control con trong panel
@@ -136,8 +116,6 @@ namespace GUI.Forms
             panel.Invalidate();
         }
 
-
-
         private GraphicsPath CreateRoundedPath(Rectangle rect, int radius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -170,100 +148,65 @@ namespace GUI.Forms
             path.CloseFigure();
             return path;
         }
-        #endregion
 
+       
 
-        private void ThemHopDong_Load(object sender, EventArgs e)
+        private void LocTrangThaiKhachHang_Load(object sender, EventArgs e)
         {
-            var bll = new DotQuanTracNhapLieuBLL();
-            this.ds = bll.LayThongSoTheoMaDotNenTS(this.maDNTS);
-            textBox2.Text = ds.TenTS;
-            textBox1.Text = ds.DonVi;
-            textBox4.Text = ds.GiaTriToiThieu.ToString();
-            textBox3.Text = ds.GiaTriToiDa.ToString();
-            numericUpDown1.DecimalPlaces = 2;   
-            numericUpDown1.Increment = 0.1M;   
-            numericUpDown1.Minimum = int.Parse(ds.GiaTriToiThieu.ToString());      
-            numericUpDown1.Maximum = int.Parse(ds.GiaTriToiDa.ToString());      
-            numericUpDown1.ThousandsSeparator = true;
 
-            InitializeButtonStyles();
-            ApplyRoundedInput(panel7, dateTimePicker1, 15, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panel3, textBox2, 15, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panel4, textBox1, 15, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panel5, textBox4, 15, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panel6, textBox4, 15, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panel8, numericUpDown1, 15, 2, Color.FromArgb(0, 152, 70));
-            BoGocButton(btnCancel,25);
-            BoGocButton(buttonAddnew, 25);
-
+            // Trạng thái
+            KhachHangBLL khBLL = new KhachHangBLL();
+            cboTrangthai.DataSource = khBLL.layTrangThaiKhachHang();
+            cboTrangthai.DisplayMember = "tenTrangThai";
+            cboTrangthai.ValueMember = "maTrangThai";
+            cboTrangthai.SelectedIndex = -1;
+            ApplyRoundedInput(panelTrangthai, cboTrangthai, 15, 2, Color.Gray);
         }
-        private void buttonAddnew_Click(object sender, EventArgs e)
+
+        private void LocThongBao_Load(object sender, EventArgs e)
         {
-            string? userName = SessionStore.Current.UserName;
-
-            if (string.IsNullOrEmpty(userName))
-            {
-                //MessageBox.Show("Không tìm thấy mã phòng trong phiên đăng nhập!",
-                //    "Lỗi session", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //return;
-                userName = "ptt@gmail.com";
-            }
-            var bll = new DotQuanTracNhapLieuBLL();
-            this.nv = bll.LayNhanVienTheoTenDN(userName);
-
-            KetQua kq = new KetQua
-            {
-                maDNTS = this.maDNTS,
-                ngayDo = dateTimePicker1.Value,
-                giaTriDoDuoc = Convert.ToDouble(numericUpDown1.Value),
-                nhanVienNhap = nv.maNV
-            };
             try
             {
-                bll.ThemKetQua(kq);
+                // ✅ Tạo DataTable thủ công cho loại thông báo
+                DataTable dtLoaiTB = new DataTable();
+                dtLoaiTB.Columns.Add("loaiTB", typeof(string));
 
-                MessageBox.Show("Thêm kết quả thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dtLoaiTB.Rows.Add("Trễ hạn quan trắc");
+                dtLoaiTB.Rows.Add("Hợp đồng quá hạn");
+                dtLoaiTB.Rows.Add("Nhắc sắp đến hạn trả kết quả");
 
-                SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-            }
-            catch (SqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // Không đóng form
+                // ✅ Bind vào ComboBox
+                cboTrangthai.DataSource = dtLoaiTB;
+                cboTrangthai.DisplayMember = "loaiTB";
+                cboTrangthai.ValueMember = "loaiTB";
+                cboTrangthai.SelectedIndex = -1; // Không chọn gì
+
+                // ✅ Apply bo góc
+                ApplyRoundedInput(panelTrangthai, cboTrangthai, 15, 2, Color.Gray);
+
+                // ✅ Bo góc button
+                BoGocButton(btnApdung, 20);
+                BoGocButton(btnHuy, 20);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // Không đóng form
-            }
-
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-
-            numericUpDown1.Value = 0;
-            dateTimePicker1.Value = DateTime.Now;
-
-        }
-        private void NumericTextChanged(object sender, EventArgs e)
-        {
-            if (decimal.TryParse(numericUpDown1.Text, out decimal val))
-            {
-                if (val > numericUpDown1.Maximum)
-                {
-                    MessageBox.Show("Giá trị quá lớn!");
-                }
-                else if (val < numericUpDown1.Minimum)
-                {
-                    MessageBox.Show("Giá trị quá nhỏ!");
-                }
+                MessageBox.Show("Lỗi khởi tạo bộ lọc: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        private void btnApdung_Click(object sender, EventArgs e)
+        {
+            SelectedLoaiTB = cboTrangthai.SelectedIndex >= 0 ? cboTrangthai.SelectedValue.ToString() : null;
 
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
     }
 }

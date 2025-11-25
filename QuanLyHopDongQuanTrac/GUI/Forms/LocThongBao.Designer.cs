@@ -1,6 +1,6 @@
 ﻿namespace GUI.Forms
 {
-    partial class LocTrangThaiKhachHang
+    partial class LocThongBao
     {
         /// <summary>
         /// Required designer variable.
@@ -42,7 +42,7 @@
             panelTrangthai.Location = new Point(114, 8);
             panelTrangthai.Name = "panelTrangthai";
             panelTrangthai.Size = new Size(210, 43);
-            panelTrangthai.TabIndex = 11;
+            panelTrangthai.TabIndex = 15;
             // 
             // cboTrangthai
             // 
@@ -62,7 +62,7 @@
             btnHuy.Location = new Point(188, 70);
             btnHuy.Name = "btnHuy";
             btnHuy.Size = new Size(94, 29);
-            btnHuy.TabIndex = 10;
+            btnHuy.TabIndex = 14;
             btnHuy.Text = "Hủy";
             btnHuy.UseVisualStyleBackColor = false;
             btnHuy.Click += btnHuy_Click;
@@ -76,7 +76,7 @@
             btnApdung.Location = new Point(67, 70);
             btnApdung.Name = "btnApdung";
             btnApdung.Size = new Size(94, 29);
-            btnApdung.TabIndex = 9;
+            btnApdung.TabIndex = 13;
             btnApdung.Text = "Áp dụng";
             btnApdung.UseVisualStyleBackColor = false;
             btnApdung.Click += btnApdung_Click;
@@ -88,10 +88,10 @@
             label3.Location = new Point(16, 15);
             label3.Name = "label3";
             label3.Size = new Size(88, 20);
-            label3.TabIndex = 8;
+            label3.TabIndex = 12;
             label3.Text = "Trạng thái :";
             // 
-            // LocTrangThaiKhachHang
+            // LocThongBao
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -100,10 +100,9 @@
             Controls.Add(btnHuy);
             Controls.Add(btnApdung);
             Controls.Add(label3);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            Name = "LocTrangThaiKhachHang";
-            Text = "Tìm kiếm";
-            Load += LocTrangThaiKhachHang_Load;
+            Name = "LocThongBao";
+            Text = "LocThongBao";
+            Load += LocThongBao_Load;
             panelTrangthai.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();

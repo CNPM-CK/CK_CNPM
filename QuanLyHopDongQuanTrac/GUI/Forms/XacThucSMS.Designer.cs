@@ -376,6 +376,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1272, 724);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MinimizeBox = false;
             Name = "XacThucSMS";
             StartPosition = FormStartPosition.CenterScreen;

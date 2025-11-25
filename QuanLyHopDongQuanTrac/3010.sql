@@ -1,19 +1,19 @@
 USE [master];
 GO
-IF DB_ID(N'QuanLyHopDongQuanTrac') IS NOT NULL
+IF DB_ID(N'QuanLyHopDongQuanTrac222') IS NOT NULL
 BEGIN
-    ALTER DATABASE [QuanLyHopDongQuanTrac] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    DROP DATABASE [QuanLyHopDongQuanTrac];
+    ALTER DATABASE [QuanLyHopDongQuanTrac222] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE [QuanLyHopDongQuanTrac222];
 END
-IF DB_ID(N'QuanLyHopDongQuanTrac') IS NOT NULL
+IF DB_ID(N'QuanLyHopDongQuanTrac222') IS NOT NULL
 BEGIN
-    ALTER DATABASE [QuanLyHopDongQuanTractest] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    DROP DATABASE [QuanLyHopDongQuanTractest];
+    ALTER DATABASE [QuanLyHopDongQuanTrac222] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE [QuanLyHopDongQuanTrac222];
 END
 GO
-CREATE DATABASE [QuanLyHopDongQuanTrac];
+CREATE DATABASE [QuanLyHopDongQuanTrac222];
 GO
-USE [QuanLyHopDongQuanTrac]
+USE [QuanLyHopDongQuanTrac222]
 GO
 /****** Object:  UserDefinedTableType [dbo].[ChiTietThongSoType]    Script Date: 10/30/2025 12:14:41 AM ******/
 CREATE TYPE [dbo].[ChiTietThongSoType] AS TABLE(
@@ -1550,6 +1550,7 @@ BEGIN
         d.MaDot,
         d.MaHD,
         d.NoiDung,
+		 kh.tenDoanhNghiep AS TenKhachHang,
         d.DotQuanTrac,
         d.NgayBatDau,
         d.NgayDuKien,
@@ -1558,9 +1559,10 @@ BEGIN
         t.tenTrangThai AS TrangThai  -- Hiển thị tên trạng thái
     FROM DotQuanTrac d
     LEFT JOIN TrangThai_Dot t ON d.TrangThai = t.maTrangThai
+	 LEFT JOIN HopDong hd ON d.MaHD = hd.maHD  
+	 LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
     ORDER BY d.MaDot DESC;  -- Sắp xếp theo mã đợt mới nhất
 END
-
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_LayDanhSachThongSo]    Script Date: 10/30/2025 12:14:41 AM ******/
@@ -3272,6 +3274,7 @@ BEGIN
     WHERE (daXoa IS NULL OR daXoa = 0);
 END
 GO
+
 CREATE PROCEDURE [dbo].[sp_LayTrangThaiNhanVien]
 AS
 BEGIN
@@ -3684,73 +3687,6 @@ BEGIN
 		tt.maTT,
 		tt.tenTT
     FROM trangThaiHD tt
-END
-GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE   PROCEDURE [dbo].[layDotQuanTracNhapLieu_PhanTrang]
-    @pageNumber INT,
-    @pageSize   INT,
-    @maPhong    VARCHAR(15)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    ;WITH Dot AS (
-        SELECT
-            d.maDot,
-            d.maHD,
-            d.ngayBatDau,
-            d.ngayDuKien,
-            ngayConLai = DATEDIFF(DAY, CAST(GETDATE() AS date), CAST(d.ngayDuKien AS date)),
-
-            -- Hoàn thành nếu KHÔNG còn bất kỳ TS nào (thuộc phòng này) chưa có giá trị đo
-            hoanThanh = CASE
-                WHEN NOT EXISTS (
-                    SELECT 1
-                    FROM Dot_Nen dn
-                    JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
-                    LEFT JOIN KetQua k  ON k.maDNTS = ts.maDNTS
-                    WHERE dn.maDot = d.maDot
-                      AND ts.maPhong = @maPhong
-                      AND (k.maDNTS IS NULL OR k.giaTriDoDuoc IS NULL)
-                )
-                THEN 1 ELSE 0
-            END
-        FROM DotQuanTrac d
-        -- 🔒 Chỉ những đợt có ÍT NHẤT 1 công việc giao cho phòng @maPhong
-        WHERE EXISTS (
-            SELECT 1
-            FROM Dot_Nen dn
-            JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
-            WHERE dn.maDot = d.maDot
-              AND ts.maPhong = @maPhong
-        )
-    ),
-    Base AS (
-        SELECT
-            maDot, maHD, ngayBatDau, ngayDuKien, ngayConLai,
-            trangThai =
-                CASE
-                    WHEN hoanThanh = 1             THEN N'Hoàn thành'
-                    WHEN ngayConLai < 0            THEN N'Hết hạn'
-                    WHEN ngayConLai BETWEEN 0 AND 7 THEN N'Gần hết hạn'
-                    ELSE                              N'Còn hạn'
-                END
-        FROM Dot
-    )
-    -- Phân trang
-    SELECT  maDot, maHD, ngayBatDau, ngayDuKien, ngayConLai, trangThai
-    FROM    Base
-    ORDER BY ngayConLai DESC, maDot
-    OFFSET (@pageNumber - 1) * @pageSize ROWS
-    FETCH NEXT @pageSize ROWS ONLY;
-
-    -- Trả thêm tổng bản ghi cho UI
-    SELECT TotalRecords = COUNT(*) FROM Base;
 END
 GO
 
@@ -4743,13 +4679,13 @@ BEGIN
         DECLARE @ErrMsg NVARCHAR(4000) = ERROR_MESSAGE();
         RAISERROR(@ErrMsg, 16, 1);
     END CATCH;
-END;
+END
 GO
 
-create or ALTER PROCEDURE [dbo].[layDotQuanTracNhapLieu_PhanTrang]
+CREATE   PROCEDURE [dbo].[layDotQuanTracNhapLieu_PhanTrang]
     @pageNumber INT,
     @pageSize   INT,
-    @maPhong    VARCHAR(15) = NULL   -- cho phép null để lấy tất cả
+    @maPhong    VARCHAR(15)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -4762,149 +4698,54 @@ BEGIN
             d.ngayDuKien,
             ngayConLai = DATEDIFF(DAY, CAST(GETDATE() AS date), CAST(d.ngayDuKien AS date)),
 
+            -- Hoàn thành nếu KHÔNG còn bất kỳ TS nào (thuộc phòng này) chưa có giá trị đo
             hoanThanh = CASE
                 WHEN NOT EXISTS (
                     SELECT 1
                     FROM Dot_Nen dn
                     JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
-                    LEFT JOIN KetQua k ON k.maDNTS = ts.maDNTS
+                    LEFT JOIN KetQua k  ON k.maDNTS = ts.maDNTS
                     WHERE dn.maDot = d.maDot
-                      AND (@maPhong IS NULL OR ts.maPhong = @maPhong)
+                      AND ts.maPhong = @maPhong
                       AND (k.maDNTS IS NULL OR k.giaTriDoDuoc IS NULL)
                 )
                 THEN 1 ELSE 0
             END
         FROM DotQuanTrac d
-		WHERE 
-			(@maPhong IS NULL OR @maPhong = '' OR EXISTS (
-				SELECT 1
-				FROM Dot_Nen dn
-				JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
-				WHERE dn.maDot = d.maDot
-				  AND ts.maPhong = @maPhong
-			))
+        -- 🔒 Chỉ các đợt thuộc 1 trong các trạng thái cho phép nhập liệu
+        WHERE d.trangThai IN (1, 2, 4)
+
+        -- 🔒 Chỉ những đợt có ÍT NHẤT 1 công việc giao cho phòng @maPhong
+          AND EXISTS (
+                SELECT 1
+                FROM Dot_Nen dn
+                JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
+                WHERE dn.maDot = d.maDot
+                  AND ts.maPhong = @maPhong
+          )
     ),
     Base AS (
         SELECT
             maDot, maHD, ngayBatDau, ngayDuKien, ngayConLai,
             trangThai =
                 CASE
-                    WHEN hoanThanh = 1 THEN N'Hoàn thành'
-                    WHEN ngayConLai < 0 THEN N'Hết hạn'
-                    WHEN ngayConLai BETWEEN 0 AND 7 THEN N'Gần hết hạn'
-                    ELSE N'Còn hạn'
-                END
-        FROM Dot
-    )
-    SELECT 
-        maDot, maHD, ngayBatDau, ngayDuKien, ngayConLai, trangThai
-    FROM Base
-    ORDER BY ngayConLai DESC, maDot
-    OFFSET (@pageNumber - 1) * @pageSize ROWS
-    FETCH NEXT @pageSize ROWS ONLY;
-
-    SELECT TotalRecords = COUNT(*) FROM Base;
-END
-GO
-
-ALTER PROCEDURE [dbo].[layDotQuanTracNhapLieu_PhanTrang]
-    @pageNumber INT,
-    @pageSize   INT,
-    @maPhong    VARCHAR(15) = NULL   -- NULL/'' => lấy tất cả
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    ;WITH Dot AS (
-        SELECT
-            d.maDot,
-            d.maHD,
-            d.ngayBatDau,
-            d.ngayDuKien,
-
-            -- Số ngày còn lại gốc (có thể âm nếu quá hạn)
-            ngayConLaiRaw = DATEDIFF(DAY, CAST(GETDATE() AS date), CAST(d.ngayDuKien AS date)),
-
-            -- Xác định đã hoàn thành cho phạm vi phòng (hoặc tất cả khi @maPhong null/'')
-            hoanThanh = CASE
-                WHEN NOT EXISTS (
-                    SELECT 1
-                    FROM Dot_Nen dn
-                    JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
-                    LEFT JOIN KetQua k ON k.maDNTS = ts.maDNTS
-                    WHERE dn.maDot = d.maDot
-                      AND (@maPhong IS NULL OR @maPhong = '' OR ts.maPhong = @maPhong)
-                      AND (k.maDNTS IS NULL OR k.giaTriDoDuoc IS NULL)
-                )
-                THEN 1 ELSE 0
-            END
-        FROM DotQuanTrac d
-        WHERE
-            -- Nếu có mã phòng thì chỉ lấy đợt có giao việc cho phòng đó
-            (@maPhong IS NULL OR @maPhong = '' OR EXISTS (
-                SELECT 1
-                FROM Dot_Nen dn
-                JOIN Dot_Nen_TS ts ON ts.maDN = dn.maDN
-                WHERE dn.maDot = d.maDot
-                  AND ts.maPhong = @maPhong
-            ))
-    ),
-    Base AS (
-        SELECT
-            maDot,
-            maHD,
-            ngayBatDau,
-            ngayDuKien,
-
-            -- Hiển thị: nếu hoàn thành thì không âm (floor = 0), nếu chưa thì giữ nguyên
-            ngayConLai = CASE
-                            WHEN hoanThanh = 1 AND ngayConLaiRaw < 0 THEN 0
-                            ELSE ngayConLaiRaw
-                         END,
-
-            -- Trạng thái: ưu tiên Hoàn thành, còn lại dựa trên ngayConLaiRaw (để biết có trễ hạn thật)
-            trangThai =
-                CASE
                     WHEN hoanThanh = 1              THEN N'Hoàn thành'
-                    WHEN ngayConLaiRaw < 0          THEN N'Hết hạn'
-                    WHEN ngayConLaiRaw BETWEEN 0 AND 7 THEN N'Gần hết hạn'
+                    WHEN ngayConLai < 0             THEN N'Hết hạn'
+                    WHEN ngayConLai BETWEEN 0 AND 7 THEN N'Gần hết hạn'
                     ELSE                               N'Còn hạn'
                 END
         FROM Dot
     )
+    -- Phân trang
     SELECT  maDot, maHD, ngayBatDau, ngayDuKien, ngayConLai, trangThai
     FROM    Base
-    ORDER BY trangThai, ngayConLai DESC, maDot
+    ORDER BY ngayConLai DESC, maDot
     OFFSET (@pageNumber - 1) * @pageSize ROWS
     FETCH NEXT @pageSize ROWS ONLY;
 
-    -- Tổng bản ghi cho UI
+    -- Trả thêm tổng bản ghi cho UI
     SELECT TotalRecords = COUNT(*) FROM Base;
 END
-
-CREATE TABLE dbo.ThongBao (
-    maTB        VARCHAR(15)     NOT NULL,       -- Mã thông báo
-    loaiTB      NVARCHAR(50)    NOT NULL,       -- Loại thông báo (VD: QUA_HAN_DOT, QUA_HAN_HD)
-    maDot       VARCHAR(15)     NULL,           -- FK -> DotQuanTrac
-    maHD        VARCHAR(15)     NULL,           -- FK -> HopDong
-    tieuDe      NVARCHAR(255)   NOT NULL,       -- Tiêu đề thông báo
-    noiDung     NVARCHAR(MAX)   NULL,           -- Nội dung chi tiết
-    ngayTao     DATETIME        NOT NULL DEFAULT GETDATE(),  -- Ngày tạo thông báo
-    daGuiEmail  BIT             NOT NULL DEFAULT(0),         -- Đã gửi email hay chưa (0 = chưa, 1 = đã gửi)
-
-    CONSTRAINT PK_ThongBao PRIMARY KEY (maTB),
-
-    -- Ràng buộc FK nhưng KHÔNG CASCADE để tránh lỗi multiple path
-    CONSTRAINT FK_ThongBao_DotQuanTrac
-        FOREIGN KEY (maDot) REFERENCES dbo.DotQuanTrac(maDot)
-        ON DELETE SET NULL
-        ON UPDATE NO ACTION,
-
-    CONSTRAINT FK_ThongBao_HopDong
-        FOREIGN KEY (maHD) REFERENCES dbo.HopDong(maHD)
-        ON DELETE SET NULL
-        ON UPDATE NO ACTION
-);
 GO
 
 CREATE OR ALTER PROCEDURE [dbo].[sp_LayChiTietDotQuanTrac] --Mục đích là sửa đợt quan trắc 
@@ -5545,7 +5386,7 @@ BEGIN
 END
 GO
 
-CREATE OR ALTER PROCEDURE sp_KiemTraVaSinhThongBaoNhacKyHopDong
+CREATE   PROCEDURE [dbo].[sp_KiemTraVaSinhThongBaoNhacKyHopDong]
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -5615,10 +5456,10 @@ BEGIN
     CLOSE cur;
     DEALLOCATE cur;
 
-END;
-GO
+END
+GO 
 
-CREATE OR ALTER PROCEDURE sp_LayDSNhacKyHopDong
+CREATE PROCEDURE sp_LayDSNhacKyHopDong
 AS
 BEGIN
     SELECT 
@@ -5648,8 +5489,6 @@ BEGIN
 END
 GO
 
-
-
 CREATE PROCEDURE sp_CapNhatTrangThaiEmail_NhacHD
     @maTB VARCHAR(15)
 AS
@@ -5671,7 +5510,7 @@ BEGIN
         nv.maPhong,
         nv.hoTen,
         nv.ngaySinh,
-        CASE nv.gioiTinh WHEN 0 THEN N'Nam' ELSE N'Nữ' END AS gioiTinh,
+        nv.gioiTinh,
         nv.diaChi,
         nv.soDienThoai,
         nv.email,
@@ -5858,15 +5697,305 @@ BEGIN
     ELSE
         SET @TonTai = 0;
 END
+GO 
 
-
------23/11
-CREATE PROCEDURE [dbo].[LayPhongBanTheoTaiKhoan]
-    @tenTK VARCHAR(50)
+CREATE PROCEDURE sp_SinhThongBaoSapDenHan_DotQuanTrac
 AS
 BEGIN
-    SELECT maPhong 
-    FROM NhanVien 
-    WHERE email = @tenTK;
+    SET NOCOUNT ON;
+    
+    DECLARE @NgayHienTai DATE = CAST(GETDATE() AS DATE);
+    DECLARE @NgayThongBao DATE;
+    DECLARE @maDot VARCHAR(15),
+            @maHD VARCHAR(15),
+            @tenKH NVARCHAR(255),
+            @ngayDuKien DATE,
+            @NewMaTB VARCHAR(15);
+
+    DECLARE cur CURSOR FOR
+    SELECT dq.maDot, dq.maHD, kh.tenDoanhNghiep, dq.ngayDuKien
+    FROM DotQuanTrac dq
+    JOIN HopDong hd ON dq.maHD = hd.maHD
+    JOIN KhachHang kh ON hd.maKH = kh.maKH
+    WHERE dq.trangThai <> 6
+      AND dq.ngayDuKien IS NOT NULL
+      AND DATEADD(DAY, -2, dq.ngayDuKien) = @NgayHienTai
+      AND NOT EXISTS (
+            SELECT 1 FROM ThongBao tb
+            WHERE tb.maDot = dq.maDot
+              AND tb.loaiTB = 'NHAC_SAP_DEN_HAN_DOT'
+      );
+
+    OPEN cur;
+    FETCH NEXT FROM cur INTO @maDot, @maHD, @tenKH, @ngayDuKien;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        SELECT @NewMaTB =
+            'TB' + RIGHT('000000' + CAST(ISNULL(MAX(CAST(SUBSTRING(maTB, 3, 6) AS INT)), 0) + 1 AS VARCHAR(6)), 6)
+        FROM ThongBao;
+
+        INSERT INTO ThongBao (maTB, loaiTB, maDot, maHD, tieuDe, noiDung, ngayTao)
+        VALUES (
+            @NewMaTB,
+            'NHAC_SAP_DEN_HAN_DOT',
+            @maDot,
+            @maHD,
+            N'Nhắc sắp đến hạn trả kết quả cho đợt ' + @maDot,
+            N'Khách hàng: ' + @tenKH
+            + N'. Ngày dự kiến trả kết quả: ' + CONVERT(VARCHAR(10), @ngayDuKien, 103)
+            + N'. Hệ thống gửi nhắc nhở trước 2 ngày.',
+            GETDATE()
+        );
+
+        INSERT INTO ThongBao_NguoiDung(maTB, maNV, trangThaiDoc, ngayDoc)
+        SELECT @NewMaTB, nv.maNV, 0, NULL
+        FROM NhanVien nv
+        WHERE nv.trangThai = 1;
+
+        FETCH NEXT FROM cur INTO @maDot, @maHD, @tenKH, @ngayDuKien;
+    END;
+
+    CLOSE cur;
+    DEALLOCATE cur;
 END;
 GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[sp_suaHopDong]
+    @maHD VARCHAR(15),
+    @maKH VARCHAR(15),
+    @ngayKy DATE,
+    @ngayKetThucHD DATE,
+    @trangThai VARCHAR(15),        -- ví dụ: TT01/TT02/TT03/TT04
+    @tanSuatQuanTrac VARCHAR(15),  -- FK tới tanSuatQT.maTSQT
+    @soHD NVARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;  -- an toàn rollback tự động khi lỗi
+
+    BEGIN TRY
+        BEGIN TRAN;
+
+        -- 1) Tồn tại hợp đồng cần sửa
+        IF NOT EXISTS (SELECT 1 FROM HopDong WHERE maHD = @maHD)
+        BEGIN
+            RAISERROR(N'Không tìm thấy hợp đồng cần sửa!', 16, 1);
+        END
+
+        -- 2) Kiểm tra ngày
+        IF (@ngayKy >= @ngayKetThucHD)
+        BEGIN
+            RAISERROR(N'Ngày kết thúc phải sau ngày ký.', 16, 1);
+        END
+
+        -- 3) Kiểm tra tồn tại KH & Tần suất (nếu chưa có FK cứng)
+        IF NOT EXISTS (SELECT 1 FROM KhachHang WHERE maKH = @maKH)
+        BEGIN
+            RAISERROR(N'Không tìm thấy khách hàng.', 16, 1);
+        END
+
+        IF NOT EXISTS (SELECT 1 FROM tanSuatQT WHERE maTSQT = @tanSuatQuanTrac)
+        BEGIN
+            RAISERROR(N'Không tìm thấy tần suất quan trắc.', 16, 1);
+        END
+
+        -- 4) Quy tắc trạng thái theo ngày (cân nhắc điều chỉnh cho TT03 nếu duyệt tay)
+        DECLARE @today DATE = CAST(GETDATE() AS DATE);
+
+        IF (@trangThai = 'TT01' AND NOT (@ngayKy <= @today AND @today <= @ngayKetThucHD))
+            RAISERROR(N'Trạng thái đang hiệu lực yêu cầu ngày hiện tại nằm trong khoảng từ ngày ký đến ngày kết thúc.', 16, 1);
+
+        IF (@trangThai = 'TT02' AND NOT (@today > @ngayKetThucHD))
+            RAISERROR(N'Trạng thái hết hạn yêu cầu ngày hiện tại đã sau ngày kết thúc.', 16, 1);
+
+        -- Nếu TT03 là duyệt tay, hãy cân nhắc bỏ ràng buộc ngày:
+        -- IF (@trangThai = 'TT03' AND NOT (@today > @ngayKetThucHD))
+        --     RAISERROR(N'Trạng thái hoàn thành yêu cầu ngày hiện tại đã sau ngày kết thúc.', 16, 1);
+
+        IF (@trangThai = 'TT04' AND NOT (@ngayKy <= @today AND @today <= @ngayKetThucHD))
+            RAISERROR(N'Trạng thái chấm dứt trước thời hạn yêu cầu hợp đồng đang trong thời gian hiệu lực.', 16, 1);
+
+        -- 5) Check trùng (cùng KH, cùng ngày ký) nhưng loại trừ chính hợp đồng đang sửa
+        DECLARE @tenDN NVARCHAR(100);
+        SELECT @tenDN = tenDoanhNghiep FROM KhachHang WHERE maKH = @maKH;
+
+        IF EXISTS (
+            SELECT 1
+            FROM HopDong
+            WHERE maKH = @maKH
+              AND ngayKy = @ngayKy
+              AND maHD <> @maHD
+        )
+        BEGIN
+            DECLARE @day VARCHAR(10) = CONVERT(VARCHAR(10), @ngayKy, 103); -- dd/MM/yyyy
+            RAISERROR(N'Đã có hợp đồng của %s vào ngày %s.', 16, 1, @tenDN, @day);
+        END
+
+        -- 6) Cập nhật
+        UPDATE HopDong
+		SET maKH             = @maKH,
+            ngayKy           = @ngayKy,
+            ngayKetThucHD    = @ngayKetThucHD,
+            trangThai        = @trangThai,
+            tanSuatQuanTrac  = @tanSuatQuanTrac,
+            soHD             = @soHD
+        WHERE maHD = @maHD;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        IF (XACT_STATE() <> 0) ROLLBACK TRAN;
+
+        DECLARE @ErrMsg NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrState INT = ERROR_STATE();
+
+        RAISERROR(@ErrMsg, @ErrSeverity, @ErrState);
+    END CATCH
+END
+GO
+
+/*
+INSERT INTO TaiKhoan (tenTK, matKhau, vaiTro) VALUES 
+('pkdnguyenvana001@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
+('pkdtranthib002@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
+('pkdlephuongc003@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0);
+
+INSERT INTO NhanVien (maNV, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email, ngayTao, trangThai, daXoa) VALUES
+('NV009', 'P001', N'Nguyễn Văn An', '1990-05-15', 1, N'123 Nguyễn Huệ, Quận 1, TP.HCM', '0901234567', 'pkdnguyenvana001@gmail.com', '2024-01-10', 1, 0),
+('NV010', 'P001', N'Trần Thị Bích', '1992-08-20', 0, N'456 Lê Lợi, Quận 3, TP.HCM', '0902345678', 'pkdtranthib002@gmail.com', '2024-01-15', 1, 0),
+('NV011', 'P001', N'Lê Phương Chi', '1988-03-12', 0, N'789 Trần Hưng Đạo, Quận 5, TP.HCM', '0903456789', 'pkdlephuongc003@gmail.com', '2024-02-01', 1, 0);
+
+-- Phòng Kế Hoạch (P002)
+INSERT INTO TaiKhoan (tenTK, matKhau, vaiTro) VALUES 
+('pkhphamminhdung004@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
+('pkhvothaiem005@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
+('pkhhoangvanphuc006@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0);
+
+INSERT INTO NhanVien (maNV, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email, ngayTao, trangThai, daXoa) VALUES
+('NV012', 'P002', N'Phạm Minh Dũng', '1991-11-25', 1, N'234 Cách Mạng Tháng 8, Quận 10, TP.HCM', '0904567890', 'pkhphamminhdung004@gmail.com', '2024-01-20', 1, 0),
+('NV013', 'P002', N'Võ Thái Em', '1993-07-08', 0, N'567 Võ Văn Tần, Quận 3, TP.HCM', '0905678901', 'pkhvothaiem005@gmail.com', '2024-02-05', 1, 0),
+('NV014', 'P002', N'Hoàng Văn Phúc', '1989-12-30', 1, N'890 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', '0906789012', 'pkhhoangvanphuc006@gmail.com', '2024-02-10', 1, 0);
+
+-- Phòng Hiện Trường (P003)
+INSERT INTO TaiKhoan (tenTK, matKhau, vaiTro) VALUES 
+('phtdoanquanggiang007@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
+('phtnguyenthihanh008@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
+('phtbuiduchoai009@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0);
+
+INSERT INTO NhanVien (maNV, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email, ngayTao, trangThai, daXoa) VALUES
+('NV015', 'P003', N'Đoàn Quang Giang', '1994-04-18', 1, N'345 Lý Thường Kiệt, Quận 11, TP.HCM', '0907890123', 'phtdoanquanggiang007@gmail.com', '2024-02-15', 1, 0),
+('NV016', 'P003', N'Nguyễn Thị Hạnh', '1990-09-22', 0, N'678 Hai Bà Trưng, Quận 1, TP.HCM', '0908901234', 'phtnguyenthihanh008@gmail.com', '2024-02-20', 1, 0),
+('NV017', 'P003', N'Bùi Đức Hoài', '1987-06-14', 1, N'901 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', '0909012345', 'phtbuiduchoai009@gmail.com', '2024-03-01', 1, 0);
+
+-- Phòng Thí Nghiệm (P004)
+INSERT INTO TaiKhoan (tenTK, matKhau, vaiTro) VALUES 
+('ptntrinhvaninh010@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
+('ptnlethikieu011@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
+('ptnphanduclinh012@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0);
+
+INSERT INTO NhanVien (maNV, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email, ngayTao, trangThai, daXoa) VALUES
+('NV018', 'P004', N'Trịnh Văn Inh', '1995-02-28', 1, N'112 Pasteur, Quận 1, TP.HCM', '0910123456', 'ptntrinhvaninh010@gmail.com', '2024-03-05', 1, 0),
+('NV019', 'P004', N'Lê Thị Kiều', '1991-10-05', 0, N'445 Cộng Hòa, Quận Tân Bình, TP.HCM', '0911234567', 'ptnlethikieu011@gmail.com', '2024-03-10', 1, 0),
+('NV020', 'P004', N'Phan Đức Linh', '1989-01-17', 1, N'778 Xô Viết Nghệ Tĩnh, Quận Bình Thạnh, TP.HCM', '0912345678', 'ptnphanduclinh012@gmail.com', '2024-03-15', 1, 0);
+
+-- Phòng Kết Quả (P005)
+INSERT INTO TaiKhoan (tenTK, matKhau, vaiTro) VALUES 
+('pkqngothimai013@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
+('pkqvuducnam014@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
+('pkqduongthaiquan015@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0);
+
+INSERT INTO NhanVien (maNV, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email, ngayTao, trangThai, daXoa) VALUES
+('NV021', 'P005', N'Ngô Thị Mai', '1992-12-09', 0, N'223 Nam Kỳ Khởi Nghĩa, Quận 3, TP.HCM', '0913456789', 'pkqngothimai013@gmail.com', '2024-03-20', 1, 0),
+('NV022', 'P005', N'Vũ Đức Nam', '1988-05-23', 1, N'556 Hoàng Văn Thụ, Quận Phú Nhuận, TP.HCM', '0914567890', 'pkqvuducnam014@gmail.com', '2024-04-01', 1, 0),
+('NV023', 'P005', N'Dương Thái Quân', '1993-08-11', 1, N'889 Lê Văn Sỹ, Quận Tân Bình, TP.HCM', '0915678901', 'pkqduongthaiquan015@gmail.com', '2024-04-05', 1, 0);
+
+-- =============================================
+-- 2. THÊM HỢP ĐỒNG (15 hợp đồng)
+-- =============================================
+
+INSERT INTO HopDong (maHD, maKH, ngayKy, ngayKetThucHD, trangThai, tanSuatQuanTrac, soHD) VALUES
+('HD023', 'KH001', '2025-01-05', '2025-12-31', 'TT01', 'TSQT02', 'HD2025/001'),
+('HD024', 'KH002', '2025-01-10', '2025-06-30', 'TT01', 'TSQT03', 'HD2025/002'),
+('HD025', 'KH003', '2025-01-15', '2026-01-15', 'TT01', 'TSQT01', 'HD2025/003'),
+('HD026', 'KH004', '2025-02-01', '2025-08-01', 'TT01', 'TSQT02', 'HD2025/004'),
+('HD027', 'KH005', '2025-02-10', '2025-11-30', 'TT01', 'TSQT03', 'HD2025/005'),
+('HD028', 'KH006', '2025-02-20', '2026-02-20', 'TT01', 'TSQT01', 'HD2025/006'),
+('HD029', 'KH007', '2025-03-01', '2025-09-01', 'TT01', 'TSQT02', 'HD2025/007'),
+('HD030', 'KH008', '2025-03-10', '2025-12-31', 'TT01', 'TSQT03', 'HD2025/008'),
+('HD031', 'KH009', '2025-03-15', '2026-03-15', 'TT01', 'TSQT01', 'HD2025/009'),
+('HD032', 'KH010', '2025-04-01', '2025-10-01', 'TT01', 'TSQT02', 'HD2025/010'),
+('HD033', 'KH011', '2025-04-10', '2025-12-31', 'TT01', 'TSQT03', 'HD2025/011'),
+('HD034', 'KH012', '2025-04-20', '2026-04-20', 'TT01', 'TSQT01', 'HD2025/012'),
+('HD035', 'KH013', '2025-05-01', '2025-11-01', 'TT01', 'TSQT02', 'HD2025/013'),
+('HD036', 'KH014', '2025-05-10', '2025-12-31', 'TT01', 'TSQT03', 'HD2025/014'),
+('HD037', 'KH015', '2025-05-20', '2026-05-20', 'TT01', 'TSQT01', 'HD2025/015');
+
+-- =============================================
+-- 3. THÊM ĐỢT QUAN TRẮC (15 đợt)
+-- =============================================
+
+INSERT INTO DotQuanTrac (maDot, maHD, noiDung, dotQuanTrac, ngayBatDau, ngayDuKien, ngayTraKQ, trangThai) VALUES
+('DT0007', 'HD023', N'Quan trắc định kỳ quý 1/2025', N'Quý 1/2025', '2025-01-15', '2025-03-31', NULL, 1),
+('DT0008', 'HD024', N'Quan trắc định kỳ quý 1/2025', N'Quý 1/2025', '2025-01-20', '2025-03-31', '2025-03-25', 5),
+('DT0009', 'HD025', N'Quan trắc tháng 2/2025', N'Tháng 2/2025', '2025-02-01', '2025-02-28', '2025-02-27', 5),
+('DT0010', 'HD026', N'Quan trắc 6 tháng đầu năm', N'6 tháng đầu/2025', '2025-02-05', '2025-08-05', NULL, 1),
+('DT0011', 'HD027', N'Quan trắc quý 1/2025', N'Quý 1/2025', '2025-02-15', '2025-04-30', NULL, 1),
+('DT0012', 'HD028', N'Quan trắc tháng 3/2025', N'Tháng 3/2025', '2025-03-01', '2025-03-31', '2025-03-30', 5),
+('DT0013', 'HD029', N'Quan trắc 6 tháng đầu năm', N'6 tháng đầu/2025', '2025-03-05', '2025-09-05', NULL, 1),
+('DT0014', 'HD030', N'Quan trắc quý 1/2025', N'Quý 1/2025', '2025-03-15', '2025-06-15', NULL, 2),
+('DT0015', 'HD031', N'Quan trắc tháng 4/2025', N'Tháng 4/2025', '2025-04-01', '2025-04-30', NULL, 1),
+('DT0016', 'HD032', N'Quan trắc 6 tháng đầu năm', N'6 tháng đầu/2025', '2025-04-05', '2025-10-05', NULL, 1),
+('DT0017', 'HD033', N'Quan trắc quý 2/2025', N'Quý 2/2025', '2025-04-15', '2025-07-15', NULL, 2),
+('DT0018', 'HD034', N'Quan trắc tháng 5/2025', N'Tháng 5/2025', '2025-05-01', '2025-05-31', NULL, 1),
+('DT0019', 'HD035', N'Quan trắc 6 tháng đầu năm', N'6 tháng đầu/2025', '2025-05-05', '2025-11-05', NULL, 1),
+('DT0020', 'HD036', N'Quan trắc quý 2/2025', N'Quý 2/2025', '2025-05-15', '2025-08-15', NULL, 2),
+('DT0021', 'HD037', N'Quan trắc tháng 6/2025', N'Tháng 6/2025', '2025-06-01', '2025-06-30', NULL, 1);
+
+-- =============================================
+-- 4. THÊM DOT_NEN (Nền mẫu cho các đợt - 15 bản ghi)
+-- =============================================
+
+INSERT INTO Dot_Nen (maDN, maDot, maNen, tenViTri, toaDo, ghiChu) VALUES
+('DN0004', 'DT0007', 'NM0001', N'Biển Vũng Tàu - Điểm A1', '10.4113, 107.1362', N'Khu vực gần bờ'),
+('DN0005', 'DT0007', 'NM0002', N'Sông Đồng Nai - Cầu Rạch Chiếc', '10.8231, 106.7797', N'Hạ lưu sông'),
+('DN0006', 'DT0008', 'NM0003', N'Nước thải KCN Vĩnh Lộc', '10.8523, 106.5789', N'Điểm xả thải'),
+('DN0007', 'DT0009', 'NM0004', N'Nước ngầm - Giếng khoan số 5', '10.7890, 106.6789', N'Độ sâu 25m'),
+('DN0008', 'DT0010', 'NM0001', N'Biển Bà Rịa - Điểm B2', '10.5412, 107.2453', N'Khu vực xa bờ 2km'),
+('DN0009', 'DT0010', 'NM0005', N'Nước mưa - Trạm Thu Đức', '10.8500, 106.7820', N'Thu mẫu theo mùa'),
+('DN0010', 'DT0011', 'NM0002', N'Sông Sài Gòn - Cầu Phú Mỹ', '10.7309, 106.7110', N'Thượng nguồn'),
+('DN0011', 'DT0012', 'NM0003', N'Nước thải KCN Tân Bình', '10.7987, 106.6234', N'Sau xử lý'),
+('DN0012', 'DT0013', 'NM0004', N'Nước ngầm - Giếng khoan số 8', '10.8123, 106.7456', N'Độ sâu 30m'),
+('DN0013', 'DT0014', 'NM0001', N'Biển Cần Giờ - Điểm C1', '10.4056, 106.9567', N'Khu vực rừng ngập mặn'),
+('DN0014', 'DT0015', 'NM0002', N'Sông Vàm Cỏ - Cầu Tân An', '10.5364, 106.4158', N'Giữa dòng'),
+('DN0015', 'DT0016', 'NM0005', N'Nước mẫu - Trạm Bình Dương', '10.9802, 106.6520', N'Thu mẫu tự động'),
+('DN0016', 'DT0017', 'NM0003', N'Nước thải KCN Long An', '10.7142, 106.3975', N'Trước xử lý'),
+('DN0017', 'DT0018', 'NM0004', N'Nước ngầm - Giếng khoan số 12', '10.7567, 106.6987', N'Độ sâu 35m'),
+('DN0018', 'DT0019', 'NM0001', N'Biển Bà Rịa - Điểm D3', '10.5678, 107.2890', N'Khu vực du lịch');
+
+-- =============================================
+-- 5. THÊM DOT_NEN_TS (Thông số cho nền mẫu - 15 bản ghi)
+-- =============================================
+
+INSERT INTO Dot_Nen_Ts (maDNTS, maDN, maTS, tenTS, donVi, giaTriToiThieu, giaTriToiDa, phuongPhap, maPhong) VALUES
+('DNTS0004', 'DN0004', 'TS0001', N'pH', '-', 5.5, 9.0, 'TCVN 6492:2011', 'P004'),
+('DNTS0005', 'DN0004', 'TS0002', N'BOD5', 'mg/L', 0, 50, 'TCVN 6001-1:2008', 'P004'),
+('DNTS0006', 'DN0005', 'TS0003', N'COD', 'mg/L', 0, 150, 'SMEWW 5220C:2017', 'P004'),
+('DNTS0007', 'DN0005', 'TS0004', N'TSS', 'mg/L', 0, 10, 'TCVN 6179-1:1996', 'P004'),
+('DNTS0008', 'DN0006', 'TS0006', N'Dầu mỡ', 'mg/L', 0, 100, 'TCVN 6625:2000', 'P004'),
+('DNTS0009', 'DN0007', 'TS0011', N'Sắt Fe', 'mg/L', 0, 2, 'TCVN 6193:1996', 'P004'),
+('DNTS0010', 'DN0008', 'TS0001', N'pH', '-', 5.5, 9.0, 'TCVN 6492:2011', 'P004'),
+('DNTS0011', 'DN0009', 'TS0005', N'DO', 'mg/L', 0, 40, 'TCVN 6638:2000', 'P004'),
+('DNTS0012', 'DN0010', 'TS0002', N'BOD5', 'mg/L', 0, 50, 'TCVN 6001-1:2008', 'P004'),
+('DNTS0013', 'DN0011', 'TS0003', N'COD', 'mg/L', 0, 150, 'SMEWW 5220C:2017', 'P004'),
+('DNTS0014', 'DN0012', 'TS0013', N'Đồng Cu', 'mg/L', 0, 0.1, 'TCVN 6193:1996', 'P004'),
+('DNTS0015', 'DN0013', 'TS0009', N'Độ mặn', 'mg/L', NULL, NULL, 'TCVN 6494-1:2011', 'P004'),
+('DNTS0016', 'DN0014', 'TS0004', N'TSS', 'mg/L', 0, 10, 'TCVN 6179-1:1996', 'P004'),
+('DNTS0017', 'DN0015', 'TS0007', N'Phosphate', 'mg/L', 0, 6, 'TCVN 6202:2008', 'P004'),
+('DNTS0018', 'DN0016', 'TS0006', N'Dầu mỡ', 'mg/L', 0, 100, 'TCVN 6625:2000', 'P004');
+
+GO
+*/

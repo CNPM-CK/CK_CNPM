@@ -168,6 +168,7 @@
             Controls.Add(label3);
             Controls.Add(labelKetthuc);
             Controls.Add(labelBatdau);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "LocHopDongvaDQT";
             Text = "LocHopDongvaDQT";
             Load += LocHopDongvaDQT_Load;

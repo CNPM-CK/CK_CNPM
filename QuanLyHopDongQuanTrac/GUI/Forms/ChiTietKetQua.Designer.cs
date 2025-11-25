@@ -260,6 +260,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1295, 771);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "ChiTietKetQua";
             StartPosition = FormStartPosition.CenterScreen;

@@ -318,7 +318,7 @@ namespace GUI.Forms
             int y = (dgvHeight - watermark.Height) / 2;
 
             ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f;
+            matrix.Matrix33 = 0.08f;
             ImageAttributes attributes = new ImageAttributes();
             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
@@ -561,49 +561,17 @@ namespace GUI.Forms
 
         private void searchtextbox_Leave(object sender, EventArgs e)
         {
-            //if (string.IsNullOrWhiteSpace(searchtextbox.Text))
-            //{
-            //    isPlaceholder = true;
-            //    searchtextbox.Text = PLACEHOLDER_TEXT;
-            //    searchtextbox.ForeColor = Color.Silver;
-            //    dgvDanhsachnhanvien.DataSource = dsNhanVien;
-            //    tuKhoacuoicung = "";
-
-            //}
             if (string.IsNullOrWhiteSpace(searchtextbox.Text))
             {
                 isPlaceholder = true;
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
-
-                // ✅ Reset về phân trang với DTO gốc (NhanVien)
-                trangHientai = 1;
-                tongSoBanGhi = 0;
-                taiTrangkhachhang();
-
                 tuKhoacuoicung = "";
             }
         }
 
         private void searchtextbox_KeyDown(object sender, KeyEventArgs e)
         {
-            //if (e.KeyCode == Keys.Enter)
-            //{
-            //    e.SuppressKeyPress = true;
-
-            //    if (dgvDanhsachnhanvien.Rows.Count > 0)
-            //    {
-            //        dgvDanhsachnhanvien.ClearSelection();
-            //        dgvDanhsachnhanvien.Rows[0].Selected = true;
-            //        dgvDanhsachnhanvien.FirstDisplayedScrollingRowIndex = 0;
-            //    }
-            //}
-            //else if (e.KeyCode == Keys.Escape)
-            //{
-            //    searchtextbox.Clear();
-            //    dgvDanhsachnhanvien.DataSource = dsNhanVien;
-            //    tuKhoacuoicung = "";
-            //}
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
@@ -639,36 +607,6 @@ namespace GUI.Forms
             tuKhoacuoicung = currentKeyword;
             PerformSearch();
         }
-
-        //private void PerformSearch()
-        //{
-        //    // Kiểm tra null
-        //    if (dsNhanVien == null || dsNhanVien.Count == 0)
-        //    {
-        //        return;
-        //    }
-
-        //    string keyword = searchtextbox.Text.Trim().ToLower();
-
-        //    if (string.IsNullOrEmpty(keyword))
-        //    {
-        //        dgvDanhsachnhanvien.DataSource = dsNhanVien;
-        //        return;
-        //    }
-
-        //    var filtered = dsNhanVien
-        //        .Where(nv =>
-        //            (nv.hoTen ?? "").ToLower().Contains(keyword) ||
-        //            (nv.email ?? "").ToLower().Contains(keyword) ||
-        //            (nv.tenPhong ?? "").ToLower().Contains(keyword) ||
-        //            (nv.soDienThoai ?? "").Contains(keyword) ||
-        //            (nv.diaChi ?? "").ToLower().Contains(keyword) ||
-        //            nv.maNV.ToString().ToLower().Contains(keyword)
-        //        )
-        //        .ToList();
-
-        //    dgvDanhsachnhanvien.DataSource = new BindingList<NhanVien>(filtered);
-        //}
 
 
         private void PerformSearch()
@@ -757,9 +695,9 @@ namespace GUI.Forms
             _wavPath = Path.Combine(baseDir, "TempAudio", "search.wav");
 
             _recorder = new VoiceRecorder(_wavPath);
-            string appId = "ga825cbd";          
-            string apiKey = "55774f42c55202232e1b4d8ebfc314c5";        
-            string apiSecret = "c1cb5fc788d78ec4b808e8cc4beb4a3d";  
+            string appId = "ga825cbd";
+            string apiKey = "55774f42c55202232e1b4d8ebfc314c5";
+            string apiSecret = "c1cb5fc788d78ec4b808e8cc4beb4a3d";
 
             var iatService = new IATService(appId, apiKey, apiSecret);
 
@@ -836,7 +774,6 @@ namespace GUI.Forms
         {
             var bll = new NhanVienBLL();
 
-            // 🔹 Tính tổng số trang (chỉ cần 1 lần khi load form)
             if (tongSoBanGhi == 0)
             {
                 tongSoBanGhi = bll.demSoLuongNhanVien();
@@ -846,10 +783,7 @@ namespace GUI.Forms
             var data = bll.layDanhSachNhanVien_PhanTrang(trangHientai, kichthuocTrang);
             dgvDanhsachnhanvien.DataSource = data;
 
-            // 🔹 Cập nhật label trang
             soTrang.Text = $"Trang {trangHientai}/{tongSoTrang}";
-
-            // 🔹 Disable nút nếu đang ở biên
             btnTruoc.Enabled = trangHientai > 1;
             btnSau.Enabled = trangHientai < tongSoTrang;
         }
@@ -865,8 +799,11 @@ namespace GUI.Forms
 
         private void btnSau_Click(object sender, EventArgs e)
         {
-            trangHientai++;
-            taiTrangkhachhang();
+            if (trangHientai < tongSoTrang)
+            {
+                trangHientai++;
+                taiTrangkhachhang();
+            }
         }
 
         private SemaphoreSlim _voiceLock = new SemaphoreSlim(1, 1); // ✅ Thêm field này
@@ -961,27 +898,71 @@ namespace GUI.Forms
             {
                 apDungBoLoc(filter.SelectedPhongBan, filter.SelectedGioiTinh, filter.SelectedTrangThai);
             }
+            // ✅ Nếu user nhấn Cancel → Reset về phân trang
+            else
+            {
+                ResetFilter();
+            }
         }
         private void apDungBoLoc(string maPhong, string gioiTinh, string trangThai)
         {
-            // Bắt đầu từ danh sách đầy đủ
-            var result = dsNhanVien.AsEnumerable();
 
-            // 1) Lọc phòng ban
-            if (!string.IsNullOrEmpty(maPhong))
-                result = result.Where(nv => nv.maPhong == maPhong);
+            try
+            {
+                // ✅ Lấy TẤT CẢ nhân viên từ BLL (không phân trang)
+                NhanVienBLL bll = new NhanVienBLL();
+                var allData = bll.layDanhSachNhanVien_TimKiem(); // ✅ Method trả về tất cả
 
-            // 2) Lọc giới tính
-            if (!string.IsNullOrEmpty(gioiTinh))
-                result = result.Where(nv => nv.gioiTinh == gioiTinh);
+                // Bắt đầu lọc từ danh sách đầy đủ
+                var result = allData.AsEnumerable();
 
-            // 3) Lọc trạng thái
-            if (!string.IsNullOrEmpty(trangThai))
-                result = result.Where(nv => nv.trangThai.ToString() == trangThai);
+                // 1) Lọc phòng ban
+                if (!string.IsNullOrEmpty(maPhong))
+                    result = result.Where(nv => nv.maPhong == maPhong);
 
-            // Kết quả cuối
-            dgvDanhsachnhanvien.DataSource = result.ToList();
+                // 2) Lọc giới tính
+                if (!string.IsNullOrEmpty(gioiTinh))
+                {
+                    result = result.Where(nv => nv.gioiTinh == gioiTinh);
+                }
+
+                // 3) Lọc trạng thái
+                if (!string.IsNullOrEmpty(trangThai))
+                {
+                    int trangThaiValue = int.Parse(trangThai);
+                    result = result.Where(nv => nv.trangThai == trangThaiValue);
+                }
+
+                // ✅ Hiển thị kết quả
+                var filteredList = result.ToList();
+                dgvDanhsachnhanvien.DataSource = new BindingList<NhanVienSearch>(filteredList);
+
+                // ✅ Tắt phân trang khi đang lọc
+                btnTruoc.Enabled = false;
+                btnSau.Enabled = false;
+                soTrang.Text = $"Tìm thấy {filteredList.Count} kết quả";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi lọc dữ liệu: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+        private void ResetFilter()
+        {
+            // Clear search box
+            if (isPlaceholder == false)
+            {
+                isPlaceholder = true;
+                searchtextbox.Text = PLACEHOLDER_TEXT;
+                searchtextbox.ForeColor = Color.Silver;
+                tuKhoacuoicung = "";
+            }
 
+            // Reset về trang 1
+            trangHientai = 1;
+            tongSoBanGhi = 0;
+            taiTrangkhachhang();
+        }
     }
 }

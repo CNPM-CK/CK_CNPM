@@ -29,48 +29,155 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            panelNgayketthuc = new Panel();
+            dateTimePicker1 = new DateTimePicker();
+            panelNgayki = new Panel();
+            dateTimePicker2 = new DateTimePicker();
+            panelTrangthai = new Panel();
+            cbbTrangThai = new ComboBox();
+            panelTansuat = new Panel();
+            cbbTanSuatQT = new ComboBox();
+            panelSoHD = new Panel();
+            textBox1 = new TextBox();
+            panelKhachhang = new Panel();
+            cbbKhachHang = new ComboBox();
             btnCancel = new Button();
             buttonAddnew = new Button();
-            dateTimePicker1 = new DateTimePicker();
             label6 = new Label();
-            dateTimePicker2 = new DateTimePicker();
             label5 = new Label();
-            cbbTrangThai = new ComboBox();
             label4 = new Label();
-            cbbTanSuatQT = new ComboBox();
-            textBox1 = new TextBox();
             label3 = new Label();
             label2 = new Label();
             label7 = new Label();
-            cbbKhachHang = new ComboBox();
             panel2 = new Panel();
+            pictureBox3 = new PictureBox();
             label1 = new Label();
             panel1.SuspendLayout();
+            panelNgayketthuc.SuspendLayout();
+            panelNgayki.SuspendLayout();
+            panelTrangthai.SuspendLayout();
+            panelTansuat.SuspendLayout();
+            panelSoHD.SuspendLayout();
+            panelKhachhang.SuspendLayout();
             panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
+            panel1.Controls.Add(panelNgayketthuc);
+            panel1.Controls.Add(panelNgayki);
+            panel1.Controls.Add(panelTrangthai);
+            panel1.Controls.Add(panelTansuat);
+            panel1.Controls.Add(panelSoHD);
+            panel1.Controls.Add(panelKhachhang);
             panel1.Controls.Add(btnCancel);
             panel1.Controls.Add(buttonAddnew);
-            panel1.Controls.Add(dateTimePicker1);
             panel1.Controls.Add(label6);
-            panel1.Controls.Add(dateTimePicker2);
             panel1.Controls.Add(label5);
-            panel1.Controls.Add(cbbTrangThai);
             panel1.Controls.Add(label4);
-            panel1.Controls.Add(cbbTanSuatQT);
-            panel1.Controls.Add(textBox1);
             panel1.Controls.Add(label3);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(label7);
-            panel1.Controls.Add(cbbKhachHang);
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(800, 545);
             panel1.TabIndex = 0;
+            // 
+            // panelNgayketthuc
+            // 
+            panelNgayketthuc.Controls.Add(dateTimePicker1);
+            panelNgayketthuc.Location = new Point(46, 364);
+            panelNgayketthuc.Name = "panelNgayketthuc";
+            panelNgayketthuc.Size = new Size(290, 40);
+            panelNgayketthuc.TabIndex = 23;
+            // 
+            // dateTimePicker1
+            // 
+            dateTimePicker1.Location = new Point(3, 10);
+            dateTimePicker1.Name = "dateTimePicker1";
+            dateTimePicker1.Size = new Size(284, 27);
+            dateTimePicker1.TabIndex = 15;
+            // 
+            // panelNgayki
+            // 
+            panelNgayki.Controls.Add(dateTimePicker2);
+            panelNgayki.Location = new Point(46, 241);
+            panelNgayki.Name = "panelNgayki";
+            panelNgayki.Size = new Size(290, 40);
+            panelNgayki.TabIndex = 22;
+            // 
+            // dateTimePicker2
+            // 
+            dateTimePicker2.Location = new Point(3, 4);
+            dateTimePicker2.Name = "dateTimePicker2";
+            dateTimePicker2.Size = new Size(284, 27);
+            dateTimePicker2.TabIndex = 13;
+            // 
+            // panelTrangthai
+            // 
+            panelTrangthai.Controls.Add(cbbTrangThai);
+            panelTrangthai.Location = new Point(460, 364);
+            panelTrangthai.Name = "panelTrangthai";
+            panelTrangthai.Size = new Size(290, 40);
+            panelTrangthai.TabIndex = 21;
+            // 
+            // cbbTrangThai
+            // 
+            cbbTrangThai.FormattingEnabled = true;
+            cbbTrangThai.Location = new Point(3, 9);
+            cbbTrangThai.Name = "cbbTrangThai";
+            cbbTrangThai.Size = new Size(275, 28);
+            cbbTrangThai.TabIndex = 10;
+            // 
+            // panelTansuat
+            // 
+            panelTansuat.Controls.Add(cbbTanSuatQT);
+            panelTansuat.Location = new Point(460, 241);
+            panelTansuat.Name = "panelTansuat";
+            panelTansuat.Size = new Size(290, 40);
+            panelTansuat.TabIndex = 20;
+            // 
+            // cbbTanSuatQT
+            // 
+            cbbTanSuatQT.FormattingEnabled = true;
+            cbbTanSuatQT.Location = new Point(3, 3);
+            cbbTanSuatQT.Name = "cbbTanSuatQT";
+            cbbTanSuatQT.Size = new Size(284, 28);
+            cbbTanSuatQT.TabIndex = 8;
+            // 
+            // panelSoHD
+            // 
+            panelSoHD.Controls.Add(textBox1);
+            panelSoHD.Location = new Point(460, 132);
+            panelSoHD.Name = "panelSoHD";
+            panelSoHD.Size = new Size(290, 40);
+            panelSoHD.TabIndex = 19;
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(3, 3);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(284, 27);
+            textBox1.TabIndex = 7;
+            // 
+            // panelKhachhang
+            // 
+            panelKhachhang.Controls.Add(cbbKhachHang);
+            panelKhachhang.Location = new Point(46, 132);
+            panelKhachhang.Name = "panelKhachhang";
+            panelKhachhang.Size = new Size(290, 40);
+            panelKhachhang.TabIndex = 18;
+            // 
+            // cbbKhachHang
+            // 
+            cbbKhachHang.FormattingEnabled = true;
+            cbbKhachHang.Location = new Point(3, 7);
+            cbbKhachHang.Name = "cbbKhachHang";
+            cbbKhachHang.Size = new Size(284, 28);
+            cbbKhachHang.TabIndex = 1;
             // 
             // btnCancel
             // 
@@ -81,7 +188,7 @@
             btnCancel.Font = new Font("Segoe UI", 10F);
             btnCancel.Location = new Point(427, 467);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(334, 55);
+            btnCancel.Size = new Size(160, 55);
             btnCancel.TabIndex = 17;
             btnCancel.Text = "Hủy";
             btnCancel.UseVisualStyleBackColor = false;
@@ -96,20 +203,13 @@
             buttonAddnew.FlatStyle = FlatStyle.Flat;
             buttonAddnew.Font = new Font("Segoe UI", 10F);
             buttonAddnew.ForeColor = Color.White;
-            buttonAddnew.Location = new Point(35, 468);
+            buttonAddnew.Location = new Point(207, 467);
             buttonAddnew.Name = "buttonAddnew";
-            buttonAddnew.Size = new Size(326, 54);
+            buttonAddnew.Size = new Size(160, 55);
             buttonAddnew.TabIndex = 16;
             buttonAddnew.Text = "Xác nhận ";
             buttonAddnew.UseVisualStyleBackColor = false;
             buttonAddnew.Click += buttonAddnew_Click;
-            // 
-            // dateTimePicker1
-            // 
-            dateTimePicker1.Location = new Point(46, 368);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(301, 27);
-            dateTimePicker1.TabIndex = 15;
             // 
             // label6
             // 
@@ -121,13 +221,6 @@
             label6.TabIndex = 14;
             label6.Text = "Ngày kết thúc hợp đồng";
             // 
-            // dateTimePicker2
-            // 
-            dateTimePicker2.Location = new Point(46, 248);
-            dateTimePicker2.Name = "dateTimePicker2";
-            dateTimePicker2.Size = new Size(301, 27);
-            dateTimePicker2.TabIndex = 13;
-            // 
             // label5
             // 
             label5.AutoSize = true;
@@ -138,14 +231,6 @@
             label5.TabIndex = 11;
             label5.Text = "Trạng thái";
             // 
-            // cbbTrangThai
-            // 
-            cbbTrangThai.FormattingEnabled = true;
-            cbbTrangThai.Location = new Point(460, 370);
-            cbbTrangThai.Name = "cbbTrangThai";
-            cbbTrangThai.Size = new Size(301, 28);
-            cbbTrangThai.TabIndex = 10;
-            // 
             // label4
             // 
             label4.AutoSize = true;
@@ -155,21 +240,6 @@
             label4.Size = new Size(77, 23);
             label4.TabIndex = 9;
             label4.Text = "Tần suất";
-            // 
-            // cbbTanSuatQT
-            // 
-            cbbTanSuatQT.FormattingEnabled = true;
-            cbbTanSuatQT.Location = new Point(460, 250);
-            cbbTanSuatQT.Name = "cbbTanSuatQT";
-            cbbTanSuatQT.Size = new Size(301, 28);
-            cbbTanSuatQT.TabIndex = 8;
-            // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(460, 142);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(301, 27);
-            textBox1.TabIndex = 7;
             // 
             // label3
             // 
@@ -201,23 +271,26 @@
             label7.TabIndex = 2;
             label7.Text = "Khách hàng";
             // 
-            // cbbKhachHang
-            // 
-            cbbKhachHang.FormattingEnabled = true;
-            cbbKhachHang.Location = new Point(46, 142);
-            cbbKhachHang.Name = "cbbKhachHang";
-            cbbKhachHang.Size = new Size(301, 28);
-            cbbKhachHang.TabIndex = 1;
-            // 
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(0, 152, 70);
+            panel2.Controls.Add(pictureBox3);
             panel2.Controls.Add(label1);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
             panel2.Size = new Size(800, 81);
             panel2.TabIndex = 0;
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Image = Properties.Resources.remove_background_logo;
+            pictureBox3.Location = new Point(0, 1);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(155, 80);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.TabIndex = 3;
+            pictureBox3.TabStop = false;
             // 
             // label1
             // 
@@ -231,19 +304,27 @@
             label1.Text = "SỬA HỢP ĐỒNG";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // SuaHopDong
+            // SuaHopDongForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 545);
             Controls.Add(panel1);
             MaximizeBox = false;
-            Name = "SuaHopDong";
+            Name = "SuaHopDongForm";
             Text = "Form1";
             Load += SuaHopDong_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            panelNgayketthuc.ResumeLayout(false);
+            panelNgayki.ResumeLayout(false);
+            panelTrangthai.ResumeLayout(false);
+            panelTansuat.ResumeLayout(false);
+            panelSoHD.ResumeLayout(false);
+            panelSoHD.PerformLayout();
+            panelKhachhang.ResumeLayout(false);
             panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ResumeLayout(false);
         }
 
@@ -266,5 +347,12 @@
         private DateTimePicker dateTimePicker2;
         private Button buttonAddnew;
         private Button btnCancel;
+        private Panel panelKhachhang;
+        private Panel panelNgayketthuc;
+        private Panel panelNgayki;
+        private Panel panelTrangthai;
+        private Panel panelTansuat;
+        private Panel panelSoHD;
+        private PictureBox pictureBox3;
     }
 }

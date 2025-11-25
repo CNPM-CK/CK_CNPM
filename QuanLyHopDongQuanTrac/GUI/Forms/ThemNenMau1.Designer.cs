@@ -221,6 +221,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(511, 301);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "ThemNenMau1";
             Text = "ThemNenMau";
             Load += ThemNenMau1_Load;

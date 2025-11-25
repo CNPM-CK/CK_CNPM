@@ -46,5 +46,17 @@ namespace BLL
             dal.ThemKetQua(kq);
         }
 
+        //public List<DanhSachDotNhapLieuDTO> layDanhSachDotQuanTracNhapLieu_TimKiem(string maPhong)
+        //{
+        //    try
+        //    {
+        //        return dal.layDanhSachDotQuanTracNhapLieu_TimKiem(maPhong);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("BLL - Lỗi tìm kiếm đợt quan trắc: " + ex.Message);
+        //    }
+        //}
+
     }
 }

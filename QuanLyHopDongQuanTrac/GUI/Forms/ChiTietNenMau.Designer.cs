@@ -55,6 +55,8 @@
             panelGhichu = new Panel();
             txtGhichu = new TextBox();
             panel13 = new Panel();
+            panelToadoy = new Panel();
+            txtToadoy = new TextBox();
             label6 = new Label();
             panelToado = new Panel();
             txtToado = new TextBox();
@@ -70,8 +72,6 @@
             btnThemts = new Button();
             btnHuy = new Button();
             btnLuu = new Button();
-            panelToadoy = new Panel();
-            txtToadoy = new TextBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel2.SuspendLayout();
@@ -91,13 +91,13 @@
             panel15.SuspendLayout();
             panelGhichu.SuspendLayout();
             panel13.SuspendLayout();
+            panelToadoy.SuspendLayout();
             panelToado.SuspendLayout();
             panel11.SuspendLayout();
             panelVitri.SuspendLayout();
             panel10.SuspendLayout();
             panelTennenmau.SuspendLayout();
             panel4.SuspendLayout();
-            panelToadoy.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -407,6 +407,23 @@
             panel13.Size = new Size(562, 65);
             panel13.TabIndex = 2;
             // 
+            // panelToadoy
+            // 
+            panelToadoy.Controls.Add(txtToadoy);
+            panelToadoy.Location = new Point(295, 18);
+            panelToadoy.Name = "panelToadoy";
+            panelToadoy.Size = new Size(155, 35);
+            panelToadoy.TabIndex = 2;
+            // 
+            // txtToadoy
+            // 
+            txtToadoy.BorderStyle = BorderStyle.FixedSingle;
+            txtToadoy.Location = new Point(3, 4);
+            txtToadoy.Multiline = true;
+            txtToadoy.Name = "txtToadoy";
+            txtToadoy.Size = new Size(149, 28);
+            txtToadoy.TabIndex = 0;
+            // 
             // label6
             // 
             label6.AutoSize = true;
@@ -564,23 +581,6 @@
             btnLuu.UseVisualStyleBackColor = false;
             btnLuu.Click += btnLuu_Click;
             // 
-            // panelToadoy
-            // 
-            panelToadoy.Controls.Add(txtToadoy);
-            panelToadoy.Location = new Point(295, 18);
-            panelToadoy.Name = "panelToadoy";
-            panelToadoy.Size = new Size(155, 35);
-            panelToadoy.TabIndex = 2;
-            // 
-            // txtToadoy
-            // 
-            txtToadoy.BorderStyle = BorderStyle.FixedSingle;
-            txtToadoy.Location = new Point(3, 4);
-            txtToadoy.Multiline = true;
-            txtToadoy.Name = "txtToadoy";
-            txtToadoy.Size = new Size(149, 28);
-            txtToadoy.TabIndex = 0;
-            // 
             // ChiTietNenMau
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -588,6 +588,7 @@
             ClientSize = new Size(1137, 530);
             Controls.Add(panel2);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "ChiTietNenMau";
             Text = "Form1";
             FormClosing += ChiTietNenMau_FormClosing;
@@ -617,6 +618,8 @@
             panelGhichu.PerformLayout();
             panel13.ResumeLayout(false);
             panel13.PerformLayout();
+            panelToadoy.ResumeLayout(false);
+            panelToadoy.PerformLayout();
             panelToado.ResumeLayout(false);
             panelToado.PerformLayout();
             panel11.ResumeLayout(false);
@@ -628,8 +631,6 @@
             panelTennenmau.ResumeLayout(false);
             panelTennenmau.PerformLayout();
             panel4.ResumeLayout(false);
-            panelToadoy.ResumeLayout(false);
-            panelToadoy.PerformLayout();
             ResumeLayout(false);
         }
 

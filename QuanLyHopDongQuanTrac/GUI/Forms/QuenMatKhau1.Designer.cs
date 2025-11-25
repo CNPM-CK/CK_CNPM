@@ -312,6 +312,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1272, 724);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "QuenMatKhau1";
             StartPosition = FormStartPosition.CenterScreen;

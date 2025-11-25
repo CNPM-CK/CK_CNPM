@@ -289,7 +289,7 @@ namespace GUI.Forms
             int topOffset = 10;
 
             int leftBoundary = pictureFilter != null ? pictureFilter.Right + SPACING : MARGIN;
-            int rightBoundary = formWidth - MARGIN; 
+            int rightBoundary = formWidth - MARGIN;
 
             if (picturemicro != null)
             {
@@ -740,6 +740,11 @@ namespace GUI.Forms
                 }
 
             }
+
+        }
+
+        private void pictureFilter_Click(object sender, EventArgs e)
+        {
 
         }
     }

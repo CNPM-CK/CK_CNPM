@@ -614,11 +614,6 @@ namespace GUI.Forms
                 isPlaceholder = true;
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
-
-                // Reset về phân trang thay vì hiển thị toàn bộ
-                trangHientai = 1;
-                tongSoBanGhi = 0;
-                taiDanhSachThongSo();
                 lastSearchKeyword = "";
             }
         }
@@ -843,7 +838,7 @@ namespace GUI.Forms
             int y = (dgvHeight - watermark.Height) / 2;
 
             ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f;
+            matrix.Matrix33 = 0.08f;
             ImageAttributes attributes = new ImageAttributes();
             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 

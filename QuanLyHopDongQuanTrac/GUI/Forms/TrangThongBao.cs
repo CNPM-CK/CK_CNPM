@@ -63,7 +63,7 @@ namespace GUI.Forms
                 InitializeCustomSearchBox();
                 InitializeWatermark();
                 CalculateLayout();
-                BoGocButton(btnSau, 20); 
+                BoGocButton(btnSau, 20);
                 BoGocButton(btnTruoc, 20);
 
                 // ✅ Lấy mã nhân viên
@@ -478,10 +478,7 @@ namespace GUI.Forms
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
                 lastSearchKeyword = "";
-
-                // ✅ Quay về chế độ phân trang bình thường
-                currentPage = 1;
-                taiThongBaoQuaHan();
+                return; // ❗ KHÔNG gọi taiThongBaoQuaHan()
             }
         }
 
@@ -524,7 +521,6 @@ namespace GUI.Forms
 
             if (string.IsNullOrEmpty(keyword))
             {
-                // ✅ Trở về phân trang bình thường
                 currentPage = 1;
                 taiThongBaoQuaHan();
                 return;
@@ -605,6 +601,67 @@ namespace GUI.Forms
         #region Data Loading & Pagination
         private void taiThongBaoQuaHan()
         {
+            //try
+            //{
+            //    if (string.IsNullOrEmpty(maNV))
+            //    {
+            //        MessageBox.Show("Không tìm thấy mã nhân viên!", "Lỗi",
+            //            MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+
+            //    // ✅ 1. Đếm tổng số thông báo
+            //    totalRecords = bllThongBao.demTongSoThongBao(maNV);
+
+            //    if (totalRecords == 0)
+            //    {
+            //        dgvdsThongbao.DataSource = null;
+            //        CapNhatHienThiPhanTrang(0, 0, 0);
+            //        MessageBox.Show("Không có thông báo nào.", "Thông tin",
+            //            MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //        return;
+            //    }
+
+            //    // ✅ 2. Tính tổng số trang
+            //    totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+            //    // ✅ 3. Kiểm tra currentPage hợp lệ
+            //    if (currentPage > totalPages) currentPage = totalPages;
+            //    if (currentPage < 1) currentPage = 1;
+
+            //    // ✅ 4. Lấy dữ liệu trang hiện tại
+            //    dtThongBao = bllThongBao.layThongBaoTheoNhanVien_PhanTrang(maNV, currentPage, pageSize);
+
+            //    // ✅ 5. Lưu toàn bộ dữ liệu để search (chỉ load 1 lần)
+            //    if (dtThongBaoFull == null || dtThongBaoFull.Rows.Count == 0)
+            //    {
+            //        dtThongBaoFull = bllThongBao.layThongBaoTheoNhanVien(maNV);
+            //    }
+
+            //    // ✅ 6. Kiểm tra cột trangThaiDoc
+            //    if (!dtThongBao.Columns.Contains("trangThaiDoc"))
+            //    {
+            //        MessageBox.Show("Lỗi: DataTable không có cột 'trangThaiDoc'!",
+            //            "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+
+            //    // ✅ 7. Bind dữ liệu
+            //    dgvdsThongbao.DataSource = dtThongBao;
+
+            //    ToMauTheoTrangThai();
+
+            //    // ✅ 9. Cập nhật hiển thị phân trang
+            //    CapNhatHienThiPhanTrang(currentPage, totalPages, totalRecords);
+
+            //    dgvdsThongbao.Refresh();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"Lỗi khi tải thông báo: {ex.Message}\n\nStackTrace:\n{ex.StackTrace}",
+            //        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+
             try
             {
                 if (string.IsNullOrEmpty(maNV))
@@ -614,35 +671,49 @@ namespace GUI.Forms
                     return;
                 }
 
-                // ✅ 1. Đếm tổng số thông báo
-                totalRecords = bllThongBao.demTongSoThongBao(maNV);
-
-                if (totalRecords == 0)
+                // 🔹 Nếu KHÔNG lọc → load phân trang bình thường
+                if (!isFiltering)
                 {
-                    dgvdsThongbao.DataSource = null;
-                    CapNhatHienThiPhanTrang(0, 0, 0);
-                    MessageBox.Show("Không có thông báo nào.", "Thông tin",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                    totalRecords = bllThongBao.demTongSoThongBao(maNV);
+
+                    if (totalRecords == 0)
+                    {
+                        dgvdsThongbao.DataSource = null;
+                        CapNhatHienThiPhanTrang(0, 0, 0);
+                        MessageBox.Show("Không có thông báo nào.", "Thông tin",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+                    if (currentPage > totalPages) currentPage = totalPages;
+                    if (currentPage < 1) currentPage = 1;
+
+                    dtThongBao = bllThongBao.layThongBaoTheoNhanVien_PhanTrang(maNV, currentPage, pageSize);
+
+                    if (dtThongBaoFull == null || dtThongBaoFull.Rows.Count == 0)
+                    {
+                        dtThongBaoFull = bllThongBao.layThongBaoTheoNhanVien(maNV);
+                    }
                 }
-
-                // ✅ 2. Tính tổng số trang
-                totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-
-                // ✅ 3. Kiểm tra currentPage hợp lệ
-                if (currentPage > totalPages) currentPage = totalPages;
-                if (currentPage < 1) currentPage = 1;
-
-                // ✅ 4. Lấy dữ liệu trang hiện tại
-                dtThongBao = bllThongBao.layThongBaoTheoNhanVien_PhanTrang(maNV, currentPage, pageSize);
-
-                // ✅ 5. Lưu toàn bộ dữ liệu để search (chỉ load 1 lần)
-                if (dtThongBaoFull == null || dtThongBaoFull.Rows.Count == 0)
+                // 🔹 Nếu CÓ lọc → load toàn bộ kết quả lọc
+                else
                 {
                     dtThongBaoFull = bllThongBao.layThongBaoTheoNhanVien(maNV);
+
+                    // ✅ Lọc theo loại thông báo
+                    DataView dv = new DataView(dtThongBaoFull);
+                    if (!string.IsNullOrEmpty(filterLoaiTB))
+                    {
+                        dv.RowFilter = $"loaiTB = '{filterLoaiTB.Replace("'", "''")}'";
+                    }
+
+                    dtThongBao = dv.ToTable();
+                    totalRecords = dtThongBao.Rows.Count;
+                    totalPages = 1; // Khi lọc thì chỉ có 1 trang
                 }
 
-                // ✅ 6. Kiểm tra cột trangThaiDoc
                 if (!dtThongBao.Columns.Contains("trangThaiDoc"))
                 {
                     MessageBox.Show("Lỗi: DataTable không có cột 'trangThaiDoc'!",
@@ -650,13 +721,21 @@ namespace GUI.Forms
                     return;
                 }
 
-                // ✅ 7. Bind dữ liệu
                 dgvdsThongbao.DataSource = dtThongBao;
-
                 ToMauTheoTrangThai();
 
-                // ✅ 9. Cập nhật hiển thị phân trang
-                CapNhatHienThiPhanTrang(currentPage, totalPages, totalRecords);
+                //// ✅ Cập nhật UI phân trang
+                //if (isFiltering)
+                //{
+                //    CapNhatHienThiPhanTrang(0, 0, totalRecords);
+                //    soTrang.Text = $"Tìm thấy {totalRecords} kết quả";
+                //    btnTruoc.Enabled = false;
+                //    btnSau.Enabled = false;
+                //}
+                //else
+                //{
+                //    CapNhatHienThiPhanTrang(currentPage, totalPages, totalRecords);
+                //}
 
                 dgvdsThongbao.Refresh();
             }
@@ -789,7 +868,7 @@ namespace GUI.Forms
             int y = (dgvHeight - watermark.Height) / 2;
 
             ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f;
+            matrix.Matrix33 = 0.08f;
             ImageAttributes attributes = new ImageAttributes();
             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
@@ -799,6 +878,56 @@ namespace GUI.Forms
                 GraphicsUnit.Pixel,
                 attributes);
         }
+
         #endregion
+
+        private string filterLoaiTB = null;
+        private bool isFiltering = false;
+        private void pictureFilter_Click(object sender, EventArgs e)
+        {
+            LocThongBao frmFilter = new LocThongBao();
+            frmFilter.StartPosition = FormStartPosition.CenterParent;
+
+            if (frmFilter.ShowDialog(this.FindForm()) == DialogResult.OK)
+            {
+                apDungBoLoc(frmFilter.SelectedLoaiTB);
+            }
+        }
+
+        private void apDungBoLoc(string loaiTB)
+        {
+            try
+            {
+                filterLoaiTB = loaiTB;
+                isFiltering = !string.IsNullOrEmpty(loaiTB);
+
+                if (!isFiltering)
+                {
+                    // Không có bộ lọc → load lại phân trang
+                    currentPage = 1;
+                    taiThongBaoQuaHan();
+                    return;
+                }
+
+                // ✅ Load toàn bộ dữ liệu và lọc
+                currentPage = 1;
+                taiThongBaoQuaHan();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi áp dụng bộ lọc: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ✅ Thêm hàm hủy bộ lọc
+        private void huyBoLoc()
+        {
+            filterLoaiTB = null;
+            isFiltering = false;
+            currentPage = 1;
+            taiThongBaoQuaHan();
+        }
+
     }
 }

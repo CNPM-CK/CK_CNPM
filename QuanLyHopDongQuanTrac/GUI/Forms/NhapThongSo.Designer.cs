@@ -29,40 +29,54 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            numericUpDown1 = new NumericUpDown();
+            panel7 = new Panel();
             dateTimePicker1 = new DateTimePicker();
+            panel8 = new Panel();
+            numericUpDown1 = new NumericUpDown();
+            panel6 = new Panel();
+            textBox3 = new TextBox();
+            panel5 = new Panel();
+            textBox4 = new TextBox();
+            panel4 = new Panel();
+            textBox1 = new TextBox();
+            panel3 = new Panel();
+            textBox2 = new TextBox();
             label6 = new Label();
             label7 = new Label();
-            textBox3 = new TextBox();
             label2 = new Label();
-            textBox4 = new TextBox();
             label5 = new Label();
-            textBox1 = new TextBox();
             label4 = new Label();
-            textBox2 = new TextBox();
             btnCancel = new Button();
             buttonAddnew = new Button();
             label3 = new Label();
             panel2 = new Panel();
+            pictureBox3 = new PictureBox();
             label1 = new Label();
             panel1.SuspendLayout();
+            panel7.SuspendLayout();
+            panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
+            panel6.SuspendLayout();
+            panel5.SuspendLayout();
+            panel4.SuspendLayout();
+            panel3.SuspendLayout();
             panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
-            panel1.Controls.Add(numericUpDown1);
-            panel1.Controls.Add(dateTimePicker1);
+            panel1.Controls.Add(panel7);
+            panel1.Controls.Add(panel8);
+            panel1.Controls.Add(panel6);
+            panel1.Controls.Add(panel5);
+            panel1.Controls.Add(panel4);
+            panel1.Controls.Add(panel3);
             panel1.Controls.Add(label6);
             panel1.Controls.Add(label7);
-            panel1.Controls.Add(textBox3);
             panel1.Controls.Add(label2);
-            panel1.Controls.Add(textBox4);
             panel1.Controls.Add(label5);
-            panel1.Controls.Add(textBox1);
             panel1.Controls.Add(label4);
-            panel1.Controls.Add(textBox2);
             panel1.Controls.Add(btnCancel);
             panel1.Controls.Add(buttonAddnew);
             panel1.Controls.Add(label3);
@@ -73,19 +87,99 @@
             panel1.Size = new Size(800, 632);
             panel1.TabIndex = 0;
             // 
+            // panel7
+            // 
+            panel7.Controls.Add(dateTimePicker1);
+            panel7.Location = new Point(69, 428);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(290, 40);
+            panel7.TabIndex = 39;
+            // 
+            // dateTimePicker1
+            // 
+            dateTimePicker1.Location = new Point(3, 10);
+            dateTimePicker1.Name = "dateTimePicker1";
+            dateTimePicker1.Size = new Size(277, 27);
+            dateTimePicker1.TabIndex = 31;
+            // 
+            // panel8
+            // 
+            panel8.Controls.Add(numericUpDown1);
+            panel8.Location = new Point(473, 429);
+            panel8.Name = "panel8";
+            panel8.Size = new Size(290, 40);
+            panel8.TabIndex = 38;
+            // 
             // numericUpDown1
             // 
-            numericUpDown1.Location = new Point(473, 429);
+            numericUpDown1.Location = new Point(7, 10);
             numericUpDown1.Name = "numericUpDown1";
             numericUpDown1.Size = new Size(277, 27);
             numericUpDown1.TabIndex = 32;
             // 
-            // dateTimePicker1
+            // panel6
             // 
-            dateTimePicker1.Location = new Point(69, 429);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(277, 27);
-            dateTimePicker1.TabIndex = 31;
+            panel6.Controls.Add(textBox3);
+            panel6.Location = new Point(473, 289);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(290, 40);
+            panel6.TabIndex = 36;
+            // 
+            // textBox3
+            // 
+            textBox3.Enabled = false;
+            textBox3.Location = new Point(7, 3);
+            textBox3.Name = "textBox3";
+            textBox3.Size = new Size(277, 27);
+            textBox3.TabIndex = 26;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(textBox4);
+            panel5.Location = new Point(69, 289);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(290, 40);
+            panel5.TabIndex = 35;
+            // 
+            // textBox4
+            // 
+            textBox4.Enabled = false;
+            textBox4.Location = new Point(3, 3);
+            textBox4.Name = "textBox4";
+            textBox4.Size = new Size(277, 27);
+            textBox4.TabIndex = 24;
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(textBox1);
+            panel4.Location = new Point(473, 151);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(290, 40);
+            panel4.TabIndex = 34;
+            // 
+            // textBox1
+            // 
+            textBox1.Enabled = false;
+            textBox1.Location = new Point(3, 3);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(277, 27);
+            textBox1.TabIndex = 22;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(textBox2);
+            panel3.Location = new Point(69, 151);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(290, 40);
+            panel3.TabIndex = 33;
+            // 
+            // textBox2
+            // 
+            textBox2.Enabled = false;
+            textBox2.Location = new Point(3, 3);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(277, 27);
+            textBox2.TabIndex = 20;
             // 
             // label6
             // 
@@ -107,14 +201,6 @@
             label7.TabIndex = 27;
             label7.Text = "Ngày đo";
             // 
-            // textBox3
-            // 
-            textBox3.Enabled = false;
-            textBox3.Location = new Point(473, 289);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(277, 27);
-            textBox3.TabIndex = 26;
-            // 
             // label2
             // 
             label2.AutoSize = true;
@@ -124,14 +210,6 @@
             label2.Size = new Size(112, 23);
             label2.TabIndex = 25;
             label2.Text = "Giá trị tối đa";
-            // 
-            // textBox4
-            // 
-            textBox4.Enabled = false;
-            textBox4.Location = new Point(69, 289);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(277, 27);
-            textBox4.TabIndex = 24;
             // 
             // label5
             // 
@@ -143,14 +221,6 @@
             label5.TabIndex = 23;
             label5.Text = "Giá trị tối thiểu";
             // 
-            // textBox1
-            // 
-            textBox1.Enabled = false;
-            textBox1.Location = new Point(473, 151);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(277, 27);
-            textBox1.TabIndex = 22;
-            // 
             // label4
             // 
             label4.AutoSize = true;
@@ -161,14 +231,6 @@
             label4.TabIndex = 21;
             label4.Text = "Đơn vị";
             // 
-            // textBox2
-            // 
-            textBox2.Enabled = false;
-            textBox2.Location = new Point(69, 151);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(277, 27);
-            textBox2.TabIndex = 20;
-            // 
             // btnCancel
             // 
             btnCancel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
@@ -178,7 +240,7 @@
             btnCancel.Font = new Font("Segoe UI", 10F);
             btnCancel.Location = new Point(406, 565);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(382, 55);
+            btnCancel.Size = new Size(160, 55);
             btnCancel.TabIndex = 17;
             btnCancel.Text = "Làm mới";
             btnCancel.UseVisualStyleBackColor = false;
@@ -193,9 +255,9 @@
             buttonAddnew.FlatStyle = FlatStyle.Flat;
             buttonAddnew.Font = new Font("Segoe UI", 10F);
             buttonAddnew.ForeColor = Color.White;
-            buttonAddnew.Location = new Point(12, 566);
+            buttonAddnew.Location = new Point(218, 566);
             buttonAddnew.Name = "buttonAddnew";
-            buttonAddnew.Size = new Size(370, 54);
+            buttonAddnew.Size = new Size(160, 55);
             buttonAddnew.TabIndex = 16;
             buttonAddnew.Text = "Lưu";
             buttonAddnew.UseVisualStyleBackColor = false;
@@ -214,12 +276,23 @@
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(0, 152, 70);
+            panel2.Controls.Add(pictureBox3);
             panel2.Controls.Add(label1);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
             panel2.Size = new Size(800, 81);
             panel2.TabIndex = 0;
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Image = Properties.Resources.remove_background_logo;
+            pictureBox3.Location = new Point(0, -2);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(155, 80);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.TabIndex = 2;
+            pictureBox3.TabStop = false;
             // 
             // label1
             // 
@@ -239,14 +312,26 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 632);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "NhapThongSo";
             Text = "Nhập thông số";
             Load += ThemHopDong_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            panel7.ResumeLayout(false);
+            panel8.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
+            panel6.ResumeLayout(false);
+            panel6.PerformLayout();
+            panel5.ResumeLayout(false);
+            panel5.PerformLayout();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
             panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ResumeLayout(false);
         }
 
@@ -269,5 +354,12 @@
         private TextBox textBox4;
         private Label label5;
         private NumericUpDown numericUpDown1;
+        private Panel panel8;
+        private Panel panel6;
+        private Panel panel5;
+        private Panel panel4;
+        private Panel panel3;
+        private PictureBox pictureBox3;
+        private Panel panel7;
     }
 }

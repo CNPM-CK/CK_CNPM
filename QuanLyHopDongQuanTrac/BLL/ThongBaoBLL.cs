@@ -153,8 +153,8 @@ namespace BLL
             dal.capNhatTrangThaiEmail(maDot);
         }
 
-        public DataTable layThongBaoTheoNhanVien(string maNV)
-        => dal.layThongBaoTheoNhanVien(maNV);
+        //public DataTable layThongBaoTheoNhanVien(string maNV)
+        //=> dal.layThongBaoTheoNhanVien(maNV);
 
         public void danhDauThongBaoDaDoc(string maTB, string maNV)
             => dal.danhDauThongBaoDaDoc(maTB, maNV);
@@ -228,11 +228,10 @@ namespace BLL
                     case "HOP_DONG_QUA_HAN":
                         row["loaiTB"] = "Hợp đồng quá hạn";
                         break;
-                    // Thêm các loại khác nếu cần
-                    case "THONG_BAO_CHUNG":
-                        row["loaiTB"] = "Thông báo chung";
+                    case "NHAC_SAP_DEN_HAN_DOT":
+                        row["loaiTB"] = "Nhắc sắp đến hạn trả kết quả";
                         break;
-                        // ... các loại khác
+
                 }
             }
         }
@@ -297,6 +296,19 @@ namespace BLL
 </div>";
 
             guiEmail(to, subject, body);
+        }
+
+        public void kiemTraVaSinhThongBaoSapDenHanDot()
+        {
+            dal.sinhThongBaoSapDenHanDot();
+        }
+
+
+        public DataTable layThongBaoTheoNhanVien(string maNV)
+        {
+            DataTable dt = dal.layThongBaoTheoNhanVien(maNV);
+            chuyenDoiLoaiThongBao(dt); // ✅ Chuyển đổi luôn
+            return dt;
         }
 
 

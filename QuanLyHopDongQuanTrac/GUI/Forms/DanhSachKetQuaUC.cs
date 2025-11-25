@@ -414,7 +414,7 @@ namespace GUI.Forms
             int y = (dgvHeight - watermark.Height) / 2;
 
             ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f;
+            matrix.Matrix33 = 0.08f;
             ImageAttributes attributes = new ImageAttributes();
             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
@@ -657,7 +657,7 @@ namespace GUI.Forms
                 searchtextbox.ForeColor = Color.Silver;
                 lastSearchKeyword = "";
                 // Sau này có binding thì reset lại
-                ReloadForSearchResult(null);
+                //ReloadForSearchResult(null);
             }
         }
 

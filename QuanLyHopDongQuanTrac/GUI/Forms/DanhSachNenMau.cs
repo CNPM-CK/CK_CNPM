@@ -780,7 +780,7 @@ namespace GUI.Forms
             int y = (dgvHeight - watermark.Height) / 2;
 
             ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f;
+            matrix.Matrix33 = 0.08f;
             ImageAttributes attributes = new ImageAttributes();
             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 

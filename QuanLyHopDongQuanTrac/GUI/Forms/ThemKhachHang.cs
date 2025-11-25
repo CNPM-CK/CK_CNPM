@@ -26,9 +26,6 @@ namespace GUI.Forms
         {
             InitializeComponent();
         }
-        private DiaChiBLL diaChiService;
-
-
         #region Custom TextBox và Label cho Form Nhân viên
         private void InitializeButtonStyles()
         {

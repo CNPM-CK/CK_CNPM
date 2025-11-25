@@ -28,15 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel5 = new Panel();
             panel7 = new Panel();
+            dgvdsThongbao = new DataGridView();
             panel1 = new Panel();
             btnSau = new Button();
             soTrang = new Label();
             btnTruoc = new Button();
-            dgvdsThongbao = new DataGridView();
             panel6 = new Panel();
             containersearch = new Panel();
             searchtextbox = new TextBox();
@@ -44,8 +44,8 @@
             pictureFilter = new PictureBox();
             panel5.SuspendLayout();
             panel7.SuspendLayout();
-            panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvdsThongbao).BeginInit();
+            panel1.SuspendLayout();
             panel6.SuspendLayout();
             containersearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picturemicro).BeginInit();
@@ -64,13 +64,41 @@
             // 
             // panel7
             // 
-            panel7.Controls.Add(panel1);
             panel7.Controls.Add(dgvdsThongbao);
+            panel7.Controls.Add(panel1);
             panel7.Dock = DockStyle.Fill;
             panel7.Location = new Point(0, 61);
             panel7.Name = "panel7";
             panel7.Size = new Size(820, 411);
             panel7.TabIndex = 1;
+            // 
+            // dgvdsThongbao
+            // 
+            dgvdsThongbao.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvdsThongbao.BackgroundColor = Color.White;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+            dgvdsThongbao.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvdsThongbao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvdsThongbao.Dock = DockStyle.Fill;
+            dgvdsThongbao.Location = new Point(0, 0);
+            dgvdsThongbao.Name = "dgvdsThongbao";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvdsThongbao.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dgvdsThongbao.RowHeadersWidth = 51;
+            dgvdsThongbao.Size = new Size(820, 365);
+            dgvdsThongbao.TabIndex = 5;
             // 
             // panel1
             // 
@@ -82,7 +110,7 @@
             panel1.Location = new Point(0, 365);
             panel1.Name = "panel1";
             panel1.Size = new Size(820, 46);
-            panel1.TabIndex = 3;
+            panel1.TabIndex = 4;
             // 
             // btnSau
             // 
@@ -92,7 +120,7 @@
             btnSau.FlatStyle = FlatStyle.Flat;
             btnSau.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSau.ForeColor = Color.White;
-            btnSau.Location = new Point(462, 3);
+            btnSau.Location = new Point(477, 4);
             btnSau.Name = "btnSau";
             btnSau.Size = new Size(153, 33);
             btnSau.TabIndex = 1;
@@ -106,13 +134,12 @@
             soTrang.AutoSize = true;
             soTrang.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             soTrang.ForeColor = Color.Black;
-            soTrang.Location = new Point(375, 7);
+            soTrang.Location = new Point(344, 8);
             soTrang.Name = "soTrang";
             soTrang.Size = new Size(71, 23);
             soTrang.TabIndex = 2;
             soTrang.Text = "Trang 1";
             soTrang.TextAlign = ContentAlignment.MiddleCenter;
-            soTrang.Click += soTrang_Click;
             // 
             // btnTruoc
             // 
@@ -122,42 +149,13 @@
             btnTruoc.FlatStyle = FlatStyle.Flat;
             btnTruoc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnTruoc.ForeColor = Color.White;
-            btnTruoc.Location = new Point(216, 3);
+            btnTruoc.Location = new Point(185, 4);
             btnTruoc.Name = "btnTruoc";
             btnTruoc.Size = new Size(153, 33);
             btnTruoc.TabIndex = 0;
             btnTruoc.Text = "Trang trước";
             btnTruoc.UseVisualStyleBackColor = false;
             btnTruoc.Click += btnTruoc_Click;
-            // 
-            // dgvdsThongbao
-            // 
-            dgvdsThongbao.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvdsThongbao.BackgroundColor = Color.White;
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle5.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
-            dgvdsThongbao.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            dgvdsThongbao.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvdsThongbao.Dock = DockStyle.Fill;
-            dgvdsThongbao.Location = new Point(0, 0);
-            dgvdsThongbao.Name = "dgvdsThongbao";
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle6.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            dgvdsThongbao.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
-            dgvdsThongbao.RowHeadersWidth = 51;
-            dgvdsThongbao.Size = new Size(820, 411);
-            dgvdsThongbao.TabIndex = 1;
-            dgvdsThongbao.Paint += dgvdsThongbao_Paint;
             // 
             // panel6
             // 
@@ -209,6 +207,7 @@
             pictureFilter.SizeMode = PictureBoxSizeMode.Zoom;
             pictureFilter.TabIndex = 0;
             pictureFilter.TabStop = false;
+            pictureFilter.Click += pictureFilter_Click;
             // 
             // TrangThongBao
             // 
@@ -219,9 +218,9 @@
             Size = new Size(820, 472);
             panel5.ResumeLayout(false);
             panel7.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvdsThongbao).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvdsThongbao).EndInit();
             panel6.ResumeLayout(false);
             containersearch.ResumeLayout(false);
             containersearch.PerformLayout();
@@ -234,15 +233,15 @@
 
         private Panel panel5;
         private Panel panel7;
-        private Panel panel1;
-        private Button btnSau;
-        private Label soTrang;
-        private Button btnTruoc;
-        private DataGridView dgvdsThongbao;
         private Panel panel6;
         private Panel containersearch;
         private TextBox searchtextbox;
         private PictureBox picturemicro;
         private PictureBox pictureFilter;
+        private Panel panel1;
+        private Button btnSau;
+        private Label soTrang;
+        private Button btnTruoc;
+        private DataGridView dgvdsThongbao;
     }
 }

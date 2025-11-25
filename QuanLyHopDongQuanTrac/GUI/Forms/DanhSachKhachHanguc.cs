@@ -172,8 +172,17 @@ namespace GUI.Forms
 
         private void lamMoiDanhSachKhachHang()
         {
-            totalRecords = 0;
+            //totalRecords = 0;
 
+            //// Reset search box về trạng thái placeholder
+            //if (!string.IsNullOrWhiteSpace(searchtextbox.Text) && searchtextbox.Text != PLACEHOLDER_TEXT)
+            //{
+            //    isPlaceholder = true;
+            //    searchtextbox.Text = PLACEHOLDER_TEXT;
+            //    searchtextbox.ForeColor = Color.Silver;
+            //    lastSearchKeyword = "";
+            //}
+            //taiTrangKhachHang();
             // Reset search box về trạng thái placeholder
             if (!string.IsNullOrWhiteSpace(searchtextbox.Text) && searchtextbox.Text != PLACEHOLDER_TEXT)
             {
@@ -182,7 +191,9 @@ namespace GUI.Forms
                 searchtextbox.ForeColor = Color.Silver;
                 lastSearchKeyword = "";
             }
-            taiTrangKhachHang();
+
+            // ✅ Reset bộ lọc
+            huyBoLoc();
         }
         #endregion
 
@@ -340,7 +351,7 @@ namespace GUI.Forms
             int y = (dgvHeight - watermark.Height) / 2;
 
             ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f;
+            matrix.Matrix33 = 0.08f;
             ImageAttributes attributes = new ImageAttributes();
             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
@@ -616,26 +627,94 @@ namespace GUI.Forms
         }
 
 
+        //private void PerformSearch()
+        //{
+        //    string keyword = searchtextbox.Text?.Trim().ToLower() ?? "";
+
+        //    if (string.IsNullOrEmpty(keyword))
+        //    {
+        //        // Reset về phân trang
+        //        currentPage = 1;
+        //        totalRecords = 0;
+        //        taiTrangKhachHang();
+        //        return;
+        //    }
+
+        //    // ✅ TÌM KIẾM TRÊN TOÀN BỘ DATABASE
+        //    try
+        //    {
+        //        KhachHangBLL bll = new KhachHangBLL();
+        //        var allData = bll.layDanhSachKH(); // ✅ Cần thêm method này vào BLL
+
+        //        var filtered = allData
+        //            .Where(kh =>
+        //                (kh.tenDoanhNghiep ?? "").ToLower().Contains(keyword) ||
+        //                (kh.nguoiDaiDien ?? "").ToLower().Contains(keyword) ||
+        //                (kh.kyHieuDN ?? "").ToLower().Contains(keyword) ||
+        //                (kh.soDienThoaiKH ?? "").Contains(keyword) ||
+        //                (kh.diaChi ?? "").ToLower().Contains(keyword) ||
+        //                kh.maKH.ToString().ToLower().Contains(keyword)
+        //            )
+        //            .ToList();
+
+        //        dgvDanhsachnhanvien.DataSource = new BindingList<KhachHang>(filtered);
+
+        //        // Hiển thị số kết quả
+        //        soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+
+        //        // Disable nút phân trang khi search
+        //        btnTruoc.Enabled = false;
+        //        btnSau.Enabled = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Lỗi tìm kiếm: {ex.Message}", "Lỗi",
+        //            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+
         private void PerformSearch()
         {
             string keyword = searchtextbox.Text?.Trim().ToLower() ?? "";
 
             if (string.IsNullOrEmpty(keyword))
             {
-                // Reset về phân trang
-                currentPage = 1;
-                totalRecords = 0;
-                taiTrangKhachHang();
+                // ✅ Nếu xóa keyword
+                if (isFiltering)
+                {
+                    // Đang lọc → áp dụng lại bộ lọc
+                    apDungBoLoc(filterTrangThai);
+                }
+                else
+                {
+                    // Không lọc → load lại phân trang
+                    currentPage = 1;
+                    totalRecords = 0;
+                    taiTrangKhachHang();
+                }
                 return;
             }
 
-            // ✅ TÌM KIẾM TRÊN TOÀN BỘ DATABASE
             try
             {
                 KhachHangBLL bll = new KhachHangBLL();
-                var allData = bll.layDanhSachKH(); // ✅ Cần thêm method này vào BLL
 
-                var filtered = allData
+                // ✅ Lấy dữ liệu nguồn để tìm
+                List<KhachHang> searchSource;
+
+                if (isFiltering)
+                {
+                    // Đang lọc → tìm trong kết quả đã lọc
+                    searchSource = dsKhachhang.ToList();
+                }
+                else
+                {
+                    // Không lọc → tìm trong toàn bộ database
+                    searchSource = bll.layDanhSachKH();
+                }
+
+                var filtered = searchSource
                     .Where(kh =>
                         (kh.tenDoanhNghiep ?? "").ToLower().Contains(keyword) ||
                         (kh.nguoiDaiDien ?? "").ToLower().Contains(keyword) ||
@@ -646,12 +725,11 @@ namespace GUI.Forms
                     )
                     .ToList();
 
-                dgvDanhsachnhanvien.DataSource = new BindingList<KhachHang>(filtered);
+                dgvDanhsachnhanvien.DataSource = null;
+                dsKhachhang = new BindingList<KhachHang>(filtered);
+                dgvDanhsachnhanvien.DataSource = dsKhachhang;
 
-                // Hiển thị số kết quả
                 soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
-
-                // Disable nút phân trang khi search
                 btnTruoc.Enabled = false;
                 btnSau.Enabled = false;
             }
@@ -661,6 +739,8 @@ namespace GUI.Forms
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
 
         #endregion
 
@@ -816,6 +896,11 @@ namespace GUI.Forms
 
         }
 
+
+        private string filterTrangThai = null;
+        private bool isFiltering = false;
+
+
         private void pictureFilter_Click(object sender, EventArgs e)
         {
             LocTrangThaiKhachHang filter = new LocTrangThaiKhachHang();
@@ -826,15 +911,62 @@ namespace GUI.Forms
         }
         private void apDungBoLoc(string trangThai)
         {
-            // Bắt đầu từ danh sách đầy đủ
-            var result = dsKhachhang.AsEnumerable();
+            //// Bắt đầu từ danh sách đầy đủ
+            //var result = dsKhachhang.AsEnumerable();
 
-            // 3) Lọc trạng thái
-            if (!string.IsNullOrEmpty(trangThai))
-                result = result.Where(nv => nv.trangThai.ToString() == trangThai);
+            //// 3) Lọc trạng thái
+            //if (!string.IsNullOrEmpty(trangThai))
+            //    result = result.Where(nv => nv.trangThai.ToString() == trangThai);
 
-            // Kết quả cuối
-            dgvDanhsachnhanvien.DataSource = result.ToList();
+            //// Kết quả cuối
+            //dgvDanhsachnhanvien.DataSource = result.ToList();
+            try
+            {
+                // Lưu điều kiện lọc
+                filterTrangThai = trangThai;
+                isFiltering = !string.IsNullOrEmpty(trangThai);
+
+                if (!isFiltering)
+                {
+                    // Không có bộ lọc → load lại phân trang
+                    currentPage = 1;
+                    totalRecords = 0;
+                    taiTrangKhachHang();
+                    return;
+                }
+
+                // ✅ Lấy TOÀN BỘ dữ liệu từ BLL
+                KhachHangBLL bll = new KhachHangBLL();
+                var allData = bll.layDanhSachKH();
+
+                // ✅ Lọc theo trạng thái
+                var filtered = allData.Where(kh => kh.trangThai.ToString() == trangThai).ToList();
+
+                // ✅ Gán vào DataGridView
+                dgvDanhsachnhanvien.DataSource = null;
+                dsKhachhang = new BindingList<KhachHang>(filtered);
+                dgvDanhsachnhanvien.DataSource = dsKhachhang;
+
+                // ✅ Vô hiệu hóa phân trang khi lọc
+                btnTruoc.Enabled = false;
+                btnSau.Enabled = false;
+                //soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi áp dụng bộ lọc: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void huyBoLoc()
+        {
+            filterTrangThai = null;
+            isFiltering = false;
+            currentPage = 1;
+            totalRecords = 0;
+            taiTrangKhachHang();
         }
     }
 }

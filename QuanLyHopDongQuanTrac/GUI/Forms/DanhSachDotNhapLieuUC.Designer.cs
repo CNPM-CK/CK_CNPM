@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachDotNhapLieuUC));
             panel5 = new Panel();
             panel7 = new Panel();
@@ -99,6 +99,7 @@
             btnSau.TabIndex = 1;
             btnSau.Text = "Trang sau";
             btnSau.UseVisualStyleBackColor = false;
+            btnSau.Click += btnSau_Click;
             // 
             // soTrang
             // 
@@ -127,31 +128,32 @@
             btnTruoc.TabIndex = 0;
             btnTruoc.Text = "Trang trước";
             btnTruoc.UseVisualStyleBackColor = false;
+            btnTruoc.Click += btnTruoc_Click;
             // 
             // dgvDsdotquantrac
             // 
             dgvDsdotquantrac.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDsdotquantrac.BackgroundColor = Color.White;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvDsdotquantrac.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvDsdotquantrac.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvDsdotquantrac.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDsdotquantrac.Dock = DockStyle.Fill;
             dgvDsdotquantrac.Location = new Point(0, 0);
             dgvDsdotquantrac.Name = "dgvDsdotquantrac";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            dgvDsdotquantrac.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dgvDsdotquantrac.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dgvDsdotquantrac.RowHeadersWidth = 51;
             dgvDsdotquantrac.Size = new Size(820, 411);
             dgvDsdotquantrac.TabIndex = 1;
@@ -208,6 +210,8 @@
             pictureFilter.SizeMode = PictureBoxSizeMode.Zoom;
             pictureFilter.TabIndex = 0;
             pictureFilter.TabStop = false;
+            pictureFilter.Visible = false;
+            pictureFilter.Click += pictureFilter_Click;
             // 
             // DanhSachDotNhapLieuUC
             // 

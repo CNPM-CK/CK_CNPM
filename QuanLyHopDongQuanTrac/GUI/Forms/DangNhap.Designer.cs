@@ -343,6 +343,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1255, 680);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "DangNhap";
             StartPosition = FormStartPosition.CenterScreen;

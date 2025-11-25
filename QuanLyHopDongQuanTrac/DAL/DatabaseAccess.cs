@@ -762,6 +762,7 @@ namespace DAL
                                 MaDot = reader["maDot"].ToString(),
                                 MaHD = reader["maHD"].ToString(),
                                 NoiDung = reader["noiDung"].ToString(),
+                                TenKhachHang = reader["TenKhachHang"]?.ToString(),
                                 DotQuanTrac = reader["dotQuanTrac"].ToString(),
                                 NgayBatDau = Convert.ToDateTime(reader["ngayBatDau"]),
                                 NgayDuKien = Convert.ToDateTime(reader["ngayDuKien"]),
@@ -2878,6 +2879,20 @@ namespace DAL
             }
 
             return dsNhanvien;
+        }
+
+
+        public void sinhThongBaoSapDenHanDot()
+        {
+            using (var conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("sp_SinhThongBaoSapDenHan_DotQuanTrac", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
     }

@@ -113,6 +113,7 @@ namespace GUI.Forms
         {
             totalRecords = 0;
             taiTrangKeHoach();
+            huyBoLoc();
         }
 
         private void InitializeDataGridView()
@@ -330,7 +331,7 @@ namespace GUI.Forms
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     ColorMatrix matrix = new ColorMatrix();
-                    matrix.Matrix33 = 0.15f;
+                    matrix.Matrix33 = 0.08f;
                     ImageAttributes attributes = new ImageAttributes();
                     attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
@@ -643,8 +644,18 @@ namespace GUI.Forms
                 isPlaceholder = true;
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
-                dgvDsdotquantrac.DataSource = dsDotQuanTrac;
                 lastSearchKeyword = "";
+
+                // ✅ Nếu đang lọc → giữ nguyên kết quả lọc
+                if (isFiltering)
+                {
+                    apDungBoLoc(filterNgayBD, filterNgayKT, filterTrangThai);
+                }
+                else
+                {
+                    // Không lọc → về phân trang bình thường
+                    dgvDsdotquantrac.DataSource = dsDotQuanTrac;
+                }
             }
         }
 
@@ -664,8 +675,20 @@ namespace GUI.Forms
             else if (e.KeyCode == Keys.Escape)
             {
                 searchtextbox.Clear();
-                dgvDsdotquantrac.DataSource = dsDotQuanTrac;
                 lastSearchKeyword = "";
+
+                // ✅ Nếu đang lọc → áp dụng lại bộ lọc
+                if (isFiltering)
+                {
+                    apDungBoLoc(filterNgayBD, filterNgayKT, filterTrangThai);
+                }
+                else
+                {
+                    // Không lọc → về phân trang
+                    currentPage = 1;
+                    totalRecords = 0;
+                    taiTrangKeHoach();
+                }
             }
         }
 
@@ -680,29 +703,125 @@ namespace GUI.Forms
             PerformSearch();
         }
 
+
+        //private void PerformSearch()
+        //{
+        //    string keyword = searchtextbox.Text.Trim().ToLower();
+
+        //    // Nếu ô tìm kiếm trống → trả lại danh sách theo phân trang
+        //    if (string.IsNullOrEmpty(keyword))
+        //    {
+        //        dgvDsdotquantrac.DataSource = dsDotQuanTrac;
+        //        btnTruoc.Enabled = true;
+        //        btnSau.Enabled = true;
+        //        soTrang.Text = $"Trang {currentPage}/{totalPages}";
+        //        return;
+        //    }
+
+        //    try
+        //    {
+        //        // ❗ Lấy TẤT CẢ dữ liệu để tìm (bỏ phân trang)
+        //        BLL_DotQuanTrac bll = new BLL_DotQuanTrac();
+        //        List<DTO_DotQuanTrac> allData = bll.layDanhSachDotQuanTrac();
+
+        //        // ❗ Lọc theo keyword
+        //        var filtered = allData
+        //            .Where(ts =>
+        //                (ts.MaDot ?? "").ToLower().Contains(keyword) ||
+        //                (ts.TenKhachHang ?? "").ToLower().Contains(keyword) ||
+        //                (ts.MaHD ?? "").ToLower().Contains(keyword) ||
+        //                (ts.NoiDung ?? "").ToLower().Contains(keyword) ||
+        //                (ts.DotQuanTrac ?? "").ToLower().Contains(keyword)
+        //            )
+        //            .ToList();
+
+        //        // ✅ FIX: Gán null trước, sau đó mới gán dữ liệu mới
+        //        dgvDsdotquantrac.DataSource = null;
+
+        //        dsDotQuanTrac = new BindingList<DTO_DotQuanTrac>(filtered);
+        //        dgvDsdotquantrac.DataSource = dsDotQuanTrac;
+
+        //        // Nếu bạn muốn disable phân trang khi tìm
+        //        btnTruoc.Enabled = false;
+        //        btnSau.Enabled = false;
+
+        //        soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Lỗi tìm kiếm: " + ex.Message);
+        //    }
+        //}
+
         private void PerformSearch()
         {
             string keyword = searchtextbox.Text.Trim().ToLower();
 
+            // Nếu ô tìm kiếm trống
             if (string.IsNullOrEmpty(keyword))
             {
-                dgvDsdotquantrac.DataSource = dsDotQuanTrac;
+                // ✅ Nếu đang lọc → áp dụng lại bộ lọc
+                if (isFiltering)
+                {
+                    apDungBoLoc(filterNgayBD, filterNgayKT, filterTrangThai);
+                }
+                else
+                {
+                    // Không lọc → trả lại danh sách theo phân trang
+                    currentPage = 1;
+                    totalRecords = 0;
+                    taiTrangKeHoach();
+                }
                 return;
             }
 
-            var filtered = dsDotQuanTrac
-                .Where(ts =>
-                    (ts.MaDot ?? "").ToLower().Contains(keyword) ||
-                    (ts.TenKhachHang ?? "").ToLower().Contains(keyword) ||
-                    (ts.MaHD ?? "").ToLower().Contains(keyword) ||
-                    (ts.NoiDung ?? "").ToLower().Contains(keyword) ||
-                    //(ts.TrangThai ?? "").ToLower().Contains(keyword) ||
-                    (ts.DotQuanTrac ?? "").ToLower().Contains(keyword)
-                )
-                .ToList();
+            try
+            {
+                BLL_DotQuanTrac bll = new BLL_DotQuanTrac();
 
-            dgvDsdotquantrac.DataSource = new BindingList<DTO_DotQuanTrac>(filtered);
+                // ✅ Lấy dữ liệu nguồn để tìm
+                List<DTO_DotQuanTrac> searchSource;
+
+                if (isFiltering)
+                {
+                    // Đang lọc → tìm trong kết quả đã lọc (dùng dsDotQuanTrac hiện tại)
+                    searchSource = dsDotQuanTrac.ToList();
+                }
+                else
+                {
+                    // Không lọc → tìm trong toàn bộ database
+                    searchSource = bll.layDanhSachDotQuanTrac();
+                }
+
+                // ❗ Lọc theo keyword
+                var filtered = searchSource
+                    .Where(ts =>
+                        (ts.MaDot ?? "").ToLower().Contains(keyword) ||
+                        (ts.TenKhachHang ?? "").ToLower().Contains(keyword) ||
+                        (ts.MaHD ?? "").ToLower().Contains(keyword) ||
+                        (ts.NoiDung ?? "").ToLower().Contains(keyword) ||
+                        (ts.DotQuanTrac ?? "").ToLower().Contains(keyword)
+                    )
+                    .ToList();
+
+                // ✅ Gán vào DataGridView
+                dgvDsdotquantrac.DataSource = null;
+                dsDotQuanTrac = new BindingList<DTO_DotQuanTrac>(filtered);
+                dgvDsdotquantrac.DataSource = dsDotQuanTrac;
+
+                // Disable phân trang khi tìm
+                btnTruoc.Enabled = false;
+                btnSau.Enabled = false;
+                soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tìm kiếm: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
+
         #endregion
 
         #region Custom Paint
@@ -869,6 +988,11 @@ namespace GUI.Forms
                 attributes);
         }
 
+        private bool isFiltering = false;
+        private string filterNgayBD = null;
+        private string filterNgayKT = null;
+        private string filterTrangThai = null;
+
         private void pictureFilter_Click(object sender, EventArgs e)
         {
             LocHopDongvaDQT frmFilter = new LocHopDongvaDQT();
@@ -882,28 +1006,91 @@ namespace GUI.Forms
                     frmFilter.SelectedTrangThai
                 );
             }
+            else if (isFiltering)
+            {
+                if (MessageBox.Show("Bạn có muốn xóa bộ lọc hiện tại?", "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    huyBoLoc();
+                }
+            }
+        }
+
+        private void huyBoLoc()
+        {
+            filterNgayBD = null;
+            filterNgayKT = null;
+            filterTrangThai = null;
+            isFiltering = false;
+
+            currentPage = 1;
+            totalRecords = 0;
+
+            taiTrangKeHoach();
         }
 
         private void apDungBoLoc(string ngayBD, string ngayKT, string trangThai)
         {
-            var query = dsDotQuanTrac.AsEnumerable();
-
-            if (!string.IsNullOrEmpty(trangThai))
-                query = query.Where(d => d.TrangThai == trangThai);
-
-            if (!string.IsNullOrEmpty(ngayBD))
+            try
             {
-                DateTime dateBD = DateTime.Parse(ngayBD);
-                query = query.Where(d => d.NgayBatDau >= dateBD);
-            }
+                // Lưu điều kiện lọc
+                filterNgayBD = ngayBD;
+                filterNgayKT = ngayKT;
+                filterTrangThai = trangThai;
 
-            if (!string.IsNullOrEmpty(ngayKT))
+                // Kiểm tra có đang lọc không
+                isFiltering = !string.IsNullOrEmpty(ngayBD) ||
+                              !string.IsNullOrEmpty(ngayKT) ||
+                              !string.IsNullOrEmpty(trangThai);
+
+                if (!isFiltering)
+                {
+                    // Không có bộ lọc → load lại phân trang bình thường
+                    currentPage = 1;
+                    totalRecords = 0;
+                    taiTrangKeHoach();
+                    return;
+                }
+
+                // ✅ Lấy TOÀN BỘ dữ liệu từ BLL
+                var bll = new BLL_DotQuanTrac();
+                var allData = bll.layDanhSachDotQuanTrac();
+
+                // ✅ Lọc trên toàn bộ dữ liệu
+                var query = allData.AsEnumerable();
+
+                if (!string.IsNullOrEmpty(trangThai))
+                    query = query.Where(d => d.TrangThai == trangThai);
+
+                if (!string.IsNullOrEmpty(ngayBD))
+                {
+                    DateTime dateBD = DateTime.Parse(ngayBD);
+                    query = query.Where(d => d.NgayBatDau >= dateBD);
+                }
+
+                if (!string.IsNullOrEmpty(ngayKT))
+                {
+                    DateTime dateKT = DateTime.Parse(ngayKT);
+                    query = query.Where(d => d.NgayDuKien <= dateKT);
+                }
+
+                var filteredList = query.ToList();
+
+                // ✅ Gán vào DataGridView
+                dgvDsdotquantrac.DataSource = null;
+                dsDotQuanTrac = new BindingList<DTO_DotQuanTrac>(filteredList);
+                dgvDsdotquantrac.DataSource = dsDotQuanTrac;
+
+                // ✅ Vô hiệu hóa phân trang khi lọc
+                btnTruoc.Enabled = false;
+                btnSau.Enabled = false;
+                soTrang.Text = $"Tìm thấy {filteredList.Count} kết quả";
+            }
+            catch (Exception ex)
             {
-                DateTime dateKT = DateTime.Parse(ngayKT);
-                query = query.Where(d => d.NgayDuKien <= dateKT);
+                MessageBox.Show("Lỗi áp dụng bộ lọc: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            dgvDsdotquantrac.DataSource = query.ToList();
         }
 
         private async void BtnMic_Click(object sender, EventArgs e)

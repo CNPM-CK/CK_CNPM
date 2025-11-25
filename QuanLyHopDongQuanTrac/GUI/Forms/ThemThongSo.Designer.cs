@@ -317,6 +317,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(511, 468);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "ThemThongSo";
             Text = "ThemNenMau";
             Load += ThemThongSo_Load;

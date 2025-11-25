@@ -692,6 +692,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 716);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "ThemKhachHang";
             Text = "Form1";

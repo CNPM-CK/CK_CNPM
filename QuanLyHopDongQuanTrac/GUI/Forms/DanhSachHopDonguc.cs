@@ -331,7 +331,7 @@ namespace GUI.Forms
             int y = (dgvHeight - watermark.Height) / 2;
 
             ColorMatrix matrix = new ColorMatrix();
-            matrix.Matrix33 = 0.3f;
+            matrix.Matrix33 = 0.08f;
             ImageAttributes attributes = new ImageAttributes();
             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
@@ -564,12 +564,8 @@ namespace GUI.Forms
                 isPlaceholder = true;
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
-
-                // Reset về phân trang
-                currentPage = 1;
-                totalRecords = 0;
-                lamMoiDanhSachKhachHang();
                 lastSearchKeyword = "";
+                return;
             }
         }
 
@@ -740,44 +736,119 @@ namespace GUI.Forms
             }
         }
 
+        //private void ApplyFilter(string ngayBD, string ngayKT, string trangThai)
+        //{
+        //    if (dsHopDong == null || dsHopDong.Count == 0)
+        //    {
+        //        return;
+        //    }
+
+        //    var query = dsHopDong.AsEnumerable();
+
+        //    // Lọc trạng thái
+        //    if (!string.IsNullOrEmpty(trangThai))
+        //        query = query.Where(hd => hd.trangThai == trangThai);
+
+        //    // Lọc ngày bắt đầu
+        //    if (!string.IsNullOrEmpty(ngayBD))
+        //    {
+        //        DateTime dateBD = DateTime.Parse(ngayBD);
+        //        query = query.Where(hd => hd.ngayKy >= dateBD);
+        //    }
+
+        //    // Lọc ngày kết thúc
+        //    if (!string.IsNullOrEmpty(ngayKT))
+        //    {
+        //        DateTime dateKT = DateTime.Parse(ngayKT);
+        //        query = query.Where(hd => hd.ngayKetThucHD <= dateKT);
+        //    }
+
+        //    var filtered = query.ToList();
+        //    dgvdanhsachHopDong.DataSource = new BindingList<HopDongDTO>(filtered);
+
+        //    // Hiển thị số kết quả lọc
+        //    if (soTrang != null)
+        //        soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+
+        //    // Disable nút phân trang khi lọc
+        //    if (btnTruoc != null) btnTruoc.Enabled = false;
+        //    if (btnSau != null) btnSau.Enabled = false;
+        //}
+
+
         private void ApplyFilter(string ngayBD, string ngayKT, string trangThai)
         {
-            if (dsHopDong == null || dsHopDong.Count == 0)
+            try
             {
-                return;
+                HopDongBLL bll = new HopDongBLL();
+
+                // ✅ Lấy toàn bộ dữ liệu từ database
+                var allData = bll.LayDanhSachHD();
+
+                if (allData == null || allData.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu để lọc!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                var query = allData.AsEnumerable();
+
+                // Lọc theo trạng thái
+                if (!string.IsNullOrEmpty(trangThai))
+                {
+                    query = query.Where(hd =>
+                        (hd.trangThai ?? "").Equals(trangThai, StringComparison.OrdinalIgnoreCase));
+                }
+
+                // Lọc theo ngày bắt đầu (ngày ký >= ngày bắt đầu)
+                if (!string.IsNullOrEmpty(ngayBD))
+                {
+                    if (DateTime.TryParse(ngayBD, out DateTime dateBD))
+                    {
+                        query = query.Where(hd => hd.ngayKy >= dateBD);
+                    }
+                }
+
+                // Lọc theo ngày kết thúc (ngày kết thúc hợp đồng <= ngày kết thúc)
+                if (!string.IsNullOrEmpty(ngayKT))
+                {
+                    if (DateTime.TryParse(ngayKT, out DateTime dateKT))
+                    {
+                        query = query.Where(hd => hd.ngayKetThucHD <= dateKT);
+                    }
+                }
+
+                var filtered = query.ToList();
+
+                // Cập nhật DataGridView
+                dgvdanhsachHopDong.DataSource = new BindingList<HopDongDTO>(filtered);
+
+                // Hiển thị số kết quả
+                if (soTrang != null)
+                {
+                    soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+                }
+
+                // Disable nút phân trang khi đang lọc
+                if (btnTruoc != null) btnTruoc.Enabled = false;
+                if (btnSau != null) btnSau.Enabled = false;
+
+                // Hiển thị thông báo nếu không tìm thấy kết quả
+                if (filtered.Count == 0)
+                {
+                    MessageBox.Show("Không tìm thấy hợp đồng nào phù hợp với điều kiện lọc!",
+                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
-
-            var query = dsHopDong.AsEnumerable();
-
-            // Lọc trạng thái
-            if (!string.IsNullOrEmpty(trangThai))
-                query = query.Where(hd => hd.trangThai == trangThai);
-
-            // Lọc ngày bắt đầu
-            if (!string.IsNullOrEmpty(ngayBD))
+            catch (Exception ex)
             {
-                DateTime dateBD = DateTime.Parse(ngayBD);
-                query = query.Where(hd => hd.ngayKy >= dateBD);
+                MessageBox.Show($"Lỗi khi lọc dữ liệu: {ex.Message}", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            // Lọc ngày kết thúc
-            if (!string.IsNullOrEmpty(ngayKT))
-            {
-                DateTime dateKT = DateTime.Parse(ngayKT);
-                query = query.Where(hd => hd.ngayKetThucHD <= dateKT);
-            }
-
-            var filtered = query.ToList();
-            dgvdanhsachHopDong.DataSource = new BindingList<HopDongDTO>(filtered);
-
-            // Hiển thị số kết quả lọc
-            if (soTrang != null)
-                soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
-
-            // Disable nút phân trang khi lọc
-            if (btnTruoc != null) btnTruoc.Enabled = false;
-            if (btnSau != null) btnSau.Enabled = false;
         }
+
+
         #endregion
 
         #region Unused Events

@@ -153,7 +153,7 @@
             cboTrangthai.Size = new Size(204, 28);
             cboTrangthai.TabIndex = 0;
             // 
-            // LocTimKiem
+            // LocTimKiemNhanVien
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -166,8 +166,9 @@
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
-            Name = "LocTimKiem";
+            Name = "LocTimKiemNhanVien";
             Text = "Tìm kiếm";
             Load += Form1_Load;
             panelPhongban.ResumeLayout(false);

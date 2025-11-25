@@ -52,9 +52,15 @@ namespace GUI.Service
                         Console.WriteLine("→ Kiểm tra hợp đồng quá hạn...");
                         bll.kiemTraHopDongQuaHan();
                         Console.WriteLine("✔ Kiểm tra hợp đồng quá hạn xong.");
+
                         Console.WriteLine($"[{DateTime.Now}] ✓ Chu kỳ kiểm tra hoàn tất.");
                         Console.WriteLine("→ Kiểm tra nhắc ký hợp đồng...");
                         bll.sinhThongBaoNhoKyHopDong();
+
+                        Console.WriteLine("Kiểm tra đợt quan trắc sắp đến hạn...");
+                        bll.kiemTraVaSinhThongBaoSapDenHanDot();
+                        Console.WriteLine("Sinh thông báo nhắc sắp đến hạn xong.");
+
 
                         DataTable dsNhacHD = bll.layDanhSachNhacKyHopDong();
 
