@@ -143,9 +143,9 @@
             label5.ForeColor = Color.Green;
             label5.Location = new Point(89, 153);
             label5.Name = "label5";
-            label5.Size = new Size(157, 31);
+            label5.Size = new Size(181, 31);
             label5.TabIndex = 14;
-            label5.Text = "Số điện thoại";
+            label5.Text = "Nhập vào email";
             // 
             // label6
             // 
@@ -199,7 +199,7 @@
             textBox1.Location = new Point(127, 205);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
-            textBox1.PlaceholderText = "VD: 0981234567";
+            textBox1.PlaceholderText = "VD: nguyenvana@gmail.com";
             textBox1.Size = new Size(370, 59);
             textBox1.TabIndex = 1;
             textBox1.TextAlign = HorizontalAlignment.Center;

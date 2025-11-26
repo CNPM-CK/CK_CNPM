@@ -256,11 +256,11 @@
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI Semibold", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 163);
             label2.ForeColor = Color.Green;
-            label2.Location = new Point(155, 112);
+            label2.Location = new Point(143, 112);
             label2.Name = "label2";
-            label2.Size = new Size(332, 50);
+            label2.Size = new Size(357, 75);
             label2.TabIndex = 10;
-            label2.Text = "Nhập mã xác nhận \r\ngồm 6 chữ số được gửi đến 098****321\r\n";
+            label2.Text = "Nhập mã xác nhận \r\ngồm 6 chữ số được gửi đến email của bạn\r\n\r\n";
             label2.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // panel4

@@ -28,8 +28,8 @@ namespace DAL
             //    "Encrypt=True;" +
             //    "TrustServerCertificate=False;" +
             //    "Connection Timeout=30;";
-            string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-            //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
             SqlConnection conn = new SqlConnection(connectionStr);
@@ -2882,15 +2882,53 @@ namespace DAL
         }
 
 
-        public void sinhThongBaoSapDenHanDot()
+        public List<DTO_KetQuaHeader> layDanhSachKetQua_PhanTrang(int pageNumber, int pageSize)
         {
-            using (var conn = SqlConnectionData.Connect())
+            List<DTO_KetQuaHeader> dsKetQua = new List<DTO_KetQuaHeader>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
             {
                 conn.Open();
-                using (var cmd = new SqlCommand("sp_SinhThongBaoSapDenHan_DotQuanTrac", conn))
+                using (SqlCommand cmd = new SqlCommand("LayDanhSachKetQua_PhanTrang", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var kq = new DTO_KetQuaHeader
+                            {
+                                MaKQ = reader["maKQ"].ToString(),
+                                TenKhachHang = reader["TenKhachHang"]?.ToString() ?? "",
+                                DotQuanTrac = reader["dotQuanTrac"]?.ToString() ?? "",
+                                NgayTao = reader["ngayTao"] != DBNull.Value ? Convert.ToDateTime(reader["ngayTao"]) : DateTime.MinValue,
+                                NgayTraKQ = reader["ngayTraKQ"] != DBNull.Value ? Convert.ToDateTime(reader["ngayTraKQ"]) : DateTime.MinValue,
+                                TenNhanVien = reader["TenNhanVien"]?.ToString() ?? "",
+                                TrangThai = reader["TrangThai"]?.ToString() ?? "",
+                                GhiChu = reader["ghiChu"]?.ToString() ?? ""
+                            };
+                            dsKetQua.Add(kq);
+                        }
+                    }
+                }
+            }
+            return dsKetQua;
+        }
+
+        // Đếm tổng số kết quả
+        public int demTongSoKetQua()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("DemTongSoKetQua", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    object result = cmd.ExecuteScalar();
+                    return result != null ? Convert.ToInt32(result) : 0;
                 }
             }
         }

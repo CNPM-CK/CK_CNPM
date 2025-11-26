@@ -3,8 +3,13 @@ using DTO;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using BLL.Speech;
+using GUI.Helper;
 
 namespace GUI.Forms
 {
@@ -12,41 +17,269 @@ namespace GUI.Forms
     {
         private KetQuaBLL ketQuaBLL = new KetQuaBLL();
 
+        // Voice search
+        private VoiceRecorder _recorder;
+        private WhisperService _whisper;
+        private string _wavPath;
+        private bool _ready = false;
+
+        // Search
+        private List<DTO_KetQuaHeader> danhSachGoc = new List<DTO_KetQuaHeader>();
+        private bool isPlaceholder = true;
+        private const string PLACEHOLDER_TEXT = "Tìm kiếm kết quả...";
+
+        // Search box styling  
+        private Color borderColor = Color.Black;
+        private int borderRadius = 12;
+        private int borderSize = 2;
+
+        // Layout constants - GIỐNG DSNV_Uc
+        private const int MARGIN = 15;
+        private const int SPACING = 10;
+        private const int MIN_SEARCH_WIDTH = 200;
+        private const int MAX_SEARCH_WIDTH = 500;
+        private const int SEARCH_HEIGHT = 50;
+
+        // Phân trang
+        private int trangHienTai = 1;
+        private int kichThuocTrang = 15;
+        private int tongSoBanGhi = 0;
+        private int tongSoTrang = 0;
+
         public DSKQUC()
         {
             InitializeComponent();
             this.Load += DSKQUC_Load;
             this.Resize += DSKQUC_Resize;
             dgvDanhsachketqua.CellDoubleClick += dgvDanhsachketqua_CellDoubleClick;
+            picturemicro.Click += BtnMic_Click;
+            btnTruoc.Click += btnTruoc_Click;
+            btnSau.Click += btnSau_Click;
+
+            // Thêm sự kiện cho button1
+            if (button1 != null)
+            {
+                button1.Click += Button1_Click;
+            }
         }
 
-        private void DSKQUC_Load(object sender, EventArgs e)
+        private async void DSKQUC_Load(object sender, EventArgs e)
         {
+            // QUAN TRỌNG: Setup DataGridView TRƯỚC
             SetupDataGridView();
+
+            // Khởi tạo search box
+            InitializeCustomSearchBox();
+
+            // Khởi tạo button styles
+            InitializeButtonStyles();
+
+            // Load data với phân trang
             LoadDanhSachKetQua();
 
-            // FORCE SET KÍCH THƯỚC SAU KHI LOAD
+            // Set column widths
             dgvDanhsachketqua.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            SetColumnWidths();
 
-            // FORCE SET LẠI WIDTH TỪNG CỘT
+            // Tính toán layout ban đầu
+            CalculateLayout();
+
+            // ========== KHỞI TẠO VOICE SEARCH ==========
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string modelPath = Path.Combine(baseDir, "Model", "ggml-tiny.bin");
+            _wavPath = Path.Combine(baseDir, "TempAudio", "search_kq.wav");
+
+            _recorder = new VoiceRecorder(_wavPath);
+            string appId = "ga825cbd";
+            string apiKey = "55774f42c55202232e1b4d8ebfc314c5";
+            string apiSecret = "c1cb5fc788d78ec4b808e8cc4beb4a3d";
+
+            var iatService = new IATService(appId, apiKey, apiSecret);
+            _whisper = new WhisperService(modelPath, iatService);
+
+            picturemicro.Enabled = false;
+
+            try
+            {
+                await _whisper.InitAsync();
+                _ready = true;
+                picturemicro.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                picturemicro.Enabled = false;
+            }
+        }
+
+        // ========== KHỞI TẠO BUTTON STYLES ==========
+        private void InitializeButtonStyles()
+        {
+            if (button1 != null)
+            {
+                button1.Size = new Size(66, 40);
+                BoGocButton(button1, 20);
+            }
+
+            BoGocButton(btnTruoc, 20);
+            BoGocButton(btnSau, 20);
+        }
+
+        // ========== BUTTON STYLING ==========
+        private void BoGocButton(Button btn, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            path.StartFigure();
+            path.AddArc(new Rectangle(0, 0, radius, radius), 180, 90);
+            path.AddLine(radius, 0, btn.Width - radius, 0);
+            path.AddArc(new Rectangle(btn.Width - radius, 0, radius, radius), -90, 90);
+            path.AddLine(btn.Width, radius, btn.Width, btn.Height - radius);
+            path.AddArc(new Rectangle(btn.Width - radius, btn.Height - radius, radius, radius), 0, 90);
+            path.AddLine(btn.Width - radius, btn.Height, radius, btn.Height);
+            path.AddArc(new Rectangle(0, btn.Height - radius, radius, radius), 90, 90);
+            path.CloseFigure();
+            btn.Region = new Region(path);
+        }
+
+        // ========== LAYOUT & RESIZE - GIỐNG DSNV_Uc ==========
+        private void DSKQUC_Resize(object sender, EventArgs e)
+        {
+            if (this.ClientSize.Width < 100) return;
+            CalculateLayout();
+        }
+
+        private void CalculateLayout()
+        {
+            int formWidth = this.Width;
+
+            // Kiểm tra xem parent form có đang maximized không
+            Form parentForm = this.FindForm();
+            bool isMaximized = parentForm != null && parentForm.WindowState == FormWindowState.Maximized;
+
+            int btnWidth = isMaximized ? 80 : 66;
+            int btnHeight = isMaximized ? 50 : 40;
+            int btnRadius = isMaximized ? 25 : 20;
+
+            // Cập nhật button1 nếu tồn tại
+            if (button1 != null)
+            {
+                button1.Size = new Size(btnWidth, btnHeight);
+                BoGocButton(button1, btnRadius);
+            }
+
+            // Lấy parent panel của các controls (giả sử là panel6 hoặc tương tự)
+            Control btnParent = button1?.Parent;
+
+            if (btnParent != null && btnParent != this)
+            {
+                int parentWidth = btnParent.Width;
+
+                // Đặt button1 ở góc phải cùng
+                if (button1 != null)
+                {
+                    button1.Left = parentWidth - btnWidth - MARGIN;
+                    button1.Top = 10;
+                }
+            }
+            else if (button1 != null)
+            {
+                button1.Left = formWidth - btnWidth - MARGIN;
+                button1.Top = 10;
+            }
+
+            // Đặt pictureFilter ở góc trái
+            if (pictureFilter != null)
+            {
+                pictureFilter.Left = MARGIN;
+                pictureFilter.Top = 10;
+            }
+
+            // Tính toán vị trí cho containersearch và picturemicro
+            int leftBoundary = pictureFilter != null ? pictureFilter.Right + SPACING : MARGIN;
+            int rightBoundary = button1 != null ?
+                button1.Left - SPACING - (picturemicro != null ? picturemicro.Width : 0) - SPACING :
+                formWidth - MARGIN;
+
+            int availableWidth = rightBoundary - leftBoundary;
+
+            // Tính width cho search box
+            int searchWidth = Math.Max(MIN_SEARCH_WIDTH, Math.Min(availableWidth, MAX_SEARCH_WIDTH));
+            if (searchWidth < MIN_SEARCH_WIDTH)
+            {
+                searchWidth = Math.Max(150, availableWidth);
+            }
+
+            // Đặt containersearch
+            if (containersearch != null)
+            {
+                containersearch.Left = leftBoundary;
+                containersearch.Width = searchWidth;
+                containersearch.Height = SEARCH_HEIGHT;
+                containersearch.Top = 10;
+            }
+
+            // Cập nhật searchtextbox
+            if (searchtextbox != null && containersearch != null)
+            {
+                searchtextbox.Width = searchWidth - (borderSize * 2 + 10);
+                searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
+            }
+
+            // Đặt picturemicro
+            if (picturemicro != null && containersearch != null)
+            {
+                picturemicro.Left = containersearch.Right + SPACING;
+                picturemicro.Top = 10;
+            }
+
+            // Cập nhật padding cho button1
+            if (button1 != null)
+            {
+                if (isMaximized)
+                {
+                    button1.Padding = new Padding(10, 5, 10, 5);
+                }
+                else
+                {
+                    button1.Padding = new Padding(5, 3, 5, 3);
+                }
+            }
+
+            // Invalidate để vẽ lại
+            if (containersearch != null)
+            {
+                containersearch.Invalidate();
+            }
+        }
+
+        // ========== BUTTON1 CLICK EVENT ==========
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                QuanLyHopDongChuKy formBieuDo = new QuanLyHopDongChuKy();
+                formBieuDo.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở form biểu đồ: {ex.Message}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SetColumnWidths()
+        {
             if (dgvDanhsachketqua.Columns["STT"] != null)
                 dgvDanhsachketqua.Columns["STT"].Width = 60;
-
             if (dgvDanhsachketqua.Columns["TenCongTy"] != null)
                 dgvDanhsachketqua.Columns["TenCongTy"].Width = 280;
-
             if (dgvDanhsachketqua.Columns["DotQuanTrac"] != null)
                 dgvDanhsachketqua.Columns["DotQuanTrac"].Width = 280;
-
             if (dgvDanhsachketqua.Columns["NgayTao"] != null)
                 dgvDanhsachketqua.Columns["NgayTao"].Width = 125;
-
             if (dgvDanhsachketqua.Columns["NgayTraKQ"] != null)
                 dgvDanhsachketqua.Columns["NgayTraKQ"].Width = 125;
-
             if (dgvDanhsachketqua.Columns["TenNhanVien"] != null)
                 dgvDanhsachketqua.Columns["TenNhanVien"].Width = 200;
-
             if (dgvDanhsachketqua.Columns["TrangThai"] != null)
                 dgvDanhsachketqua.Columns["TrangThai"].Width = 140;
         }
@@ -66,17 +299,13 @@ namespace GUI.Forms
             dgvDanhsachketqua.BackgroundColor = Color.White;
             dgvDanhsachketqua.BorderStyle = BorderStyle.None;
             dgvDanhsachketqua.EnableHeadersVisualStyles = false;
-
-            // TẮT AUTO SIZE COLUMNS
             dgvDanhsachketqua.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
 
-            // Thiết lập chiều cao
             int headerHeight = 40;
             int rowHeight = 45;
             dgvDanhsachketqua.ColumnHeadersHeight = headerHeight;
             dgvDanhsachketqua.RowTemplate.Height = rowHeight;
 
-            // Style cho header - CHỮ ĐEN IN ĐẬM, NỀN XÁM
             dgvDanhsachketqua.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = Color.FromArgb(200, 200, 200),
@@ -88,7 +317,6 @@ namespace GUI.Forms
                 WrapMode = DataGridViewTriState.False
             };
 
-            // Style cho cells - CHỮ ĐEN THƯỜNG
             dgvDanhsachketqua.DefaultCellStyle = new DataGridViewCellStyle
             {
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
@@ -109,7 +337,6 @@ namespace GUI.Forms
                 ForeColor = Color.Black
             };
 
-            // 1. STT - Thu nhỏ
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "STT",
@@ -123,7 +350,6 @@ namespace GUI.Forms
                 }
             });
 
-            // 2. Tên Công Ty
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "TenCongTy",
@@ -138,7 +364,6 @@ namespace GUI.Forms
                 }
             });
 
-            // 3. Đợt Quan Trắc
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "DotQuanTrac",
@@ -153,7 +378,6 @@ namespace GUI.Forms
                 }
             });
 
-            // 4. Ngày Tạo
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "NgayTao",
@@ -170,7 +394,6 @@ namespace GUI.Forms
                 }
             });
 
-            // 5. Ngày Trả KQ
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "NgayTraKQ",
@@ -187,7 +410,6 @@ namespace GUI.Forms
                 }
             });
 
-            // 6. Người Lập
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "TenNhanVien",
@@ -202,7 +424,6 @@ namespace GUI.Forms
                 }
             });
 
-            // 7. Trạng Thái
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "TrangThai",
@@ -218,7 +439,6 @@ namespace GUI.Forms
                 }
             });
 
-            // 8. Ghi Chú - TỰ ĐỘNG FILL
             dgvDanhsachketqua.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "GhiChu",
@@ -237,23 +457,32 @@ namespace GUI.Forms
             });
         }
 
+        // ========== PHÂN TRANG ==========
         public void LoadDanhSachKetQua()
         {
             try
             {
-                List<DTO_KetQuaHeader> list = ketQuaBLL.LayDanhSachKetQuaMoi();
+                if (tongSoBanGhi == 0)
+                {
+                    tongSoBanGhi = ketQuaBLL.demTongSoKetQua();
+                    tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / kichThuocTrang);
+                }
+
+                var list = ketQuaBLL.layDanhSachKetQua_PhanTrang(trangHienTai, kichThuocTrang);
+                danhSachGoc = list;
 
                 dgvDanhsachketqua.Rows.Clear();
 
+                int sttBatDau = (trangHienTai - 1) * kichThuocTrang;
                 int stt = 0;
+
                 foreach (var item in list)
                 {
                     stt++;
                     int rowIndex = dgvDanhsachketqua.Rows.Add();
                     var row = dgvDanhsachketqua.Rows[rowIndex];
 
-                    // Gán dữ liệu
-                    row.Cells["STT"].Value = stt;
+                    row.Cells["STT"].Value = sttBatDau + stt;
                     row.Cells["TenCongTy"].Value = item.TenKhachHang ?? "";
                     row.Cells["DotQuanTrac"].Value = item.DotQuanTrac ?? "";
                     row.Cells["NgayTao"].Value = item.NgayTao;
@@ -261,35 +490,19 @@ namespace GUI.Forms
                     row.Cells["TenNhanVien"].Value = item.TenNhanVien ?? "";
                     row.Cells["TrangThai"].Value = item.TrangThai;
                     row.Cells["GhiChu"].Value = item.GhiChu ?? "";
-
-                    // Tag để lưu MaKQ cho việc mở chi tiết
                     row.Tag = item.MaKQ;
                 }
 
                 FormatDataGridView();
-
-                // FORCE SET LẠI WIDTH SAU KHI LOAD DATA
                 dgvDanhsachketqua.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-                if (dgvDanhsachketqua.Columns["STT"] != null)
-                    dgvDanhsachketqua.Columns["STT"].Width = 60;
-                if (dgvDanhsachketqua.Columns["TenCongTy"] != null)
-                    dgvDanhsachketqua.Columns["TenCongTy"].Width = 280;
-                if (dgvDanhsachketqua.Columns["DotQuanTrac"] != null)
-                    dgvDanhsachketqua.Columns["DotQuanTrac"].Width = 280;
-                if (dgvDanhsachketqua.Columns["NgayTao"] != null)
-                    dgvDanhsachketqua.Columns["NgayTao"].Width = 125;
-                if (dgvDanhsachketqua.Columns["NgayTraKQ"] != null)
-                    dgvDanhsachketqua.Columns["NgayTraKQ"].Width = 125;
-                if (dgvDanhsachketqua.Columns["TenNhanVien"] != null)
-                    dgvDanhsachketqua.Columns["TenNhanVien"].Width = 200;
-                if (dgvDanhsachketqua.Columns["TrangThai"] != null)
-                    dgvDanhsachketqua.Columns["TrangThai"].Width = 140;
+                SetColumnWidths();
 
-                // Cập nhật title
-                UpdateTitle(list.Count);
+                soTrang.Text = $"Trang {trangHienTai}/{tongSoTrang}";
 
-                // Thông báo
-                if (list.Count == 0)
+                btnTruoc.Enabled = trangHienTai > 1;
+                btnSau.Enabled = trangHienTai < tongSoTrang;
+
+                if (list.Count == 0 && tongSoBanGhi == 0)
                 {
                     MessageBox.Show("Chưa có kết quả quan trắc nào!",
                         "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -302,20 +515,21 @@ namespace GUI.Forms
             }
         }
 
-        private void UpdateTitle(int count)
+        private void btnTruoc_Click(object sender, EventArgs e)
         {
-            if (panel6 != null)
+            if (trangHienTai > 1)
             {
-                panel6.Controls.Clear();
-                Label lblTitle = new Label
-                {
-                    Text = $"📊 DANH SÁCH KẾT QUẢ QUAN TRẮC ({count} kết quả)",
-                    Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                    ForeColor = Color.Black,
-                    Dock = DockStyle.Fill,
-                    TextAlign = ContentAlignment.MiddleCenter
-                };
-                panel6.Controls.Add(lblTitle);
+                trangHienTai--;
+                LoadDanhSachKetQua();
+            }
+        }
+
+        private void btnSau_Click(object sender, EventArgs e)
+        {
+            if (trangHienTai < tongSoTrang)
+            {
+                trangHienTai++;
+                LoadDanhSachKetQua();
             }
         }
 
@@ -323,7 +537,6 @@ namespace GUI.Forms
         {
             foreach (DataGridViewRow row in dgvDanhsachketqua.Rows)
             {
-                // FORMAT TRẠNG THÁI
                 if (row.Cells["TrangThai"].Value != null)
                 {
                     string trangThai = row.Cells["TrangThai"].Value.ToString().Trim();
@@ -343,8 +556,6 @@ namespace GUI.Forms
                         row.Cells["TrangThai"].Style.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
                     }
                 }
-
-                // HIGHLIGHT DÒNG HOVER
                 row.DefaultCellStyle.SelectionBackColor = Color.LightGray;
                 row.DefaultCellStyle.SelectionForeColor = Color.Black;
             }
@@ -365,11 +576,9 @@ namespace GUI.Forms
                         return;
                     }
 
-                    // Mở form chi tiết
                     ChiTietKetQua formChiTiet = new ChiTietKetQua(maKQ);
                     DialogResult result = formChiTiet.ShowDialog();
 
-                    // CHỈ REFRESH KHI CÓ THAY ĐỔI
                     if (result == DialogResult.OK)
                     {
                         LoadDanhSachKetQua();
@@ -381,11 +590,6 @@ namespace GUI.Forms
                         "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
-
-        private void DSKQUC_Resize(object sender, EventArgs e)
-        {
-            // Có thể thêm logic resize nếu cần
         }
 
         private void dgvDanhsachketqua_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
@@ -417,8 +621,237 @@ namespace GUI.Forms
             catch { }
         }
 
-        private void panel6_Paint(object sender, PaintEventArgs e) { }
+        private void panel6_Paint_2(object sender, PaintEventArgs e)
+        {
+        }
 
-        private void panel6_Paint_1(object sender, PaintEventArgs e) { }
+        // ========== CUSTOM SEARCH BOX ==========
+        private void InitializeCustomSearchBox()
+        {
+            containersearch.BackColor = Color.Transparent;
+            containersearch.Size = new Size(400, SEARCH_HEIGHT);
+            containersearch.BringToFront();
+
+            searchtextbox.BorderStyle = BorderStyle.None;
+            searchtextbox.BackColor = Color.White;
+            searchtextbox.Font = new Font("Segoe UI", 10F);
+            searchtextbox.ForeColor = Color.Silver;
+            searchtextbox.Text = PLACEHOLDER_TEXT;
+            searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
+            searchtextbox.Size = new Size(containersearch.Width - (borderSize * 2 + 10), 28);
+            searchtextbox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+
+            searchtextbox.Enter += searchtextbox_Enter;
+            searchtextbox.Leave += searchtextbox_Leave;
+            searchtextbox.TextChanged += searchtextbox_TextChanged;
+            searchtextbox.KeyDown += searchtextbox_KeyDown;
+            containersearch.Paint += containersearch_Paint;
+        }
+
+        private void containersearch_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+            float offset = borderSize / 2f;
+            RectangleF rect = new RectangleF(
+                offset,
+                offset,
+                containersearch.ClientSize.Width - borderSize,
+                containersearch.ClientSize.Height - borderSize
+            );
+
+            using (GraphicsPath path = CreateRoundedRectPath(rect, borderRadius))
+            {
+                using (SolidBrush brush = new SolidBrush(Color.White))
+                {
+                    e.Graphics.FillPath(brush, path);
+                }
+
+                using (Pen pen = new Pen(borderColor, borderSize))
+                {
+                    e.Graphics.DrawPath(pen, path);
+                }
+            }
+        }
+
+        private GraphicsPath CreateRoundedRectPath(RectangleF rect, float radius)
+        {
+            float effectiveRadius = Math.Min(radius, Math.Min(rect.Width / 2f, rect.Height / 2f));
+            float diameter = effectiveRadius * 2f;
+
+            GraphicsPath path = new GraphicsPath();
+            path.StartFigure();
+            path.AddArc(rect.Left, rect.Top, diameter, diameter, 180, 90);
+            path.AddArc(rect.Right - diameter, rect.Top, diameter, diameter, 270, 90);
+            path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);
+            path.AddArc(rect.Left, rect.Bottom - diameter, diameter, diameter, 90, 90);
+            path.CloseFigure();
+            return path;
+        }
+
+        private void searchtextbox_Enter(object sender, EventArgs e)
+        {
+            if (isPlaceholder)
+            {
+                isPlaceholder = false;
+                searchtextbox.Text = "";
+                searchtextbox.ForeColor = Color.FromArgb(64, 64, 64);
+            }
+        }
+
+        private void searchtextbox_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(searchtextbox.Text))
+            {
+                isPlaceholder = true;
+                searchtextbox.Text = PLACEHOLDER_TEXT;
+                searchtextbox.ForeColor = Color.Silver;
+
+                // Reset về phân trang
+                trangHienTai = 1;
+                tongSoBanGhi = 0;
+                LoadDanhSachKetQua();
+            }
+        }
+
+        private void searchtextbox_TextChanged(object sender, EventArgs e)
+        {
+            if (isPlaceholder) return;
+            PerformSearch();
+        }
+
+        private void searchtextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                if (dgvDanhsachketqua.Rows.Count > 0)
+                {
+                    dgvDanhsachketqua.ClearSelection();
+                    dgvDanhsachketqua.Rows[0].Selected = true;
+                }
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                searchtextbox.Clear();
+
+                // Reset về phân trang
+                trangHienTai = 1;
+                tongSoBanGhi = 0;
+                LoadDanhSachKetQua();
+            }
+        }
+
+        private void PerformSearch()
+        {
+            string keyword = searchtextbox.Text.Trim().ToLower();
+            if (string.IsNullOrEmpty(keyword))
+            {
+                // Reset về phân trang
+                trangHienTai = 1;
+                tongSoBanGhi = 0;
+                LoadDanhSachKetQua();
+                return;
+            }
+
+            try
+            {
+                // Lấy toàn bộ dữ liệu để search
+                var allData = ketQuaBLL.LayDanhSachKetQuaMoi();
+
+                var filtered = allData.Where(item =>
+                    (item.TenKhachHang ?? "").ToLower().Contains(keyword) ||
+                    (item.DotQuanTrac ?? "").ToLower().Contains(keyword) ||
+                    (item.TenNhanVien ?? "").ToLower().Contains(keyword) ||
+                    (item.TrangThai ?? "").ToLower().Contains(keyword) ||
+                    (item.GhiChu ?? "").ToLower().Contains(keyword)
+                ).ToList();
+
+                dgvDanhsachketqua.Rows.Clear();
+                int stt = 0;
+                foreach (var item in filtered)
+                {
+                    stt++;
+                    int rowIndex = dgvDanhsachketqua.Rows.Add();
+                    var row = dgvDanhsachketqua.Rows[rowIndex];
+                    row.Cells["STT"].Value = stt;
+                    row.Cells["TenCongTy"].Value = item.TenKhachHang ?? "";
+                    row.Cells["DotQuanTrac"].Value = item.DotQuanTrac ?? "";
+                    row.Cells["NgayTao"].Value = item.NgayTao;
+                    row.Cells["NgayTraKQ"].Value = item.NgayTraKQ;
+                    row.Cells["TenNhanVien"].Value = item.TenNhanVien ?? "";
+                    row.Cells["TrangThai"].Value = item.TrangThai;
+                    row.Cells["GhiChu"].Value = item.GhiChu ?? "";
+                    row.Tag = item.MaKQ;
+                }
+                FormatDataGridView();
+
+                soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
+
+                btnTruoc.Enabled = false;
+                btnSau.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tìm kiếm: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ========== VOICE SEARCH ==========
+        private async void BtnMic_Click(object sender, EventArgs e)
+        {
+            if (!_ready) return;
+
+            if (!_recorder.IsRecording)
+            {
+                try
+                {
+                    _recorder.Start();
+                    picturemicro.Image = Properties.Resources.microphone_hoatdong;
+                    searchtextbox.ForeColor = Color.Silver;
+                    searchtextbox.Text = "Đang nghe...";
+                    isPlaceholder = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Không thể ghi âm: " + ex.Message);
+                }
+            }
+            else
+            {
+                picturemicro.Enabled = false;
+                picturemicro.Image = Properties.Resources.microphone;
+                _recorder.Stop();
+                await System.Threading.Tasks.Task.Delay(300);
+
+                try
+                {
+                    string text;
+                    try { text = await _whisper.TranscribeIFlytekAsync(_wavPath); }
+                    catch { text = await _whisper.TranscribeAsync(_wavPath); }
+
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        MessageBox.Show("Không nghe được nội dung");
+                        return;
+                    }
+
+                    isPlaceholder = false;
+                    searchtextbox.ForeColor = Color.FromArgb(64, 64, 64);
+                    searchtextbox.Text = text.Trim();
+                    PerformSearch();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi nhận dạng giọng nói: " + ex.Message);
+                }
+                finally
+                {
+                    picturemicro.Enabled = true;
+                }
+            }
+        }
     }
 }

@@ -32,16 +32,20 @@
             panel1 = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             panel3 = new Panel();
+            panelNhapLaiMatKhau = new Panel();
             button3 = new Button();
+            textBoxNhapLaiMatKhau = new TextBox();
+            panelNhapMatKhauMoi = new Panel();
             button2 = new Button();
-            textBox2 = new TextBox();
+            textBoxNhapMatKhauMoi = new TextBox();
             label8 = new Label();
-            textBox1 = new TextBox();
             label5 = new Label();
             label6 = new Label();
             button1 = new Button();
             label2 = new Label();
             panel4 = new Panel();
+            pictureBox5 = new PictureBox();
+            pictureBox1 = new PictureBox();
             label7 = new Label();
             label4 = new Label();
             label3 = new Label();
@@ -49,20 +53,20 @@
             pictureBox3 = new PictureBox();
             pictureBox4 = new PictureBox();
             panel2 = new Panel();
-            label1 = new Label();
-            pictureBox1 = new PictureBox();
-            pictureBox5 = new PictureBox();
             pictureBox7 = new PictureBox();
+            label1 = new Label();
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             panel3.SuspendLayout();
+            panelNhapLaiMatKhau.SuspendLayout();
+            panelNhapMatKhauMoi.SuspendLayout();
             panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             SuspendLayout();
             // 
@@ -95,11 +99,9 @@
             // 
             panel3.BackColor = SystemColors.Window;
             panel3.BorderStyle = BorderStyle.FixedSingle;
-            panel3.Controls.Add(button3);
-            panel3.Controls.Add(button2);
-            panel3.Controls.Add(textBox2);
+            panel3.Controls.Add(panelNhapLaiMatKhau);
+            panel3.Controls.Add(panelNhapMatKhauMoi);
             panel3.Controls.Add(label8);
-            panel3.Controls.Add(textBox1);
             panel3.Controls.Add(label5);
             panel3.Controls.Add(label6);
             panel3.Controls.Add(button1);
@@ -112,33 +114,62 @@
             panel3.Size = new Size(610, 537);
             panel3.TabIndex = 1;
             // 
+            // panelNhapLaiMatKhau
+            // 
+            panelNhapLaiMatKhau.Controls.Add(button3);
+            panelNhapLaiMatKhau.Controls.Add(textBoxNhapLaiMatKhau);
+            panelNhapLaiMatKhau.Location = new Point(125, 294);
+            panelNhapLaiMatKhau.Name = "panelNhapLaiMatKhau";
+            panelNhapLaiMatKhau.Size = new Size(391, 66);
+            panelNhapLaiMatKhau.TabIndex = 21;
+            // 
             // button3
             // 
-            button3.Location = new Point(435, 307);
+            button3.Location = new Point(320, 16);
             button3.Name = "button3";
             button3.Size = new Size(45, 36);
             button3.TabIndex = 19;
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
+            // textBoxNhapLaiMatKhau
+            // 
+            textBoxNhapLaiMatKhau.BorderStyle = BorderStyle.FixedSingle;
+            textBoxNhapLaiMatKhau.ForeColor = SystemColors.WindowText;
+            textBoxNhapLaiMatKhau.Location = new Point(35, 12);
+            textBoxNhapLaiMatKhau.Multiline = true;
+            textBoxNhapLaiMatKhau.Name = "textBoxNhapLaiMatKhau";
+            textBoxNhapLaiMatKhau.Size = new Size(342, 45);
+            textBoxNhapLaiMatKhau.TabIndex = 17;
+            textBoxNhapLaiMatKhau.TextChanged += textBox2_TextChanged;
+            // 
+            // panelNhapMatKhauMoi
+            // 
+            panelNhapMatKhauMoi.Controls.Add(button2);
+            panelNhapMatKhauMoi.Controls.Add(textBoxNhapMatKhauMoi);
+            panelNhapMatKhauMoi.Location = new Point(125, 182);
+            panelNhapMatKhauMoi.Name = "panelNhapMatKhauMoi";
+            panelNhapMatKhauMoi.Size = new Size(391, 68);
+            panelNhapMatKhauMoi.TabIndex = 20;
+            // 
             // button2
             // 
-            button2.Location = new Point(435, 191);
+            button2.Location = new Point(316, 15);
             button2.Name = "button2";
             button2.Size = new Size(45, 36);
             button2.TabIndex = 18;
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
-            // textBox2
+            // textBoxNhapMatKhauMoi
             // 
-            textBox2.BorderStyle = BorderStyle.FixedSingle;
-            textBox2.ForeColor = SystemColors.WindowText;
-            textBox2.Location = new Point(128, 296);
-            textBox2.Multiline = true;
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(369, 59);
-            textBox2.TabIndex = 17;
+            textBoxNhapMatKhauMoi.BorderStyle = BorderStyle.FixedSingle;
+            textBoxNhapMatKhauMoi.ForeColor = SystemColors.WindowText;
+            textBoxNhapMatKhauMoi.Location = new Point(30, 9);
+            textBoxNhapMatKhauMoi.Multiline = true;
+            textBoxNhapMatKhauMoi.Name = "textBoxNhapMatKhauMoi";
+            textBoxNhapMatKhauMoi.Size = new Size(342, 47);
+            textBoxNhapMatKhauMoi.TabIndex = 15;
             // 
             // label8
             // 
@@ -149,16 +180,6 @@
             label8.Size = new Size(211, 31);
             label8.TabIndex = 16;
             label8.Text = "Nhập lại mật khẩu";
-            // 
-            // textBox1
-            // 
-            textBox1.BorderStyle = BorderStyle.FixedSingle;
-            textBox1.ForeColor = SystemColors.WindowText;
-            textBox1.Location = new Point(128, 179);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(369, 59);
-            textBox1.TabIndex = 15;
             // 
             // label5
             // 
@@ -221,6 +242,26 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(598, 87);
             panel4.TabIndex = 0;
+            // 
+            // pictureBox5
+            // 
+            pictureBox5.Image = (Image)resources.GetObject("pictureBox5.Image");
+            pictureBox5.Location = new Point(347, 0);
+            pictureBox5.Name = "pictureBox5";
+            pictureBox5.Size = new Size(70, 87);
+            pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox5.TabIndex = 23;
+            pictureBox5.TabStop = false;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(181, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(70, 87);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 22;
+            pictureBox1.TabStop = false;
             // 
             // label7
             // 
@@ -301,36 +342,6 @@
             panel2.TabIndex = 2;
             panel2.Paint += panel2_Paint;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            label1.Location = new Point(156, 26);
-            label1.Name = "label1";
-            label1.Size = new Size(335, 54);
-            label1.TabIndex = 0;
-            label1.Text = "Đặt lại mật khẩu";
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(181, 0);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(70, 87);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 22;
-            pictureBox1.TabStop = false;
-            // 
-            // pictureBox5
-            // 
-            pictureBox5.Image = (Image)resources.GetObject("pictureBox5.Image");
-            pictureBox5.Location = new Point(347, 0);
-            pictureBox5.Name = "pictureBox5";
-            pictureBox5.Size = new Size(70, 87);
-            pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox5.TabIndex = 23;
-            pictureBox5.TabStop = false;
-            // 
             // pictureBox7
             // 
             pictureBox7.Image = (Image)resources.GetObject("pictureBox7.Image");
@@ -340,6 +351,16 @@
             pictureBox7.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox7.TabIndex = 3;
             pictureBox7.TabStop = false;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            label1.Location = new Point(156, 26);
+            label1.Name = "label1";
+            label1.Size = new Size(335, 54);
+            label1.TabIndex = 0;
+            label1.Text = "Đặt lại mật khẩu";
             // 
             // DatLaiMatKhau
             // 
@@ -356,15 +377,19 @@
             tableLayoutPanel1.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
+            panelNhapLaiMatKhau.ResumeLayout(false);
+            panelNhapLaiMatKhau.PerformLayout();
+            panelNhapMatKhauMoi.ResumeLayout(false);
+            panelNhapMatKhauMoi.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             ResumeLayout(false);
         }
@@ -375,7 +400,7 @@
         private TableLayoutPanel tableLayoutPanel1;
         private Label label1;
         private Panel panel3;
-        private TextBox textBox1;
+        private TextBox textBoxNhapMatKhauMoi;
         private Label label5;
         private Label label6;
         private Button button1;
@@ -387,7 +412,7 @@
         private PictureBox pictureBox2;
         private PictureBox pictureBox3;
         private PictureBox pictureBox4;
-        private TextBox textBox2;
+        private TextBox textBoxNhapLaiMatKhau;
         private Label label8;
         private Panel panel2;
         private Button button3;
@@ -395,5 +420,7 @@
         private PictureBox pictureBox5;
         private PictureBox pictureBox1;
         private PictureBox pictureBox7;
+        private Panel panelNhapLaiMatKhau;
+        private Panel panelNhapMatKhauMoi;
     }
 }

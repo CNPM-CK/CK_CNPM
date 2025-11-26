@@ -160,7 +160,7 @@
             // textBoxmatkhau
             // 
             textBoxmatkhau.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            textBoxmatkhau.Location = new Point(3, 3);
+            textBoxmatkhau.Location = new Point(7, 13);
             textBoxmatkhau.Multiline = true;
             textBoxmatkhau.Name = "textBoxmatkhau";
             textBoxmatkhau.Size = new Size(341, 45);
@@ -170,7 +170,7 @@
             // panelTentk
             // 
             panelTentk.Controls.Add(txtTentk);
-            panelTentk.Location = new Point(77, 181);
+            panelTentk.Location = new Point(77, 179);
             panelTentk.Name = "panelTentk";
             panelTentk.Size = new Size(353, 63);
             panelTentk.TabIndex = 13;
@@ -178,7 +178,7 @@
             // txtTentk
             // 
             txtTentk.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtTentk.Location = new Point(3, 3);
+            txtTentk.Location = new Point(6, 12);
             txtTentk.Multiline = true;
             txtTentk.Name = "txtTentk";
             txtTentk.Size = new Size(341, 45);

@@ -1,19 +1,85 @@
 ﻿using BLL;
 using DTO;
+using System.Drawing.Drawing2D;
+
 namespace GUI.Forms
 {
     public partial class XacThucSMS : Form
     {
         private readonly OTPBLL otpBLL = new OTPBLL();
         private string soDienThoai;
+
         public XacThucSMS()
         {
             InitializeComponent();
+            SetupRoundedPanels();
         }
+
         public XacThucSMS(string sdt)
         {
             InitializeComponent();
             soDienThoai = sdt;
+            SetupRoundedPanels();
+        }
+
+        // THÊM HÀM NÀY - Bo góc cho panel2 và panel3
+        private void SetupRoundedPanels()
+        {
+            // Bo 2 góc trên của panel2
+            panel2.Paint += (s, e) =>
+            {
+                GraphicsPath path = GetRoundedRectangle(panel2.ClientRectangle, 30, true, true, false, false);
+                panel2.Region = new Region(path);
+            };
+
+            // Bo 2 góc dưới của panel3
+            panel3.Paint += (s, e) =>
+            {
+                GraphicsPath path = GetRoundedRectangle(panel3.ClientRectangle, 30, false, false, true, true);
+                panel3.Region = new Region(path);
+            };
+        }
+
+        // THÊM HÀM NÀY - Tạo hình chữ nhật bo góc
+        private GraphicsPath GetRoundedRectangle(Rectangle bounds, int radius, bool topLeft, bool topRight, bool bottomLeft, bool bottomRight)
+        {
+            GraphicsPath path = new GraphicsPath();
+            int diameter = radius * 2;
+
+            if (topLeft)
+                path.AddArc(bounds.X, bounds.Y, diameter, diameter, 180, 90);
+            else
+                path.AddLine(bounds.X, bounds.Y, bounds.X, bounds.Y);
+
+            path.AddLine(topLeft ? bounds.X + radius : bounds.X, bounds.Y,
+                        topRight ? bounds.Right - radius : bounds.Right, bounds.Y);
+
+            if (topRight)
+                path.AddArc(bounds.Right - diameter, bounds.Y, diameter, diameter, 270, 90);
+            else
+                path.AddLine(bounds.Right, bounds.Y, bounds.Right, bounds.Y);
+
+            path.AddLine(bounds.Right, topRight ? bounds.Y + radius : bounds.Y,
+                        bounds.Right, bottomRight ? bounds.Bottom - radius : bounds.Bottom);
+
+            if (bottomRight)
+                path.AddArc(bounds.Right - diameter, bounds.Bottom - diameter, diameter, diameter, 0, 90);
+            else
+                path.AddLine(bounds.Right, bounds.Bottom, bounds.Right, bounds.Bottom);
+
+            path.AddLine(bottomRight ? bounds.Right - radius : bounds.Right, bounds.Bottom,
+                        bottomLeft ? bounds.X + radius : bounds.X, bounds.Bottom);
+
+            if (bottomLeft)
+                path.AddArc(bounds.X, bounds.Bottom - diameter, diameter, diameter, 90, 90);
+            else
+                path.AddLine(bounds.X, bounds.Bottom, bounds.X, bounds.Bottom);
+
+            path.AddLine(bounds.X, bottomLeft ? bounds.Bottom - radius : bounds.Bottom,
+                        bounds.X, topLeft ? bounds.Y + radius : bounds.Y);
+
+            path.CloseFigure();
+            return path;
         }
 
         private void TextBox_TextChanged(object sender, EventArgs e)
@@ -29,7 +95,6 @@ namespace GUI.Forms
             }
         }
 
-
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             TextBox? current = sender as TextBox;
@@ -41,7 +106,6 @@ namespace GUI.Forms
                 }
             }
         }
-
 
         private string LayMaOTP()
         {

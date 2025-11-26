@@ -407,7 +407,6 @@ namespace GUI.Forms
                 if (cbo.DropDownStyle != ComboBoxStyle.DropDown)
                     cbo.DropDownStyle = ComboBoxStyle.DropDown;
             }
-
             // Căn giữa theo chiều dọc
             int yPos = (panel.Height - ctrl.Height) / 2;
             ctrl.Location = new Point(borderSize + 5, yPos);
@@ -494,6 +493,7 @@ namespace GUI.Forms
         private void Form1_Load(object sender, EventArgs e)
         {
             BoGocButton(button1, 25);
+
             ApplyRoundedInput(panelTentk, txtTentk, 12, 2, Color.FromArgb(0, 152, 70));
             ApplyRoundedInput(panelMatkhau, textBoxmatkhau, 12, 2, Color.FromArgb(0, 152, 70));
 

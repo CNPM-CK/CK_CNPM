@@ -958,11 +958,11 @@ namespace GUI.Forms
                 searchtextbox.ForeColor = Color.Silver;
                 tuKhoacuoicung = "";
             }
-
-            // Reset về trang 1
             trangHientai = 1;
             tongSoBanGhi = 0;
             taiTrangkhachhang();
+        private void picturemicro_Click(object sender, EventArgs e)
+        {
         }
     }
 }

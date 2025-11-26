@@ -4748,7 +4748,7 @@ BEGIN
 END
 GO
 
-CREATE OR ALTER PROCEDURE [dbo].[sp_LayChiTietDotQuanTrac] --Mục đích là sửa đợt quan trắc 
+CREATE OR ALTER PROCEDURE [dbo].[sp_LayChiTietDotQuanTrac] 
     @maDot VARCHAR(15)
 AS
 BEGIN
@@ -5697,9 +5697,22 @@ BEGIN
     ELSE
         SET @TonTai = 0;
 END
-GO 
 
-CREATE PROCEDURE sp_SinhThongBaoSapDenHan_DotQuanTrac
+GO
+-----23/11
+--CREATE PROCEDURE [dbo].[LayPhongBanTheoTaiKhoan]
+--    @tenTK VARCHAR(50)
+--AS
+--BEGIN
+--    SELECT maPhong 
+--    FROM NhanVien 
+--    WHERE email = @tenTK;
+--END;
+--GO
+-- 1. Stored procedure lấy danh sách kết quả CÓ PHÂN TRANG
+CREATE OR ALTER PROCEDURE [dbo].[LayDanhSachKetQua_PhanTrang]
+    @PageNumber INT,
+    @PageSize INT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -5999,3 +6012,39 @@ INSERT INTO Dot_Nen_Ts (maDNTS, maDN, maTS, tenTS, donVi, giaTriToiThieu, giaTri
 
 GO
 */
+
+CREATE OR ALTER PROCEDURE [dbo].[LayDanhSachKetQua_PhanTrang]
+    @PageNumber INT,
+    @PageSize INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        kqh.maKQ,
+        kqh.ngayTao,
+        kqh.ngayTraKQ,
+        nv.hoTen AS TenNhanVien,
+        CASE WHEN kqh.trangThaiXacNhan = 1 THEN N'Đã xác nhận' ELSE N'Chờ xác nhận' END AS TrangThai,
+        kqh.ghiChu,
+        dqt.dotQuanTrac,
+        kh.tenDoanhNghiep AS TenKhachHang
+    FROM KetQuaHeader kqh
+    LEFT JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
+    LEFT JOIN DotQuanTrac dqt ON kqh.maDot = dqt.maDot
+    LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
+    LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
+    ORDER BY kqh.ngayTao DESC
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+END
+GO
+
+-- 2. Stored procedure đếm tổng số kết quả
+CREATE OR ALTER PROCEDURE [dbo].[DemTongSoKetQua]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT COUNT(*) FROM KetQuaHeader;
+END
+GO

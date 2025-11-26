@@ -18,6 +18,9 @@ namespace GUI.Forms
 
             button1.Click -= button1_Click;
             button1.Click += button1_Click;
+
+            button2.Click -= button2_Click;
+            button2.Click += button2_Click;
         }
 
         private void SetupRoundedPanels()
@@ -158,9 +161,8 @@ namespace GUI.Forms
             }
         }
 
-
-        /// Nút quay lại trang đăng nhập
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        // SỬA LẠI - Đổi tên hàm cho đúng với button2
+        private void button2_Click(object sender, EventArgs e)
         {
             DangNhap loginForm = new DangNhap();
             loginForm.Show();

@@ -12,6 +12,7 @@ namespace GUI.Forms
     public partial class QuanLyHopDongChuKy : Form
     {
         private readonly HopDongBLL hopDongBLL = new HopDongBLL();
+        private readonly KhachHangBLL khachHangBLL = new KhachHangBLL();
 
         // Controls
         private Chart chartThongKe;
@@ -33,17 +34,27 @@ namespace GUI.Forms
         public QuanLyHopDongChuKy()
         {
             InitializeComponent();
+
+            this.StartPosition = FormStartPosition.Manual;
+
             this.Load += QuanLyHopDongChuKy_Load;
             this.Resize += QuanLyHopDongChuKy_Resize;
+            this.Shown += QuanLyHopDongChuKy_Shown;
+        }
+
+        private void QuanLyHopDongChuKy_Shown(object sender, EventArgs e)
+        {
+            Screen screen = Screen.FromControl(this);
+            this.Location = new Point(
+                screen.WorkingArea.Left + (screen.WorkingArea.Width - this.Width) / 2,
+                screen.WorkingArea.Top + (screen.WorkingArea.Height - this.Height) / 2
+            );
         }
 
         private void QuanLyHopDongChuKy_Load(object sender, EventArgs e)
         {
             try
             {
-                // ✅ Hiển thị form ở giữa màn hình
-                this.WindowState = FormWindowState.Normal;
-                this.StartPosition = FormStartPosition.CenterScreen;
                 this.Size = new Size(1600, 900);
                 this.MinimumSize = new Size(1400, 800);
                 this.Text = "📊 Biểu đồ quản lý hợp đồng";
@@ -61,6 +72,8 @@ namespace GUI.Forms
 
         private void InitializeControls()
         {
+            this.Controls.Clear();
+
             // Panel chính
             Panel mainPanel = new Panel
             {
@@ -73,7 +86,7 @@ namespace GUI.Forms
             // ========== PHẦN HEADER ==========
             Panel headerPanel = new Panel
             {
-                Height = 80,
+                Height = 70,
                 Dock = DockStyle.Top,
                 BackColor = Color.White,
                 Padding = new Padding(20, 10, 20, 10)
@@ -86,7 +99,7 @@ namespace GUI.Forms
                 Font = new Font("Segoe UI", 16F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(0, 102, 204),
                 AutoSize = false,
-                Size = new Size(600, 40),
+                Size = new Size(550, 32),
                 Location = new Point(20, 15)
             };
             headerPanel.Controls.Add(lblTitle);
@@ -154,14 +167,13 @@ namespace GUI.Forms
             // ========== PHẦN THẺ THỐNG KÊ ==========
             Panel cardsPanel = new Panel
             {
-                Height = 120,
+                Height = 10,
                 Dock = DockStyle.Top,
                 BackColor = Color.Transparent,
                 Padding = new Padding(0, 10, 0, 10)
             };
             mainPanel.Controls.Add(cardsPanel);
 
-            // Tạo các thẻ với vị trí ban đầu
             pnlTongHD = CreateStatCard("📋 Tổng hợp đồng", "0", Color.FromArgb(0, 123, 255));
             pnlTongHD.Location = new Point(10, 10);
             cardsPanel.Controls.Add(pnlTongHD);
@@ -178,7 +190,6 @@ namespace GUI.Forms
             pnlChuaHoanThanh.Location = new Point(880, 10);
             cardsPanel.Controls.Add(pnlChuaHoanThanh);
 
-            // Thêm sự kiện resize sau khi tạo các thẻ
             cardsPanel.Resize += CardsPanel_Resize;
 
             // ========== PHẦN BIỂU ĐỒ ==========
@@ -209,7 +220,6 @@ namespace GUI.Forms
             chartArea.AxisY.MajorGrid.LineColor = Color.LightGray;
             chartThongKe.ChartAreas.Add(chartArea);
 
-            // Series
             Series seriesDungHen = new Series("Đúng hẹn")
             {
                 ChartType = SeriesChartType.Column,
@@ -256,51 +266,72 @@ namespace GUI.Forms
             chartPanel.Controls.Add(chartThongKe);
 
             // ========== DANH SÁCH HỢP ĐỒNG ==========
-            Panel dgvPanel = new Panel
+            TableLayoutPanel tablePanel = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 BackColor = Color.White,
-                Padding = new Padding(15)
+                Padding = new Padding(15),
+                RowCount = 2,
+                ColumnCount = 1,
+                CellBorderStyle = TableLayoutPanelCellBorderStyle.None
             };
-            mainPanel.Controls.Add(dgvPanel);
+            tablePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
+            tablePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            mainPanel.Controls.Add(tablePanel);
 
             Label lblDanhSach = new Label
             {
                 Text = "📋 DANH SÁCH HỢP ĐỒNG CHI TIẾT",
                 Font = new Font("Segoe UI", 11F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(0, 102, 204),
-                Dock = DockStyle.Top,
-                Height = 35,
-                TextAlign = ContentAlignment.MiddleLeft
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Padding = new Padding(5)
             };
-            dgvPanel.Controls.Add(lblDanhSach);
+            tablePanel.Controls.Add(lblDanhSach, 0, 0);
 
+            // ✅ SỬA LẠI DATAGRIDVIEW - TĂNG CHIỀU CAO HEADER VÀ CHO PHÉP WRAP TEXT
             dgvHopDong = new DataGridView
             {
                 Dock = DockStyle.Fill,
+                BackgroundColor = Color.White,
+                BorderStyle = BorderStyle.Fixed3D,
+                CellBorderStyle = DataGridViewCellBorderStyle.Single,
+                GridColor = Color.FromArgb(230, 230, 230),
+
                 AutoGenerateColumns = false,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
-                ReadOnly = true,
+                AllowUserToResizeRows = false,
+                AllowUserToOrderColumns = false,
+
+                ColumnHeadersVisible = true,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing,
+                ColumnHeadersHeight = 70, // ✅ TĂNG CHIỀU CAO HEADER
+                EnableHeadersVisualStyles = false,
+
+                RowHeadersVisible = false,
+                RowTemplate = { Height = 40 },
+
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false,
-                BackgroundColor = Color.White,
-                BorderStyle = BorderStyle.None,
-                RowHeadersVisible = false,
-                EnableHeadersVisualStyles = false,
-                AllowUserToResizeRows = false,
-                RowTemplate = { Height = 40 },
-                ColumnHeadersHeight = 45,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill // Tự động điều chỉnh chiều rộng cột
+                ReadOnly = true,
+
+                ScrollBars = ScrollBars.Both,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
             };
 
+            // ✅ SỬA STYLE HEADER - CHO PHÉP WRAP TEXT
             dgvHopDong.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = Color.FromArgb(0, 102, 204),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 Alignment = DataGridViewContentAlignment.MiddleCenter,
-                Padding = new Padding(5)
+                Padding = new Padding(5),
+                WrapMode = DataGridViewTriState.True, // ✅ CHO PHÉP XUỐNG DÒNG
+                SelectionBackColor = Color.FromArgb(0, 102, 204),
+                SelectionForeColor = Color.White
             };
 
             dgvHopDong.DefaultCellStyle = new DataGridViewCellStyle
@@ -310,37 +341,43 @@ namespace GUI.Forms
                 ForeColor = Color.Black,
                 SelectionBackColor = Color.FromArgb(220, 230, 242),
                 SelectionForeColor = Color.Black,
-                Padding = new Padding(5)
+                Padding = new Padding(5),
+                WrapMode = DataGridViewTriState.False
             };
 
             dgvHopDong.AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle
             {
-                BackColor = Color.FromArgb(248, 249, 250)
+                BackColor = Color.FromArgb(248, 249, 250),
+                SelectionBackColor = Color.FromArgb(220, 230, 242),
+                SelectionForeColor = Color.Black
             };
 
-            // Columns với FillWeight để điều chỉnh tỷ lệ
+            dgvHopDong.Columns.Clear();
+
             dgvHopDong.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "MaHD",
                 HeaderText = "Mã HĐ",
                 DataPropertyName = "MaHD",
-                FillWeight = 10 // 10%
+                Width = 100,
+                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter }
             });
 
             dgvHopDong.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "KhachHang",
-                HeaderText = "Khách hàng",
+                Name = "TenKhachHang",
+                HeaderText = "Tên Khách Hàng",
                 DataPropertyName = "TenKhachHang",
-                FillWeight = 25 // 25%
+                Width = 300,
+                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleLeft }
             });
 
             dgvHopDong.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "NgayKy",
-                HeaderText = "Ngày ký",
+                HeaderText = "Ngày Ký",
                 DataPropertyName = "NgayKy",
-                FillWeight = 12, // 12%
+                Width = 120,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Format = "dd/MM/yyyy",
@@ -351,9 +388,9 @@ namespace GUI.Forms
             dgvHopDong.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "NgayKetThuc",
-                HeaderText = "Ngày kết thúc",
+                HeaderText = "Ngày Kết Thúc",
                 DataPropertyName = "NgayKetThuc",
-                FillWeight = 12, // 12%
+                Width = 120,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Format = "dd/MM/yyyy",
@@ -363,17 +400,19 @@ namespace GUI.Forms
 
             dgvHopDong.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "TanSuat",
-                HeaderText = "Tần suất",
+                Name = "TanSuatQuanTrac",
+                HeaderText = "Tần Suất",
                 DataPropertyName = "TanSuatQuanTrac",
-                FillWeight = 18 // 18%
+                Width = 200,
+                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleLeft }
             });
 
             dgvHopDong.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "TrangThai",
-                HeaderText = "Tình trạng giao hàng",
-                FillWeight = 23, // 23%
+                Name = "TrangThaiHienThi",
+                HeaderText = "Tình Trạng Giao Hàng",
+                DataPropertyName = "TrangThaiHienThi",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Alignment = DataGridViewContentAlignment.MiddleCenter,
@@ -381,10 +420,9 @@ namespace GUI.Forms
                 }
             });
 
-            dgvPanel.Controls.Add(dgvHopDong);
+            tablePanel.Controls.Add(dgvHopDong, 0, 1);
         }
 
-        // Hàm tạo thẻ thống kê (không cần x, y, width nữa)
         private Panel CreateStatCard(string title, string value, Color color)
         {
             Panel card = new Panel
@@ -394,7 +432,6 @@ namespace GUI.Forms
                 BorderStyle = BorderStyle.None
             };
 
-            // Thanh màu bên trái
             Panel colorBar = new Panel
             {
                 Width = 5,
@@ -430,7 +467,6 @@ namespace GUI.Forms
             return card;
         }
 
-        // Sự kiện resize để căn lại vị trí các thẻ thống kê
         private void CardsPanel_Resize(object sender, EventArgs e)
         {
             Panel panel = sender as Panel;
@@ -454,6 +490,7 @@ namespace GUI.Forms
             }
         }
 
+        // ✅ SỬA HÀM LOADDATA - LOAD THÔNG TIN KHÁCH HÀNG
         private void LoadData()
         {
             try
@@ -464,18 +501,48 @@ namespace GUI.Forms
                 {
                     MessageBox.Show("Chưa có dữ liệu hợp đồng!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                     danhSachHopDong = new List<DTO_HopDong>();
                     return;
+                }
+
+                // ✅ LOAD THÔNG TIN KHÁCH HÀNG CHO CÁC HỢP ĐỒNG
+                try
+                {
+                    var danhSachKH = khachHangBLL.layDanhSachKH();
+                    if (danhSachKH != null && danhSachKH.Count > 0)
+                    {
+                        foreach (var hd in danhSachHopDong)
+                        {
+                            if (!string.IsNullOrEmpty(hd.MaKH))
+                            {
+                                var khachHang = danhSachKH.FirstOrDefault(kh => kh.maKH == hd.MaKH);
+                                if (khachHang != null)
+                                {
+                                    // ✅ SỬA THEO ĐÚNG TÊN THUỘC TÍNH TRONG CLASS KhachHang
+                                    hd.TenKhachHang = khachHang.tenDoanhNghiep ?? "(Chưa rõ)";
+                                    hd.DiaChiKhachHang = khachHang.diaChi ?? "";
+                                }
+                            }
+                            
+                            // Nếu vẫn chưa có tên khách hàng, gán giá trị mặc định
+                            if (string.IsNullOrEmpty(hd.TenKhachHang))
+                            {
+                                hd.TenKhachHang = "(Chưa rõ)";
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Lỗi khi load thông tin khách hàng: {ex.Message}");
                 }
 
                 ApplyFilters();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi tải dữ liệu: {ex.Message}\n\nChi tiết: {ex.StackTrace}",
+                MessageBox.Show($"Lỗi khi tải dữ liệu: {ex.Message}",
                     "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
                 danhSachHopDong = new List<DTO_HopDong>();
             }
         }
@@ -484,7 +551,7 @@ namespace GUI.Forms
         {
             if (danhSachHopDong == null || danhSachHopDong.Count == 0)
             {
-                dgvHopDong.Rows.Clear();
+                dgvHopDong.DataSource = null;
                 return;
             }
 
@@ -504,40 +571,59 @@ namespace GUI.Forms
 
         private void DisplayHopDongList(List<DTO_HopDong> data)
         {
-            dgvHopDong.Rows.Clear();
-
-            foreach (var hd in data)
+            try
             {
-                int rowIndex = dgvHopDong.Rows.Add();
-                var row = dgvHopDong.Rows[rowIndex];
+                var displayList = new List<HopDongDisplay>();
 
-                row.Cells["MaHD"].Value = hd.MaHD;
-                row.Cells["KhachHang"].Value = hd.TenKhachHang;
-                row.Cells["NgayKy"].Value = hd.NgayKy;
-                row.Cells["NgayKetThuc"].Value = hd.NgayKetThuc;
-                row.Cells["TanSuat"].Value = hd.TanSuatQuanTrac;
-
-                string tinhTrang = DetermineTinhTrang(hd);
-                row.Cells["TrangThai"].Value = tinhTrang;
-
-                Color fgColor = Color.Black;
-
-                if (tinhTrang.Contains("Đúng hẹn"))
+                foreach (var hd in data)
                 {
-                    fgColor = Color.FromArgb(40, 167, 69);
-                }
-                else if (tinhTrang.Contains("Trễ hẹn"))
-                {
-                    fgColor = Color.FromArgb(255, 193, 7);
-                }
-                else if (tinhTrang.Contains("Chưa hoàn thành"))
-                {
-                    fgColor = Color.FromArgb(220, 53, 69);
+                    displayList.Add(new HopDongDisplay
+                    {
+                        MaHD = hd.MaHD ?? "",
+                        TenKhachHang = hd.TenKhachHang ?? "(Chưa rõ)", // ✅ ĐẢM BẢO LUÔN CÓ GIÁ TRỊ
+                        NgayKy = hd.NgayKy,
+                        NgayKetThuc = hd.NgayKetThuc,
+                        TanSuatQuanTrac = hd.TanSuatQuanTrac ?? "",
+                        TrangThaiHienThi = DetermineTinhTrang(hd)
+                    });
                 }
 
-                row.Cells["TrangThai"].Style.ForeColor = fgColor;
-                row.Cells["TrangThai"].Style.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+                dgvHopDong.DataSource = null;
+                dgvHopDong.DataSource = displayList;
+
+                // Format màu
+                foreach (DataGridViewRow row in dgvHopDong.Rows)
+                {
+                    if (row.Cells["TrangThaiHienThi"].Value != null)
+                    {
+                        string tt = row.Cells["TrangThaiHienThi"].Value.ToString();
+                        Color color = Color.Black;
+
+                        if (tt.Contains("Đúng hẹn"))
+                            color = Color.FromArgb(40, 167, 69);
+                        else if (tt.Contains("Trễ hẹn"))
+                            color = Color.FromArgb(255, 193, 7);
+                        else if (tt.Contains("Chưa hoàn thành"))
+                            color = Color.FromArgb(220, 53, 69);
+
+                        row.Cells["TrangThaiHienThi"].Style.ForeColor = color;
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi hiển thị: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private class HopDongDisplay
+        {
+            public string MaHD { get; set; }
+            public string TenKhachHang { get; set; }
+            public DateTime NgayKy { get; set; }
+            public DateTime NgayKetThuc { get; set; }
+            public string TanSuatQuanTrac { get; set; }
+            public string TrangThaiHienThi { get; set; }
         }
 
         private string DetermineTinhTrang(DTO_HopDong hd)
@@ -555,9 +641,7 @@ namespace GUI.Forms
             string trangThai = hd.TrangThai.Trim().ToLower();
 
             if (trangThai.Contains("hoàn thành") || trangThai == "tt03")
-            {
                 return "✅ Đúng hẹn";
-            }
 
             if (trangThai.Contains("hiệu lực") || trangThai == "tt01")
             {
@@ -568,9 +652,7 @@ namespace GUI.Forms
             }
 
             if (trangThai.Contains("hết hạn") || trangThai == "tt02")
-            {
                 return "⚠️ Trễ hẹn";
-            }
 
             if (now > hd.NgayKetThuc)
                 return "⚠️ Trễ hẹn";
@@ -597,10 +679,8 @@ namespace GUI.Forms
 
                     int dungHen = hopDongTrongQuy.Count(hd =>
                         DetermineTinhTrang(hd).Contains("Đúng hẹn"));
-
                     int treHen = hopDongTrongQuy.Count(hd =>
                         DetermineTinhTrang(hd).Contains("Trễ hẹn"));
-
                     int chuaHT = hopDongTrongQuy.Count(hd =>
                         DetermineTinhTrang(hd).Contains("Chưa hoàn thành"));
 
@@ -619,10 +699,8 @@ namespace GUI.Forms
 
                     int dungHen = hopDongTrongKy.Count(hd =>
                         DetermineTinhTrang(hd).Contains("Đúng hẹn"));
-
                     int treHen = hopDongTrongKy.Count(hd =>
                         DetermineTinhTrang(hd).Contains("Trễ hẹn"));
-
                     int chuaHT = hopDongTrongKy.Count(hd =>
                         DetermineTinhTrang(hd).Contains("Chưa hoàn thành"));
 

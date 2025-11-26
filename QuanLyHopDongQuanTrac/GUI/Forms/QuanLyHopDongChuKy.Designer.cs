@@ -36,8 +36,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Name = "QuanLyHopDongChuKy";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
-            Load += this.QuanLyHopDongChuKy_Load;
+            Load += QuanLyHopDongChuKy_Load;
             ResumeLayout(false);
         }
 

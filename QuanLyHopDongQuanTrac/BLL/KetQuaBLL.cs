@@ -29,6 +29,36 @@ namespace BLL
         }
 
         /// <summary>
+        /// Lấy danh sách kết quả có phân trang
+        /// </summary>
+        public List<DTO_KetQuaHeader> layDanhSachKetQua_PhanTrang(int pageNumber, int pageSize)
+        {
+            try
+            {
+                return db.layDanhSachKetQua_PhanTrang(pageNumber, pageSize);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy danh sách kết quả phân trang: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Đếm tổng số kết quả
+        /// </summary>
+        public int demTongSoKetQua()
+        {
+            try
+            {
+                return db.demTongSoKetQua();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi đếm số kết quả: " + ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Lấy chi tiết kết quả theo mã KQ
         /// </summary>
         public DTO_KetQuaFull LayChiTietKetQuaTheoMaKQ(string maKQ)

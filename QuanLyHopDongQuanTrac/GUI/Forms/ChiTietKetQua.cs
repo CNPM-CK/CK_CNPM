@@ -53,6 +53,7 @@ namespace GUI.Forms
         {
             try
             {
+                // Form có kích thước cố định tương đối, không full màn hình
                 this.WindowState = FormWindowState.Normal;
                 this.StartPosition = FormStartPosition.CenterScreen;
                 this.FormBorderStyle = FormBorderStyle.Sizable;
@@ -355,6 +356,7 @@ namespace GUI.Forms
             }
         }
 
+        // ================== DGV THÔNG SỐ (ĐÃ CÂN LẠI TỶ LỆ CỘT, KHÔNG DÙNG FILL) ==================
         private DataGridView TaoDGVThongSo(int groupIndex, DTO_KetQuaNenMau nenMau, int grpWidth)
         {
             DataGridView dgv = new DataGridView
@@ -416,15 +418,120 @@ namespace GUI.Forms
 
             int containerWidth = grpWidth - 50;
 
-            // Columns
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "STT", HeaderText = "STT", Width = (int)(containerWidth * 0.04), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, ForeColor = System.Drawing.Color.Black } });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "TenTS", HeaderText = "Thông Số Phân Tích", DataPropertyName = "TenTS", Width = (int)(containerWidth * 0.18), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleLeft, ForeColor = System.Drawing.Color.Black } });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "DonVi", HeaderText = "Đơn Vị", DataPropertyName = "DonVi", Width = (int)(containerWidth * 0.07), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, ForeColor = System.Drawing.Color.Black } });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "PhuongPhapPhanTich", HeaderText = "Phương Pháp Phân Tích", DataPropertyName = "PhuongPhapPhanTich", Width = (int)(containerWidth * 0.21), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleLeft, ForeColor = System.Drawing.Color.Black } });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "KetQua", HeaderText = "Kết Quả Đo", DataPropertyName = "KetQua", Width = (int)(containerWidth * 0.11), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, Font = new Font("Segoe UI", 9.5F, FontStyle.Bold), ForeColor = System.Drawing.Color.Black, Format = "N2" } });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "GioiHanPhatHien", HeaderText = "Giới Hạn Phát Hiện", DataPropertyName = "GioiHanPhatHien", Width = (int)(containerWidth * 0.14), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, ForeColor = System.Drawing.Color.Black } });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "QCVN", HeaderText = "QCVN 40:2011/BTNMT Cột B", DataPropertyName = "QCVN", Width = (int)(containerWidth * 0.12), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, ForeColor = System.Drawing.Color.Black } });
-            dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "TinhTrang", HeaderText = "Đánh Giá", DataPropertyName = "TinhTrang", Width = (int)(containerWidth * 0.13), DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter, ForeColor = System.Drawing.Color.Black } });
+            // Tỷ lệ chiều rộng các cột (tổng ~ 1.0)
+            // STT            : 6%
+            // Thông số       : 24%
+            // Đơn vị         : 8%
+            // Phương pháp    : 26%
+            // Kết quả        : 14%
+            // Giới hạn P.H   : 12%
+            // QCVN           : 10%  (không quá rộng, vẫn lấp phần trống)
+            int sttWidth = (int)(containerWidth * 0.06);
+            int tenTsWidth = (int)(containerWidth * 0.24);
+            int donViWidth = (int)(containerWidth * 0.08);
+            int ppWidth = (int)(containerWidth * 0.26);
+            int kqWidth = (int)(containerWidth * 0.14);
+            int ghphWidth = (int)(containerWidth * 0.12);
+            int qcvnWidth = (int)(containerWidth * 0.10);
+
+            // ==== Cột STT ====
+            dgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "STT",
+                HeaderText = "STT",
+                Width = sttWidth,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    ForeColor = System.Drawing.Color.Black
+                }
+            });
+
+            // ==== Cột Thông số ====
+            dgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "TenTS",
+                HeaderText = "Thông Số Phân Tích",
+                DataPropertyName = "TenTS",
+                Width = tenTsWidth,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleLeft,
+                    ForeColor = System.Drawing.Color.Black
+                }
+            });
+
+            // ==== Cột Đơn vị ====
+            dgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "DonVi",
+                HeaderText = "Đơn Vị",
+                DataPropertyName = "DonVi",
+                Width = donViWidth,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    ForeColor = System.Drawing.Color.Black
+                }
+            });
+
+            // ==== Cột Phương pháp phân tích ====
+            dgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "PhuongPhapPhanTich",
+                HeaderText = "Phương Pháp Phân Tích",
+                DataPropertyName = "PhuongPhapPhanTich",
+                Width = ppWidth,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleLeft,
+                    ForeColor = System.Drawing.Color.Black
+                }
+            });
+
+            // ==== Cột Kết quả ====
+            dgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "KetQua",
+                HeaderText = "Kết Quả Đo",
+                DataPropertyName = "KetQua",
+                Width = kqWidth,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                    ForeColor = System.Drawing.Color.Black,
+                    Format = "N2"
+                }
+            });
+
+            // ==== Cột Giới hạn phát hiện ====
+            dgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "GioiHanPhatHien",
+                HeaderText = "Giới Hạn Phát Hiện",
+                DataPropertyName = "GioiHanPhatHien",
+                Width = ghphWidth,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    ForeColor = System.Drawing.Color.Black
+                }
+            });
+
+            // ==== Cột QCVN (10% rộng, KHÔNG dùng Fill để tránh kéo quá to) ====
+            dgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "QCVN",
+                HeaderText = "QCVN 40:2011/BTNMT Cột B",
+                DataPropertyName = "QCVN",
+                Width = qcvnWidth,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    ForeColor = System.Drawing.Color.Black
+                }
+            });
 
             int stt = 0;
             if (nenMau.DanhSachThongSo != null)
@@ -442,7 +549,6 @@ namespace GUI.Forms
                     row.Cells["KetQua"].Value = thongSo.KetQua;
                     row.Cells["GioiHanPhatHien"].Value = thongSo.GioiHanPhatHien ?? "";
                     row.Cells["QCVN"].Value = thongSo.QCVN ?? "Không quy định";
-                    row.Cells["TinhTrang"].Value = thongSo.TinhTrang ?? "";
 
                     foreach (DataGridViewCell cell in row.Cells)
                     {
@@ -455,10 +561,45 @@ namespace GUI.Forms
             return dgv;
         }
 
+        // ================== CĂN LẠI CỘT KHI FORM / GROUPBOX RESIZE ==================
         private void ResizeDataGridViewColumns(DataGridView dgv)
         {
-            if (dgv == null || dgv.Columns.Count == 0) return;
+            if (dgv == null || dgv.Columns.Count == 0 || dgv.Parent == null) return;
+
+            // Cập nhật lại width tổng của DGV
             dgv.Width = dgv.Parent.Width - 10;
+            int containerWidth = dgv.Width;
+
+            // Nếu thiếu các cột mong đợi thì bỏ qua
+            if (!dgv.Columns.Contains("STT") ||
+                !dgv.Columns.Contains("TenTS") ||
+                !dgv.Columns.Contains("DonVi") ||
+                !dgv.Columns.Contains("PhuongPhapPhanTich") ||
+                !dgv.Columns.Contains("KetQua") ||
+                !dgv.Columns.Contains("GioiHanPhatHien") ||
+                !dgv.Columns.Contains("QCVN"))
+            {
+                return;
+            }
+
+            // Tỷ lệ giống như trong TaoDGVThongSo
+            int sttWidth = (int)(containerWidth * 0.06);
+            int tenTsWidth = (int)(containerWidth * 0.24);
+            int donViWidth = (int)(containerWidth * 0.08);
+            int ppWidth = (int)(containerWidth * 0.26);
+            int kqWidth = (int)(containerWidth * 0.14);
+            int ghphWidth = (int)(containerWidth * 0.12);
+            int qcvnWidth = (int)(containerWidth * 0.10);
+
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+
+            dgv.Columns["STT"].Width = sttWidth;
+            dgv.Columns["TenTS"].Width = tenTsWidth;
+            dgv.Columns["DonVi"].Width = donViWidth;
+            dgv.Columns["PhuongPhapPhanTich"].Width = ppWidth;
+            dgv.Columns["KetQua"].Width = kqWidth;
+            dgv.Columns["GioiHanPhatHien"].Width = ghphWidth;
+            dgv.Columns["QCVN"].Width = qcvnWidth;
         }
 
         private void RepositionButtons()
@@ -1090,16 +1231,13 @@ namespace GUI.Forms
             sb.AppendLine("</head>");
             sb.AppendLine("<body>");
 
-            // ========== WATERMARK IMAGE - POSITION FIXED, OPACITY 15% ==========
             if (!string.IsNullOrEmpty(logoDataUri))
             {
                 sb.AppendLine($"<img class='watermark' src='{logoDataUri}' alt=''/>");
             }
 
-            // ========== NỘI DUNG CHÍNH ==========
             sb.AppendLine("<div class='content-wrapper'>");
 
-            // ========== HEADER VỚI LOGO ==========
             sb.AppendLine("<div class='header'>");
             if (!string.IsNullOrEmpty(logoDataUri))
             {
@@ -1110,12 +1248,10 @@ namespace GUI.Forms
             sb.AppendLine("<div class='address'>ĐT: 1900 1234 - Email: ecos@gmail.com</div>");
             sb.AppendLine("</div>");
 
-            // ========== TITLE ==========
             sb.AppendLine("<h1>PHIẾU KẾT QUẢ THỬ NGHIỆM</h1>");
             sb.AppendLine($"<p style='text-align:center; font-style:italic;'>{Escape(ketQuaFull.Header.DotQuanTrac ?? "Kết quả quan trắc")}</p>");
             sb.AppendLine($"<p style='text-align:center;'>Số: {Escape(ketQuaFull.Header.MaKQ)}/KQ-{DateTime.Now:yyyy}</p>");
 
-            // ========== THÔNG TIN CHUNG ==========
             sb.AppendLine("<h2>I. THÔNG TIN CHUNG</h2>");
             sb.AppendLine("<table class='info-table'>");
             sb.AppendLine($"<tr><td>Tên khách hàng</td><td>: {Escape(ketQuaFull.Header.TenKhachHang ?? "[Chưa xác định]")}</td></tr>");
@@ -1128,7 +1264,6 @@ namespace GUI.Forms
                 sb.AppendLine($"<tr><td>Ghi chú</td><td>: {Escape(ketQuaFull.Header.GhiChu)}</td></tr>");
             sb.AppendLine("</table>");
 
-            // ========== KẾT QUẢ ==========
             sb.AppendLine("<h2>II. KẾT QUẢ</h2>");
 
             int idx = 0;
@@ -1141,34 +1276,28 @@ namespace GUI.Forms
                 if (nenMau.DanhSachThongSo != null && nenMau.DanhSachThongSo.Count > 0)
                 {
                     sb.AppendLine("<table>");
-                    sb.AppendLine("<tr><th>TT</th><th>Thông số</th><th>Đơn vị</th><th>Phương pháp</th><th>Kết quả</th><th>QCVN</th><th>Đánh giá</th></tr>");
+                    sb.AppendLine("<tr><th>TT</th><th>Thông số</th><th>Đơn vị</th><th>Phương pháp</th><th>Kết quả</th><th>QCVN</th></tr>");
 
                     int stt = 0;
                     foreach (var ts in nenMau.DanhSachThongSo)
                     {
                         stt++;
-                        string tinhTrang = Escape(ts.TinhTrang ?? "");
-                        if (tinhTrang.Contains("Vượt")) tinhTrang = $"<b>{tinhTrang}</b>";
 
                         sb.AppendLine("<tr>");
                         sb.AppendLine($"<td style='text-align:center;'>{stt}</td>");
                         sb.AppendLine($"<td>{Escape(ts.TenTS ?? "")}</td>");
                         sb.AppendLine($"<td style='text-align:center;'>{Escape(ts.DonVi ?? "-")}</td>");
                         sb.AppendLine($"<td>{Escape(ts.PhuongPhapPhanTich ?? "")}</td>");
-                        // ========== SỬA CỘT KẾT QUẢ: CĂN GIỮA THAY VÌ CĂN PHẢI ==========
                         sb.AppendLine($"<td class='result-cell'>{ts.KetQua:N2}</td>");
                         sb.AppendLine($"<td style='text-align:center;'>{Escape(ts.QCVN ?? "KQĐ")}</td>");
-                        sb.AppendLine($"<td style='text-align:center;'>{tinhTrang}</td>");
                         sb.AppendLine("</tr>");
                     }
                     sb.AppendLine("</table>");
                 }
             }
 
-            // ========== GHI CHÚ ==========
             sb.AppendLine("<p style='font-size:9pt; margin-top:15px;'><i>* Phương pháp phân tích: theo TCVN, SMEWW. Các giá trị in đậm là vượt quy chuẩn.</i></p>");
 
-            // ========== CHỮ KÝ ==========
             sb.AppendLine("<div class='signature'>");
             sb.AppendLine("<div class='sig-row'>");
             sb.AppendLine($"<div class='sig-box'><b>NGƯỜI LẬP PHIẾU</b><br/><i>(Ký, họ tên)</i><br/><br/><br/>{Escape(ketQuaFull.Header.TenNhanVien ?? "")}</div>");
@@ -1176,18 +1305,15 @@ namespace GUI.Forms
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
 
-            // ========== FOOTER ==========
             sb.AppendLine($"<div class='footer'>Ngày in: {DateTime.Now:dd/MM/yyyy HH:mm:ss}</div>");
 
-            sb.AppendLine("</div>"); // Đóng content-wrapper
-
+            sb.AppendLine("</div>");
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
 
             return sb.ToString();
         }
 
-        // Helper method để escape HTML (giữ nguyên)
         private string Escape(string text)
         {
             if (string.IsNullOrEmpty(text)) return "";
