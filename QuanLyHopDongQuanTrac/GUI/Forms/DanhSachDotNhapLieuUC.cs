@@ -24,6 +24,8 @@ namespace GUI.Forms
         private bool _ready = false;
         private readonly bool _isPhongTN_HT = SessionStore.Current.MaPhong == "P003" || SessionStore.Current.MaPhong == "P004";
         private string maDotHienTai = null;
+        private bool _isOpeningEditForm = false;
+
         #region Fields
         // Search box styling
         private Color borderColor = Color.Black;
@@ -205,8 +207,42 @@ namespace GUI.Forms
 
             dgvDsdotquantrac.CellPainting += DgvDsdotquantrac_CellPainting;
             dgvDsdotquantrac.CellClick += DgvDsdotquantrac_CellClick;
+            dgvDsdotquantrac.Paint += DgvDsdotquantrac_Paint;
             LoadKeHoachPage();
         }
+
+        private void DgvDsdotquantrac_Paint(object sender, PaintEventArgs e)
+        {
+            if (Properties.Resources.greenlogo == null) return;
+
+            DataGridView dgv = (DataGridView)sender;
+            Image logo = Properties.Resources.greenlogo;
+
+            int dgvWidth = dgv.ClientSize.Width;
+            int dgvHeight = dgv.ClientSize.Height;
+
+            // Căn giữa logo trong DataGridView
+            int x = (dgvWidth - logo.Width) / 2;
+            int y = (dgvHeight - logo.Height) / 2;
+
+            // Làm mờ logo (chìm phía sau)
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.Matrix33 = 0.10f;   // độ trong suốt (0.1 = khá mờ, 0.2 đậm hơn)
+
+            using (ImageAttributes attributes = new ImageAttributes())
+            {
+                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+                e.Graphics.DrawImage(
+                    logo,
+                    new Rectangle(x, y, logo.Width, logo.Height),
+                    0, 0, logo.Width, logo.Height,
+                    GraphicsUnit.Pixel,
+                    attributes
+                );
+            }
+        }
+
 
         private void InitializeCustomSearchBox()
         {
@@ -237,35 +273,10 @@ namespace GUI.Forms
 
         private void InitializeWatermark()
         {
-            if (Properties.Resources.greenlogo == null || dgvDsdotquantrac == null) return;
+            if (Properties.Resources.greenlogo == null) return;
 
-            try
-            {
-                Image watermark = Properties.Resources.greenlogo;
-                Bitmap bmp = new Bitmap(watermark.Width, watermark.Height);
-
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    ColorMatrix matrix = new ColorMatrix();
-                    matrix.Matrix33 = 0.15f;
-                    ImageAttributes attributes = new ImageAttributes();
-                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-
-                    g.DrawImage(watermark,
-                        new Rectangle(0, 0, watermark.Width, watermark.Height),
-                        0, 0, watermark.Width, watermark.Height,
-                        GraphicsUnit.Pixel,
-                        attributes);
-                }
-
-                dgvDsdotquantrac.BackgroundImage = bmp;
-                dgvDsdotquantrac.BackgroundImageLayout = ImageLayout.Center;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Watermark error: {ex.Message}");
-            }
         }
+
         #endregion
 
         #region Layout & Resize
@@ -409,29 +420,49 @@ namespace GUI.Forms
         {
             Debug.WriteLine($"CellClick fired: {DateTime.Now:HH:mm:ss.fff}");
 
+            // ✅ Nếu đang mở form rồi (double click rất nhanh) thì bỏ qua
+            if (_isOpeningEditForm)
+                return;
+
+            // ✅ Nếu form edit đang mở sẵn, chỉ bring to front, KHÔNG báo lỗi
             if (currentOpenForm != null && !currentOpenForm.IsDisposed)
             {
                 currentOpenForm.BringToFront();
                 currentOpenForm.Focus();
-                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
-                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             string maDot = row.Cells["maDot"].Value?.ToString();
+            if (string.IsNullOrEmpty(maDot)) return;
+
             DTO_DotQuanTrac dot = new DTO_DotQuanTrac
             {
                 MaDot = maDot,
             };
 
-            DanhSachThongSoNhapLieuForm frmNhapLieu = new DanhSachThongSoNhapLieuForm(dot);
-            currentOpenForm = frmNhapLieu;
-            CenterFormOnParent(frmNhapLieu);
-            frmNhapLieu.FormClosed += (s, ev) => { currentOpenForm = null; };
-            //frmNhapLieu.SuccesfullyUpdated += (s, ev) => RefreshData();
-            frmNhapLieu.Show(this.FindForm());
+            var frmNhapLieu = new DanhSachThongSoNhapLieuForm(dot);
 
+            // ✅ Đánh dấu đang mở form, chặn double click
+            _isOpeningEditForm = true;
+            currentOpenForm = frmNhapLieu;
+
+            CenterFormOnParent(frmNhapLieu);
+
+            frmNhapLieu.FormClosed += (s, ev) =>
+            {
+                currentOpenForm = null;
+                _isOpeningEditForm = false;
+
+                // 🔄 Khi đóng form thì load lại danh sách
+                currentPage = 1;
+                totalRecords = 0;
+                LoadKeHoachPage();
+            };
+
+            frmNhapLieu.Show(this.FindForm());
         }
+
+
 
         //private void HandleDelete(DataGridViewRow row)
         //{

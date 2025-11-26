@@ -45,7 +45,6 @@ namespace GUI.Forms
         private Form currentOpenForm = null;
 
         private Rectangle editRect;
-        private Rectangle deleteRect;
 
         // Phân trang
         int currentPage = 1;
@@ -145,14 +144,53 @@ namespace GUI.Forms
 
             dgvdanhsachHopDong.Columns.AddRange(new DataGridViewColumn[]
             {
-                new DataGridViewTextBoxColumn { DataPropertyName = "maHD", HeaderText = "Mã hợp đồng", Name = "maHD" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "maKH", HeaderText = "Mã khách hàng", Name = "maKH" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "ngayKy", HeaderText = "Ngày ký", Name = "ngayKy" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "ngayKetThucHD", HeaderText = "Ngày kết thúc hợp đồng", Name = "ngayKetThucHD" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "trangThai", HeaderText = "Trạng thái", Name = "trangThai" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "tanSuatQuanTrac", HeaderText = "Tần suất quan trắc", Name = "tanSuatQuanTrac" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "soHD", HeaderText = "Số hợp đồng", Name = "soHD" }
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "maHD",
+                    HeaderText = "Mã hợp đồng",
+                    Name = "maHD"
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "maKH",
+                    HeaderText = "Mã khách hàng",
+                    Name = "maKH"
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "ngayKy",
+                    HeaderText = "Ngày ký",
+                    Name = "ngayKy",
+                    DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "ngayKetThucHD",
+                    HeaderText = "Ngày kết thúc hợp đồng",
+                    Name = "ngayKetThucHD",
+                    DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "trangThai",
+                    HeaderText = "Trạng thái",
+                    Name = "trangThai"
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "tanSuatQuanTrac",
+                    HeaderText = "Tần suất quan trắc",
+                    Name = "tanSuatQuanTrac"
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "soHD",
+                    HeaderText = "Số hợp đồng",
+                    Name = "soHD"
+                }
             });
+
+
 
             if (_isPhongKinhDoanh)
             {
@@ -195,21 +233,19 @@ namespace GUI.Forms
 
             e.PaintBackground(e.ClipBounds, true);
 
-            int iconWidth = 24, iconHeight = 24, spacing = 10;
-            int totalWidth = (iconWidth * 2) + spacing;
-            int startX = e.CellBounds.Left + (e.CellBounds.Width - totalWidth) / 2;
+            int iconWidth = 24, iconHeight = 24;
+
+            // Căn giữa 1 icon trong ô
+            int startX = e.CellBounds.Left + (e.CellBounds.Width - iconWidth) / 2;
             int startY = e.CellBounds.Top + (e.CellBounds.Height - iconHeight) / 2;
 
             editRect = new Rectangle(startX, startY, iconWidth, iconHeight);
             if (Properties.Resources.edit != null)
                 e.Graphics.DrawImage(Properties.Resources.edit, editRect);
 
-            deleteRect = new Rectangle(startX + iconWidth + spacing, startY, iconWidth, iconHeight);
-            if (Properties.Resources.trash_can != null)
-                e.Graphics.DrawImage(Properties.Resources.trash_can, deleteRect);
-
             e.Handled = true;
         }
+
 
         private void dgvdanhsachHopDong_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -222,9 +258,13 @@ namespace GUI.Forms
 
             if (row?.Cells["maHD"]?.Value == null) return;
 
-            if (editRect.Contains(clickPoint)) HandleEdit(row);
-            else if (deleteRect.Contains(clickPoint)) HandleDelete(row);
+            // Chỉ còn xử lý edit
+            if (editRect.Contains(clickPoint))
+            {
+                HandleEdit(row);
+            }
         }
+
 
         private void HandleEdit(DataGridViewRow row)
         {
@@ -256,51 +296,50 @@ namespace GUI.Forms
             frmSua.Show(this);
         }
 
-        private void HandleDelete(DataGridViewRow row)
-        {
-            if (currentOpenForm != null && !currentOpenForm.IsDisposed)
-            {
-                currentOpenForm.BringToFront();
-                currentOpenForm.Focus();
-                MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
-                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+        //private void HandleDelete(DataGridViewRow row)
+        //{
+        //    if (currentOpenForm != null && !currentOpenForm.IsDisposed)
+        //    {
+        //        currentOpenForm.BringToFront();
+        //        currentOpenForm.Focus();
+        //        MessageBox.Show("Vui lòng hoàn thành thao tác hiện tại trước khi thực hiện thao tác mới!",
+        //            "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        return;
+        //    }
 
-            string maHD = row.Cells["maHD"].Value?.ToString();
+        //    string maHD = row.Cells["maHD"].Value?.ToString();
 
-            if (string.IsNullOrEmpty(maHD)) return;
+        //    if (string.IsNullOrEmpty(maHD)) return;
 
-            DialogResult result = MessageBox.Show(
-                $"Bạn có chắc chắn muốn xóa hợp đồng (Mã: {maHD}) không?",
-                "Xác nhận xóa",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question
-            );
+        //    DialogResult result = MessageBox.Show(
+        //        $"Bạn có chắc chắn muốn xóa hợp đồng (Mã: {maHD}) không?",
+        //        "Xác nhận xóa",
+        //        MessageBoxButtons.YesNo,
+        //        MessageBoxIcon.Question
+        //    );
 
-            if (result == DialogResult.Yes)
-            {
-                try
-                {
-                    HopDongBLL hdBLL = new HopDongBLL();
-                    // Thêm method xóa trong HopDongBLL nếu chưa có
-                    // hdBLL.xoaHopDong(maHD);
+        //    if (result == DialogResult.Yes)
+        //    {
+        //        try
+        //        {
+        //            HopDongBLL hdBLL = new HopDongBLL();
+        //            hdBLL.XoaHopDong(maHD);
 
-                    MessageBox.Show("Đã xóa hợp đồng thành công!", "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            MessageBox.Show("Đã xóa hợp đồng thành công!", "Thông báo",
+        //                MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    this.BeginInvoke(new Action(() =>
-                    {
-                        lamMoiDanhSachKhachHang();
-                    }));
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Có lỗi xảy ra khi xóa hợp đồng: {ex.Message}",
-                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
+        //            this.BeginInvoke(new Action(() =>
+        //            {
+        //                lamMoiDanhSachKhachHang();
+        //            }));
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show($"Có lỗi xảy ra khi xóa hợp đồng: {ex.Message}",
+        //                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        }
+        //    }
+        //}
 
         private void CenterFormOnParent(Form childForm)
         {

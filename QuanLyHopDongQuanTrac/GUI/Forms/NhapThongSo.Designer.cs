@@ -112,9 +112,10 @@
             // 
             // numericUpDown1
             // 
+            numericUpDown1.BorderStyle = BorderStyle.None;
             numericUpDown1.Location = new Point(7, 10);
             numericUpDown1.Name = "numericUpDown1";
-            numericUpDown1.Size = new Size(277, 27);
+            numericUpDown1.Size = new Size(277, 23);
             numericUpDown1.TabIndex = 32;
             // 
             // panel6

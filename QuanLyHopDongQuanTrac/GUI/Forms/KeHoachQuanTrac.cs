@@ -373,15 +373,13 @@ namespace GUI.Forms
                 ChiTietNenMau frmChiTiet = new ChiTietNenMau();
                 frmChiTiet.StartPosition = FormStartPosition.CenterParent;
 
-                // ✅ Set thông tin cơ bản - SỬA LẠI
-                frmChiTiet.MaDN = uc.MaDN;  // ✅ ĐÚNG - Dùng MaDN từ UserControl
+                frmChiTiet.MaDN = uc.MaDN; 
                 frmChiTiet.TenNenMauDaChon = uc.TenNenMau;
                 frmChiTiet.MaNen = uc.MaNen;
                 frmChiTiet.chinhSua = true;
 
-                // ✅ Set dữ liệu trước khi show form
                 frmChiTiet.SetDataForEdit(
-                    tenViTri: uc.TenViTri ?? "",   // ✅ Thêm null-check
+                    tenViTri: uc.TenViTri ?? "",  
                     toaDo: uc.ToaDo ?? "",
                     ghiChu: uc.GhiChu ?? "",
                     danhSach: uc.GetDanhSachThongSo()
@@ -389,9 +387,8 @@ namespace GUI.Forms
 
                 if (frmChiTiet.ShowDialog(this) == DialogResult.OK)
                 {
-                    // ✅ Reload lại UserControl - THÊM PARAMETER MaDN
                     uc.taiNenMau(
-                        maDN: uc.MaDN,              // ✅ THÊM PARAMETER NÀY
+                        maDN: uc.MaDN,            
                         maNen: uc.MaNen,
                         tenNenMau: frmChiTiet.TenNenMauDaChon,
                         moTaNen: frmChiTiet.MoTaNen,

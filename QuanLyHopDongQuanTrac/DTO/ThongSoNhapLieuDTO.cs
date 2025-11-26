@@ -17,5 +17,6 @@ namespace DTO
         public string GiaTriToiDa { get; set; }
         public string PhuongPhap { get; set; }
         public string GiaTriDoDuoc { get; set; }
+        public DateTime NgayDo { get; set; }
     }
 }

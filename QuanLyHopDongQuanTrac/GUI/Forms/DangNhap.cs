@@ -125,7 +125,6 @@ namespace GUI.Forms
                         MessageBoxIcon.Error);
                     return;
                 }
-
                 if (!nhanDienKhuonMatBLL.KiemTraKhuonMatDaTonTai(tenTaiKhoan))
                 {
                     MessageBox.Show(
@@ -139,11 +138,35 @@ namespace GUI.Forms
 
                 using (NhanDienKhuonMat faceLoginForm = new NhanDienKhuonMat(tenTaiKhoan))
                 {
-                    DialogResult result = faceLoginForm.ShowDialog();
+                    DialogResult dlg = faceLoginForm.ShowDialog();
 
-                    if (result == DialogResult.OK && faceLoginForm.NhanDienThanhCong)
+                    if (dlg == DialogResult.OK && faceLoginForm.NhanDienThanhCong)
                     {
-                        DieuHuongTheoVaiTro(account);
+                        SessionStore.Current.SignIn(
+                            account.tenTK,
+                            account.vaiTro
+                        );
+                        Debug.WriteLine(account.vaiTro);
+                        if (account.vaiTro != 1 && account.vaiTro != 2)
+                        {
+                            var nvBLL = new NhanVienBLL();
+                            string maPhong = nvBLL.layPhongBanTheoTaiKhoan(account.tenTK);
+                            if (string.IsNullOrEmpty(maPhong))
+                            {
+                                MessageBox.Show(
+                                    "Không tìm thấy phòng ban cho nhân viên này!",
+                                    "Lỗi dữ liệu",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
+                                return;
+                            }
+                            SessionStore.Current.MaPhong = maPhong;
+                        }
+
+                        TrangChu trangChu = new TrangChu();
+                        trangChu.FormClosed += (s, _) => this.Close();
+                        trangChu.Show();
+                        this.Hide();
                     }
                 }
             }

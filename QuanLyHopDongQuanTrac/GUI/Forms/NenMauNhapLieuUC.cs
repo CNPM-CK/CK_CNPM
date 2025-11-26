@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace GUI.Forms
 {
@@ -21,6 +22,7 @@ namespace GUI.Forms
         private readonly DotQuanTracNhapLieuBLL _bll = new DotQuanTracNhapLieuBLL();
         private readonly BindingSource _bs = new BindingSource();
         private Form currentOpenForm = null;
+        public event EventHandler? DataChanged;
 
         public string MaDN { get; private set; }
 
@@ -246,6 +248,13 @@ namespace GUI.Forms
                 Name = "GiaTriDoDuoc"
             });
 
+            dgvThongso.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "NgayDo",
+                HeaderText = "NGÀY ĐO",
+                Name = "NgayDO"
+            });
+
             DataGridViewImageColumn thaoTacCol = new DataGridViewImageColumn
             {
                 Name = "ThaoTac",
@@ -272,11 +281,13 @@ namespace GUI.Forms
             {
                 string? maPhong = SessionStore.Current.MaPhong;
                 if (string.IsNullOrEmpty(maPhong))
-                    maPhong = "P003"; // tạm
-
+                {
+                    MessageBox.Show("Không tìm thấy mã phòng trong phiên đăng nhập!",
+                        "Lỗi session", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 var lst = _bll.LayDanhSachThongSoTheoDotNenVaPhong(this.MaDN, maPhong)
                           ?? new List<ThongSoNhapLieuDTO>();
-
                 _bs.DataSource = lst;
                 dgvThongso.AutoGenerateColumns = false;
                 dgvThongso.DataSource = _bs; 
@@ -356,19 +367,31 @@ namespace GUI.Forms
             if (e.ColumnIndex != dgvThongso.Columns["ThaoTac"].Index) return;
 
             var item = dgvThongso.Rows[e.RowIndex].DataBoundItem as ThongSoNhapLieuDTO;
-            if (item == null) return;
 
+            if (item == null) return;
             HandleEdit(item);
         }
 
         private void HandleEdit(ThongSoNhapLieuDTO item)
         {
-            using (var frm = new NhapThongSo(item.MaDNTS))
+            
+            if (item.GiaTriDoDuoc == "")
             {
-                CenterFormOnParent(frm);
-                frm.ShowDialog(this.FindForm());
+                item.GiaTriDoDuoc = "0";
             }
-
+            if (item.NgayDo == DateTime.MinValue)
+            {
+                item.NgayDo = DateTime.Now;
+            }
+            using (var frm = new NhapThongSo(item))
+            {
+                if (frm.ShowDialog(this.FindForm()) == DialogResult.OK) // Giả sử NhapThongSo trả về DialogResult.OK khi lưu thành công
+                {
+                    LoadNenMau(); // Load lại dữ liệu cho DataGridView của UC con
+                    DataChanged?.Invoke(this, EventArgs.Empty); // Kích hoạt sự kiện thông báo cho Form cha
+                }
+            }
+            LoadNenMau();
         }
         private void CenterFormOnParent(Form childForm)
         {

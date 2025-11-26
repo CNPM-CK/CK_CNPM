@@ -207,6 +207,30 @@ namespace GUI.Forms
                 btnDanhSachThongSo.TextImageRelation = TextImageRelation.ImageBeforeText;
                 btnDanhSachThongSo.Padding = new Padding(5, 0, 0, 0);
             }
+            if (btnDanhSachNhapLieu.Image != null)
+            {
+                btnDanhSachNhapLieu.Image = new Bitmap(btnDanhSachNhapLieu.Image, new Size(30, 30));
+                btnDanhSachNhapLieu.ImageAlign = ContentAlignment.MiddleLeft;
+                btnDanhSachNhapLieu.TextAlign = ContentAlignment.MiddleLeft;
+                btnDanhSachNhapLieu.TextImageRelation = TextImageRelation.ImageBeforeText;
+                btnDanhSachNhapLieu.Padding = new Padding(5, 0, 0, 0);
+            }
+            if (btnDanhSachKetQua.Image != null)
+            {
+                btnDanhSachKetQua.Image = new Bitmap(btnDanhSachKetQua.Image, new Size(30, 30));
+                btnDanhSachKetQua.ImageAlign = ContentAlignment.MiddleLeft;
+                btnDanhSachKetQua.TextAlign = ContentAlignment.MiddleLeft;
+                btnDanhSachKetQua.TextImageRelation = TextImageRelation.ImageBeforeText;
+                btnDanhSachKetQua.Padding = new Padding(5, 0, 0, 0);
+            }
+            if (button1.Image != null)
+            {
+                button1.Image = new Bitmap(button1.Image, new Size(30, 30));
+                button1.ImageAlign = ContentAlignment.MiddleLeft;
+                button1.TextAlign = ContentAlignment.MiddleLeft;
+                button1.TextImageRelation = TextImageRelation.ImageBeforeText;
+                button1.Padding = new Padding(5, 0, 0, 0);
+            }
         }
         #endregion
 
@@ -291,7 +315,8 @@ namespace GUI.Forms
         }
 
         private void btnDanhSachKetQua_Click(object sender, EventArgs e)
-        {   SetActiveButton(btnDanhSachKetQua);
+        {
+            SetActiveButton(btnDanhSachKetQua);
             panel5.Controls.Clear();
             DSKQUC DSDNLuc = new DSKQUC();
             DSDNLuc.Dock = DockStyle.Fill;
@@ -539,6 +564,16 @@ namespace GUI.Forms
                 notificationTimer.Dispose();
             }
             base.OnFormClosing(e);
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            SetActiveButton(button1);
+            panel5.Controls.Clear();
+            AI DSDNLuc = new AI();
+            DSDNLuc.Dock = DockStyle.Fill;
+            panel5.Controls.Add(DSDNLuc);
+            DSDNLuc.BringToFront();
         }
     }
 }

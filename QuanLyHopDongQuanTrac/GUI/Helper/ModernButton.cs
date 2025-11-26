@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace GUI.Helper
 {
     using System;
+    using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
@@ -78,26 +79,83 @@ namespace GUI.Helper
             Invalidate();
         }
 
+        [Browsable(true)]
+        [Category("Appearance")]
+        public Image ButtonImage { get; set; }
+
+        [Browsable(true)]
+        [Category("Appearance")]
+        public int ImageTextPadding { get; set; } = 6;
+
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            if (_path == null) RebuildPathAndRegion();
-            Rectangle rect = ClientRectangle;
+            if (_path == null)
+                RebuildPathAndRegion();
 
-            // nền
+            // --- Vẽ nền ---
             using (var brush = new SolidBrush(isHover ? BackColorHover : BackColorNormal))
                 g.FillPath(brush, _path);
 
-            // viền
+            // --- Vẽ viền ---
             using (var pen = new Pen(BorderColor, 1.2f))
                 g.DrawPath(pen, _path);
 
-            // chữ (dùng ForeColor sẵn có, bạn set ở ngoài btn.ForeColor = ...)
-            TextRenderer.DrawText(g, Text, Font, rect, ForeColor,
-                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+            Rectangle textRect = ClientRectangle;
+
+            // --- Vẽ ảnh (nếu có) ---
+            if (ButtonImage != null)
+            {
+                // Vùng tối đa cho icon (chừa 10px mỗi bên)
+                int maxImgWidth = Width - 20;
+                int maxImgHeight = Height - 10;
+
+                // Tỉ lệ scale
+                float ratioW = (float)maxImgWidth / ButtonImage.Width;
+                float ratioH = (float)maxImgHeight / ButtonImage.Height;
+                float scale = Math.Min(ratioW, ratioH);
+
+                int drawW = (int)(ButtonImage.Width * scale);
+                int drawH = (int)(ButtonImage.Height * scale);
+
+                int imgX = 10; // hoặc (Width - drawW) / 2 nếu muốn icon ở giữa
+                int imgY = (Height - drawH) / 2;
+
+                g.DrawImage(ButtonImage, new Rectangle(imgX, imgY, drawW, drawH));
+
+                int xText = imgX + drawW + ImageTextPadding;
+                textRect = new Rectangle(
+                    xText,
+                    0,
+                    Width - xText - 10,
+                    Height
+                );
+            }
+
+
+            // --- Vẽ chữ ---
+            if (!string.IsNullOrEmpty(Text))
+            {
+                TextFormatFlags flags =
+                    TextFormatFlags.HorizontalCenter |
+                    TextFormatFlags.VerticalCenter |
+                    TextFormatFlags.EndEllipsis;
+
+                TextRenderer.DrawText(
+                    g,
+                    Text,
+                    Font,
+                    textRect,
+                    ForeColor,
+                    flags
+                );
+            }
         }
+
+
+
 
         protected override void OnMouseEnter(EventArgs e) { isHover = true; Invalidate(); base.OnMouseEnter(e); }
         protected override void OnMouseLeave(EventArgs e) { isHover = false; Invalidate(); base.OnMouseLeave(e); }

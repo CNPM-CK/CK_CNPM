@@ -22,15 +22,40 @@ namespace GUI.Forms
         private DTO_DotNenTs ds;
         private NhanVien nv;
         public event EventHandler SuccesfullyUpdated;
-        private string maDNTS;
-        public NhapThongSo(string maDNTS)
+        private ThongSoNhapLieuDTO thongSoHT;
+        public NhapThongSo(ThongSoNhapLieuDTO thongSoHT)
         {
-            this.maDNTS = maDNTS;
+            this.thongSoHT = thongSoHT;
             InitializeComponent();
+
+            // Cho form bắt phím
+            this.KeyPreview = true;
+            this.AcceptButton = buttonAddnew;
+            // Khi form hiện lên, focus vào datetimepicker
+            this.Shown += NhapThongSo_Shown;
+
             var txt = numericUpDown1.Controls[1] as TextBox;
             if (txt != null)
                 txt.TextChanged += NumericTextChanged;
         }
+        private void NhapThongSo_Shown(object sender, EventArgs e)
+        {
+            dateTimePicker1.Focus();
+        }
+        private void Control_SelectAllOnEnter(object sender, EventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                // TextBox thường
+                tb.SelectAll();
+            }
+            else if (sender is NumericUpDown nud)
+            {
+                // NumericUpDown cũng có Select(start, length)
+                nud.Select(0, nud.Text.Length);
+            }
+        }
+
 
 
         #region Custom TextBox và Label cho Form Nhân viên
@@ -176,27 +201,36 @@ namespace GUI.Forms
         private void ThemHopDong_Load(object sender, EventArgs e)
         {
             var bll = new DotQuanTracNhapLieuBLL();
-            this.ds = bll.LayThongSoTheoMaDotNenTS(this.maDNTS);
+            this.ds = bll.LayThongSoTheoMaDotNenTS(this.thongSoHT.MaDNTS);
             textBox2.Text = ds.TenTS;
             textBox1.Text = ds.DonVi;
             textBox4.Text = ds.GiaTriToiThieu.ToString();
             textBox3.Text = ds.GiaTriToiDa.ToString();
-            numericUpDown1.DecimalPlaces = 2;   
-            numericUpDown1.Increment = 0.1M;   
-            numericUpDown1.Minimum = int.Parse(ds.GiaTriToiThieu.ToString());      
-            numericUpDown1.Maximum = int.Parse(ds.GiaTriToiDa.ToString());      
+
+            numericUpDown1.DecimalPlaces = 2;
+            numericUpDown1.Increment = 0.1M;
             numericUpDown1.ThousandsSeparator = true;
 
-            InitializeButtonStyles();
-            ApplyRoundedInput(panel7, dateTimePicker1, 15, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panel3, textBox2, 15, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panel4, textBox1, 15, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panel5, textBox4, 15, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panel6, textBox4, 15, 2, Color.FromArgb(0, 152, 70));
-            ApplyRoundedInput(panel8, numericUpDown1, 15, 2, Color.FromArgb(0, 152, 70));
-            BoGocButton(btnCancel,25);
-            BoGocButton(buttonAddnew, 25);
+            string gtMin = ds.GiaTriToiThieu?.ToString();
+            string gtMax = ds.GiaTriToiDa?.ToString();
 
+            // Nếu rỗng → không giới hạn
+            numericUpDown1.Minimum = string.IsNullOrWhiteSpace(gtMin)
+                ? decimal.MinValue
+                : decimal.Parse(gtMin);
+
+            numericUpDown1.Maximum = string.IsNullOrWhiteSpace(gtMax)
+                ? decimal.MaxValue
+                : decimal.Parse(gtMax);
+
+            // Gắn giá trị hiện tại
+            numericUpDown1.Value = decimal.Parse(this.thongSoHT.GiaTriDoDuoc.ToString());
+            dateTimePicker1.TabIndex = 0;
+            numericUpDown1.TabIndex = 1;
+            buttonAddnew.TabIndex = 2;
+            btnCancel.TabIndex = 3;
+
+            InitializeButtonStyles();
         }
         private void buttonAddnew_Click(object sender, EventArgs e)
         {
@@ -204,27 +238,30 @@ namespace GUI.Forms
 
             if (string.IsNullOrEmpty(userName))
             {
-                //MessageBox.Show("Không tìm thấy mã phòng trong phiên đăng nhập!",
-                //    "Lỗi session", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //return;
-                userName = "ptt@gmail.com";
+                MessageBox.Show("Không tìm thấy tên đăng nhập trong phiên đăng nhập!",
+                    "Lỗi session", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
             var bll = new DotQuanTracNhapLieuBLL();
             this.nv = bll.LayNhanVienTheoTenDN(userName);
-
             KetQua kq = new KetQua
             {
-                maDNTS = this.maDNTS,
+                maDNTS = this.thongSoHT.MaDNTS,
                 ngayDo = dateTimePicker1.Value,
                 giaTriDoDuoc = Convert.ToDouble(numericUpDown1.Value),
                 nhanVienNhap = nv.maNV
             };
             try
             {
-                bll.ThemKetQua(kq);
-
-                MessageBox.Show("Thêm kết quả thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                if ((Convert.ToDouble(this.thongSoHT.GiaTriDoDuoc) == Convert.ToDouble(numericUpDown1.Value)) && (Convert.ToDateTime(dateTimePicker1.Value) == Convert.ToDateTime(this.thongSoHT.NgayDo)))
+                {
+                    MessageBox.Show("Không tìm thấy giá trị khác biệt!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    bll.ThemKetQua(kq);
+                    MessageBox.Show("Thêm kết quả thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
                 SuccesfullyUpdated?.Invoke(this, EventArgs.Empty);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
@@ -264,6 +301,17 @@ namespace GUI.Forms
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
+                return true; // báo là đã xử lý ESC rồi
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
 
     }
 }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -20,29 +21,26 @@ namespace GUI
     {
         private DTO_DotQuanTrac dotHienTai;
         private UserControl? currentUC = null;
+        private int nenMauHienTai = -1;
+        private bool isComboBoxLoading = false;
         public DanhSachThongSoNhapLieuForm(DTO_DotQuanTrac dot)
         {
             dotHienTai = dot;
             InitializeComponent();
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void DanhSachThongSoNhapLieuForm_Load(object sender, EventArgs e)
+        private void layDanhSachNenMau(int nenMauHienTai = 0)
         {
             try
             {
+                isComboBoxLoading = true;
                 string? maPhong = SessionStore.Current.MaPhong;
 
                 if (string.IsNullOrEmpty(maPhong))
                 {
-                    //MessageBox.Show("Không tìm thấy mã phòng trong phiên đăng nhập!",
-                    //    "Lỗi session", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //return;
-                    maPhong = "P003";
+                    MessageBox.Show("Không tìm thấy mã phòng trong phiên đăng nhập!",
+                        "Lỗi session", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
                 var bll = new NenMauNhapLieuBLL();
                 var dsNenmau = bll.LayDanhSachNenMauNhapLieu(maPhong, dotHienTai.MaDot);
@@ -50,8 +48,7 @@ namespace GUI
 
                 if (dsNenmau == null || dsNenmau.Count == 0)
                 {
-                    MessageBox.Show("Không có hợp đồng nào để lập kế hoạch quan trắc!\n" +
-                        "Vui lòng tạo hợp đồng trước.",
+                    MessageBox.Show("Không có nền mẫu nào để nhập thông số!\n",
                         "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     comboBox1.Enabled = false;
@@ -69,7 +66,7 @@ namespace GUI
                     data.AddRange(dsNenmau);
 
                     comboBox1.DataSource = data;
-                    comboBox1.SelectedIndex = 0;
+                    comboBox1.SelectedIndex = nenMauHienTai;
                 }
                 else
                 {
@@ -83,25 +80,43 @@ namespace GUI
             }
         }
 
+        private void DanhSachThongSoNhapLieuForm_Load(object sender, EventArgs e)
+        {
+            layDanhSachNenMau();
+        }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox1.SelectedIndex <= 0 || comboBox1.SelectedValue == null)
                 return;
 
             string maDN = comboBox1.SelectedValue.ToString()!;
-
+            this.nenMauHienTai = comboBox1.SelectedIndex;
             if (currentUC != null)
             {
+                if (currentUC is NenMauNhapLieuConTrol oldUC)
+                {
+                    oldUC.DataChanged -= NenMauConTrol_DataChanged;
+                }
                 panel4.Controls.Remove(currentUC);
                 currentUC.Dispose();
                 currentUC = null;
             }
 
-            currentUC = new NenMauNhapLieuConTrol(maDN);
-            currentUC.Dock = DockStyle.Fill;
+            NenMauNhapLieuConTrol newUC = new NenMauNhapLieuConTrol(maDN);
+            newUC.Dock = DockStyle.Fill;
+            newUC.DataChanged += NenMauConTrol_DataChanged;
+            currentUC = newUC;
 
             panel4.Controls.Add(currentUC);
             currentUC.BringToFront();
+
         }
+
+        private void NenMauConTrol_DataChanged(object? sender, EventArgs e)
+        {
+            layDanhSachNenMau(this.nenMauHienTai);
+        }
+
     }
 }

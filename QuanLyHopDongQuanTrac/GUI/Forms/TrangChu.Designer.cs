@@ -50,6 +50,7 @@ namespace GUI.Forms
             btnDanhsachnv = new Button();
             panel3 = new Panel();
             labelFooter = new Label();
+            button1 = new Button();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxSetting).BeginInit();
@@ -167,6 +168,7 @@ namespace GUI.Forms
             // sidebar
             // 
             sidebar.BackColor = Color.FromArgb(224, 234, 230);
+            sidebar.Controls.Add(button1);
             sidebar.Controls.Add(btnDanhSachKetQua);
             sidebar.Controls.Add(btnDanhSachNhapLieu);
             sidebar.Controls.Add(btnDanhSachThongSo);
@@ -191,6 +193,7 @@ namespace GUI.Forms
             btnDanhSachKetQua.ImageAlign = ContentAlignment.MiddleLeft;
             btnDanhSachKetQua.Location = new Point(0, 420);
             btnDanhSachKetQua.Name = "btnDanhSachKetQua";
+            btnDanhSachKetQua.Image = (Image)resources.GetObject("btnDanhSachKetQua.Image");
             btnDanhSachKetQua.Size = new Size(220, 61);
             btnDanhSachKetQua.TabIndex = 7;
             btnDanhSachKetQua.Text = "Danh sách kết quả";
@@ -208,6 +211,7 @@ namespace GUI.Forms
             btnDanhSachNhapLieu.ImageAlign = ContentAlignment.MiddleLeft;
             btnDanhSachNhapLieu.Location = new Point(0, 360);
             btnDanhSachNhapLieu.Name = "btnDanhSachNhapLieu";
+            btnDanhSachNhapLieu.Image = (Image)resources.GetObject("btnDanhSachNhapLieu.Image");
             btnDanhSachNhapLieu.Size = new Size(220, 61);
             btnDanhSachNhapLieu.TabIndex = 6;
             btnDanhSachNhapLieu.Text = "Danh sách nhập liệu";
@@ -344,6 +348,24 @@ namespace GUI.Forms
             labelFooter.Text = "© 2025 ECOS. Bản quyền thuộc về ECOS.";
             labelFooter.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // button1
+            // 
+            button1.BackColor = Color.FromArgb(10, 113, 78);
+            button1.Cursor = Cursors.Hand;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button1.ForeColor = Color.White;
+            button1.ImageAlign = ContentAlignment.MiddleLeft;
+            button1.Location = new Point(0, 480);
+            button1.Name = "button1";
+            button1.Size = new Size(220, 61);
+            button1.TabIndex = 8;
+            button1.Text = "AI";
+            button1.Image = (Image)resources.GetObject("btnAI.Image");
+            button1.TextAlign = ContentAlignment.MiddleLeft;
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click_1;
+            // 
             // TrangChu
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -392,5 +414,6 @@ namespace GUI.Forms
         private Button btnDanhSachNhapLieu;
         private Button btnDanhSachKetQua;
         private Label lblSoluongtb;
+        private Button button1;
     }
 }

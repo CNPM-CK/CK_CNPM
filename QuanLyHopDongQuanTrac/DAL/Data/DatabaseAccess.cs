@@ -29,8 +29,10 @@ namespace DAL
             //    "TrustServerCertificate=False;" +
             //    "Connection Timeout=30;";
             //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-            string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
             SqlConnection conn = new SqlConnection(connectionStr);
             return conn;
@@ -2111,7 +2113,8 @@ namespace DAL
                                 GiaTriToiThieu = reader["giaTriToiThieu"].ToString(),
                                 GiaTriToiDa = reader["giaTriToiDa"].ToString(),
                                 PhuongPhap = reader["phuongPhap"].ToString(),
-                                GiaTriDoDuoc = reader["giaTriDoDuoc"].ToString()
+                                GiaTriDoDuoc = reader["giaTriDoDuoc"].ToString(),
+                                NgayDo = reader["ngayDo"] != DBNull.Value ? Convert.ToDateTime(reader["ngayDo"]) : DateTime.MinValue,
                             };
                             list.Add(dqt);
                         }
@@ -2944,6 +2947,134 @@ namespace DAL
                 }
             }
         }
+
+        public int ThemPhienChatMoi(string maNV, string title)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            using (var cmd = new SqlCommand("dbo.ThemPhienChatMoi", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@tenTK", maNV);
+                cmd.Parameters.AddWithValue("@tenPhienChat",
+                    string.IsNullOrWhiteSpace(title) ? (object)DBNull.Value : title);
+
+                conn.Open();
+                var result = cmd.ExecuteScalar();
+
+                if (result == null || result == DBNull.Value)
+                    return 0;
+
+                return Convert.ToInt32(result);
+            }
+        }
+        public void SuaTenPhienChat(int sessionId, string newTitle)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            using (var cmd = new SqlCommand("dbo.SuaTenPhienChat", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@maPhien", sessionId);
+                cmd.Parameters.AddWithValue("@tenPhienChat",
+                    string.IsNullOrWhiteSpace(newTitle) ? (object)DBNull.Value : newTitle);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public void XoaPhienChat(int sessionId)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            using (var cmd = new SqlCommand("dbo.XoaPhienChat", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@maPhien", sessionId);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public List<ChatSessionDTO> LayPhienTheoTenTK(string maNV)
+        {
+            var list = new List<ChatSessionDTO>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            using (var cmd = new SqlCommand("dbo.LayPhienTheoTenTK", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@tenTK", maNV);
+
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var dto = new ChatSessionDTO
+                        {
+                            MaPhien = reader.GetInt32(reader.GetOrdinal("MaPhien")),
+                            TenPhienChat = reader["TenPhienChat"] as string,
+                            ThoiGianTao = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                            ThoiGianSua = reader.GetDateTime(reader.GetOrdinal("UpdatedAt"))
+                        };
+                        list.Add(dto);
+                    }
+                }
+            }
+
+            return list;
+        }
+        public void ThemTinNhan(int sessionId, string senderRole, string senderName, string content)
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            using (var cmd = new SqlCommand("dbo.ThemTinNhan", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@maPhien", sessionId);
+                cmd.Parameters.AddWithValue("@vaiTroGui", senderRole);      // "User" / "Assistant"
+                cmd.Parameters.AddWithValue("@tenNguoiGui",
+                    string.IsNullOrWhiteSpace(senderName) ? (object)DBNull.Value : senderName);
+                cmd.Parameters.AddWithValue("@noiDung", content);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public List<ChatMessageDbDTO> LayTinNhanTheoPhien(int sessionId)
+        {
+            var list = new List<ChatMessageDbDTO>();
+
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            using (var cmd = new SqlCommand("dbo.LayTinNhanTheoPhien", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@maPhien", sessionId);
+
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var dto = new ChatMessageDbDTO
+                        {
+                            MaTinNhan    = reader.GetInt32(reader.GetOrdinal("MaTinNhan")),
+                            MaPhien      = reader.GetInt32(reader.GetOrdinal("MaPhien")),
+                            ThuTu        = reader.GetInt32(reader.GetOrdinal("ThuTu")),
+                            VaiTro       = reader["VaiTroGui"]?.ToString(),
+                            TenNguoiGui  = reader["TenNguoiGui"] as string,
+                            NoiDung      = reader["NoiDung"]?.ToString(),
+                            ThoiGianTao  = reader.GetDateTime(reader.GetOrdinal("ThoiGianTao"))
+                        };
+                        list.Add(dto);
+                    }
+                }
+            }
+
+            return list;
+        }
+
 
     }
 }
