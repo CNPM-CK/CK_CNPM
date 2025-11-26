@@ -39,7 +39,6 @@
             btnTruoc = new Button();
             dgvDSTS = new DataGridView();
             panel6 = new Panel();
-            btnXuatfile = new Button();
             containersearch = new Panel();
             searchtextbox = new TextBox();
             picturemicro = new PictureBox();
@@ -165,7 +164,6 @@
             // panel6
             // 
             panel6.BackColor = Color.White;
-            panel6.Controls.Add(btnXuatfile);
             panel6.Controls.Add(containersearch);
             panel6.Controls.Add(picturemicro);
             panel6.Controls.Add(btnThemNenMau);
@@ -177,21 +175,6 @@
             panel6.Size = new Size(820, 61);
             panel6.TabIndex = 0;
             panel6.Paint += panel6_Paint;
-            // 
-            // btnXuatfile
-            // 
-            btnXuatfile.Anchor = AnchorStyles.None;
-            btnXuatfile.BackColor = Color.FromArgb(255, 107, 53);
-            btnXuatfile.BackgroundImageLayout = ImageLayout.None;
-            btnXuatfile.Cursor = Cursors.Hand;
-            btnXuatfile.FlatAppearance.BorderColor = Color.White;
-            btnXuatfile.FlatStyle = FlatStyle.Flat;
-            btnXuatfile.Image = (Image)resources.GetObject("btnXuatfile.Image");
-            btnXuatfile.Location = new Point(742, 12);
-            btnXuatfile.Name = "btnXuatfile";
-            btnXuatfile.Size = new Size(66, 40);
-            btnXuatfile.TabIndex = 8;
-            btnXuatfile.UseVisualStyleBackColor = false;
             // 
             // containersearch
             // 
@@ -230,12 +213,12 @@
             btnThemNenMau.FlatAppearance.BorderColor = Color.White;
             btnThemNenMau.FlatStyle = FlatStyle.Flat;
             btnThemNenMau.Image = (Image)resources.GetObject("btnThemNenMau.Image");
-            btnThemNenMau.Location = new Point(670, 12);
+            btnThemNenMau.Location = new Point(751, 11);
             btnThemNenMau.Name = "btnThemNenMau";
             btnThemNenMau.Size = new Size(66, 40);
             btnThemNenMau.TabIndex = 4;
             btnThemNenMau.UseVisualStyleBackColor = false;
-            btnThemNenMau.Click += btnThemuser_Click_1;
+            btnThemNenMau.Click += btnThemNenMau_Click_1;
             // 
             // pictureFilter
             // 
@@ -281,7 +264,6 @@
         private PictureBox picturemicro;
         private Button btnThemNenMau;
         private PictureBox pictureFilter;
-        private Button btnXuatfile;
         private Panel panel1;
         private Button btnSau;
         private Label soTrang;

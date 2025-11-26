@@ -36,10 +36,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DSNV_Uc));
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+
             panel6 = new Panel();
-            btnXuatfile = new Button();
             btnThemuser = new Button();
             containersearch = new Panel();
             searchtextbox = new TextBox();
@@ -63,7 +61,6 @@
             // panel6
             // 
             panel6.BackColor = Color.White;
-            panel6.Controls.Add(btnXuatfile);
             panel6.Controls.Add(btnThemuser);
             panel6.Controls.Add(containersearch);
             panel6.Controls.Add(picturemicro);
@@ -75,21 +72,6 @@
             panel6.Size = new Size(828, 70);
             panel6.TabIndex = 4;
             // 
-            // btnXuatfile
-            // 
-            btnXuatfile.Anchor = AnchorStyles.Right;
-            btnXuatfile.BackColor = Color.FromArgb(255, 107, 53);
-            btnXuatfile.BackgroundImageLayout = ImageLayout.None;
-            btnXuatfile.Cursor = Cursors.Hand;
-            btnXuatfile.FlatAppearance.BorderColor = Color.White;
-            btnXuatfile.FlatStyle = FlatStyle.Flat;
-            btnXuatfile.Image = (Image)resources.GetObject("btnXuatfile.Image");
-            btnXuatfile.Location = new Point(727, 15);
-            btnXuatfile.Name = "btnXuatfile";
-            btnXuatfile.Size = new Size(90, 40);
-            btnXuatfile.TabIndex = 8;
-            btnXuatfile.UseVisualStyleBackColor = false;
-            // 
             // btnThemuser
             // 
             btnThemuser.Anchor = AnchorStyles.Right;
@@ -99,7 +81,7 @@
             btnThemuser.FlatAppearance.BorderColor = Color.White;
             btnThemuser.FlatStyle = FlatStyle.Flat;
             btnThemuser.Image = (Image)resources.GetObject("btnThemuser.Image");
-            btnThemuser.Location = new Point(631, 15);
+            btnThemuser.Location = new Point(735, 21);
             btnThemuser.Name = "btnThemuser";
             btnThemuser.Size = new Size(90, 40);
             btnThemuser.TabIndex = 4;
@@ -161,16 +143,17 @@
             dgvDanhsachnhanvien.AllowUserToAddRows = false;
             dgvDanhsachnhanvien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDanhsachnhanvien.BackgroundColor = Color.White;
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle5.Font = new Font("Segoe UI", 10F);
-            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 10F);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvDanhsachnhanvien.ColumnHeadersHeight = 30;
             dgvDanhsachnhanvien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+<<<<<<< HEAD
             dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = SystemColors.Window;
             dataGridViewCellStyle6.Font = new Font("Segoe UI", 9F);
@@ -189,6 +172,8 @@
             dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvDanhsachnhanvien.ColumnHeadersHeight = 30;
             dgvDanhsachnhanvien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+=======
+>>>>>>> 65c914b (xóa btn xuâtds file)
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
@@ -287,7 +272,6 @@
         #endregion
 
         private Panel panel6;
-        private Button btnXuatfile;
         private Button btnThemuser;
         private Panel containersearch;
         private TextBox searchtextbox;

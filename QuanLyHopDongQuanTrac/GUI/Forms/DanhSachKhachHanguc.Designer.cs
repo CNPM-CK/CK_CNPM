@@ -39,7 +39,6 @@
             btnTruoc = new Button();
             dgvDanhsachnhanvien = new DataGridView();
             panel6 = new Panel();
-            btnXuatfile = new Button();
             picturemicro = new PictureBox();
             containersearch = new Panel();
             searchtextbox = new TextBox();
@@ -168,7 +167,6 @@
             // panel6
             // 
             panel6.BackColor = Color.White;
-            panel6.Controls.Add(btnXuatfile);
             panel6.Controls.Add(picturemicro);
             panel6.Controls.Add(containersearch);
             panel6.Controls.Add(btnThemuser);
@@ -179,21 +177,6 @@
             panel6.Name = "panel6";
             panel6.Size = new Size(810, 61);
             panel6.TabIndex = 0;
-            // 
-            // btnXuatfile
-            // 
-            btnXuatfile.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnXuatfile.BackColor = Color.FromArgb(255, 107, 53);
-            btnXuatfile.BackgroundImageLayout = ImageLayout.Zoom;
-            btnXuatfile.Cursor = Cursors.Hand;
-            btnXuatfile.FlatAppearance.BorderColor = Color.White;
-            btnXuatfile.FlatStyle = FlatStyle.Flat;
-            btnXuatfile.Image = (Image)resources.GetObject("btnXuatfile.Image");
-            btnXuatfile.Location = new Point(741, 5);
-            btnXuatfile.Name = "btnXuatfile";
-            btnXuatfile.Size = new Size(66, 40);
-            btnXuatfile.TabIndex = 9;
-            btnXuatfile.UseVisualStyleBackColor = false;
             // 
             // picturemicro
             // 
@@ -232,7 +215,7 @@
             btnThemuser.FlatAppearance.BorderColor = Color.White;
             btnThemuser.FlatStyle = FlatStyle.Flat;
             btnThemuser.Image = (Image)resources.GetObject("btnThemuser.Image");
-            btnThemuser.Location = new Point(669, 5);
+            btnThemuser.Location = new Point(741, 5);
             btnThemuser.Name = "btnThemuser";
             btnThemuser.Size = new Size(66, 40);
             btnThemuser.TabIndex = 4;
@@ -281,7 +264,6 @@
         private TextBox searchtextbox;
         private Button btnThemuser;
         private PictureBox pictureFilter;
-        private Button btnXuatfile;
         private Panel panel1;
         private Button btnSau;
         private Button btnTruoc;

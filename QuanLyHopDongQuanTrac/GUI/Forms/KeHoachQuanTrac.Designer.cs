@@ -743,6 +743,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1295, 755);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "KeHoachQuanTrac";
             Text = "keHoachquantraccs";

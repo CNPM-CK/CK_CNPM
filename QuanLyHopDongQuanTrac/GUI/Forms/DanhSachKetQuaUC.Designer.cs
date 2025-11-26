@@ -30,7 +30,7 @@
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachKhachHanguc));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachKetQuaUC));
             panel5 = new Panel();
             panel7 = new Panel();
             panel1 = new Panel();
@@ -39,12 +39,12 @@
             btnTruoc = new Button();
             dgvDanhsachketqua = new DataGridView();
             panel6 = new Panel();
-            btnXuatfile = new Button();
             picturemicro = new PictureBox();
             containersearch = new Panel();
             searchtextbox = new TextBox();
             btnThemuser = new Button();
             pictureFilter = new PictureBox();
+            btnXuatfile = new Button();
             panel5.SuspendLayout();
             panel7.SuspendLayout();
             panel1.SuspendLayout();
@@ -86,7 +86,6 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(810, 45);
             panel1.TabIndex = 2;
-            //panel1.Paint += panel1_Paint;
             // 
             // btnSau
             // 
@@ -180,22 +179,6 @@
             panel6.Name = "panel6";
             panel6.Size = new Size(810, 61);
             panel6.TabIndex = 0;
-            //panel6.Paint += panel6_Paint;
-            // 
-            // btnXuatfile
-            // 
-            btnXuatfile.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            btnXuatfile.BackColor = Color.FromArgb(255, 107, 53);
-            btnXuatfile.BackgroundImageLayout = ImageLayout.Zoom;
-            btnXuatfile.Cursor = Cursors.Hand;
-            btnXuatfile.FlatAppearance.BorderColor = Color.White;
-            btnXuatfile.FlatStyle = FlatStyle.Flat;
-            btnXuatfile.Image = (Image)resources.GetObject("btnXuatfile.Image");
-            btnXuatfile.Location = new Point(741, 5);
-            btnXuatfile.Name = "btnXuatfile";
-            btnXuatfile.Size = new Size(66, 40);
-            btnXuatfile.TabIndex = 9;
-            btnXuatfile.UseVisualStyleBackColor = false;
             // 
             // picturemicro
             // 
@@ -207,7 +190,6 @@
             picturemicro.SizeMode = PictureBoxSizeMode.Zoom;
             picturemicro.TabIndex = 8;
             picturemicro.TabStop = false;
-            //picturemicro.Click += picturemicro_Click;
             // 
             // containersearch
             // 
@@ -251,12 +233,27 @@
             pictureFilter.TabIndex = 0;
             pictureFilter.TabStop = false;
             // 
-            // DanhSachKhachHanguc
+            // btnXuatfile
+            // 
+            btnXuatfile.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            btnXuatfile.BackColor = Color.FromArgb(255, 107, 53);
+            btnXuatfile.BackgroundImageLayout = ImageLayout.Zoom;
+            btnXuatfile.Cursor = Cursors.Hand;
+            btnXuatfile.FlatAppearance.BorderColor = Color.White;
+            btnXuatfile.FlatStyle = FlatStyle.Flat;
+            btnXuatfile.Image = (Image)resources.GetObject("btnXuatfile.Image");
+            btnXuatfile.Location = new Point(741, 5);
+            btnXuatfile.Name = "btnXuatfile";
+            btnXuatfile.Size = new Size(66, 40);
+            btnXuatfile.TabIndex = 9;
+            btnXuatfile.UseVisualStyleBackColor = false;
+            // 
+            // DanhSachKetQuaUC
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(panel5);
-            Name = "DanhSachKhachHanguc";
+            Name = "DanhSachKetQuaUC";
             Size = new Size(810, 472);
             panel5.ResumeLayout(false);
             panel7.ResumeLayout(false);
@@ -282,10 +279,10 @@
         private TextBox searchtextbox;
         private Button btnThemuser;
         private PictureBox pictureFilter;
-        private Button btnXuatfile;
         private Panel panel1;
         private Button btnSau;
         private Button btnTruoc;
         private Label soTrang;
+        private Button btnXuatfile;
     }
 }

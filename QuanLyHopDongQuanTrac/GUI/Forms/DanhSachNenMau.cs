@@ -249,8 +249,6 @@ namespace GUI.Forms
 
         private void InitializeContextMenu()
         {
-            if (btnXuatfile == null) return;
-
             ContextMenuStrip menu = new ContextMenuStrip();
 
             ToolStripMenuItem pdfItem = new ToolStripMenuItem("Xuất PDF");
@@ -261,11 +259,6 @@ namespace GUI.Forms
 
             menu.Items.Add(pdfItem);
             menu.Items.Add(excelItem);
-
-            btnXuatfile.Click += (s, ev) =>
-            {
-                menu.Show(btnXuatfile, new Point(0, btnXuatfile.Height));
-            };
         }
 
         private void InitializeButtonIcons()
@@ -274,28 +267,17 @@ namespace GUI.Forms
             {
                 btnThemNenMau.Image = new Bitmap(btnThemNenMau.Image, new Size(24, 24));
             }
-
-            if (btnXuatfile != null && btnXuatfile.Image != null)
-            {
-                btnXuatfile.Image = new Bitmap(btnXuatfile.Image, new Size(24, 24));
-            }
         }
 
         private void InitializeButtonStyles()
         {
             btnThemNenMau.Visible = _isPhongKeHoach;
-            btnXuatfile.Visible = _isPhongKeHoach;
+            
 
             if (btnThemNenMau != null)
             {
                 btnThemNenMau.Size = new Size(66, 40);
                 BoGocButton(btnThemNenMau, 20);
-            }
-
-            if (btnXuatfile != null)
-            {
-                btnXuatfile.Size = new Size(66, 40);
-                BoGocButton(btnXuatfile, 20);
             }
 
             if (btnTruoc != null)
@@ -319,77 +301,87 @@ namespace GUI.Forms
 
         private void CalculateLayout()
         {
-            if (btnXuatfile == null || btnThemNenMau == null || containersearch == null) return;
+            if (btnThemNenMau == null || containersearch == null) return;
 
             int formWidth = this.Width;
+
             Form parentForm = this.FindForm();
             bool isMaximized = parentForm != null && parentForm.WindowState == FormWindowState.Maximized;
 
+            // ✅ Kích thước button dựa vào trạng thái maximize
             int btnWidth = isMaximized ? 80 : 66;
             int btnHeight = isMaximized ? 50 : 40;
             int btnRadius = isMaximized ? 25 : 20;
+            int topOffset = 10;
 
-            btnXuatfile.Size = new Size(btnWidth, btnHeight);
+            // ✅ Resize và bo góc button
             btnThemNenMau.Size = new Size(btnWidth, btnHeight);
-            BoGocButton(btnXuatfile, btnRadius);
             BoGocButton(btnThemNenMau, btnRadius);
+            btnThemNenMau.Top = topOffset;
 
-            Control btnParent = btnXuatfile.Parent;
+            // ✅ Đặt button ở góc phải với margin
+            Control btnParent = btnThemNenMau.Parent; // Thường là panel6
             if (btnParent != null && btnParent != this)
             {
                 int parentWidth = btnParent.Width;
-                btnXuatfile.Left = parentWidth - btnWidth - MARGIN;
-                btnThemNenMau.Left = btnXuatfile.Left - btnWidth - SPACING;
+                btnThemNenMau.Left = parentWidth - btnWidth - MARGIN;
             }
             else
             {
-                btnXuatfile.Left = formWidth - btnWidth - MARGIN;
-                btnThemNenMau.Left = btnXuatfile.Left - btnWidth - SPACING;
+                btnThemNenMau.Left = formWidth - btnWidth - MARGIN;
             }
 
+            // ✅ Tính toán vị trí cho search box
             int leftBoundary = pictureFilter != null ? pictureFilter.Right + SPACING : MARGIN;
             int rightBoundary = btnThemNenMau.Left - SPACING;
 
+            // ✅ Nếu có micro icon, trừ thêm khoảng cách
             if (picturemicro != null)
             {
-                rightBoundary -= picturemicro.Width + SPACING;
+                rightBoundary -= (picturemicro.Width + SPACING);
             }
 
             int availableWidth = rightBoundary - leftBoundary;
+
+            // ✅ Tính width cho search box
             int searchWidth = Math.Max(MIN_SEARCH_WIDTH, Math.Min(availableWidth, MAX_SEARCH_WIDTH));
             if (searchWidth < MIN_SEARCH_WIDTH)
             {
                 searchWidth = Math.Max(150, availableWidth);
             }
 
+            // ✅ Đặt vị trí pictureFilter
             if (pictureFilter != null)
             {
                 pictureFilter.Left = MARGIN;
             }
 
+            // ✅ Đặt vị trí và kích thước search box
             containersearch.Left = leftBoundary;
             containersearch.Width = searchWidth;
             containersearch.Height = SEARCH_HEIGHT;
 
+            // ✅ Resize textbox bên trong
             searchtextbox.Width = searchWidth - (borderSize * 2 + 10);
             searchtextbox.Location = new Point(borderSize + 5, (SEARCH_HEIGHT - 28) / 2);
 
+            // ✅ Đặt micro icon sau search box
             if (picturemicro != null)
             {
                 picturemicro.Left = containersearch.Right + SPACING;
             }
 
+            // ✅ Padding button dựa vào trạng thái maximize
             if (isMaximized)
             {
                 btnThemNenMau.Padding = new Padding(10, 5, 10, 5);
-                btnXuatfile.Padding = new Padding(10, 5, 10, 5);
             }
             else
             {
                 btnThemNenMau.Padding = new Padding(5, 3, 5, 3);
-                btnXuatfile.Padding = new Padding(5, 3, 5, 3);
             }
 
+            // ✅ Refresh vẽ lại search box
             containersearch.Invalidate();
         }
         #endregion
@@ -713,7 +705,7 @@ namespace GUI.Forms
         #endregion
 
         #region Button Events
-        private void btnThemuser_Click_1(object sender, EventArgs e)
+        private void btnThemNenMau_Click_1(object sender, EventArgs e)
         {
             if (currentOpenForm != null && !currentOpenForm.IsDisposed)
             {

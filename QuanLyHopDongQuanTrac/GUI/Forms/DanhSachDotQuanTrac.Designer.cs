@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DanhSachDotQuanTrac));
             panel5 = new Panel();
             panel7 = new Panel();
@@ -39,7 +39,6 @@
             btnTruoc = new Button();
             dgvDsdotquantrac = new DataGridView();
             panel6 = new Panel();
-            btnXuatfile = new Button();
             containersearch = new Panel();
             searchtextbox = new TextBox();
             picturemicro = new PictureBox();
@@ -136,26 +135,26 @@
             // 
             dgvDsdotquantrac.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDsdotquantrac.BackgroundColor = Color.White;
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle5.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
-            dgvDsdotquantrac.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+            dgvDsdotquantrac.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvDsdotquantrac.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDsdotquantrac.Dock = DockStyle.Fill;
             dgvDsdotquantrac.Location = new Point(0, 0);
             dgvDsdotquantrac.Name = "dgvDsdotquantrac";
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle6.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            dgvDsdotquantrac.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(0, 152, 70);
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvDsdotquantrac.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvDsdotquantrac.RowHeadersWidth = 51;
             dgvDsdotquantrac.Size = new Size(820, 411);
             dgvDsdotquantrac.TabIndex = 1;
@@ -165,7 +164,6 @@
             // panel6
             // 
             panel6.BackColor = Color.White;
-            panel6.Controls.Add(btnXuatfile);
             panel6.Controls.Add(containersearch);
             panel6.Controls.Add(picturemicro);
             panel6.Controls.Add(btnThemdotquantrac);
@@ -176,21 +174,6 @@
             panel6.Name = "panel6";
             panel6.Size = new Size(820, 61);
             panel6.TabIndex = 0;
-            // 
-            // btnXuatfile
-            // 
-            btnXuatfile.Anchor = AnchorStyles.None;
-            btnXuatfile.BackColor = Color.FromArgb(255, 107, 53);
-            btnXuatfile.BackgroundImageLayout = ImageLayout.None;
-            btnXuatfile.Cursor = Cursors.Hand;
-            btnXuatfile.FlatAppearance.BorderColor = Color.White;
-            btnXuatfile.FlatStyle = FlatStyle.Flat;
-            btnXuatfile.Image = (Image)resources.GetObject("btnXuatfile.Image");
-            btnXuatfile.Location = new Point(742, 12);
-            btnXuatfile.Name = "btnXuatfile";
-            btnXuatfile.Size = new Size(66, 40);
-            btnXuatfile.TabIndex = 8;
-            btnXuatfile.UseVisualStyleBackColor = false;
             // 
             // containersearch
             // 
@@ -231,7 +214,7 @@
             btnThemdotquantrac.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnThemdotquantrac.ForeColor = Color.White;
             btnThemdotquantrac.Image = (Image)resources.GetObject("btnThemdotquantrac.Image");
-            btnThemdotquantrac.Location = new Point(670, 12);
+            btnThemdotquantrac.Location = new Point(751, 12);
             btnThemdotquantrac.Name = "btnThemdotquantrac";
             btnThemdotquantrac.Size = new Size(66, 40);
             btnThemdotquantrac.TabIndex = 4;
@@ -282,7 +265,6 @@
         private PictureBox picturemicro;
         private Button btnThemdotquantrac;
         private PictureBox pictureFilter;
-        private Button btnXuatfile;
         private Panel panel1;
         private Button btnSau;
         private Label soTrang;

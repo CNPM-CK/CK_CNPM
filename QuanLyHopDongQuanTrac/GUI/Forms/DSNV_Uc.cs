@@ -360,24 +360,7 @@ namespace GUI.Forms
             containersearch.Paint += containersearch_Paint;
         }
 
-        private void InitializeContextMenu()
-        {
-            ContextMenuStrip menu = new ContextMenuStrip();
-
-            ToolStripMenuItem pdfItem = new ToolStripMenuItem("Xuất PDF");
-            pdfItem.Click += (s, ev) => { MessageBox.Show("Xuất PDF..."); };
-
-            ToolStripMenuItem excelItem = new ToolStripMenuItem("Xuất Excel");
-            excelItem.Click += (s, ev) => { MessageBox.Show("Xuất Excel..."); };
-
-            menu.Items.Add(pdfItem);
-            menu.Items.Add(excelItem);
-
-            btnXuatfile.Click += (s, ev) =>
-            {
-                menu.Show(btnXuatfile, new Point(0, btnXuatfile.Height));
-            };
-        }
+        
 
 
 
@@ -389,21 +372,15 @@ namespace GUI.Forms
                 btnThemuser.Image = new Bitmap(btnThemuser.Image, new Size(24, 24));
             }
 
-            if (btnXuatfile.Image != null)
-            {
-                btnXuatfile.Image = new Bitmap(btnXuatfile.Image, new Size(24, 24));
-            }
+           
         }
 
         private void InitializeButtonStyles()
         {
             btnThemuser.Visible = _isAdmin;
-            btnXuatfile.Visible = _isAdmin;
             btnThemuser.Size = new Size(66, 40);
-            btnXuatfile.Size = new Size(66, 40);
 
             BoGocButton(btnThemuser, 20);
-            BoGocButton(btnXuatfile, 20);
             BoGocButton(btnTruoc, 20);
             BoGocButton(btnSau, 20);
 
@@ -429,27 +406,10 @@ namespace GUI.Forms
             int btnHeight = isMaximized ? 50 : 40;
             int btnRadius = isMaximized ? 25 : 20;
 
-            btnXuatfile.Size = new Size(btnWidth, btnHeight);
             btnThemuser.Size = new Size(btnWidth, btnHeight);
-            BoGocButton(btnXuatfile, btnRadius);
             BoGocButton(btnThemuser, btnRadius);
 
-            Control btnParent = btnXuatfile.Parent; // panel6
-
-            if (btnParent != null && btnParent != this)
-            {
-                int parentWidth = btnParent.Width;
-                btnXuatfile.Left = parentWidth - btnWidth - MARGIN;
-                btnThemuser.Left = btnXuatfile.Left - btnWidth - SPACING;
-            }
-            else
-            {
-                btnXuatfile.Left = formWidth - btnWidth - MARGIN;
-                btnThemuser.Left = btnXuatfile.Left - btnWidth - SPACING;
-            }
-
             int topPosition = 10;
-            btnXuatfile.Top = topPosition;
             btnThemuser.Top = topPosition;
 
             if (panel7 != null && panel6 != null)
@@ -481,12 +441,10 @@ namespace GUI.Forms
             if (isMaximized)
             {
                 btnThemuser.Padding = new Padding(10, 5, 10, 5);
-                btnXuatfile.Padding = new Padding(10, 5, 10, 5);
             }
             else
             {
                 btnThemuser.Padding = new Padding(5, 3, 5, 3);
-                btnXuatfile.Padding = new Padding(5, 3, 5, 3);
             }
 
             containersearch.Invalidate();
@@ -668,17 +626,31 @@ namespace GUI.Forms
 
         private void dgvDanhsachnhanvien_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+            if (e.RowIndex < 0) return;
+
+            DataGridViewRow row = dgvDanhsachnhanvien.Rows[e.RowIndex];
+            var nhanVien = row.DataBoundItem as NhanVien;
+
+            // Xử lý giới tính
             if (dgvDanhsachnhanvien.Columns[e.ColumnIndex].Name == "gioiTinh" && e.Value != null)
             {
                 string gioiTinh = e.Value.ToString().Trim();
-
                 if (gioiTinh == "0" || gioiTinh.ToLower() == "false")
                     e.Value = "Nam";
                 else if (gioiTinh == "1" || gioiTinh.ToLower() == "true")
                     e.Value = "Nữ";
-
                 e.FormattingApplied = true;
             }
+
+            // ✅ Tô màu cho trưởng phòng
+            if (nhanVien != null && nhanVien.isTruongPhong == true )
+            {
+                e.CellStyle.BackColor = Color.FromArgb(255, 250, 205);
+                e.CellStyle.SelectionBackColor = Color.FromArgb(255, 215, 0);
+                e.CellStyle.SelectionForeColor = Color.Black;
+                e.CellStyle.Font = new Font(dgvDanhsachnhanvien.Font, FontStyle.Bold);
+            }
+
         }
         #endregion
 
@@ -729,7 +701,6 @@ namespace GUI.Forms
             }
             NhanVienBLL nvBLL = new NhanVienBLL();
             dsNhanVien = new BindingList<NhanVien>(nvBLL.layDanhSachNhanVien_PhanTrang(trangHientai, kichthuocTrang));
-            InitializeContextMenu();
             InitializeButtonIcons();
             InitializeButtonStyles();
             InitializeCustomSearchBox();
