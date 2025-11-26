@@ -40,6 +40,7 @@ namespace GUI.Forms
             panel5 = new Panel();
             label1 = new Label();
             sidebar = new Panel();
+            button1 = new Button();
             btnDanhSachKetQua = new Button();
             btnDanhSachNhapLieu = new Button();
             btnDanhSachThongSo = new Button();
@@ -50,7 +51,6 @@ namespace GUI.Forms
             btnDanhsachnv = new Button();
             panel3 = new Panel();
             labelFooter = new Label();
-            button1 = new Button();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxSetting).BeginInit();
@@ -183,6 +183,24 @@ namespace GUI.Forms
             sidebar.Size = new Size(220, 585);
             sidebar.TabIndex = 0;
             // 
+            // button1
+            // 
+            button1.BackColor = Color.FromArgb(10, 113, 78);
+            button1.Cursor = Cursors.Hand;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button1.ForeColor = Color.White;
+            button1.Image = (Image)resources.GetObject("button1.Image");
+            button1.ImageAlign = ContentAlignment.MiddleLeft;
+            button1.Location = new Point(0, 480);
+            button1.Name = "button1";
+            button1.Size = new Size(220, 61);
+            button1.TabIndex = 8;
+            button1.Text = "AI";
+            button1.TextAlign = ContentAlignment.MiddleLeft;
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click_1;
+            // 
             // btnDanhSachKetQua
             // 
             btnDanhSachKetQua.BackColor = Color.FromArgb(10, 113, 78);
@@ -190,10 +208,10 @@ namespace GUI.Forms
             btnDanhSachKetQua.FlatStyle = FlatStyle.Flat;
             btnDanhSachKetQua.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnDanhSachKetQua.ForeColor = Color.White;
+            btnDanhSachKetQua.Image = (Image)resources.GetObject("btnDanhSachKetQua.Image");
             btnDanhSachKetQua.ImageAlign = ContentAlignment.MiddleLeft;
             btnDanhSachKetQua.Location = new Point(0, 420);
             btnDanhSachKetQua.Name = "btnDanhSachKetQua";
-            btnDanhSachKetQua.Image = (Image)resources.GetObject("btnDanhSachKetQua.Image");
             btnDanhSachKetQua.Size = new Size(220, 61);
             btnDanhSachKetQua.TabIndex = 7;
             btnDanhSachKetQua.Text = "Danh sách kết quả";
@@ -208,10 +226,10 @@ namespace GUI.Forms
             btnDanhSachNhapLieu.FlatStyle = FlatStyle.Flat;
             btnDanhSachNhapLieu.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnDanhSachNhapLieu.ForeColor = Color.White;
+            btnDanhSachNhapLieu.Image = (Image)resources.GetObject("btnDanhSachNhapLieu.Image");
             btnDanhSachNhapLieu.ImageAlign = ContentAlignment.MiddleLeft;
             btnDanhSachNhapLieu.Location = new Point(0, 360);
             btnDanhSachNhapLieu.Name = "btnDanhSachNhapLieu";
-            btnDanhSachNhapLieu.Image = (Image)resources.GetObject("btnDanhSachNhapLieu.Image");
             btnDanhSachNhapLieu.Size = new Size(220, 61);
             btnDanhSachNhapLieu.TabIndex = 6;
             btnDanhSachNhapLieu.Text = "Danh sách nhập liệu";
@@ -280,7 +298,7 @@ namespace GUI.Forms
             btnDanhSachHopDong.FlatStyle = FlatStyle.Flat;
             btnDanhSachHopDong.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnDanhSachHopDong.ForeColor = Color.White;
-            btnDanhSachHopDong.Image = (Image)resources.GetObject("btnDanhSachHopDong.Image");
+            btnDanhSachHopDong.Image = Properties.Resources.completed_task;
             btnDanhSachHopDong.ImageAlign = ContentAlignment.MiddleLeft;
             btnDanhSachHopDong.Location = new Point(0, 120);
             btnDanhSachHopDong.Name = "btnDanhSachHopDong";
@@ -298,7 +316,7 @@ namespace GUI.Forms
             btnDanhSachKhachHang.FlatStyle = FlatStyle.Flat;
             btnDanhSachKhachHang.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnDanhSachKhachHang.ForeColor = Color.White;
-            btnDanhSachKhachHang.Image = (Image)resources.GetObject("btnDanhSachKhachHang.Image");
+            btnDanhSachKhachHang.Image = Properties.Resources.customer__1_;
             btnDanhSachKhachHang.ImageAlign = ContentAlignment.MiddleLeft;
             btnDanhSachKhachHang.Location = new Point(0, 60);
             btnDanhSachKhachHang.Name = "btnDanhSachKhachHang";
@@ -316,7 +334,7 @@ namespace GUI.Forms
             btnDanhsachnv.FlatStyle = FlatStyle.Flat;
             btnDanhsachnv.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnDanhsachnv.ForeColor = Color.White;
-            btnDanhsachnv.Image = (Image)resources.GetObject("btnDanhsachnv.Image");
+            btnDanhsachnv.Image = Properties.Resources.contact_list__1_;
             btnDanhsachnv.ImageAlign = ContentAlignment.MiddleLeft;
             btnDanhsachnv.Location = new Point(0, 0);
             btnDanhsachnv.Name = "btnDanhsachnv";
@@ -347,24 +365,6 @@ namespace GUI.Forms
             labelFooter.TabIndex = 0;
             labelFooter.Text = "© 2025 ECOS. Bản quyền thuộc về ECOS.";
             labelFooter.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // button1
-            // 
-            button1.BackColor = Color.FromArgb(10, 113, 78);
-            button1.Cursor = Cursors.Hand;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.ForeColor = Color.White;
-            button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(0, 480);
-            button1.Name = "button1";
-            button1.Size = new Size(220, 61);
-            button1.TabIndex = 8;
-            button1.Text = "AI";
-            button1.Image = (Image)resources.GetObject("btnAI.Image");
-            button1.TextAlign = ContentAlignment.MiddleLeft;
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click_1;
             // 
             // TrangChu
             // 

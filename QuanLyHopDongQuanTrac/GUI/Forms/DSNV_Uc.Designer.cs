@@ -143,17 +143,9 @@
             dgvDanhsachnhanvien.AllowUserToAddRows = false;
             dgvDanhsachnhanvien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDanhsachnhanvien.BackgroundColor = Color.White;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 10F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvDanhsachnhanvien.ColumnHeadersHeight = 30;
             dgvDanhsachnhanvien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-<<<<<<< HEAD
+//<<<<<<< HEAD
             dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = SystemColors.Window;
             dataGridViewCellStyle6.Font = new Font("Segoe UI", 9F);
@@ -162,26 +154,26 @@
             dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle6.WrapMode = DataGridViewTriState.False;
             dgvDanhsachnhanvien.DefaultCellStyle = dataGridViewCellStyle6;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 10F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            //dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            //dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
+            //dataGridViewCellStyle1.Font = new Font("Segoe UI", 10F);
+            //dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            //dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(111, 207, 151);
+            //dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            //dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            //dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvDanhsachnhanvien.ColumnHeadersHeight = 30;
             dgvDanhsachnhanvien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-=======
->>>>>>> 65c914b (xóa btn xuâtds file)
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgvDanhsachnhanvien.DefaultCellStyle = dataGridViewCellStyle2;
+//=======
+//>>>>>>> 65c914b (xóa btn xuâtds file)
+//            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+//            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+//            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+//            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+//            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(111, 207, 151);
+//            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+//            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+//            dgvDanhsachnhanvien.DefaultCellStyle = dataGridViewCellStyle2;
             dgvDanhsachnhanvien.Dock = DockStyle.Fill;
             dgvDanhsachnhanvien.EnableHeadersVisualStyles = false;
             dgvDanhsachnhanvien.Location = new Point(0, 0);

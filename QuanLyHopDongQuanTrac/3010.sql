@@ -7302,3 +7302,70 @@ BEGIN
     END CATCH
 END
 select * from AI_TaiKy
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE OR ALTER PROCEDURE [dbo].[sp_SinhThongBaoSapDenHan_DotQuanTrac]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @NgayHienTai DATE = CAST(GETDATE() AS DATE);
+    DECLARE @NgayThongBao DATE;
+    DECLARE @maDot VARCHAR(15),
+            @maHD VARCHAR(15),
+            @tenKH NVARCHAR(255),
+            @ngayDuKien DATE,
+            @NewMaTB VARCHAR(15);
+
+    DECLARE cur CURSOR FOR
+    SELECT dq.maDot, dq.maHD, kh.tenDoanhNghiep, dq.ngayDuKien
+    FROM DotQuanTrac dq
+    JOIN HopDong hd ON dq.maHD = hd.maHD
+    JOIN KhachHang kh ON hd.maKH = kh.maKH
+    WHERE dq.trangThai <> 6
+      AND dq.ngayDuKien IS NOT NULL
+      AND DATEADD(DAY, -2, dq.ngayDuKien) = @NgayHienTai
+      AND NOT EXISTS (
+            SELECT 1 FROM ThongBao tb
+            WHERE tb.maDot = dq.maDot
+              AND tb.loaiTB = 'NHAC_SAP_DEN_HAN_DOT'
+      );
+
+    OPEN cur;
+    FETCH NEXT FROM cur INTO @maDot, @maHD, @tenKH, @ngayDuKien;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        SELECT @NewMaTB =
+            'TB' + RIGHT('000000' + CAST(ISNULL(MAX(CAST(SUBSTRING(maTB, 3, 6) AS INT)), 0) + 1 AS VARCHAR(6)), 6)
+        FROM ThongBao;
+
+        INSERT INTO ThongBao (maTB, loaiTB, maDot, maHD, tieuDe, noiDung, ngayTao)
+        VALUES (
+            @NewMaTB,
+            'NHAC_SAP_DEN_HAN_DOT',
+            @maDot,
+            @maHD,
+            N'Nhắc sắp đến hạn trả kết quả cho đợt ' + @maDot,
+            N'Khách hàng: ' + @tenKH
+            + N'. Ngày dự kiến trả kết quả: ' + CONVERT(VARCHAR(10), @ngayDuKien, 103)
+            + N'. Hệ thống gửi nhắc nhở trước 2 ngày.',
+            GETDATE()
+        );
+
+        INSERT INTO ThongBao_NguoiDung(maTB, maNV, trangThaiDoc, ngayDoc)
+        SELECT @NewMaTB, nv.maNV, 0, NULL
+        FROM NhanVien nv
+        WHERE nv.trangThai = 1;
+
+        FETCH NEXT FROM cur INTO @maDot, @maHD, @tenKH, @ngayDuKien;
+    END;
+
+    CLOSE cur;
+    DEALLOCATE cur;
+END;
+GO

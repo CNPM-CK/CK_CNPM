@@ -28,11 +28,11 @@ namespace DAL
             //    "Encrypt=True;" +
             //    "TrustServerCertificate=False;" +
             //    "Connection Timeout=30;";
-            //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-            string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
             SqlConnection conn = new SqlConnection(connectionStr);
             return conn;
@@ -2243,7 +2243,7 @@ namespace DAL
             using (SqlConnection conn = SqlConnectionData.Connect())
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("sp_SinhThongBaoSapDenHanDot", conn))
+                using (SqlCommand cmd = new SqlCommand("sp_SinhThongBaoSapDenHan_DotQuanTrac", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();

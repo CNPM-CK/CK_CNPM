@@ -117,7 +117,7 @@ namespace GUI.Forms
                 new DataGridViewTextBoxColumn { DataPropertyName = "maNV", HeaderText = "Mã nhân viên", Name = "maNV" },
                 new DataGridViewTextBoxColumn { DataPropertyName = "hoTen", HeaderText = "Họ Tên", Name = "hoTen" },
                 new DataGridViewTextBoxColumn { DataPropertyName = "email", HeaderText = "Email", Name = "email" },
-                new DataGridViewTextBoxColumn { DataPropertyName = "maPhong", HeaderText = "Mã Phòng", Name = "maPhong" },
+                new DataGridViewTextBoxColumn { DataPropertyName = "maPhong", HeaderText = "Mã Phòng", Name = "maPhong" , Visible = false },
                 new DataGridViewTextBoxColumn
                 {
                     DataPropertyName = "ngaySinh",
