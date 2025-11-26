@@ -34,13 +34,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DSNV_Uc));
-<<<<<<< HEAD
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-=======
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
->>>>>>> b803238 (Cap nhat sua loi giao diẹn)
             panel6 = new Panel();
             btnXuatfile = new Button();
             btnThemuser = new Button();
@@ -164,26 +161,6 @@
             dgvDanhsachnhanvien.AllowUserToAddRows = false;
             dgvDanhsachnhanvien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDanhsachnhanvien.BackgroundColor = Color.White;
-<<<<<<< HEAD
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = Color.FromArgb(0, 152, 70);
-            dataGridViewCellStyle5.Font = new Font("Segoe UI", 10F);
-            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
-            dgvDanhsachnhanvien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            dgvDanhsachnhanvien.ColumnHeadersHeight = 30;
-            dgvDanhsachnhanvien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = SystemColors.Window;
-            dataGridViewCellStyle6.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle6.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(111, 207, 151);
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.False;
-            dgvDanhsachnhanvien.DefaultCellStyle = dataGridViewCellStyle6;
-=======
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = Color.FromArgb(0, 152, 70);
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 10F);
@@ -202,7 +179,6 @@
             dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             dgvDanhsachnhanvien.DefaultCellStyle = dataGridViewCellStyle2;
->>>>>>> b803238 (Cap nhat sua loi giao diẹn)
             dgvDanhsachnhanvien.Dock = DockStyle.Fill;
             dgvDanhsachnhanvien.EnableHeadersVisualStyles = false;
             dgvDanhsachnhanvien.Location = new Point(0, 0);

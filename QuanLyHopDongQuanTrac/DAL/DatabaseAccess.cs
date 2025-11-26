@@ -762,7 +762,6 @@ namespace DAL
                                 MaDot = reader["maDot"].ToString(),
                                 MaHD = reader["maHD"].ToString(),
                                 NoiDung = reader["noiDung"].ToString(),
-                                TenKhachHang = reader["TenKhachHang"]?.ToString(),
                                 DotQuanTrac = reader["dotQuanTrac"].ToString(),
                                 NgayBatDau = Convert.ToDateTime(reader["ngayBatDau"]),
                                 NgayDuKien = Convert.ToDateTime(reader["ngayDuKien"]),
@@ -2197,7 +2196,7 @@ namespace DAL
             }
         }
 
-         public DataSet layChiTietDotQuanTrac(string maDot)
+        public DataSet layChiTietDotQuanTrac(string maDot)
         {
             try
             {
@@ -2233,7 +2232,20 @@ namespace DAL
                     cmd.ExecuteNonQuery();
                 }
             }
-            
+
+        }
+
+        public void sinhThongBaoSapDenHanDot()
+        {
+            using (SqlConnection conn = SqlConnectionData.Connect())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_SinhThongBaoSapDenHanDot", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
 
@@ -2881,7 +2893,7 @@ namespace DAL
             return dsNhanvien;
         }
 
-
+        // Lấy danh sách kết quả có phân trang
         public List<DTO_KetQuaHeader> layDanhSachKetQua_PhanTrang(int pageNumber, int pageSize)
         {
             List<DTO_KetQuaHeader> dsKetQua = new List<DTO_KetQuaHeader>();
