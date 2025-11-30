@@ -72,26 +72,37 @@ namespace GUI.Forms
 
         private void InitializeControls()
         {
-            this.Controls.Clear();
+            // Không Clear Controls nữa – vì ta dùng layout có sẵn từ Designer
+            // this.Controls.Clear();
 
-            // Panel chính
-            Panel mainPanel = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(240, 242, 245),
-                Padding = new Padding(15)
-            };
-            this.Controls.Add(mainPanel);
+            // Style chung cho form
+            this.BackColor = Color.FromArgb(240, 242, 245);
+            this.Padding = new Padding(15);
 
-            // ========== PHẦN HEADER ==========
+            // Cấu hình tableLayoutPanel1 & 2 panel
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.BackColor = Color.Transparent;
+            tableLayoutPanel1.Padding = new Padding(0);
+
+            // panel1: nửa trên (BIỂU ĐỒ)
+            panel1.BackColor = Color.Transparent;
+            panel1.Padding = new Padding(0, 0, 0, 10);
+            panel1.Controls.Clear();
+
+            // panel2: nửa dưới (DANH SÁCH HỢP ĐỒNG)
+            panel2.BackColor = Color.Transparent;
+            panel2.Padding = new Padding(0, 10, 0, 0);
+            panel2.Controls.Clear();
+
+            // ========== PHẦN HEADER (trong panel1) ==========
             Panel headerPanel = new Panel
             {
-                Height = 70,
+                Height = 60,
                 Dock = DockStyle.Top,
                 BackColor = Color.White,
                 Padding = new Padding(20, 10, 20, 10)
             };
-            mainPanel.Controls.Add(headerPanel);
+            panel1.Controls.Add(headerPanel);
 
             Label lblTitle = new Label
             {
@@ -164,15 +175,15 @@ namespace GUI.Forms
             btnRefresh.Click += BtnRefresh_Click;
             headerPanel.Controls.Add(btnRefresh);
 
-            // ========== PHẦN THẺ THỐNG KÊ ==========
+            // ========== PHẦN THẺ THỐNG KÊ (trong panel1, dưới header) ==========
             Panel cardsPanel = new Panel
             {
-                Height = 10,
+                Height = 120,
                 Dock = DockStyle.Top,
                 BackColor = Color.Transparent,
                 Padding = new Padding(0, 10, 0, 10)
             };
-            mainPanel.Controls.Add(cardsPanel);
+            panel1.Controls.Add(cardsPanel);
 
             pnlTongHD = CreateStatCard("📋 Tổng hợp đồng", "0", Color.FromArgb(0, 123, 255));
             pnlTongHD.Location = new Point(10, 10);
@@ -192,16 +203,22 @@ namespace GUI.Forms
 
             cardsPanel.Resize += CardsPanel_Resize;
 
-            // ========== PHẦN BIỂU ĐỒ ==========
+            // ========== PHẦN BIỂU ĐỒ (trong panel1, chiếm phần còn lại) ==========
+            //Panel chartPanel = new Panel
+            //{
+            //    Dock = DockStyle.Fill,     // 🔹 Quan trọng: Fill trong panel1 (nửa trên), không chạy xuống panel2
+            //    BackColor = Color.White,
+            //    Padding = new Padding(15),
+            //    Margin = new Padding(0, 10, 0, 10)
+            //};
             Panel chartPanel = new Panel
             {
-                Height = 350,
                 Dock = DockStyle.Top,
+                Height = 310,   // 🔹 Điều chỉnh tùy ý
                 BackColor = Color.White,
                 Padding = new Padding(15),
-                Margin = new Padding(0, 10, 0, 10)
             };
-            mainPanel.Controls.Add(chartPanel);
+            panel1.Controls.Add(chartPanel);
 
             chartThongKe = new Chart
             {
@@ -265,7 +282,7 @@ namespace GUI.Forms
 
             chartPanel.Controls.Add(chartThongKe);
 
-            // ========== DANH SÁCH HỢP ĐỒNG ==========
+            // ========== DANH SÁCH HỢP ĐỒNG (trong panel2) ==========
             TableLayoutPanel tablePanel = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -275,9 +292,15 @@ namespace GUI.Forms
                 ColumnCount = 1,
                 CellBorderStyle = TableLayoutPanelCellBorderStyle.None
             };
+
+            // Hàng 0: tiêu đề
             tablePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
-            tablePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            mainPanel.Controls.Add(tablePanel);
+
+            // Hàng 1: khu vực DataGridView (khoảng 8 dòng)
+            float gridHeight = 70F + 40F * 8; // header 70 + 8 dòng x 40
+            tablePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, gridHeight));
+
+            panel2.Controls.Add(tablePanel);
 
             Label lblDanhSach = new Label
             {
@@ -290,7 +313,7 @@ namespace GUI.Forms
             };
             tablePanel.Controls.Add(lblDanhSach, 0, 0);
 
-            // ✅ SỬA LẠI DATAGRIDVIEW - TĂNG CHIỀU CAO HEADER VÀ CHO PHÉP WRAP TEXT
+            // DataGridView như cũ
             dgvHopDong = new DataGridView
             {
                 Dock = DockStyle.Fill,
@@ -307,7 +330,7 @@ namespace GUI.Forms
 
                 ColumnHeadersVisible = true,
                 ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing,
-                ColumnHeadersHeight = 70, // ✅ TĂNG CHIỀU CAO HEADER
+                ColumnHeadersHeight = 70,
                 EnableHeadersVisualStyles = false,
 
                 RowHeadersVisible = false,
@@ -321,7 +344,6 @@ namespace GUI.Forms
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
             };
 
-            // ✅ SỬA STYLE HEADER - CHO PHÉP WRAP TEXT
             dgvHopDong.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = Color.FromArgb(0, 102, 204),
@@ -329,7 +351,7 @@ namespace GUI.Forms
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 Alignment = DataGridViewContentAlignment.MiddleCenter,
                 Padding = new Padding(5),
-                WrapMode = DataGridViewTriState.True, // ✅ CHO PHÉP XUỐNG DÒNG
+                WrapMode = DataGridViewTriState.True,
                 SelectionBackColor = Color.FromArgb(0, 102, 204),
                 SelectionForeColor = Color.White
             };
@@ -352,6 +374,7 @@ namespace GUI.Forms
                 SelectionForeColor = Color.Black
             };
 
+            // Cột giữ nguyên như bạn đã cấu hình
             dgvHopDong.Columns.Clear();
 
             dgvHopDong.Columns.Add(new DataGridViewTextBoxColumn
@@ -360,7 +383,10 @@ namespace GUI.Forms
                 HeaderText = "Mã HĐ",
                 DataPropertyName = "MaHD",
                 Width = 100,
-                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter }
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter
+                }
             });
 
             dgvHopDong.Columns.Add(new DataGridViewTextBoxColumn
@@ -369,7 +395,10 @@ namespace GUI.Forms
                 HeaderText = "Tên Khách Hàng",
                 DataPropertyName = "TenKhachHang",
                 Width = 300,
-                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleLeft }
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleLeft
+                }
             });
 
             dgvHopDong.Columns.Add(new DataGridViewTextBoxColumn
@@ -404,13 +433,16 @@ namespace GUI.Forms
                 HeaderText = "Tần Suất",
                 DataPropertyName = "TanSuatQuanTrac",
                 Width = 200,
-                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleLeft }
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleLeft
+                }
             });
 
             dgvHopDong.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "TrangThaiHienThi",
-                HeaderText = "Tình Trạng Giao Hàng",
+                HeaderText = "Tình Trạng ",
                 DataPropertyName = "TrangThaiHienThi",
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 DefaultCellStyle = new DataGridViewCellStyle
@@ -422,6 +454,7 @@ namespace GUI.Forms
 
             tablePanel.Controls.Add(dgvHopDong, 0, 1);
         }
+
 
         private Panel CreateStatCard(string title, string value, Color color)
         {

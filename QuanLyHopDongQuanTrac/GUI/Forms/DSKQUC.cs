@@ -140,7 +140,6 @@ namespace GUI.Forms
             btn.Region = new Region(path);
         }
 
-        // ========== LAYOUT & RESIZE - GIỐNG DSNV_Uc ==========
         private void DSKQUC_Resize(object sender, EventArgs e)
         {
             if (this.ClientSize.Width < 100) return;
@@ -456,12 +455,19 @@ namespace GUI.Forms
                 }
             });
         }
-
+        private List<string> defaultFilterKeywords = new List<string> { "Quy", "Thang" };
+        private bool isUsingDefaultFilter = true;
         // ========== PHÂN TRANG ==========
         public void LoadDanhSachKetQua()
         {
             try
             {
+                if (isUsingDefaultFilter)
+                {
+                    ApplyDefaultFilter();
+                    return;
+                }
+
                 if (tongSoBanGhi == 0)
                 {
                     tongSoBanGhi = ketQuaBLL.demTongSoKetQua();
@@ -515,6 +521,58 @@ namespace GUI.Forms
             }
         }
 
+        private void ApplyDefaultFilter()
+        {
+            try
+            {
+                var allData = ketQuaBLL.LayDanhSachKetQuaMoi();
+
+                var filtered = allData.Where(item =>
+                {
+                    string tenKH = (item.TenKhachHang ?? "").ToLower();
+                    string dotQT = (item.DotQuanTrac ?? "").ToLower();
+                    string tenNV = (item.TenNhanVien ?? "").ToLower();
+                    string ghiChu = (item.GhiChu ?? "").ToLower();
+
+                    // Kiểm tra nếu có chứa BẤT KỲ từ khóa nào trong danh sách
+                    return defaultFilterKeywords.Any(keyword =>
+                        tenKH.Contains(keyword.ToLower()) ||
+                        dotQT.Contains(keyword.ToLower()) ||
+                        tenNV.Contains(keyword.ToLower()) ||
+                        ghiChu.Contains(keyword.ToLower())
+                    );
+                }).ToList();
+
+                dgvDanhsachketqua.Rows.Clear();
+                int stt = 0;
+                foreach (var item in filtered)
+                {
+                    stt++;
+                    int rowIndex = dgvDanhsachketqua.Rows.Add();
+                    var row = dgvDanhsachketqua.Rows[rowIndex];
+                    row.Cells["STT"].Value = stt;
+                    row.Cells["TenCongTy"].Value = item.TenKhachHang ?? "";
+                    row.Cells["DotQuanTrac"].Value = item.DotQuanTrac ?? "";
+                    row.Cells["NgayTao"].Value = item.NgayTao;
+                    row.Cells["NgayTraKQ"].Value = item.NgayTraKQ;
+                    row.Cells["TenNhanVien"].Value = item.TenNhanVien ?? "";
+                    row.Cells["TrangThai"].Value = item.TrangThai;
+                    row.Cells["GhiChu"].Value = item.GhiChu ?? "";
+                    row.Tag = item.MaKQ;
+                }
+                FormatDataGridView();
+
+                soTrang.Text = $"Hiển thị {filtered.Count} kết quả (Quý/Tháng)";
+                btnTruoc.Enabled = false;
+                btnSau.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lọc dữ liệu: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void btnTruoc_Click(object sender, EventArgs e)
         {
             if (trangHienTai > 1)
@@ -541,8 +599,6 @@ namespace GUI.Forms
                 {
                     string trangThai = row.Cells["TrangThai"].Value.ToString().Trim();
 
-                    // ✅ XỬ LÝ CHÍNH XÁC CẢ 2 TRƯỜNG HỢP
-                    // Kiểm tra cả giá trị database GỐC và giá trị đã format
                     if (trangThai.Equals("Đã xác nhận", StringComparison.OrdinalIgnoreCase) ||
                         trangThai.Equals("✓ Đã xác nhận", StringComparison.OrdinalIgnoreCase) ||
                         trangThai.Equals("true", StringComparison.OrdinalIgnoreCase) ||
@@ -585,20 +641,15 @@ namespace GUI.Forms
             ChiTietKetQua formChiTiet = new ChiTietKetQua(maKQ);
             DialogResult result = formChiTiet.ShowDialog();
 
-            // ✅ KHI ĐÓNG FORM: Nếu có thay đổi trạng thái -> Reload danh sách
             if (result == DialogResult.OK && formChiTiet.DaThayDoiTrangThai)
             {
-                // ✅ RESET CACHE ĐỂ FORCE RELOAD DỮ LIỆU MỚI
                 tongSoBanGhi = 0;
                 tongSoTrang = 0;
                 
-                // ✅ CLEAR DataGridView trước khi reload
                 dgvDanhsachketqua.Rows.Clear();
                 
-                // ✅ Reload lại trang hiện tại
                 LoadDanhSachKetQua();
                 
-                // ✅ FORCE REFRESH UI
                 dgvDanhsachketqua.Refresh();
                 this.Refresh();
             }
@@ -717,6 +768,7 @@ namespace GUI.Forms
                 searchtextbox.Text = "";
                 searchtextbox.ForeColor = Color.FromArgb(64, 64, 64);
             }
+            isUsingDefaultFilter = false;
         }
 
         private void searchtextbox_Leave(object sender, EventArgs e)
@@ -726,8 +778,7 @@ namespace GUI.Forms
                 isPlaceholder = true;
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
-
-                // Reset về phân trang
+                isUsingDefaultFilter = true;
                 trangHienTai = 1;
                 tongSoBanGhi = 0;
                 LoadDanhSachKetQua();
@@ -754,8 +805,7 @@ namespace GUI.Forms
             else if (e.KeyCode == Keys.Escape)
             {
                 searchtextbox.Clear();
-
-                // Reset về phân trang
+                isUsingDefaultFilter = true;
                 trangHienTai = 1;
                 tongSoBanGhi = 0;
                 LoadDanhSachKetQua();
@@ -767,7 +817,7 @@ namespace GUI.Forms
             string keyword = searchtextbox.Text.Trim().ToLower();
             if (string.IsNullOrEmpty(keyword))
             {
-                // Reset về phân trang
+                isUsingDefaultFilter = true;
                 trangHienTai = 1;
                 tongSoBanGhi = 0;
                 LoadDanhSachKetQua();
@@ -776,7 +826,8 @@ namespace GUI.Forms
 
             try
             {
-                // Lấy toàn bộ dữ liệu để search
+                isUsingDefaultFilter = false;
+
                 var allData = ketQuaBLL.LayDanhSachKetQuaMoi();
 
                 var filtered = allData.Where(item =>
