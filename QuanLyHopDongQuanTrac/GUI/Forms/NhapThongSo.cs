@@ -224,7 +224,10 @@ namespace GUI.Forms
                 : decimal.Parse(gtMax);
 
             // Gắn giá trị hiện tại
-            numericUpDown1.Value = decimal.Parse(this.thongSoHT.GiaTriDoDuoc.ToString());
+            if (this.thongSoHT.GiaTriDoDuoc != "")
+            {
+                numericUpDown1.Value = decimal.Parse(this.thongSoHT.GiaTriDoDuoc.ToString());
+            }
             dateTimePicker1.TabIndex = 0;
             numericUpDown1.TabIndex = 1;
             buttonAddnew.TabIndex = 2;
@@ -234,6 +237,17 @@ namespace GUI.Forms
         }
         private void buttonAddnew_Click(object sender, EventArgs e)
         {
+            if (decimal.TryParse(numericUpDown1.Text, out decimal val))
+            {
+                if (val > numericUpDown1.Maximum)
+                {
+                    MessageBox.Show("Giá trị quá lớn!");
+                }
+                else if (val < numericUpDown1.Minimum)
+                {
+                    MessageBox.Show("Giá trị quá nhỏ!");
+                }
+            }
             string? userName = SessionStore.Current.UserName;
 
             if (string.IsNullOrEmpty(userName))
@@ -253,7 +267,7 @@ namespace GUI.Forms
             };
             try
             {
-                if ((Convert.ToDouble(this.thongSoHT.GiaTriDoDuoc) == Convert.ToDouble(numericUpDown1.Value)) && (Convert.ToDateTime(dateTimePicker1.Value) == Convert.ToDateTime(this.thongSoHT.NgayDo)))
+                if ((this.thongSoHT.GiaTriDoDuoc != "") && (Convert.ToDouble(this.thongSoHT.GiaTriDoDuoc) == Convert.ToDouble(numericUpDown1.Value)) && (Convert.ToDateTime(dateTimePicker1.Value) == Convert.ToDateTime(this.thongSoHT.NgayDo)))
                 {
                     MessageBox.Show("Không tìm thấy giá trị khác biệt!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -288,17 +302,17 @@ namespace GUI.Forms
         }
         private void NumericTextChanged(object sender, EventArgs e)
         {
-            if (decimal.TryParse(numericUpDown1.Text, out decimal val))
-            {
-                if (val > numericUpDown1.Maximum)
-                {
-                    MessageBox.Show("Giá trị quá lớn!");
-                }
-                else if (val < numericUpDown1.Minimum)
-                {
-                    MessageBox.Show("Giá trị quá nhỏ!");
-                }
-            }
+            //if (decimal.TryParse(numericUpDown1.Text, out decimal val))
+            //{
+            //    if (val > numericUpDown1.Maximum)
+            //    {
+            //        MessageBox.Show("Giá trị quá lớn!");
+            //    }
+            //    else if (val < numericUpDown1.Minimum)
+            //    {
+            //        MessageBox.Show("Giá trị quá nhỏ!");
+            //    }
+            //}
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

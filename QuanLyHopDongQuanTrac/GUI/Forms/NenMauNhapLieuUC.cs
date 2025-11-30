@@ -377,7 +377,7 @@ namespace GUI.Forms
             
             if (item.GiaTriDoDuoc == "")
             {
-                item.GiaTriDoDuoc = "0";
+                item.GiaTriDoDuoc = "";
             }
             if (item.NgayDo == DateTime.MinValue)
             {

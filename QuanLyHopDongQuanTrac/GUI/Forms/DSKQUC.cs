@@ -1,5 +1,8 @@
 ﻿using BLL;
+using BLL.Speech;
 using DTO;
+using GUI.Common;
+using GUI.Helper;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,14 +11,13 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using BLL.Speech;
-using GUI.Helper;
 
 namespace GUI.Forms
 {
     public partial class DSKQUC : UserControl
     {
         private KetQuaBLL ketQuaBLL = new KetQuaBLL();
+        private readonly bool _isPhongKetQua = SessionStore.Current.MaPhong == "P005";
 
         // Voice search
         private VoiceRecorder _recorder;
@@ -624,7 +626,8 @@ namespace GUI.Forms
 
         private void dgvDanhsachketqua_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 {
-    if (e.RowIndex >= 0)
+            if (!_isPhongKetQua) return;
+            if (e.RowIndex >= 0)
     {
         try
         {
