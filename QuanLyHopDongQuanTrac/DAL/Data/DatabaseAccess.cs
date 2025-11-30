@@ -28,10 +28,10 @@ namespace DAL
             //    "Encrypt=True;" +
             //    "TrustServerCertificate=False;" +
             //    "Connection Timeout=30;";
-            string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            //string connectionStr = "Data Source=ThaiQuangTran\\SQLEXPRESS;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-            //string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+            string connectionStr = "Data Source=PTT;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
             //string connectionStr = "Data Source=LAPTOP-61AGFMMJ\\TONTHAI;Initial Catalog=QuanLyHopDongQuanTrac;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
             SqlConnection conn = new SqlConnection(connectionStr);
@@ -1564,91 +1564,128 @@ namespace DAL
         /// Lấy chi tiết kết quả theo mã KQ (hiển thị trên dgvChiTiet)
         /// </summary>
         public DTO_KetQuaFull LayChiTietKetQuaTheoMaKQ(string maKQ)
+{
+    DTO_KetQuaFull result = new DTO_KetQuaFull();
+    Dictionary<string, DTO_KetQuaNenMau> dictNenMau = new Dictionary<string, DTO_KetQuaNenMau>();
+
+    using (SqlConnection conn = SqlConnectionData.Connect())
+    {
+        conn.Open();
+        using (SqlCommand cmd = new SqlCommand("sp_LayChiTietKetQuaTheoMaKQ", conn))
         {
-            DTO_KetQuaFull result = new DTO_KetQuaFull();
-            Dictionary<string, DTO_KetQuaNenMau> dictNenMau = new Dictionary<string, DTO_KetQuaNenMau>();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@maKQ", maKQ);
 
-            using (SqlConnection conn = SqlConnectionData.Connect())
+            using (SqlDataReader reader = cmd.ExecuteReader())
             {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("sp_LayChiTietKetQuaTheoMaKQ", conn))
+                bool headerLoaded = false;
+                int rowCount = 0;
+
+                // ===== ĐỌC RESULTSET 1: Header =====
+                while (reader.Read())
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@maKQ", maKQ);
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    if (!headerLoaded)
                     {
-                        bool headerLoaded = false;
-
-                        while (reader.Read())
+                        result.Header = new DTO_KetQuaHeader
                         {
-                            // Load header (chỉ 1 lần)
-                            if (!headerLoaded)
-                            {
-                                result.Header = new DTO_KetQuaHeader
-                                {
-                                    MaKQ = reader["maKQ"].ToString(),
-                                    NgayTao = Convert.ToDateTime(reader["ngayTao"]),
-                                    NgayTraKQ = reader["ngayTraKQ"] == DBNull.Value ? null : Convert.ToDateTime(reader["ngayTraKQ"]),
-                                    TenNhanVien = reader["NguoiNhap"].ToString(),
-                                    TrangThaiXacNhan = Convert.ToBoolean(reader["trangThaiXacNhan"]),
-                                    GhiChu = reader["ghiChu"] == DBNull.Value ? "" : reader["ghiChu"].ToString(),
-                                    DotQuanTrac = reader["dotQuanTrac"] == DBNull.Value ? "" : reader["dotQuanTrac"].ToString(),
-                                    MaDot = reader["maDot"] == DBNull.Value ? "" : reader["maDot"].ToString(),
+                            MaKQ = reader["maKQ"].ToString(),
+                            NgayTao = Convert.ToDateTime(reader["ngayTao"]),
+                            NgayTraKQ = reader["ngayTraKQ"] == DBNull.Value 
+                                ? null 
+                                : Convert.ToDateTime(reader["ngayTraKQ"]),
+                            TenNhanVien = reader["NguoiNhap"].ToString(),
+                            TrangThaiXacNhan = Convert.ToBoolean(reader["trangThaiXacNhan"]),
+                            GhiChu = reader["ghiChu"] == DBNull.Value ? "" : reader["ghiChu"].ToString(),
+                            DotQuanTrac = reader["dotQuanTrac"] == DBNull.Value ? "" : reader["dotQuanTrac"].ToString(),
+                            MaDot = reader["maDot"] == DBNull.Value ? "" : reader["maDot"].ToString(),
+                            TenKhachHang = reader["TenKhachHang"] == DBNull.Value ? "" : reader["TenKhachHang"].ToString(),
+                            EmailKhachHang = reader["EmailKhachHang"] == DBNull.Value ? "" : reader["EmailKhachHang"].ToString(),
+                            DiaChiKhachHang = reader["DiaChiKhachHang"] == DBNull.Value ? "" : reader["DiaChiKhachHang"].ToString(),
+                            DiaDiemQuanTrac = reader["DiaDiemQuanTrac"] == DBNull.Value ? "" : reader["DiaDiemQuanTrac"].ToString()
+                        };
+                        headerLoaded = true;
+                        
+                        // ✅ DEBUG LOG
+                        System.Diagnostics.Debug.WriteLine($"✓ Header loaded: {result.Header.MaKQ}");
+                    }
+                }
 
-                                    // ✅ THÊM MỚI - Đọc thông tin khách hàng
-                                    TenKhachHang = reader["TenKhachHang"] == DBNull.Value ? "" : reader["TenKhachHang"].ToString(),
-                                    EmailKhachHang = reader["EmailKhachHang"] == DBNull.Value ? "" : reader["EmailKhachHang"].ToString(),
-                                    DiaChiKhachHang = reader["DiaChiKhachHang"] == DBNull.Value ? "" : reader["DiaChiKhachHang"].ToString(),
-                                    DiaDiemQuanTrac = reader["DiaDiemQuanTrac"] == DBNull.Value ? "" : reader["DiaDiemQuanTrac"].ToString()
+                // ===== ĐỌC RESULTSET 2: Nền mẫu + Chi tiết =====
+                if (reader.NextResult())
+                {
+                    System.Diagnostics.Debug.WriteLine("✓ Reading ResultSet 2...");
+                    
+                    while (reader.Read())
+                    {
+                        rowCount++;
+                        
+                        string maKQNen = reader["maKQNen"] == DBNull.Value ? "" : reader["maKQNen"].ToString();
+
+                        if (!string.IsNullOrEmpty(maKQNen))
+                        {
+                            // Tạo nền mẫu nếu chưa có
+                            if (!dictNenMau.ContainsKey(maKQNen))
+                            {
+                                dictNenMau[maKQNen] = new DTO_KetQuaNenMau
+                                {
+                                    MaKQNen = maKQNen,
+                                    MaKQ = reader["maKQ"].ToString(),
+                                    MaNen = reader["maNen"].ToString(),
+                                    TenNenMau = reader["tenNenMau"].ToString(),
+                                    ViTri = reader["viTri"] == DBNull.Value ? "" : reader["viTri"].ToString(),
+                                    ToaDo = reader["toaDo"] == DBNull.Value ? "" : reader["toaDo"].ToString()
                                 };
-                                headerLoaded = true;
+                                
+                                // ✅ DEBUG LOG
+                                System.Diagnostics.Debug.WriteLine($"  ✓ Nền mẫu: {dictNenMau[maKQNen].TenNenMau} ({maKQNen})");
                             }
 
-                            // Load nền mẫu (giữ nguyên phần này)
-                            string maKQNen = reader["maKQNen"] == DBNull.Value ? "" : reader["maKQNen"].ToString();
-
-                            if (!string.IsNullOrEmpty(maKQNen))
+                            // Thêm thông số vào nền mẫu
+                            string maKQCT = reader["maKQCT"] == DBNull.Value ? "" : reader["maKQCT"].ToString();
+                            if (!string.IsNullOrEmpty(maKQCT))
                             {
-                                if (!dictNenMau.ContainsKey(maKQNen))
+                                var chiTiet = new DTO_KetQuaChiTiet
                                 {
-                                    dictNenMau[maKQNen] = new DTO_KetQuaNenMau
-                                    {
-                                        MaKQNen = maKQNen,
-                                        MaKQ = reader["maKQ"].ToString(),
-                                        MaNen = reader["maNen"].ToString(),
-                                        TenNenMau = reader["tenNenMau"].ToString(),
-                                        ViTri = reader["viTri"] == DBNull.Value ? "" : reader["viTri"].ToString(),
-                                        ToaDo = reader["toaDo"] == DBNull.Value ? "" : reader["toaDo"].ToString()
-                                    };
-                                }
-
-                                string maKQCT = reader["maKQCT"] == DBNull.Value ? "" : reader["maKQCT"].ToString();
-                                if (!string.IsNullOrEmpty(maKQCT))
-                                {
-                                    dictNenMau[maKQNen].DanhSachThongSo.Add(new DTO_KetQuaChiTiet
-                                    {
-                                        MaKQCT = maKQCT,
-                                        MaKQNen = maKQNen,
-                                        MaTS = reader["maTS"].ToString(),
-                                        TenTS = reader["tenTS"].ToString(),
-                                        DonVi = reader["donVi"] == DBNull.Value ? "" : reader["donVi"].ToString(),
-                                        PhuongPhapPhanTich = reader["phuongPhapPhanTich"] == DBNull.Value ? "" : reader["phuongPhapPhanTich"].ToString(),
-                                        KetQua = Convert.ToDouble(reader["ketQua"]),
-                                        GioiHanPhatHien = reader["gioiHanPhatHien"] == DBNull.Value ? "" : reader["gioiHanPhatHien"].ToString(),
-                                        QCVN = reader["qcvn"] == DBNull.Value ? "" : reader["qcvn"].ToString(),
-                                        TinhTrang = reader["TinhTrang"] == DBNull.Value ? "" : reader["TinhTrang"].ToString()
-                                    });
-                                }
+                                    MaKQCT = maKQCT,
+                                    MaKQNen = maKQNen,
+                                    MaTS = reader["maTS"].ToString(),
+                                    TenTS = reader["tenTS"].ToString(),
+                                    DonVi = reader["donVi"] == DBNull.Value ? "" : reader["donVi"].ToString(),
+                                    PhuongPhapPhanTich = reader["phuongPhapPhanTich"] == DBNull.Value ? "" : reader["phuongPhapPhanTich"].ToString(),
+                                    KetQua = reader["ketQua"] == DBNull.Value ? 0 : Convert.ToDouble(reader["ketQua"]),
+                                    GioiHanPhatHien = reader["gioiHanPhatHien"] == DBNull.Value ? "" : reader["gioiHanPhatHien"].ToString(),
+                                    QCVN = reader["qcvn"] == DBNull.Value ? "" : reader["qcvn"].ToString(),
+                                    TinhTrang = reader["TinhTrang"] == DBNull.Value ? "" : reader["TinhTrang"].ToString()
+                                };
+                                
+                                dictNenMau[maKQNen].DanhSachThongSo.Add(chiTiet);
+                                
+                                // ✅ DEBUG LOG
+                                System.Diagnostics.Debug.WriteLine($"    → Thông số: {chiTiet.TenTS} = {chiTiet.KetQua}");
                             }
                         }
                     }
                 }
-            }
 
-            result.DanhSachNenMau = new List<DTO_KetQuaNenMau>(dictNenMau.Values);
-            return result;
+                // ✅ FINAL DEBUG LOG
+                System.Diagnostics.Debug.WriteLine($"=== SUMMARY ===");
+                System.Diagnostics.Debug.WriteLine($"Total rows read: {rowCount}");
+                System.Diagnostics.Debug.WriteLine($"Total nền mẫu: {dictNenMau.Count}");
+                System.Diagnostics.Debug.WriteLine($"Total thông số: {dictNenMau.Values.Sum(x => x.DanhSachThongSo.Count)}");
+            }
         }
+    }
+
+    result.DanhSachNenMau = new List<DTO_KetQuaNenMau>(dictNenMau.Values);
+    
+    // ✅ KIỂM TRA CUỐI CÙNG
+    if (result.DanhSachNenMau.Count == 0)
+    {
+        System.Diagnostics.Debug.WriteLine("⚠️ WARNING: Không có nền mẫu nào!");
+    }
+    
+    return result;
+}
 
         /// <summary>
         /// Cập nhật trạng thái xác nhận kết quả

@@ -649,8 +649,37 @@ namespace GUI.Forms
                 if (success)
                 {
                     MessageBox.Show("✓ " + message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // ✅ Đánh dấu đã thay đổi
                     daThayDoiTrangThai = true;
-                    LoadChiTietKetQua();
+
+                    // ✅ Load lại dữ liệu MỚI từ database
+                    ketQuaFull = ketQuaBLL.LayChiTietKetQuaTheoMaKQ(maKQ);
+
+                    // ✅ Refresh toàn bộ UI (bao gồm nút và textbox)
+                    HienThiThongTinHeader();
+
+                    // ✅ Hoặc cập nhật trực tiếp ngay lập tức (đảm bảo 100%)
+                    if (btnXacNhan != null)
+                    {
+                        btnXacNhan.Enabled = false;
+                        btnXacNhan.BackColor = System.Drawing.Color.Gray;
+                        btnXacNhan.Cursor = Cursors.Default;
+                    }
+
+                    if (btnHuyXacNhan != null)
+                    {
+                        btnHuyXacNhan.Enabled = true;
+                        btnHuyXacNhan.BackColor = System.Drawing.Color.FromArgb(220, 53, 69);
+                        btnHuyXacNhan.Cursor = Cursors.Hand;
+                    }
+
+                    if (txtTrangThai != null)
+                    {
+                        txtTrangThai.Text = "✅ Đã xác nhận";
+                        txtTrangThai.BackColor = System.Drawing.Color.FromArgb(200, 255, 200);
+                        txtTrangThai.ForeColor = System.Drawing.Color.FromArgb(0, 128, 0);
+                    }
                 }
                 else
                 {
@@ -673,8 +702,37 @@ namespace GUI.Forms
                 if (success)
                 {
                     MessageBox.Show("✓ " + message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // ✅ Đánh dấu đã thay đổi
                     daThayDoiTrangThai = true;
-                    LoadChiTietKetQua();
+
+                    // ✅ Load lại dữ liệu MỚI từ database
+                    ketQuaFull = ketQuaBLL.LayChiTietKetQuaTheoMaKQ(maKQ);
+
+                    // ✅ Refresh toàn bộ UI (bao gồm nút và textbox)
+                    HienThiThongTinHeader();
+
+                    // ✅ Hoặc cập nhật trực tiếp ngay lập tức (đảm bảo 100%)
+                    if (btnXacNhan != null)
+                    {
+                        btnXacNhan.Enabled = true;
+                        btnXacNhan.BackColor = System.Drawing.Color.FromArgb(0, 152, 70);
+                        btnXacNhan.Cursor = Cursors.Hand;
+                    }
+
+                    if (btnHuyXacNhan != null)
+                    {
+                        btnHuyXacNhan.Enabled = false;
+                        btnHuyXacNhan.BackColor = System.Drawing.Color.Gray;
+                        btnHuyXacNhan.Cursor = Cursors.Default;
+                    }
+
+                    if (txtTrangThai != null)
+                    {
+                        txtTrangThai.Text = "⏳ Chờ xác nhận";
+                        txtTrangThai.BackColor = System.Drawing.Color.FromArgb(255, 245, 200);
+                        txtTrangThai.ForeColor = System.Drawing.Color.FromArgb(204, 136, 0);
+                    }
                 }
                 else
                 {
@@ -682,6 +740,7 @@ namespace GUI.Forms
                 }
             }
         }
+
 
         // ================== MENU XUẤT FILE ==================
 

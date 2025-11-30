@@ -541,7 +541,12 @@ namespace GUI.Forms
                 {
                     string trangThai = row.Cells["TrangThai"].Value.ToString().Trim();
 
-                    if (trangThai.Equals("Đã xác nhận", StringComparison.OrdinalIgnoreCase))
+                    // ✅ XỬ LÝ CHÍNH XÁC CẢ 2 TRƯỜNG HỢP
+                    // Kiểm tra cả giá trị database GỐC và giá trị đã format
+                    if (trangThai.Equals("Đã xác nhận", StringComparison.OrdinalIgnoreCase) ||
+                        trangThai.Equals("✓ Đã xác nhận", StringComparison.OrdinalIgnoreCase) ||
+                        trangThai.Equals("true", StringComparison.OrdinalIgnoreCase) ||
+                        trangThai == "1")
                     {
                         row.Cells["TrangThai"].Value = "✓ Đã xác nhận";
                         row.Cells["TrangThai"].Style.BackColor = Color.White;
@@ -562,35 +567,49 @@ namespace GUI.Forms
         }
 
         private void dgvDanhsachketqua_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+{
+    if (e.RowIndex >= 0)
+    {
+        try
         {
-            if (e.RowIndex >= 0)
+            string maKQ = dgvDanhsachketqua.Rows[e.RowIndex].Tag?.ToString();
+
+            if (string.IsNullOrEmpty(maKQ))
             {
-                try
-                {
-                    string maKQ = dgvDanhsachketqua.Rows[e.RowIndex].Tag?.ToString();
+                MessageBox.Show("Không tìm thấy mã kết quả!",
+                    "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-                    if (string.IsNullOrEmpty(maKQ))
-                    {
-                        MessageBox.Show("Không tìm thấy mã kết quả!",
-                            "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
+            // Mở form chi tiết
+            ChiTietKetQua formChiTiet = new ChiTietKetQua(maKQ);
+            DialogResult result = formChiTiet.ShowDialog();
 
-                    ChiTietKetQua formChiTiet = new ChiTietKetQua(maKQ);
-                    DialogResult result = formChiTiet.ShowDialog();
-
-                    if (result == DialogResult.OK)
-                    {
-                        LoadDanhSachKetQua();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi khi mở chi tiết: " + ex.Message,
-                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+            // ✅ KHI ĐÓNG FORM: Nếu có thay đổi trạng thái -> Reload danh sách
+            if (result == DialogResult.OK && formChiTiet.DaThayDoiTrangThai)
+            {
+                // ✅ RESET CACHE ĐỂ FORCE RELOAD DỮ LIỆU MỚI
+                tongSoBanGhi = 0;
+                tongSoTrang = 0;
+                
+                // ✅ CLEAR DataGridView trước khi reload
+                dgvDanhsachketqua.Rows.Clear();
+                
+                // ✅ Reload lại trang hiện tại
+                LoadDanhSachKetQua();
+                
+                // ✅ FORCE REFRESH UI
+                dgvDanhsachketqua.Refresh();
+                this.Refresh();
             }
         }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Lỗi khi mở chi tiết: " + ex.Message,
+                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+}
 
         private void dgvDanhsachketqua_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 

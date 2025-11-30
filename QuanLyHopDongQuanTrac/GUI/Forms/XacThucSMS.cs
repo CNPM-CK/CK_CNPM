@@ -22,7 +22,23 @@ namespace GUI.Forms
             SetupRoundedPanels();
         }
 
-        // THÊM HÀM NÀY - Bo góc cho panel2 và panel3
+        // Thiết lập style cho các TextBox OTP
+        private void SetupOTPTextBoxes()
+        {
+            // Danh sách các TextBox OTP
+            TextBox[] otpTextBoxes = { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6 };
+
+            foreach (var textBox in otpTextBoxes)
+            {
+                // Căn giữa chữ
+                textBox.TextAlign = HorizontalAlignment.Center;
+
+                // Tăng font size để dễ nhìn hơn
+                textBox.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            }
+        }
+
+        // Bo góc cho panel2 và panel3
         private void SetupRoundedPanels()
         {
             // Bo 2 góc trên của panel2
@@ -40,7 +56,7 @@ namespace GUI.Forms
             };
         }
 
-        // THÊM HÀM NÀY - Tạo hình chữ nhật bo góc
+        // Tạo hình chữ nhật bo góc
         private GraphicsPath GetRoundedRectangle(Rectangle bounds, int radius, bool topLeft, bool topRight, bool bottomLeft, bool bottomRight)
         {
             GraphicsPath path = new GraphicsPath();
@@ -87,6 +103,13 @@ namespace GUI.Forms
             TextBox? current = sender as TextBox;
             if (current != null)
             {
+                // Chỉ cho phép nhập số
+                if (!string.IsNullOrEmpty(current.Text) && !char.IsDigit(current.Text[0]))
+                {
+                    current.Text = "";
+                    return;
+                }
+
                 // Khi vừa nhập 1 ký tự thì nhảy sang textbox kế tiếp
                 if (current.Text.Length == 1)
                 {
@@ -109,7 +132,6 @@ namespace GUI.Forms
 
         private string LayMaOTP()
         {
-            // Thay txtOTP1, txtOTP2... bằng tên 6 TextBox của bạn
             return textBox1.Text + textBox2.Text + textBox3.Text +
                    textBox4.Text + textBox5.Text + textBox6.Text;
         }
@@ -126,6 +148,9 @@ namespace GUI.Forms
 
         private void XacThucSMS_Load(object sender, EventArgs e)
         {
+            // Thiết lập style cho các TextBox OTP (phải gọi trong Load event)
+            SetupOTPTextBoxes();
+
             // Gán sự kiện TextChanged cho 6 textbox
             textBox1.TextChanged += TextBox_TextChanged;
             textBox2.TextChanged += TextBox_TextChanged;
@@ -148,6 +173,9 @@ namespace GUI.Forms
             textBox4.MaxLength = 1;
             textBox5.MaxLength = 1;
             textBox6.MaxLength = 1;
+
+            // Focus vào textbox đầu tiên
+            textBox1.Focus();
         }
 
         private void button1_Click(object sender, EventArgs e) //nút xác nhận

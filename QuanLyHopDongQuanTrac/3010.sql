@@ -813,7 +813,7 @@ GO
 --/****** Object:  INSERT [dbo].[tanSuatQT]    Script Date: 10/17/2025 9:01:46 PM ******/
 INSERT [dbo].[tanSuatQT] ([maTSQT], [tenTSQT]) VALUES ('TSQT01', 'Không có')
 INSERT [dbo].[tanSuatQT] ([maTSQT], [tenTSQT]) VALUES ('TSQT02', '6 tháng')
-INSERT [dbo].[tanSuatQT] ([maTSQT], [tenTSQT]) VALUES ('TSQT03', 'Quý')
+INSERT [dbo].[tanSuatQT] ([maTSQT], [tenTSQT]) VALUES ('TSQT03', N'Quý')
 GO
 INSERT [dbo].[trangThaiHD] ([maTT], [tenTT]) VALUES ('TT01', N'Đang hiệu lực') --check ngày bắt đầu với kết thúc
 INSERT [dbo].[trangThaiHD] ([maTT], [tenTT]) VALUES ('TT02', N'Hết hạn') --check ngày kết thúc
@@ -3520,122 +3520,122 @@ END
 GO
 -- PTT THÊM PHẦN QUẢN LÝ KẾT QỦA VÀ INSERT THÊM DỮ LIỆU 5/11/2025
 
--- Lấy danh sách kết quả (cho dgvDanhsachketqua)
-CREATE PROCEDURE [dbo].[sp_LayDanhSachKetQua]
-AS
-BEGIN
-    SET NOCOUNT ON;
+---- Lấy danh sách kết quả (cho dgvDanhsachketqua)
+--CREATE PROCEDURE [dbo].[sp_LayDanhSachKetQua]
+--AS
+--BEGIN
+--    SET NOCOUNT ON;
     
-    SELECT 
-        kqh.maKQ,
-        kqh.ngayTao,
-        kqh.ngayTraKQ,
-        nv.hoTen AS NguoiNhap,
-        CASE WHEN kqh.trangThaiXacNhan = 1 THEN N'Đã xác nhận' ELSE N'Chờ xác nhận' END AS TrangThai,
-        kqh.ghiChu,
-        dqt.dotQuanTrac,
-        dqt.maDot,
-        kh.tenDoanhNghiep AS TenKhachHang,
-        kh.emailDoanhNghiep AS EmailKhachHang,
-        kh.diaChi AS DiaChiKhachHang,
-        (SELECT COUNT(*) FROM KetQuaNenMau WHERE maKQ = kqh.maKQ) AS SoNenMau
-    FROM KetQuaHeader kqh
-    LEFT JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
-    LEFT JOIN DotQuanTrac dqt ON kqh.maDot = dqt.maDot
-    LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
-    LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
-    ORDER BY kqh.ngayTao DESC;
-END
+--    SELECT 
+--        kqh.maKQ,
+--        kqh.ngayTao,
+--        kqh.ngayTraKQ,
+--        nv.hoTen AS NguoiNhap,
+--        CASE WHEN kqh.trangThaiXacNhan = 1 THEN N'Đã xác nhận' ELSE N'Chờ xác nhận' END AS TrangThai,
+--        kqh.ghiChu,
+--        dqt.dotQuanTrac,
+--        dqt.maDot,
+--        kh.tenDoanhNghiep AS TenKhachHang,
+--        kh.emailDoanhNghiep AS EmailKhachHang,
+--        kh.diaChi AS DiaChiKhachHang,
+--        (SELECT COUNT(*) FROM KetQuaNenMau WHERE maKQ = kqh.maKQ) AS SoNenMau
+--    FROM KetQuaHeader kqh
+--    LEFT JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
+--    LEFT JOIN DotQuanTrac dqt ON kqh.maDot = dqt.maDot
+--    LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
+--    LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
+--    ORDER BY kqh.ngayTao DESC;
+--END
 
-GO
+--GO
 
--- Lấy chi tiết kết quả theo mã KQ (cho dgvChiTiet)
-CREATE OR ALTER PROCEDURE [dbo].[sp_LayChiTietKetQuaTheoMaKQ]
-    @maKQ VARCHAR(15)
-AS
-BEGIN
-    SET NOCOUNT ON;
+---- Lấy chi tiết kết quả theo mã KQ (cho dgvChiTiet)
+--CREATE OR ALTER PROCEDURE [dbo].[sp_LayChiTietKetQuaTheoMaKQ]
+--    @maKQ VARCHAR(15)
+--AS
+--BEGIN
+--    SET NOCOUNT ON;
     
-    SELECT 
-        kqh.maKQ,
-        kqh.ngayTao,
-        kqh.ngayTraKQ,
-        nv.hoTen AS NguoiNhap,
-        kqh.trangThaiXacNhan,
-        kqh.ghiChu,
-        dqt.dotQuanTrac,
-        dqt.maDot,
-        -- ✅ THÊM THÔNG TIN KHÁCH HÀNG
-        kh.tenDoanhNghiep AS TenKhachHang,
-        kh.emailDoanhNghiep AS EmailKhachHang,
-        kh.diaChi AS DiaChiKhachHang,
-        dqt.noiDung AS DiaDiemQuanTrac,
-        -- Thông tin nền mẫu
-        kqn.maKQNen,
-        kqn.maNen,
-        nm.tenNenMau,
-        kqn.viTri,
-        kqn.toaDo,
-        -- Thông tin chi tiết thông số
-        kqct.maKQCT,
-        kqct.maTS,
-        ts.tenTS,
-        kqct.donVi,
-        kqct.phuongPhapPhanTich,
-        kqct.ketQua,
-        kqct.gioiHanPhatHien,
-        kqct.qcvn,
-        -- Đánh giá kết quả
-        CASE 
-            WHEN ts.giaTriToiDa IS NOT NULL AND kqct.ketQua > ts.giaTriToiDa THEN N'Vượt ngưỡng'
-            WHEN ts.giaTriToiThieu IS NOT NULL AND kqct.ketQua < ts.giaTriToiThieu THEN N'Dưới ngưỡng'
-            ELSE N'Đạt chuẩn'
-        END AS TinhTrang
-    FROM KetQuaHeader kqh
-    LEFT JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
-    LEFT JOIN DotQuanTrac dqt ON kqh.maDot = dqt.maDot
-    LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
-    LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
-    LEFT JOIN KetQuaNenMau kqn ON kqh.maKQ = kqn.maKQ
-    LEFT JOIN NenMau nm ON kqn.maNen = nm.maNen
-    LEFT JOIN KetQuaChiTiet kqct ON kqn.maKQNen = kqct.maKQNen
-    LEFT JOIN ThongSoMoiTruong ts ON kqct.maTS = ts.maTS
-    WHERE kqh.maKQ = @maKQ
-    ORDER BY kqn.maKQNen, ts.tenTS;
-END
-GO
+--    SELECT 
+--        kqh.maKQ,
+--        kqh.ngayTao,
+--        kqh.ngayTraKQ,
+--        nv.hoTen AS NguoiNhap,
+--        kqh.trangThaiXacNhan,
+--        kqh.ghiChu,
+--        dqt.dotQuanTrac,
+--        dqt.maDot,
+--        -- ✅ THÊM THÔNG TIN KHÁCH HÀNG
+--        kh.tenDoanhNghiep AS TenKhachHang,
+--        kh.emailDoanhNghiep AS EmailKhachHang,
+--        kh.diaChi AS DiaChiKhachHang,
+--        dqt.noiDung AS DiaDiemQuanTrac,
+--        -- Thông tin nền mẫu
+--        kqn.maKQNen,
+--        kqn.maNen,
+--        nm.tenNenMau,
+--        kqn.viTri,
+--        kqn.toaDo,
+--        -- Thông tin chi tiết thông số
+--        kqct.maKQCT,
+--        kqct.maTS,
+--        ts.tenTS,
+--        kqct.donVi,
+--        kqct.phuongPhapPhanTich,
+--        kqct.ketQua,
+--        kqct.gioiHanPhatHien,
+--        kqct.qcvn,
+--        -- Đánh giá kết quả
+--        CASE 
+--            WHEN ts.giaTriToiDa IS NOT NULL AND kqct.ketQua > ts.giaTriToiDa THEN N'Vượt ngưỡng'
+--            WHEN ts.giaTriToiThieu IS NOT NULL AND kqct.ketQua < ts.giaTriToiThieu THEN N'Dưới ngưỡng'
+--            ELSE N'Đạt chuẩn'
+--        END AS TinhTrang
+--    FROM KetQuaHeader kqh
+--    LEFT JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
+--    LEFT JOIN DotQuanTrac dqt ON kqh.maDot = dqt.maDot
+--    LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
+--    LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
+--    LEFT JOIN KetQuaNenMau kqn ON kqh.maKQ = kqn.maKQ
+--    LEFT JOIN NenMau nm ON kqn.maNen = nm.maNen
+--    LEFT JOIN KetQuaChiTiet kqct ON kqn.maKQNen = kqct.maKQNen
+--    LEFT JOIN ThongSoMoiTruong ts ON kqct.maTS = ts.maTS
+--    WHERE kqh.maKQ = @maKQ
+--    ORDER BY kqn.maKQNen, ts.tenTS;
+--END
+--GO
 
--- Cập nhật trạng thái xác nhận kết quả
-CREATE PROCEDURE [dbo].[sp_CapNhatTrangThaiKetQua]
-    @maKQ VARCHAR(15),
-    @trangThaiXacNhan BIT
-AS
-BEGIN
-    SET NOCOUNT ON;
-    BEGIN TRY
-        BEGIN TRANSACTION;
+---- Cập nhật trạng thái xác nhận kết quả
+--CREATE PROCEDURE [dbo].[sp_CapNhatTrangThaiKetQua]
+--    @maKQ VARCHAR(15),
+--    @trangThaiXacNhan BIT
+--AS
+--BEGIN
+--    SET NOCOUNT ON;
+--    BEGIN TRY
+--        BEGIN TRANSACTION;
         
-        UPDATE KetQuaHeader 
-        SET trangThaiXacNhan = @trangThaiXacNhan 
-        WHERE maKQ = @maKQ;
+--        UPDATE KetQuaHeader 
+--        SET trangThaiXacNhan = @trangThaiXacNhan 
+--        WHERE maKQ = @maKQ;
         
-        IF @@ROWCOUNT = 0
-        BEGIN
-            ROLLBACK TRANSACTION;
-            SELECT 0 AS Result, N'Không tìm thấy kết quả!' AS Message;
-            RETURN;
-        END
+--        IF @@ROWCOUNT = 0
+--        BEGIN
+--            ROLLBACK TRANSACTION;
+--            SELECT 0 AS Result, N'Không tìm thấy kết quả!' AS Message;
+--            RETURN;
+--        END
         
-        COMMIT TRANSACTION;
-        SELECT 1 AS Result, N'Cập nhật trạng thái thành công!' AS Message;
-    END TRY
-    BEGIN CATCH
-        IF @@TRANCOUNT > 0
-            ROLLBACK TRANSACTION;
-        SELECT 0 AS Result, ERROR_MESSAGE() AS Message;
-    END CATCH
-END
-GO
+--        COMMIT TRANSACTION;
+--        SELECT 1 AS Result, N'Cập nhật trạng thái thành công!' AS Message;
+--    END TRY
+--    BEGIN CATCH
+--        IF @@TRANCOUNT > 0
+--            ROLLBACK TRANSACTION;
+--        SELECT 0 AS Result, ERROR_MESSAGE() AS Message;
+--    END CATCH
+--END
+--GO
 
 -- Thêm mới kết quả header
 CREATE PROCEDURE [dbo].[sp_ThemKetQuaHeader]
@@ -6290,16 +6290,16 @@ BEGIN
 END
 GO
 
-/*
+
 INSERT INTO TaiKhoan (tenTK, matKhau, vaiTro) VALUES 
 ('pkdnguyenvana001@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
 ('pkdtranthib002@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0),
 ('pkdlephuongc003@gmail.com', '$2a$10$cIpQyUtNMCZDqBVqgq5cb.JD7E5ysCTIetHeq37yWpM5L5oMJ2tri', 0);
 
-INSERT INTO NhanVien (maNV, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email, ngayTao, trangThai, daXoa) VALUES
-('NV009', 'P001', N'Nguyễn Văn An', '1990-05-15', 1, N'123 Nguyễn Huệ, Quận 1, TP.HCM', '0901234567', 'pkdnguyenvana001@gmail.com', '2024-01-10', 1, 0),
-('NV010', 'P001', N'Trần Thị Bích', '1992-08-20', 0, N'456 Lê Lợi, Quận 3, TP.HCM', '0902345678', 'pkdtranthib002@gmail.com', '2024-01-15', 1, 0),
-('NV011', 'P001', N'Lê Phương Chi', '1988-03-12', 0, N'789 Trần Hưng Đạo, Quận 5, TP.HCM', '0903456789', 'pkdlephuongc003@gmail.com', '2024-02-01', 1, 0);
+--INSERT INTO NhanVien (maNV, maPhong, hoTen, ngaySinh, gioiTinh, diaChi, soDienThoai, email, ngayTao, trangThai, daXoa) VALUES
+--('NV009', 'P001', N'Nguyễn Văn An', '1990-05-15', 1, N'123 Nguyễn Huệ, Quận 1, TP.HCM', '0901234567', 'pkdnguyenvana001@gmail.com', '2024-01-10', 1, 0),
+--('NV010', 'P001', N'Trần Thị Bích', '1992-08-20', 0, N'456 Lê Lợi, Quận 3, TP.HCM', '0902345678', 'pkdtranthib002@gmail.com', '2024-01-15', 1, 0),
+--('NV011', 'P001', N'Lê Phương Chi', '1988-03-12', 0, N'789 Trần Hưng Đạo, Quận 5, TP.HCM', '0903456789', 'pkdlephuongc003@gmail.com', '2024-02-01', 1, 0);
 
 -- Phòng Kế Hoạch (P002)
 INSERT INTO TaiKhoan (tenTK, matKhau, vaiTro) VALUES 
@@ -6430,43 +6430,43 @@ INSERT INTO Dot_Nen_Ts (maDNTS, maDN, maTS, tenTS, donVi, giaTriToiThieu, giaTri
 ('DNTS0018', 'DN0016', 'TS0006', N'Dầu mỡ', 'mg/L', 0, 100, 'TCVN 6625:2000', 'P004');
 
 GO
-*/
 
-CREATE OR ALTER PROCEDURE [dbo].[LayDanhSachKetQua_PhanTrang]
-    @PageNumber INT,
-    @PageSize INT
-AS
-BEGIN
-    SET NOCOUNT ON;
+
+--CREATE OR ALTER PROCEDURE [dbo].[LayDanhSachKetQua_PhanTrang]
+--    @PageNumber INT,
+--    @PageSize INT
+--AS
+--BEGIN
+--    SET NOCOUNT ON;
     
-    SELECT 
-        kqh.maKQ,
-        kqh.ngayTao,
-        kqh.ngayTraKQ,
-        nv.hoTen AS TenNhanVien,
-        CASE WHEN kqh.trangThaiXacNhan = 1 THEN N'Đã xác nhận' ELSE N'Chờ xác nhận' END AS TrangThai,
-        kqh.ghiChu,
-        dqt.dotQuanTrac,
-        kh.tenDoanhNghiep AS TenKhachHang
-    FROM KetQuaHeader kqh
-    LEFT JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
-    LEFT JOIN DotQuanTrac dqt ON kqh.maDot = dqt.maDot
-    LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
-    LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
-    ORDER BY kqh.ngayTao DESC
-    OFFSET (@PageNumber - 1) * @PageSize ROWS
-    FETCH NEXT @PageSize ROWS ONLY;
-END
-GO
+--    SELECT 
+--        kqh.maKQ,
+--        kqh.ngayTao,
+--        kqh.ngayTraKQ,
+--        nv.hoTen AS TenNhanVien,
+--        CASE WHEN kqh.trangThaiXacNhan = 1 THEN N'Đã xác nhận' ELSE N'Chờ xác nhận' END AS TrangThai,
+--        kqh.ghiChu,
+--        dqt.dotQuanTrac,
+--        kh.tenDoanhNghiep AS TenKhachHang
+--    FROM KetQuaHeader kqh
+--    LEFT JOIN NhanVien nv ON kqh.nhanVienNhap = nv.maNV
+--    LEFT JOIN DotQuanTrac dqt ON kqh.maDot = dqt.maDot
+--    LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
+--    LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
+--    ORDER BY kqh.ngayTao DESC
+--    OFFSET (@PageNumber - 1) * @PageSize ROWS
+--    FETCH NEXT @PageSize ROWS ONLY;
+--END
+--GO
 
--- 2. Stored procedure đếm tổng số kết quả
-CREATE OR ALTER PROCEDURE [dbo].[DemTongSoKetQua]
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SELECT COUNT(*) FROM KetQuaHeader;
-END
-GO
+---- 2. Stored procedure đếm tổng số kết quả
+--CREATE OR ALTER PROCEDURE [dbo].[DemTongSoKetQua]
+--AS
+--BEGIN
+--    SET NOCOUNT ON;
+--    SELECT COUNT(*) FROM KetQuaHeader;
+--END
+--GO
 
 
 SET ANSI_NULLS ON
@@ -7368,4 +7368,476 @@ BEGIN
     CLOSE cur;
     DEALLOCATE cur;
 END;
+GO
+-- sửa 
+-- ============================================
+-- VIEW 1: vw_KetQuaHeader_FromKetQua
+-- Mục đích: Hiển thị danh sách kết quả trên DSKQUC
+-- ============================================
+CREATE OR ALTER VIEW vw_KetQuaHeader_FromKetQua AS
+SELECT 
+    -- Tạo maKQ tổng hợp theo đợt (vì KetQua có nhiều maKQ cho 1 đợt)
+    dn.maDot AS maKQ,  -- Dùng maDot làm maKQ tổng hợp
+    
+    -- Ngày tạo: Lấy ngày đo sớm nhất của đợt
+    MIN(kq.ngayDo) AS ngayTao,
+    
+    -- Ngày trả KQ: Từ DotQuanTrac
+    dqt.ngayTraKQ,
+    
+    -- Người nhập: Lấy người nhập đầu tiên (hoặc có thể lấy người cuối)
+    (SELECT TOP 1 nv.hoTen 
+     FROM KetQua kq2 
+     INNER JOIN NhanVien nv ON kq2.nhanVienNhap = nv.maNV
+     WHERE kq2.maDNTS IN (
+         SELECT maDNTS FROM Dot_Nen_Ts WHERE maDN IN (
+             SELECT maDN FROM Dot_Nen WHERE maDot = dn.maDot
+         )
+     )
+     ORDER BY kq2.ngayDo ASC
+    ) AS NguoiNhap,
+    
+    -- ✅ SỬA: Trạng thái xác nhận - ĐỌC TỪ DotQuanTrac.trangThai
+    CASE 
+        WHEN dqt.trangThai = 3 THEN 1  -- Hoàn thành = Đã xác nhận
+        ELSE 0  -- Các trạng thái khác = Chưa xác nhận
+    END AS trangThaiXacNhan,
+    
+    -- ✅ SỬA: Text trạng thái
+    CASE 
+        WHEN dqt.trangThai = 3 THEN N'Đã xác nhận'
+        ELSE N'Chờ xác nhận'
+    END AS TrangThai,
+    
+    -- Ghi chú: Từ DotQuanTrac
+    dqt.noiDung AS ghiChu,
+    
+    -- Thông tin đợt
+    dqt.dotQuanTrac,
+    dqt.maDot,
+    
+    -- Số nền mẫu
+    COUNT(DISTINCT dn.maNen) AS SoNenMau,
+    
+    -- Thông tin khách hàng
+    kh.tenDoanhNghiep AS TenKhachHang,
+    kh.emailDoanhNghiep AS EmailKhachHang,
+    kh.diaChi AS DiaChiKhachHang,
+    dqt.noiDung AS DiaDiemQuanTrac
+    
+FROM Dot_Nen dn
+INNER JOIN DotQuanTrac dqt ON dn.maDot = dqt.maDot
+LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
+LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
+LEFT JOIN Dot_Nen_Ts dnts ON dn.maDN = dnts.maDN
+LEFT JOIN KetQua kq ON dnts.maDNTS = kq.maDNTS
+
+-- Chỉ lấy các đợt có ít nhất 1 kết quả đã nhập
+WHERE EXISTS (
+    SELECT 1 
+    FROM Dot_Nen_Ts dnts2
+    INNER JOIN KetQua kq2 ON dnts2.maDNTS = kq2.maDNTS
+    WHERE dnts2.maDN IN (SELECT maDN FROM Dot_Nen WHERE maDot = dn.maDot)
+)
+
+GROUP BY 
+    dn.maDot, 
+    dqt.ngayTraKQ, 
+    dqt.noiDung, 
+    dqt.dotQuanTrac, 
+    dqt.maDot,
+    dqt.trangThai,  -- ✅ THÊM VÀO GROUP BY
+    kh.tenDoanhNghiep,
+    kh.emailDoanhNghiep,
+    kh.diaChi;
+GO
+-- ============================================
+-- VIEW 2: vw_KetQuaNenMau_FromKetQua
+-- Mục đích: Hiển thị các nền mẫu của kết quả
+-- ============================================
+CREATE OR ALTER VIEW vw_KetQuaNenMau_FromKetQua AS
+SELECT 
+    -- Tạo maKQNen từ maDN
+    dn.maDN AS maKQNen,
+    
+    -- maKQ tương ứng (là maDot)
+    dn.maDot AS maKQ,
+    
+    -- Thông tin nền mẫu
+    dn.maNen,
+    nm.tenNenMau,
+    
+    -- Thông tin vị trí
+    dn.tenViTri AS viTri,
+    dn.toaDo
+    
+FROM Dot_Nen dn
+INNER JOIN NenMau nm ON dn.maNen = nm.maNen
+
+-- Chỉ lấy các nền mẫu có ít nhất 1 thông số đã nhập
+WHERE EXISTS (
+    SELECT 1 
+    FROM Dot_Nen_Ts dnts
+    INNER JOIN KetQua kq ON dnts.maDNTS = kq.maDNTS
+    WHERE dnts.maDN = dn.maDN
+);
+GO
+-- ============================================
+-- Sửa SP: sp_LayDanhSachKetQua
+-- ============================================
+CREATE OR ALTER PROCEDURE sp_LayDanhSachKetQua
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        maKQ,
+        ngayTao,
+        ngayTraKQ,
+        NguoiNhap,
+        TrangThai,
+        ghiChu,
+        dotQuanTrac,
+        maDot,
+        TenKhachHang,
+        EmailKhachHang,
+        DiaChiKhachHang,
+        SoNenMau
+    FROM vw_KetQuaHeader_FromKetQua
+    ORDER BY ngayTao DESC;
+END
+GO
+-- ============================================
+-- Sửa SP: LayDanhSachKetQua_PhanTrang
+-- ============================================
+CREATE OR ALTER PROCEDURE LayDanhSachKetQua_PhanTrang
+    @PageNumber INT,
+    @PageSize INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        maKQ,
+        ngayTao,
+        ngayTraKQ,
+        NguoiNhap AS TenNhanVien,
+        TrangThai,
+        ghiChu,
+        dotQuanTrac,
+        TenKhachHang
+    FROM vw_KetQuaHeader_FromKetQua
+    ORDER BY ngayTao DESC
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+END
+GO
+-- ============================================
+-- Sửa SP: DemTongSoKetQua
+-- ============================================
+CREATE OR ALTER PROCEDURE DemTongSoKetQua
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT COUNT(DISTINCT maKQ) 
+    FROM vw_KetQuaHeader_FromKetQua;
+END
+GO
+-- ============================================
+-- Sửa SP: sp_LayChiTietKetQuaTheoMaKQ
+-- ============================================
+CREATE OR ALTER PROCEDURE sp_LayChiTietKetQuaTheoMaKQ
+    @maKQ VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- =============================================
+    -- DEBUG: Kiểm tra dữ liệu có tồn tại không
+    -- =============================================
+    DECLARE @SoNenMau INT = 0;
+    DECLARE @SoThongSo INT = 0;
+    
+    SELECT @SoNenMau = COUNT(DISTINCT nm.maKQNen)
+    FROM vw_KetQuaNenMau_FromKetQua nm
+    WHERE nm.maKQ = @maKQ;
+    
+    SELECT @SoThongSo = COUNT(*)
+    FROM vw_KetQuaNenMau_FromKetQua nm
+    INNER JOIN vw_KetQuaChiTiet_FromKetQua ct ON nm.maKQNen = ct.maKQNen
+    WHERE nm.maKQ = @maKQ;
+    
+    -- In ra log để debug
+    PRINT 'MaKQ: ' + @maKQ;
+    PRINT 'So nen mau: ' + CAST(@SoNenMau AS VARCHAR);
+    PRINT 'So thong so: ' + CAST(@SoThongSo AS VARCHAR);
+    
+    -- =============================================
+    -- RESULTSET 1: Header (CHỈ 1 DÒNG)
+    -- =============================================
+    SELECT TOP 1
+        h.maKQ,
+        h.ngayTao,
+        h.ngayTraKQ,
+        h.NguoiNhap,
+        h.trangThaiXacNhan,
+        h.ghiChu,
+        h.dotQuanTrac,
+        h.maDot,
+        h.TenKhachHang,
+        h.EmailKhachHang,
+        h.DiaChiKhachHang,
+        h.DiaDiemQuanTrac,
+        -- Placeholder
+        CAST(NULL AS VARCHAR(15)) AS maKQNen,
+        CAST(NULL AS VARCHAR(15)) AS maNen,
+        CAST(NULL AS NVARCHAR(100)) AS tenNenMau,
+        CAST(NULL AS NVARCHAR(200)) AS viTri,
+        CAST(NULL AS NVARCHAR(100)) AS toaDo,
+        CAST(NULL AS VARCHAR(15)) AS maKQCT,
+        CAST(NULL AS VARCHAR(15)) AS maTS,
+        CAST(NULL AS NVARCHAR(30)) AS tenTS,
+        CAST(NULL AS NVARCHAR(15)) AS donVi,
+        CAST(NULL AS NVARCHAR(200)) AS phuongPhapPhanTich,
+        CAST(NULL AS FLOAT) AS ketQua,
+        CAST(NULL AS NVARCHAR(50)) AS gioiHanPhatHien,
+        CAST(NULL AS NVARCHAR(50)) AS qcvn,
+        CAST(NULL AS NVARCHAR(50)) AS TinhTrang
+    FROM vw_KetQuaHeader_FromKetQua h
+    WHERE h.maKQ = @maKQ;
+    
+    -- =============================================
+    -- RESULTSET 2: Nền mẫu + Chi tiết (NHIỀU DÒNG)
+    -- =============================================
+    SELECT 
+        h.maKQ,
+        h.ngayTao,
+        h.ngayTraKQ,
+        h.NguoiNhap,
+        h.trangThaiXacNhan,
+        h.ghiChu,
+        h.dotQuanTrac,
+        h.maDot,
+        h.TenKhachHang,
+        h.EmailKhachHang,
+        h.DiaChiKhachHang,
+        h.DiaDiemQuanTrac,
+        -- Thông tin nền mẫu
+        nm.maKQNen,
+        nm.maNen,
+        nm.tenNenMau,
+        nm.viTri,
+        nm.toaDo,
+        -- Thông tin chi tiết thông số
+        ct.maKQCT,
+        ct.maTS,
+        ct.tenTS,
+        ct.donVi,
+        ct.phuongPhapPhanTich,
+        ct.ketQua,
+        ct.gioiHanPhatHien,
+        ct.qcvn,
+        ct.TinhTrang
+    FROM vw_KetQuaHeader_FromKetQua h
+    INNER JOIN vw_KetQuaNenMau_FromKetQua nm ON h.maKQ = nm.maKQ
+    LEFT JOIN vw_KetQuaChiTiet_FromKetQua ct ON nm.maKQNen = ct.maKQNen
+    WHERE h.maKQ = @maKQ
+    ORDER BY nm.maNen, nm.tenNenMau, ct.tenTS;
+END
+
+GO
+-- ============================================
+-- VIEW 1: vw_KetQuaHeader_FromKetQua
+-- Mục đích: Hiển thị danh sách kết quả trên DSKQUC
+-- ============================================
+CREATE OR ALTER VIEW vw_KetQuaHeader_FromKetQua AS
+SELECT 
+    dn.maDot AS maKQ,
+    MIN(kq.ngayDo) AS ngayTao,
+    dqt.ngayTraKQ,
+    
+    (SELECT TOP 1 nv.hoTen 
+     FROM KetQua kq2 
+     INNER JOIN NhanVien nv ON kq2.nhanVienNhap = nv.maNV
+     WHERE kq2.maDNTS IN (
+         SELECT maDNTS FROM Dot_Nen_Ts WHERE maDN IN (
+             SELECT maDN FROM Dot_Nen WHERE maDot = dn.maDot
+         )
+     )
+     ORDER BY kq2.ngayDo ASC
+    ) AS NguoiNhap,
+    
+    -- ✅ ĐỌC TRẠNG THÁI TỪ DotQuanTrac.trangThai
+    -- trangThai = 3: Hoàn thành = Đã xác nhận
+    -- trangThai khác: Chờ xác nhận
+    CASE 
+        WHEN dqt.trangThai = 3 THEN 1  
+        ELSE 0  
+    END AS trangThaiXacNhan,
+    
+    CASE 
+        WHEN dqt.trangThai = 3 THEN N'Đã xác nhận'
+        ELSE N'Chờ xác nhận'
+    END AS TrangThai,
+    
+    dqt.noiDung AS ghiChu,
+    dqt.dotQuanTrac,
+    dqt.maDot,
+    COUNT(DISTINCT dn.maNen) AS SoNenMau,
+    kh.tenDoanhNghiep AS TenKhachHang,
+    kh.emailDoanhNghiep AS EmailKhachHang,
+    kh.diaChi AS DiaChiKhachHang,
+    dqt.noiDung AS DiaDiemQuanTrac
+    
+FROM Dot_Nen dn
+INNER JOIN DotQuanTrac dqt ON dn.maDot = dqt.maDot
+LEFT JOIN HopDong hd ON dqt.maHD = hd.maHD
+LEFT JOIN KhachHang kh ON hd.maKH = kh.maKH
+LEFT JOIN Dot_Nen_Ts dnts ON dn.maDN = dnts.maDN
+LEFT JOIN KetQua kq ON dnts.maDNTS = kq.maDNTS
+
+WHERE EXISTS (
+    SELECT 1 
+    FROM Dot_Nen_Ts dnts2
+    INNER JOIN KetQua kq2 ON dnts2.maDNTS = kq2.maDNTS
+    WHERE dnts2.maDN IN (SELECT maDN FROM Dot_Nen WHERE maDot = dn.maDot)
+)
+
+GROUP BY 
+    dn.maDot, 
+    dqt.ngayTraKQ, 
+    dqt.noiDung, 
+    dqt.dotQuanTrac, 
+    dqt.maDot,
+    dqt.trangThai,  
+    kh.tenDoanhNghiep,
+    kh.emailDoanhNghiep,
+    kh.diaChi;
+GO
+-- ============================================
+-- VIEW 2: vw_KetQuaNenMau_FromKetQua
+-- Mục đích: Hiển thị các nền mẫu của kết quả
+-- ============================================
+CREATE OR ALTER VIEW vw_KetQuaNenMau_FromKetQua AS
+SELECT 
+    -- Tạo maKQNen từ maDN
+    dn.maDN AS maKQNen,
+    
+    -- maKQ tương ứng (là maDot)
+    dn.maDot AS maKQ,
+    
+    -- Thông tin nền mẫu
+    dn.maNen,
+    nm.tenNenMau,
+    
+    -- Thông tin vị trí
+    dn.tenViTri AS viTri,
+    dn.toaDo
+    
+FROM Dot_Nen dn
+INNER JOIN NenMau nm ON dn.maNen = nm.maNen
+
+-- Chỉ lấy các nền mẫu có ít nhất 1 thông số đã nhập
+WHERE EXISTS (
+    SELECT 1 
+    FROM Dot_Nen_Ts dnts
+    INNER JOIN KetQua kq ON dnts.maDNTS = kq.maDNTS
+    WHERE dnts.maDN = dn.maDN
+);
+GO
+-- ============================================
+-- VIEW 3: vw_KetQuaChiTiet_FromKetQua
+-- Mục đích: Hiển thị chi tiết các thông số đo
+-- ============================================
+CREATE OR ALTER VIEW vw_KetQuaChiTiet_FromKetQua AS
+SELECT 
+    -- Tạo maKQCT từ maKQ gốc
+    kq.maKQ AS maKQCT,
+    
+    -- maKQNen tương ứng (là maDN)
+    dnts.maDN AS maKQNen,
+    
+    -- Thông tin thông số
+    dnts.maTS,
+    dnts.tenTS,
+    dnts.donVi,
+    dnts.phuongPhap AS phuongPhapPhanTich,
+    
+    -- ✅ Kết quả đo (QUAN TRỌNG - phải cast đúng kiểu)
+    CAST(kq.giaTriDoDuoc AS FLOAT) AS ketQua,
+    
+    -- Giới hạn phát hiện (từ giá trị tối thiểu)
+    CASE 
+        WHEN dnts.giaTriToiThieu IS NOT NULL 
+        THEN CAST(dnts.giaTriToiThieu AS NVARCHAR(50))
+        ELSE N'N/A'
+    END AS gioiHanPhatHien,
+    
+    -- QCVN (kết hợp giá trị min-max)
+    CASE 
+        WHEN dnts.giaTriToiThieu IS NOT NULL OR dnts.giaTriToiDa IS NOT NULL
+        THEN CONCAT(
+            ISNULL(CAST(dnts.giaTriToiThieu AS NVARCHAR(20)), N'N/A'),
+            N' - ',
+            ISNULL(CAST(dnts.giaTriToiDa AS NVARCHAR(20)), N'N/A')
+        )
+        ELSE N'Không quy định'
+    END AS qcvn,
+    
+    -- Tình trạng (so sánh với ngưỡng)
+    CASE 
+        WHEN dnts.giaTriToiDa IS NOT NULL AND kq.giaTriDoDuoc > dnts.giaTriToiDa 
+            THEN N'Vượt ngưỡng'
+        WHEN dnts.giaTriToiThieu IS NOT NULL AND kq.giaTriDoDuoc < dnts.giaTriToiThieu 
+            THEN N'Dưới ngưỡng'
+        ELSE N'Đạt chuẩn'
+    END AS TinhTrang
+    
+FROM KetQua kq
+INNER JOIN Dot_Nen_Ts dnts ON kq.maDNTS = dnts.maDNTS
+INNER JOIN Dot_Nen dn ON dnts.maDN = dn.maDN
+INNER JOIN ThongSoMoiTruong ts ON dnts.maTS = ts.maTS;
+GO
+-- ============================================
+-- SỬA LẠI: sp_CapNhatTrangThaiKetQua
+-- Cập nhật trạng thái "xác nhận" = cập nhật trạng thái đợt quan trắc
+-- ============================================
+CREATE OR ALTER PROCEDURE sp_CapNhatTrangThaiKetQua
+    @maKQ VARCHAR(15),  -- Thực chất là maDot
+    @trangThaiXacNhan BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM DotQuanTrac WHERE maDot = @maKQ)
+        BEGIN
+            SELECT 0 AS Result, N'Đợt quan trắc không tồn tại!' AS Message;
+            RETURN;
+        END
+        
+        IF @trangThaiXacNhan = 1
+        BEGIN
+            -- XÁC NHẬN: Chuyển trạng thái thành 3 (Hoàn thành)
+            UPDATE DotQuanTrac 
+            SET trangThai = 3
+            WHERE maDot = @maKQ;
+            
+            SELECT 1 AS Result, N'Xác nhận kết quả thành công!' AS Message;
+        END
+        ELSE
+        BEGIN
+            -- HỦY XÁC NHẬN: Chuyển về 2 (Đang thực hiện)
+            UPDATE DotQuanTrac 
+            SET trangThai = 2
+            WHERE maDot = @maKQ;
+            
+            SELECT 1 AS Result, N'Đã hủy xác nhận kết quả!' AS Message;
+        END
+    END TRY
+    BEGIN CATCH
+        SELECT 0 AS Result, ERROR_MESSAGE() AS Message;
+    END CATCH
+END
 GO

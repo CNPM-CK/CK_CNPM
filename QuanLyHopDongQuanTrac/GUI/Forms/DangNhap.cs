@@ -96,7 +96,6 @@ namespace GUI.Forms
             }
         }
 
-        // ===== SỬA LỖI 2: Thêm // trước comment block =====
         // ===== FACE ID LOGIN =====
         private void button2_Click(object sender, EventArgs e)
         {
@@ -271,74 +270,59 @@ namespace GUI.Forms
             }
         }
 
-        //private void button1_Click(object sender, EventArgs e)
-        //{
-        //    string username = txtTentk.Text.Trim();
-        //    string password = textBoxmatkhau.Text.Trim();
-
-        //    if (string.IsNullOrEmpty(username))
-        //    {
-        //        MessageBox.Show(
-        //            "Vui lòng nhập tên tài khoản!",
-        //            "Cảnh báo",
-        //            MessageBoxButtons.OK,
-        //            MessageBoxIcon.Warning);
-        //        txtTentk.Focus();
-        //        return;
-        //    }
-
-        //    if (string.IsNullOrEmpty(password))
-        //    {
-        //        MessageBox.Show(
-        //            "Vui lòng nhập mật khẩu!",
-        //            "Cảnh báo",
-        //            MessageBoxButtons.OK,
-        //            MessageBoxIcon.Warning);
-        //        textBoxmatkhau.Focus();
-        //        return;
-        //    }
-
-        //    var result = taiKhoanBLL.dangNhap(username, password);
-
-        //    if (!result.success)
-        //    {
-        //        MessageBox.Show(
-        //            result.message,
-        //            "Đăng nhập thất bại",
-        //            MessageBoxButtons.OK,
-        //            MessageBoxIcon.Error);
-        //        return;
-        //    }
-
-        //    // XỬ LÝ GHI NHỚ ĐĂNG NHẬP
-        //    if (checkBox1.Checked)
-        //    {
-        //        LuuThongTinDangNhap(username, password);
-        //    }
-        //    else
-        //    {
-        //        XoaThongTinDangNhap();
-        //    }
-
-        //    DieuHuongTheoVaiTro(result.account);
-        //}
-
         private void button1_Click(object sender, EventArgs e) // nút đăng nhập
         {
             string username = txtTentk.Text.Trim();
             string password = textBoxmatkhau.Text.Trim();
 
+            // Kiểm tra validate trước khi đăng nhập
+            if (string.IsNullOrEmpty(username))
+            {
+                MessageBox.Show(
+                    "Vui lòng nhập tên tài khoản!",
+                    "Cảnh báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                txtTentk.Focus();
+                return;
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show(
+                    "Vui lòng nhập mật khẩu!",
+                    "Cảnh báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                textBoxmatkhau.Focus();
+                return;
+            }
+
+            // Thực hiện đăng nhập
             var result = taiKhoanBLL.dangNhap(username, password);
             if (!result.success)
             {
                 MessageBox.Show(result.message, "Đăng nhập thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            // XỬ LÝ GHI NHỚ ĐĂNG NHẬP
+            if (checkBox1.Checked)
+            {
+                LuuThongTinDangNhap(username, password);
+            }
+            else
+            {
+                XoaThongTinDangNhap();
+            }
+
+            // Lưu thông tin session
             SessionStore.Current.SignIn(
                 result.account!.tenTK,
                 result.account!.vaiTro
             );
             Debug.WriteLine(result.account.vaiTro);
+
             if (result.account!.vaiTro != 1 && result.account!.vaiTro != 2)
             {
                 var nvBLL = new NhanVienBLL();
@@ -351,15 +335,12 @@ namespace GUI.Forms
                 }
                 SessionStore.Current.MaPhong = maPhong;
             }
-            //Form next = CreateNextFormFromSession();
-            //next.FormClosed += (s, _) => this.Close();
-            //next.Show();
-            //this.Hide();
+
+            // Chuyển sang trang chủ
             TrangChu trangChu = new TrangChu();
             trangChu.FormClosed += (s, _) => this.Close();
             trangChu.Show();
             this.Hide();
-
         }
 
         private void textBoxMatKhau_KeyDown(object sender, KeyEventArgs e)
@@ -407,6 +388,7 @@ namespace GUI.Forms
             path.CloseFigure();
             control.Region = new Region(path);
         }
+
         private void ApplyRoundedInput(Panel panel, Control ctrl, int borderRadius, int borderSize, Color borderColor)
         {
             panel.Paint -= Panel_Paint;
