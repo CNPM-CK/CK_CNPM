@@ -5,6 +5,7 @@ using GUI.Common;
 using GUI.Helper;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -457,33 +458,38 @@ namespace GUI.Forms
                 }
             });
         }
-        private List<string> defaultFilterKeywords = new List<string> { "Quy", "Thang" };
-        private bool isUsingDefaultFilter = true;
+        private bool isSearching = false;
         // ========== PHÂN TRANG ==========
+
         public void LoadDanhSachKetQua()
         {
             try
             {
-                if (isUsingDefaultFilter)
-                {
-                    ApplyDefaultFilter();
-                    return;
-                }
+                // Nếu đang tìm kiếm, không load lại
+                if (isSearching) return;
 
+                // Tính tổng số bản ghi và tổng số trang
                 if (tongSoBanGhi == 0)
                 {
                     tongSoBanGhi = ketQuaBLL.demTongSoKetQua();
                     tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / kichThuocTrang);
                 }
-
+                
+                // Lấy dữ liệu phân trang
                 var list = ketQuaBLL.layDanhSachKetQua_PhanTrang(trangHienTai, kichThuocTrang);
-                danhSachGoc = list;
+                foreach (var item in list)
+                {
+                    Debug.WriteLine(item.TrangThaiXacNhan);
+                }
 
+                // Xóa dữ liệu cũ
                 dgvDanhsachketqua.Rows.Clear();
 
+                // Tính STT bắt đầu
                 int sttBatDau = (trangHienTai - 1) * kichThuocTrang;
                 int stt = 0;
 
+                // Thêm dữ liệu vào DataGridView
                 foreach (var item in list)
                 {
                     stt++;
@@ -501,15 +507,19 @@ namespace GUI.Forms
                     row.Tag = item.MaKQ;
                 }
 
+                // Format lại DataGridView
                 FormatDataGridView();
                 dgvDanhsachketqua.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
                 SetColumnWidths();
 
+                // Cập nhật thông tin phân trang
                 soTrang.Text = $"Trang {trangHienTai}/{tongSoTrang}";
 
+                // Cập nhật trạng thái các nút phân trang
                 btnTruoc.Enabled = trangHienTai > 1;
                 btnSau.Enabled = trangHienTai < tongSoTrang;
 
+                // Thông báo nếu không có dữ liệu
                 if (list.Count == 0 && tongSoBanGhi == 0)
                 {
                     MessageBox.Show("Chưa có kết quả quan trắc nào!",
@@ -523,57 +533,7 @@ namespace GUI.Forms
             }
         }
 
-        private void ApplyDefaultFilter()
-        {
-            try
-            {
-                var allData = ketQuaBLL.LayDanhSachKetQuaMoi();
 
-                var filtered = allData.Where(item =>
-                {
-                    string tenKH = (item.TenKhachHang ?? "").ToLower();
-                    string dotQT = (item.DotQuanTrac ?? "").ToLower();
-                    string tenNV = (item.TenNhanVien ?? "").ToLower();
-                    string ghiChu = (item.GhiChu ?? "").ToLower();
-
-                    // Kiểm tra nếu có chứa BẤT KỲ từ khóa nào trong danh sách
-                    return defaultFilterKeywords.Any(keyword =>
-                        tenKH.Contains(keyword.ToLower()) ||
-                        dotQT.Contains(keyword.ToLower()) ||
-                        tenNV.Contains(keyword.ToLower()) ||
-                        ghiChu.Contains(keyword.ToLower())
-                    );
-                }).ToList();
-
-                dgvDanhsachketqua.Rows.Clear();
-                int stt = 0;
-                foreach (var item in filtered)
-                {
-                    stt++;
-                    int rowIndex = dgvDanhsachketqua.Rows.Add();
-                    var row = dgvDanhsachketqua.Rows[rowIndex];
-                    row.Cells["STT"].Value = stt;
-                    row.Cells["TenCongTy"].Value = item.TenKhachHang ?? "";
-                    row.Cells["DotQuanTrac"].Value = item.DotQuanTrac ?? "";
-                    row.Cells["NgayTao"].Value = item.NgayTao;
-                    row.Cells["NgayTraKQ"].Value = item.NgayTraKQ;
-                    row.Cells["TenNhanVien"].Value = item.TenNhanVien ?? "";
-                    row.Cells["TrangThai"].Value = item.TrangThai;
-                    row.Cells["GhiChu"].Value = item.GhiChu ?? "";
-                    row.Tag = item.MaKQ;
-                }
-                FormatDataGridView();
-
-                soTrang.Text = $"Hiển thị {filtered.Count} kết quả (Quý/Tháng)";
-                btnTruoc.Enabled = false;
-                btnSau.Enabled = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi lọc dữ liệu: " + ex.Message, "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
         private void btnTruoc_Click(object sender, EventArgs e)
         {
@@ -625,45 +585,45 @@ namespace GUI.Forms
         }
 
         private void dgvDanhsachketqua_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-{
+        {
             if (!_isPhongKetQua) return;
             if (e.RowIndex >= 0)
-    {
-        try
-        {
-            string maKQ = dgvDanhsachketqua.Rows[e.RowIndex].Tag?.ToString();
-
-            if (string.IsNullOrEmpty(maKQ))
             {
-                MessageBox.Show("Không tìm thấy mã kết quả!",
-                    "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+                try
+                {
+                    string maKQ = dgvDanhsachketqua.Rows[e.RowIndex].Tag?.ToString();
 
-            // Mở form chi tiết
-            ChiTietKetQua formChiTiet = new ChiTietKetQua(maKQ);
-            DialogResult result = formChiTiet.ShowDialog();
+                    if (string.IsNullOrEmpty(maKQ))
+                    {
+                        MessageBox.Show("Không tìm thấy mã kết quả!",
+                            "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
 
-            if (result == DialogResult.OK && formChiTiet.DaThayDoiTrangThai)
-            {
-                tongSoBanGhi = 0;
-                tongSoTrang = 0;
-                
-                dgvDanhsachketqua.Rows.Clear();
-                
-                LoadDanhSachKetQua();
-                
-                dgvDanhsachketqua.Refresh();
-                this.Refresh();
+                    // Mở form chi tiết
+                    ChiTietKetQua formChiTiet = new ChiTietKetQua(maKQ);
+                    DialogResult result = formChiTiet.ShowDialog();
+
+                    if (result == DialogResult.OK && formChiTiet.DaThayDoiTrangThai)
+                    {
+                        tongSoBanGhi = 0;
+                        tongSoTrang = 0;
+
+                        dgvDanhsachketqua.Rows.Clear();
+
+                        LoadDanhSachKetQua();
+
+                        dgvDanhsachketqua.Refresh();
+                        this.Refresh();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi mở chi tiết: " + ex.Message,
+                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Lỗi khi mở chi tiết: " + ex.Message,
-                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-}
 
         private void dgvDanhsachketqua_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
 
@@ -771,7 +731,7 @@ namespace GUI.Forms
                 searchtextbox.Text = "";
                 searchtextbox.ForeColor = Color.FromArgb(64, 64, 64);
             }
-            isUsingDefaultFilter = false;
+            isSearching = true;
         }
 
         private void searchtextbox_Leave(object sender, EventArgs e)
@@ -781,9 +741,12 @@ namespace GUI.Forms
                 isPlaceholder = true;
                 searchtextbox.Text = PLACEHOLDER_TEXT;
                 searchtextbox.ForeColor = Color.Silver;
-                isUsingDefaultFilter = true;
+                isSearching = false; // Hủy đánh dấu tìm kiếm
+
+                // Reset và load lại toàn bộ dữ liệu
                 trangHienTai = 1;
                 tongSoBanGhi = 0;
+                tongSoTrang = 0;
                 LoadDanhSachKetQua();
             }
         }
@@ -808,9 +771,12 @@ namespace GUI.Forms
             else if (e.KeyCode == Keys.Escape)
             {
                 searchtextbox.Clear();
-                isUsingDefaultFilter = true;
+                isSearching = false; // Hủy đánh dấu tìm kiếm
+
+                // Reset và load lại toàn bộ dữ liệu
                 trangHienTai = 1;
                 tongSoBanGhi = 0;
+                tongSoTrang = 0;
                 LoadDanhSachKetQua();
             }
         }
@@ -818,21 +784,25 @@ namespace GUI.Forms
         private void PerformSearch()
         {
             string keyword = searchtextbox.Text.Trim().ToLower();
+
             if (string.IsNullOrEmpty(keyword))
             {
-                isUsingDefaultFilter = true;
+                isSearching = false;
                 trangHienTai = 1;
                 tongSoBanGhi = 0;
+                tongSoTrang = 0;
                 LoadDanhSachKetQua();
                 return;
             }
 
             try
             {
-                isUsingDefaultFilter = false;
+                isSearching = true;
 
+                // Lấy toàn bộ dữ liệu
                 var allData = ketQuaBLL.LayDanhSachKetQuaMoi();
 
+                // Lọc theo từ khóa tìm kiếm
                 var filtered = allData.Where(item =>
                     (item.TenKhachHang ?? "").ToLower().Contains(keyword) ||
                     (item.DotQuanTrac ?? "").ToLower().Contains(keyword) ||
@@ -841,13 +811,17 @@ namespace GUI.Forms
                     (item.GhiChu ?? "").ToLower().Contains(keyword)
                 ).ToList();
 
+                // Xóa dữ liệu cũ
                 dgvDanhsachketqua.Rows.Clear();
+
+                // Thêm dữ liệu đã lọc vào DataGridView
                 int stt = 0;
                 foreach (var item in filtered)
                 {
                     stt++;
                     int rowIndex = dgvDanhsachketqua.Rows.Add();
                     var row = dgvDanhsachketqua.Rows[rowIndex];
+
                     row.Cells["STT"].Value = stt;
                     row.Cells["TenCongTy"].Value = item.TenKhachHang ?? "";
                     row.Cells["DotQuanTrac"].Value = item.DotQuanTrac ?? "";
@@ -858,10 +832,13 @@ namespace GUI.Forms
                     row.Cells["GhiChu"].Value = item.GhiChu ?? "";
                     row.Tag = item.MaKQ;
                 }
+
                 FormatDataGridView();
 
+                // Cập nhật thông tin tìm kiếm
                 soTrang.Text = $"Tìm thấy {filtered.Count} kết quả";
 
+                // Tắt các nút phân trang khi đang tìm kiếm
                 btnTruoc.Enabled = false;
                 btnSau.Enabled = false;
             }

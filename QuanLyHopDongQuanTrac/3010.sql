@@ -1,20 +1,20 @@
-USE [master];
-GO
-IF DB_ID(N'QuanLyHopDongQuanTrac') IS NOT NULL
-BEGIN
-    ALTER DATABASE [QuanLyHopDongQuanTrac] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    DROP DATABASE [QuanLyHopDongQuanTrac];
-END
-IF DB_ID(N'QuanLyHopDongQuanTrac222') IS NOT NULL
-BEGIN
-    ALTER DATABASE [QuanLyHopDongQuanTrac222] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    DROP DATABASE [QuanLyHopDongQuanTrac222];
-END
-GO
-CREATE DATABASE [QuanLyHopDongQuanTrac];
-GO
-USE [QuanLyHopDongQuanTrac]
-GO
+--USE [master];
+--GO
+--IF DB_ID(N'QuanLyHopDongQuanTrac') IS NOT NULL
+--BEGIN
+--    ALTER DATABASE [QuanLyHopDongQuanTrac] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+--    DROP DATABASE [QuanLyHopDongQuanTrac];
+--END
+--IF DB_ID(N'QuanLyHopDongQuanTrac222') IS NOT NULL
+--BEGIN
+--    ALTER DATABASE [QuanLyHopDongQuanTrac222] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+--    DROP DATABASE [QuanLyHopDongQuanTrac222];
+--END
+--GO
+--CREATE DATABASE [QuanLyHopDongQuanTrac];
+--GO
+--USE [QuanLyHopDongQuanTrac]
+--GO
 /****** Object:  UserDefinedTableType [dbo].[ChiTietThongSoType]    Script Date: 10/30/2025 12:14:41 AM ******/
 CREATE TYPE [dbo].[ChiTietThongSoType] AS TABLE(
 	[maTS] [varchar](15) NULL,

@@ -15,11 +15,8 @@ namespace DTO
         public bool TrangThaiXacNhan { get; set; }
         public string TrangThai
         {
-            get
-            {
-                return TrangThaiXacNhan ? "Đã xác nhận" : "Chưa xác nhận";
-            }
-            set { }
+            get;
+            set;
         }
         public string GhiChu { get; set; }
         public string DotQuanTrac { get; set; }
