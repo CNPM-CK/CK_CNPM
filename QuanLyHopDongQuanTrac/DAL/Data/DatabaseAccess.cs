@@ -3113,5 +3113,82 @@ namespace DAL
         }
 
 
+        public NhanVien layNhanVienTheoMa(string maNV)
+        {
+            NhanVien nv = null;
+
+            try
+            {
+                using (SqlConnection conn = SqlConnectionData.Connect())
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_LayNhanVienTheoMa", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@maNV", maNV);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // ✅ Xử lý giới tính giống các method khác
+                                string gioiTinh = "0";
+                                if (reader["gioiTinh"] != DBNull.Value)
+                                {
+                                    var gioiTinhValue = reader["gioiTinh"];
+                                    if (gioiTinhValue is bool boolValue)
+                                    {
+                                        gioiTinh = boolValue ? "1" : "0";
+                                    }
+                                    else
+                                    {
+                                        string strValue = gioiTinhValue.ToString().Trim().ToLower();
+                                        if (strValue == "1" || strValue == "true" || strValue == "nữ" || strValue == "nu")
+                                            gioiTinh = "1";
+                                        else
+                                            gioiTinh = "0";
+                                    }
+                                }
+
+                                nv = new NhanVien
+                                {
+                                    maNV = reader["maNV"].ToString(),
+                                    maPhong = reader["maPhong"].ToString(),
+                                    hoTen = reader["hoTen"].ToString(),
+                                    ngaySinh = reader["ngaySinh"] != DBNull.Value
+                                        ? Convert.ToDateTime(reader["ngaySinh"])
+                                        : DateTime.MinValue,
+                                    gioiTinh = gioiTinh,
+                                    diaChi = reader["diaChi"] != DBNull.Value
+                                        ? reader["diaChi"].ToString()
+                                        : "",
+                                    soDienThoai = reader["soDienThoai"].ToString(),
+                                    email = reader["email"] != DBNull.Value
+                                        ? reader["email"].ToString()
+                                        : "",
+                                    trangThai = Convert.ToInt32(reader["trangThai"]),
+                                    anhDaiDien = reader["anhDaiDien"] != DBNull.Value
+                                        ? reader["anhDaiDien"].ToString()
+                                        : null,
+                                    tenPhong = reader["tenPhong"] != DBNull.Value
+                                        ? reader["tenPhong"].ToString()
+                                        : "",
+                                    isTruongPhong = reader["isTruongPhong"] != DBNull.Value
+                                        && Convert.ToInt32(reader["isTruongPhong"]) == 1
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi DAL - Lấy nhân viên theo mã: " + ex.Message);
+            }
+
+            return nv;
+        }
+
+
     }
 }

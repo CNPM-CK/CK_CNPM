@@ -139,5 +139,31 @@ namespace BLL
 
             dal.capNhatThongTinCaNhan(nv);
         }
+
+
+        public NhanVien layNhanVienTheoMa(string maNV)
+        {
+            // Validate input
+            if (string.IsNullOrWhiteSpace(maNV))
+            {
+                throw new ArgumentException("Mã nhân viên không được để trống!");
+            }
+
+            try
+            {
+                NhanVien nv = dal.layNhanVienTheoMa(maNV);
+
+                if (nv == null)
+                {
+                    throw new Exception($"Không tìm thấy nhân viên có mã: {maNV}");
+                }
+
+                return nv;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi BLL - Lấy nhân viên theo mã: " + ex.Message);
+            }
+        }
     }
 }

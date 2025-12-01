@@ -214,32 +214,40 @@ namespace GUI.Forms
                 return;
             }
 
-            // Lấy trực tiếp từ DataBoundItem
-            NhanVien nvSource = row.DataBoundItem as NhanVien;
-
-            if (nvSource == null)
+            // ✅ Lấy mã nhân viên từ cell (luôn có dù DTO nào)
+            string maNV = row.Cells["maNV"]?.Value?.ToString();
+            if (string.IsNullOrEmpty(maNV))
             {
-                MessageBox.Show("Không thể lấy thông tin nhân viên!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Không thể lấy mã nhân viên!", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            // Sử dụng trực tiếp nvSource, KHÔNG TẠO MỚI
+            // ✅ Load lại nhân viên từ BLL bằng mã
+            NhanVienBLL bll = new NhanVienBLL();
+            NhanVien nvSource = bll.layNhanVienTheoMa(maNV); // Cần thêm method này vào BLL
+
+            if (nvSource == null)
+            {
+                MessageBox.Show("Không tìm thấy thông tin nhân viên!", "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Tiếp tục như cũ
             ThemNhanVien frmSua = new ThemNhanVien();
             frmSua.isEditMode = true;
-            frmSua.NhanVienHienTai = nvSource;  // Truyền trực tiếp nvSource
+            frmSua.NhanVienHienTai = nvSource;
 
             currentOpenForm = frmSua;
             CenterFormOnParent(frmSua);
 
-            frmSua.FormClosed += (s, ev) =>
-            {
-                currentOpenForm = null;
-            };
-
+            frmSua.FormClosed += (s, ev) => currentOpenForm = null;
             frmSua.SuccesfullyUpdated += (s, ev) => taiDanhSachNhanVien();
+
             if (frmSua.ShowDialog(this) == DialogResult.OK)
             {
-                taiDanhSachNhanVien(); // ✅ Refresh lại sau khi đóng form
+                taiDanhSachNhanVien();
             }
         }
 
@@ -247,41 +255,40 @@ namespace GUI.Forms
         {
             string maNV = row.Cells["maNV"].Value?.ToString();
             string hoTen = row.Cells["hoTen"].Value?.ToString();
-            string tenTrangThai = row.Cells["tenTrangThai"].Value?.ToString();
 
             if (string.IsNullOrEmpty(maNV))
                 return;
 
-            // ✅ Lấy trạng thái nhân viên
-            NhanVien nvSource = row.DataBoundItem as NhanVien;
-            int trangThai = nvSource?.trangThai ?? 0;
-
-            // ✅ Kiểm tra: Chỉ cho xóa nếu trạng thái = 6
-            if (trangThai != 6)
+            try
             {
-                MessageBox.Show(
-                    $"Không thể xóa nhân viên '{hoTen}'!\n\n" +
-                    $"Trạng thái hiện tại: {tenTrangThai}\n" +
-                    $"Chỉ được xóa nhân viên có trạng thái 'Ngưng hoạt động'.",
-                    "Không thể xóa",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
+                // ✅ Gọi BLL → DAL → Proc để lấy nhân viên
+                NhanVienBLL bll = new NhanVienBLL();
+                NhanVien nvSource = bll.layNhanVienTheoMa(maNV);
+
+                // ✅ Kiểm tra trạng thái: Chỉ cho xóa nếu = 6 (Ngưng hoạt động)
+                if (nvSource.trangThai != 6)
+                {
+                    MessageBox.Show(
+                        $"Không thể xóa nhân viên '{hoTen}'!\n\n" +
+                        $"Trạng thái hiện tại: {nvSource.tenTrangThai}\n" +
+                        $"Chỉ được xóa nhân viên có trạng thái 'Ngưng hoạt động'.",
+                        "Không thể xóa",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+                    return;
+                }
+
+                // ✅ Xác nhận xóa
+                DialogResult result = MessageBox.Show(
+                    $"Bạn có chắc chắn muốn xóa nhân viên '{hoTen}' (Mã: {maNV}) không?\n\n" +
+                    $"Nhân viên này sẽ bị ẩn khỏi danh sách.",
+                    "Xác nhận xóa",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
                 );
-                return;
-            }
 
-            // ✅ Nếu trạng thái = 6 → Cho phép xóa mềm
-            DialogResult result = MessageBox.Show(
-                $"Bạn có chắc chắn muốn xóa nhân viên '{hoTen}' (Mã: {maNV}) không?\n\n" +
-                $"Nhân viên này sẽ bị ẩn khỏi danh sách.",
-                "Xác nhận xóa",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question
-            );
-
-            if (result == DialogResult.Yes)
-            {
-                try
+                if (result == DialogResult.Yes)
                 {
                     NhanVienBLL nvBLL = new NhanVienBLL();
                     nvBLL.xoaNhanVien(maNV);
@@ -289,17 +296,13 @@ namespace GUI.Forms
                     MessageBox.Show("Đã xóa nhân viên thành công!", "Thông báo",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // ✅ Delay refresh để tránh conflict
-                    this.BeginInvoke(new Action(() =>
-                    {
-                        taiDanhSachNhanVien();
-                    }));
+                    this.BeginInvoke(new Action(() => taiDanhSachNhanVien()));
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Có lỗi xảy ra khi xóa nhân viên: " + ex.Message,
-                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi xóa nhân viên:\n{ex.Message}",
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -360,7 +363,7 @@ namespace GUI.Forms
             containersearch.Paint += containersearch_Paint;
         }
 
-        
+
 
 
 
@@ -372,7 +375,7 @@ namespace GUI.Forms
                 btnThemuser.Image = new Bitmap(btnThemuser.Image, new Size(24, 24));
             }
 
-           
+
         }
 
         private void InitializeButtonStyles()
@@ -643,7 +646,7 @@ namespace GUI.Forms
             }
 
             // ✅ Tô màu cho trưởng phòng
-            if (nhanVien != null && nhanVien.isTruongPhong == true )
+            if (nhanVien != null && nhanVien.isTruongPhong == true)
             {
                 e.CellStyle.BackColor = Color.FromArgb(255, 250, 205);
                 e.CellStyle.SelectionBackColor = Color.FromArgb(255, 215, 0);
