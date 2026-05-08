@@ -1,57 +1,265 @@
-# ECOS - Hệ thống Quản lý Hợp đồng Đơn hàng trong Quan trắc Môi trường
+# 🌱 ECOS - Environmental Contract Oversight System
 
-## 📖 Tổng quan dự án
-**ECOS (Environmental Contract Oversight System)** là hệ thống phần mềm được xây dựng nhằm số hóa và tự động hóa quy trình quản lý hợp đồng quan trắc môi trường. Hệ thống cung cấp giải pháp quản lý toàn diện từ khâu ký kết hợp đồng, lập kế hoạch quan trắc, thu thập dữ liệu hiện trường và phòng thí nghiệm, cho đến việc xuất báo cáo kết quả. Đặc biệt, dự án còn tích hợp Trí tuệ nhân tạo (AI) để dự đoán khả năng tái ký hợp đồng và mức độ ô nhiễm môi trường.
+> Hệ thống Quản lý Hợp đồng Đơn hàng trong Quan trắc Môi trường
 
-## ✨ Các tính năng nổi bật
-* **Quản lý Hợp đồng & Khách hàng:** Tạo, theo dõi và quản lý vòng đời hợp đồng theo chu kỳ (quý/6 tháng).
-* **Phân quyền & Xác thực bảo mật:** Hỗ trợ đăng nhập bằng mật khẩu, nhận diện khuôn mặt (Face ID) và cấp lại mật khẩu qua OTP/SMS.
-* **Lập kế hoạch & Nhập liệu Quan trắc:** Phân công nhiệm vụ cụ thể cho Phòng Hiện trường (HT) và Phòng Thí nghiệm (PTN). Hệ thống tự động kiểm tra và cảnh báo nếu các thông số môi trường vượt ngưỡng QCVN.
-* **Hệ thống cảnh báo tự động:** Tự động gửi Email/SMS thông báo khi đơn hàng sắp quá hạn hoặc nhắc nhở gia hạn hợp đồng.
-* **Tích hợp Trí tuệ Nhân tạo (AI):** Phân tích và dự báo khả năng tái ký hợp đồng của khách hàng và dự báo tình trạng ô nhiễm môi trường bằng công nghệ ML.NET.
-* **Tiện ích mở rộng:** Hỗ trợ tìm kiếm bằng giọng nói (Voice Search), xuất báo cáo đa định dạng (PDF, Excel) và lưu trữ Audit trail đầy đủ.
+---
 
-## 🛠️ Công nghệ sử dụng
-Hệ thống được phát triển dựa trên kiến trúc **3-Layer (GUI, BLL, DAL)** với các công nghệ:
-* **Ngôn ngữ & Framework:** C#, ASP.NET Core 8.0, Windows Forms (WinForms).
-* **Cơ sở dữ liệu:** SQL Server 2022.
-* **AI & Machine Learning:** ML.NET.
-* **Dịch vụ tích hợp:** SendGrid (Gửi Email), Twilio (Gửi SMS), SpeechRecognition API (Tìm kiếm giọng nói).
-* **Bảo mật:** Mã hóa dữ liệu AES-256.
+## 📖 Giới thiệu dự án
 
-## 🚀 Hướng dẫn cài đặt và chạy dự án
+**ECOS (Environmental Contract Oversight System)** là hệ thống phần mềm được xây dựng nhằm số hóa và tự động hóa quy trình quản lý hợp đồng quan trắc môi trường.
 
-### Yêu cầu hệ thống:
-* Visual Studio 2022 (hỗ trợ .NET 8.0).
-* SQL Server 2022.
-* Git.
+Hệ thống hỗ trợ quản lý toàn diện từ:
 
-### Các bước thực hiện:
-1. **Clone mã nguồn về máy:**
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-Thiết lập Cơ sở dữ liệu:
-Mở SQL Server Management Studio (SSMS).
-Chạy file script SQL đính kèm trong thư mục Database (hoặc tạo database QuanLyHopDongQuanTrac và chạy các câu lệnh tạo bảng, thủ tục được cung cấp).
-Cấu hình chuỗi kết nối (Connection String):
-Mở project bằng Visual Studio.
-Tìm file cấu hình (ví dụ: appsettings.json hoặc cấu hình trong tầng DAL) và thay đổi chuỗi kết nối cho phù hợp với SQL Server của bạn.
-Chạy ứng dụng:
-Set project chứa giao diện (GUI) làm Startup Project.
-Nhấn F5 hoặc nút Start trên Visual Studio để chạy phần mềm.
-Tài khoản mặc định:
-Hệ thống không hỗ trợ người dùng tự đăng ký, tài khoản sẽ do Admin cấp. Bạn có thể sử dụng tài khoản Admin mặc định đã thiết lập trong database để đăng nhập.
-📁 Kiến trúc thư mục (3-Tier Architecture)
-GUI (Presentation Layer): Chứa các form giao diện người dùng (WinForms), xử lý sự kiện và validation dữ liệu đầu vào.
-BLL (Business Logic Layer): Chứa các class xử lý quy tắc nghiệp vụ, tính toán và liên kết giữa GUI và DAL.
-DAL (Data Access Layer): Chịu trách nhiệm kết nối, truy vấn và thao tác trực tiếp với cơ sở dữ liệu SQL Server thông qua các Stored Procedures.
-👥 Đội ngũ phát triển (Nhóm 19 - STech)
-Họ và tên                   Vai trò
-Nguyễn Hoàng Sơn            Project Manager, Tester
-Phan Đức Tài                Business Analyst, Tester
-Tôn Quốc Thái               Developer, Designer
-Trần Quang Thái             Developer, Designer
-Phan Trí Tâm                Developer, Designer
-📄 Giấy phép và Tài liệu tham khảo
-Phần mềm tuân thủ các quy định hiện hành về Quan trắc môi trường (QCVN).
-Tài liệu Hướng dẫn sử dụng (User Manual) và Sơ đồ thiết kế chi tiết được đính kèm trong dự án.
+- Quản lý khách hàng và hợp đồng
+- Lập kế hoạch quan trắc
+- Thu thập dữ liệu hiện trường và phòng thí nghiệm
+- Xuất báo cáo kết quả
+- Theo dõi tiến độ thực hiện
+- Cảnh báo hợp đồng sắp hết hạn
+
+Ngoài ra, hệ thống còn tích hợp **Trí tuệ nhân tạo (AI)** nhằm:
+- Dự đoán khả năng tái ký hợp đồng
+- Phân tích và dự báo mức độ ô nhiễm môi trường
+
+---
+
+# ✨ Tính năng nổi bật
+
+## 📋 Quản lý Hợp đồng & Khách hàng
+- Quản lý thông tin khách hàng
+- Theo dõi vòng đời hợp đồng
+- Quản lý hợp đồng theo chu kỳ:
+  - Theo quý
+  - Theo 6 tháng
+- Theo dõi trạng thái đơn hàng
+
+---
+
+## 🔐 Phân quyền & Xác thực bảo mật
+- Đăng nhập bằng tài khoản/mật khẩu
+- Xác thực bằng Face ID
+- Cấp lại mật khẩu qua OTP/SMS
+- Phân quyền theo vai trò người dùng
+
+---
+
+## 🧪 Lập kế hoạch & Nhập liệu Quan trắc
+- Phân công nhiệm vụ cho:
+  - Phòng Hiện trường (HT)
+  - Phòng Thí nghiệm (PTN)
+- Nhập dữ liệu quan trắc
+- Kiểm tra thông số môi trường
+- Tự động cảnh báo khi vượt ngưỡng QCVN
+
+---
+
+## 🚨 Hệ thống cảnh báo tự động
+- Gửi Email nhắc hạn hợp đồng
+- Gửi SMS cảnh báo đơn hàng sắp quá hạn
+- Thông báo gia hạn hợp đồng
+
+---
+
+## 🤖 Tích hợp Trí tuệ nhân tạo (AI)
+- Dự đoán khả năng tái ký hợp đồng
+- Dự báo mức độ ô nhiễm môi trường
+- Ứng dụng Machine Learning với ML.NET
+
+---
+
+## ⚙️ Tiện ích mở rộng
+- Voice Search (Tìm kiếm bằng giọng nói)
+- Xuất báo cáo:
+  - PDF
+  - Excel
+- Lưu trữ Audit Trail
+- Theo dõi lịch sử thao tác người dùng
+
+---
+
+# 🛠️ Công nghệ sử dụng
+
+| Thành phần | Công nghệ |
+|---|---|
+| Ngôn ngữ lập trình | C# |
+| Framework | ASP.NET Core 8.0, WinForms |
+| Kiến trúc | 3-Layer Architecture |
+| Cơ sở dữ liệu | SQL Server 2022 |
+| AI & Machine Learning | ML.NET |
+| Gửi Email | SendGrid |
+| Gửi SMS | Twilio |
+| Voice Search | SpeechRecognition API |
+| Bảo mật | AES-256 Encryption |
+
+---
+
+# 🏗️ Kiến trúc hệ thống
+
+Hệ thống được phát triển theo mô hình **3-Layer Architecture**:
+
+## 🖥️ GUI (Presentation Layer)
+- Chứa giao diện người dùng
+- Xử lý sự kiện
+- Kiểm tra dữ liệu đầu vào
+
+---
+
+## 🧠 BLL (Business Logic Layer)
+- Xử lý nghiệp vụ
+- Tính toán dữ liệu
+- Liên kết GUI và DAL
+
+---
+
+## 🗄️ DAL (Data Access Layer)
+- Kết nối SQL Server
+- Thực hiện truy vấn dữ liệu
+- Làm việc với Stored Procedures
+
+---
+
+# 🚀 Hướng dẫn cài đặt
+
+## 📌 Yêu cầu hệ thống
+
+- Visual Studio 2022
+- .NET 8.0 SDK
+- SQL Server 2022
+- Git
+
+---
+
+## 📥 Clone project
+
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+```
+
+---
+
+## 🗄️ Thiết lập cơ sở dữ liệu
+
+### Bước 1:
+Mở **SQL Server Management Studio (SSMS)**
+
+### Bước 2:
+Tạo database:
+
+```sql
+QuanLyHopDongQuanTrac
+```
+
+### Bước 3:
+Chạy file script SQL trong thư mục:
+
+```bash
+/Database
+```
+
+---
+
+## ⚙️ Cấu hình Connection String
+
+Mở file:
+
+```bash
+appsettings.json
+```
+
+Hoặc cấu hình trong tầng:
+
+```bash
+DAL
+```
+
+Sau đó chỉnh sửa chuỗi kết nối SQL Server phù hợp với máy của bạn.
+
+---
+
+## ▶️ Chạy ứng dụng
+
+### Bước 1:
+Mở solution bằng **Visual Studio 2022**
+
+### Bước 2:
+Set project giao diện làm:
+
+```bash
+Startup Project
+```
+
+### Bước 3:
+Nhấn:
+
+```bash
+F5
+```
+
+hoặc:
+
+```bash
+Start
+```
+
+để chạy chương trình.
+
+---
+
+# 👤 Tài khoản mặc định
+
+Hệ thống không hỗ trợ người dùng tự đăng ký tài khoản.
+
+Tài khoản sẽ được Admin cấp sẵn trong cơ sở dữ liệu.
+
+---
+
+# 📁 Cấu trúc thư mục
+
+```bash
+ECOS/
+│
+├── GUI/        # Giao diện người dùng
+├── BLL/        # Business Logic Layer
+├── DAL/        # Data Access Layer
+├── Database/   # Script SQL
+├── Assets/     # Hình ảnh, tài nguyên
+└── README.md
+```
+
+---
+
+# 👥 Đội ngũ phát triển
+
+## Nhóm 19 - STech
+
+| Họ và tên | Vai trò |
+|---|---|
+| Nguyễn Hoàng Sơn | Project Manager, Tester |
+| Phan Đức Tài | Business Analyst, Tester |
+| Tôn Quốc Thái | Developer, Designer |
+| Trần Quang Thái | Developer, Designer |
+| Phan Trí Tâm | Developer, Designer |
+
+---
+
+# 📄 Tài liệu & Quy chuẩn
+
+- Phần mềm tuân thủ các quy chuẩn QCVN về Quan trắc môi trường
+- Tài liệu hướng dẫn sử dụng (User Manual) được đính kèm trong dự án
+- Bao gồm:
+  - Sơ đồ thiết kế hệ thống
+  - Tài liệu phân tích nghiệp vụ
+  - Tài liệu triển khai
+
+---
+
+# 📌 Ghi chú
+
+Đây là dự án học phần được xây dựng nhằm:
+- Nghiên cứu quy trình quản lý quan trắc môi trường
+- Ứng dụng AI trong phân tích dữ liệu
+- Xây dựng hệ thống quản lý theo mô hình doanh nghiệp thực tế
+
+---
+
+# ⭐ ECOS - Smart Environmental Monitoring Management System
