@@ -47,7 +47,7 @@ namespace GUI.Forms
                 string aiText = result.ReplyText;
 
                 // Append AI msg lên UI
-                AppendMessageToHistoryBox("AI ô nhiễm", aiText);
+                AppendMessageToHistoryBox("ECOS Trợ Lý", aiText);
                 _history.Add(new ChatMessageDTO
                 {
                     Role = ChatRole.Assistant,

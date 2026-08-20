@@ -1,0 +1,11 @@
+{
+  "seed": 20260820,
+  "customer_count": 3000,
+  "simulation_start": "2017-01-01",
+  "simulation_end": "2025-12-31",
+  "prediction_lead_days": 60,
+  "label_observation_days": 90,
+  "max_contracts_per_customer": 20,
+  "include_latent_debug": false,
+  "output_directory": "output"
+}

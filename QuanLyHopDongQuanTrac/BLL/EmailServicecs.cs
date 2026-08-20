@@ -3,16 +3,17 @@ using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using DTO;
 
 namespace BLL
 {
     public class EmailService
     {
-        private const string SMTP_HOST = "smtp.gmail.com";
-        private const int SMTP_PORT = 587;
-        private const string EMAIL_FROM = "tritam199999@gmail.com";
-        private const string EMAIL_PASSWORD = "kpeb kqhb ffpm kezz";
-        private const string EMAIL_FROM_NAME = "ECOS System";
+        private static string SMTP_HOST => AppConfig.GetOptional("Smtp:OtpAndReports:Host") ?? "smtp.gmail.com";
+        private static int SMTP_PORT => int.TryParse(AppConfig.GetOptional("Smtp:OtpAndReports:Port"), out int port) ? port : 587;
+        private static string EMAIL_FROM => AppConfig.GetRequired("Smtp:OtpAndReports:FromAddress");
+        private static string EMAIL_PASSWORD => AppConfig.GetRequired("Smtp:OtpAndReports:Password");
+        private static string EMAIL_FROM_NAME => AppConfig.GetOptional("Smtp:OtpAndReports:FromName") ?? "ECOS System";
 
         // ================== GỬI OTP (Giữ nguyên) ==================
 

@@ -77,11 +77,7 @@ namespace GUI.Forms
             _wavPath = Path.Combine(baseDir, "TempAudio", "search.wav");
 
             _recorder = new VoiceRecorder(_wavPath);
-            string appId = "ga825cbd";
-            string apiKey = "55774f42c55202232e1b4d8ebfc314c5";
-            string apiSecret = "c1cb5fc788d78ec4b808e8cc4beb4a3d";
-
-            var iatService = new IATService(appId, apiKey, apiSecret);
+            var iatService = IATService.TryCreateFromConfiguration();
 
             _whisper = new WhisperService(modelPath, iatService);
 

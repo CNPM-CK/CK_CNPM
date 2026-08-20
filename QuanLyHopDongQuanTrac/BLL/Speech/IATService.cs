@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using DTO;
 
 namespace BLL.Speech
 {
@@ -20,6 +21,22 @@ namespace BLL.Speech
             _appId = appId;
             _apiKey = apiKey;
             _apiSecret = apiSecret;
+        }
+
+        public static IATService? TryCreateFromConfiguration()
+        {
+            string? appId = AppConfig.GetOptional("Speech:IAT:AppId");
+            string? apiKey = AppConfig.GetOptional("Speech:IAT:ApiKey");
+            string? apiSecret = AppConfig.GetOptional("Speech:IAT:ApiSecret");
+
+            if (string.IsNullOrWhiteSpace(appId)
+                || string.IsNullOrWhiteSpace(apiKey)
+                || string.IsNullOrWhiteSpace(apiSecret))
+            {
+                return null;
+            }
+
+            return new IATService(appId, apiKey, apiSecret);
         }
 
         private string BuildAuthUrl(string hostUrl)

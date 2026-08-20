@@ -124,15 +124,15 @@ namespace BLL
             {
                 using (MailMessage mail = new MailMessage())
                 {
-                    mail.From = new MailAddress("dhzhhxhddgh@gmail.com", "Hệ thống Quan trắc");
+                    mail.From = new MailAddress(AppConfig.GetRequired("Smtp:Notifications:FromAddress"), AppConfig.GetOptional("Smtp:Notifications:FromName") ?? "Hệ thống Quan trắc");
                     mail.To.Add(to);
                     mail.Subject = subject;
                     mail.Body = body;
                     mail.IsBodyHtml = true; 
 
-                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                    using (SmtpClient smtp = new SmtpClient(AppConfig.GetOptional("Smtp:Notifications:Host") ?? "smtp.gmail.com", int.TryParse(AppConfig.GetOptional("Smtp:Notifications:Port"), out int smtpPort) ? smtpPort : 587))
                     {
-                        smtp.Credentials = new NetworkCredential("dhzhhxhddgh@gmail.com", "nitvqgclplgtzcjo");
+                        smtp.Credentials = new NetworkCredential(AppConfig.GetRequired("Smtp:Notifications:FromAddress"), AppConfig.GetRequired("Smtp:Notifications:Password"));
                         smtp.EnableSsl = true;
                         smtp.Timeout = 10000;
                         smtp.Send(mail);

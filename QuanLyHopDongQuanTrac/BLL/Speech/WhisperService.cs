@@ -15,13 +15,13 @@ namespace BLL.Speech
         // factory dùng chung cho toàn app (chỉ load model 1 lần)
         private static WhisperFactory _sharedFactory;
         private WhisperFactory _factory;
-        private readonly IATService _iat;
+        private readonly IATService? _iat;
 
         // lock để đảm bảo chỉ 1 task init tại 1 thời điểm
         private static readonly SemaphoreSlim _initLock = new(1, 1);
         private bool _initialized = false;
 
-        public WhisperService(string modelPath, IATService iat = null)
+        public WhisperService(string modelPath, IATService? iat = null)
         {
             _modelPath = modelPath;
             _iat = iat;

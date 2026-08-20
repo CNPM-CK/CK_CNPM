@@ -99,11 +99,7 @@ namespace GUI.Forms
             _wavPath = Path.Combine(baseDir, "TempAudio", "search.wav");
 
             _recorder = new VoiceRecorder(_wavPath);
-            string appId = "ga825cbd";
-            string apiKey = "55774f42c55202232e1b4d8ebfc314c5";
-            string apiSecret = "c1cb5fc788d78ec4b808e8cc4beb4a3d";
-
-            var iatService = new IATService(appId, apiKey, apiSecret);
+            var iatService = IATService.TryCreateFromConfiguration();
             _whisper = new WhisperService(modelPath, iatService);
             btnMic.Enabled = false;
 
@@ -613,6 +609,10 @@ namespace GUI.Forms
 
             userText = NormalizeNewlines(userText);
 
+            // ChatAsync sẽ tự nối userText vào request, nên chỉ truyền lịch sử
+            // trước tin nhắn hiện tại để tránh gửi cùng một nội dung hai lần.
+            var historyBeforeCurrentMessage = new List<ChatMessageDTO>(_history);
+
             // 🔹 Thêm tin nhắn người dùng (kèm tạo session nếu chưa có)
             AddMessage("Bạn", userText, isUser: true);
 
@@ -621,7 +621,7 @@ namespace GUI.Forms
 
             try
             {
-                var result = await _chatBll.ChatAsync(_history, userText);
+                var result = await _chatBll.ChatAsync(historyBeforeCurrentMessage, userText);
                 string aiText = NormalizeNewlines(result.ReplyText);
 
                 await Task.Delay(300);
